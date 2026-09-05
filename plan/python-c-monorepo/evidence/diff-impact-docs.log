@@ -1,0 +1,35 @@
+receipt stored: .sot/receipts/c5b0422463cefe78515e49ddcc013c6f654c9805baf74764bef5de0fa2a52825.json
+_Snapshot: pre sha256:0f4c113e1a8e (dirty=True) → post sha256:fae8ec207731 (dirty=True)_
+# SOT-Graph Diff Impact Analysis Report
+
+**Target:** `HEAD` | **Risk Level:** 🟢 **LOW** (Score: 13/100) | **Execution Time:** 92.7ms
+
+## 📊 Summary Metrics
+
+| Metric | Count |
+| :--- | :--- |
+| Changed Files | **1** |
+| Diff Hunks | **1** |
+| Directly Modified Symbols | **1** |
+| Blast Radius Callers (In-Degree) | **0** |
+| Impacted API Endpoints | **0** |
+| Tests to Re-Run | **0** |
+
+## 🎯 1. Directly Modified AST Symbols
+
+| Symbol | Kind | File | Lines | Change Type |
+| :--- | :--- | :--- | :--- | :--- |
+| `python-c-monorepo-architecture-plan-2026-09-05.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo-architecture-plan-2026-09-05.md` | L1-L572 | **modified** |
+
+## 💥 2. Blast Radius: Upstream Inward Callers
+
+_Zero inward caller dependencies detected (low ripple effect)._
+
+## 🌐 3. Affected Cross-Stack API Endpoints
+
+_No direct or indirect API contract bindings affected._
+
+## 🧪 4. Recommended Test Coverage Verification
+
+_No existing test suites mapped directly to modified symbols. Consider adding new test coverage._
+
