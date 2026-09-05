@@ -420,6 +420,28 @@ def referenced_names(text: str) -> Set[str]:
     return {node.id for node in ast.walk(tree) if isinstance(node, ast.Name)}
 
 
+def attribute_referenced_names(text: str) -> Set[str]:
+    """Attribute names referenced by a source text (``x.replace``).
+
+    Companion to :func:`referenced_names` for DENOMINATOR reporting
+    (P1-5): a test that touches a changed symbol ONLY through attribute
+    access cannot be modeled without type inference, so it is neither a
+    ground-truth obligation nor an engine miss — the report must publish
+    it as out-of-scope/unmeasurable instead of silently dropping it (or
+    worse, silently passing). Parse failure yields an empty set: the
+    coarse word-scan fallback of :func:`referenced_names` cannot
+    distinguish attributes, and an empty set only ever UNDER-counts the
+    out-of-scope pool, never the scored obligations.
+    """
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError):
+        return set()
+    return {
+        node.attr for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+    }
+
+
 def top_level_delta(head_text: str, base_text: str) -> Set[str]:
     """Top-level def/class names added, removed or changed between two
     file revisions — the ground-truth changed-symbol set for a diff."""

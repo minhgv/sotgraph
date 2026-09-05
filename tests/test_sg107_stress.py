@@ -25,9 +25,12 @@ Locks:
   field-by-field (digests match; the only additive CLI field is
   ``stale_files``).
 - Regression tripwire: every SQL ``LIMIT`` site under
-  ``src/sot_graph/assurance/`` must stay in the accounted registry
-  (a CollectionStats-reporting cap site) or the known non-truncating
-  list, so a new silent cap cannot land unnoticed.
+  ``src/sot_graph/assurance/`` must stay in the accounted registry —
+  the STABLE cap/collector id registry in
+  ``sot_graph.assurance.accounting`` (P1-4; line-independent, so
+  innocent source edits cannot break it for the wrong reason) — or the
+  known non-truncating allowlist, so a new silent cap cannot land
+  unnoticed.
 """
 
 from __future__ import annotations
@@ -36,7 +39,6 @@ import copy
 import io
 import json
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -53,7 +55,6 @@ from sot_graph.assurance.impact_pipeline import (
     run_impact_claim,
 )
 from sot_graph.assurance.receipts import (
-    RECEIPT_SCHEMA_VERSION,
     diff_impact_receipt,
     receipt_digest,
     scope_receipt,
@@ -925,74 +926,51 @@ class TestCharacterizationResidualRisks:
 class TestLimitTripwire:
     """Every SQL LIMIT in src/sot_graph/assurance/ must be a KNOWN site.
 
-    Mirrors part A's cap-site sweep: a new LIMIT that silently bounds a
-    collection without CollectionStats accounting + a truncation source
-    is exactly the false-assure bug SG-107 exists to prevent. If this
-    test fails for you: either (a) your new cap MUST emit accounting
-    (twin COUNT + CollectionStats.counted + a named source in
+    P1-4: the line-number-bound registry that used to live here
+    (``_ACCOUNTED_LIMITS: Dict[Tuple[str, int], str]``) was replaced by
+    a structured, LINE-INDEPENDENT contract — stable cap/collector ids
+    registered in ``sot_graph.assurance.accounting`` (production code)
+    and enforced by ``tests/test_accounting_contract.py``. This suite
+    keeps exercising the static sweep so the SG-107 exit gate stays
+    self-contained; the full contract (registry completeness, fail-closed
+    runtime gate, cap boundaries, line-independence proofs) lives in the
+    dedicated contract test module.
+
+    If this test fails for you: either (a) your new cap MUST emit
+    accounting (twin COUNT + CollectionStats.counted + a named source in
     ``facts.truncation_sources``) and get registered in
-    ``_ACCOUNTED_LIMITS`` below, or (b) it genuinely does not bound a
-    receipt collection (e.g. a LIMIT 1 identity probe) and belongs in
-    ``_NON_TRUNCATING_LIMITS`` — with a justification.
+    ``ACCOUNTED_SITES``, or (b) it genuinely does not bound a receipt
+    collection (e.g. a LIMIT 1 identity probe) and belongs in
+    ``NON_TRUNCATING_COLLECTORS`` — with a justification.
     """
 
-    _ACCOUNTED_LIMITS: Dict[Tuple[str, int], str] = {
-        ("receipts.py", 181): "edges_cap_500",
-        ("receipts.py", 241): "ledger_runs_cap_200",
-        ("receipts.py", 254): "ledger_runs_cap_200",
-        ("receipts.py", 764): "evidence_cap_50",
-        ("ledger.py", 104): "ledger_union_cap_5000",
-        ("ledger.py", 132): "ledger_union_cap_5000 (legacy fallback query)",
-    }
-    _NON_TRUNCATING_LIMITS: Dict[Tuple[str, int], str] = {
-        ("engine.py", 29): "exact-symbol identity probe; LIMIT 1 returns "
-                           "0/1 rows — a lookup, not a bounded collection",
-        ("engine.py", 35): "LIKE disambiguation probe; decision paths use "
-                           "resolve_symbol_identity (no LIMIT — ambiguity "
-                           "surfaced)",
-    }
-
     def test_every_assurance_limit_is_accounted(self):
-        import sot_graph
+        from sot_graph.assurance.accounting import (
+            assurance_package_dir,
+            unbacked_registry_sites,
+            unregistered_limit_sites,
+        )
 
-        assurance_dir = (Path(sot_graph.__file__).resolve().parent
-                         / "assurance")
-        limit_re = re.compile(r"\bLIMIT\s+(\d|\?|\{)")
-        found: Dict[Tuple[str, int], str] = {}
-        for path in sorted(assurance_dir.glob("*.py")):
-            for lineno, line in enumerate(
-                    path.read_text(encoding="utf-8").splitlines(), start=1):
-                stripped = line.strip()
-                if stripped.startswith("#") or "``" in line:
-                    continue  # comments / docstring mentions
-                if limit_re.search(line):
-                    found[(path.name, lineno)] = stripped
-
-        unaccounted = {
-            site: line for site, line in found.items()
-            if site not in self._ACCOUNTED_LIMITS
-            and site not in self._NON_TRUNCATING_LIMITS
-        }
-        assert not unaccounted, (
+        pkg_dir = assurance_package_dir()
+        offenders = unregistered_limit_sites(pkg_dir)
+        assert not offenders, (
             "NEW UNACCOUNTED CAP SITE(S) in src/sot_graph/assurance/: "
             + "; ".join(
-                f"{fname}:{line} -> {text}"
-                for (fname, line), text in sorted(unaccounted.items())
+                f"{site.module}.{site.collector} -> {site.sql!r}"
+                for site in offenders
             )
             + ". A collection-bounding LIMIT must report CollectionStats "
             "(twin COUNT without LIMIT) and a named truncation source "
-            "(SG-107), then be registered in _ACCOUNTED_LIMITS — or be "
-            "justified in _NON_TRUNCATING_LIMITS."
+            "(SG-107), then be registered in accounting.ACCOUNTED_SITES — "
+            "or be justified in accounting.NON_TRUNCATING_COLLECTORS."
         )
 
-        # Registry honesty: no stale entries (line drift must be fixed,
+        # Registry honesty: no stale entries (a collector that was
+        # renamed, moved its cap, or lost its SQL LIMIT must be fixed,
         # not ignored).
-        stale_entries = [
-            site for site in
-            list(self._ACCOUNTED_LIMITS) + list(self._NON_TRUNCATING_LIMITS)
-            if site not in found
-        ]
-        assert not stale_entries, (
-            "stale tripwire registry entries (LIMIT moved/removed): "
-            f"{stale_entries} — update the registry to the new lines"
+        unbacked = unbacked_registry_sites(pkg_dir)
+        assert not unbacked, (
+            "stale accounting registry entries (collector lost its SQL "
+            f"LIMIT): {[s.source_id for s in unbacked]} — update "
+            "accounting.ACCOUNTED_SITES"
         )

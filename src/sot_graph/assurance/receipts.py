@@ -33,6 +33,16 @@ from .coverage import (
     coverage_note,
     repo_coverage,
 )
+from .accounting import (
+    CHANGED_FILES_SOURCE,
+    EDGES_SOURCE,
+    EVIDENCE_SOURCE,
+    LEDGER_RUNS_SOURCE,
+    RECEIPT_CITED_FILE_CAP,
+    TRANSITIVE_SOURCE,
+    ensure_accounted,
+    ledger_union_source,
+)
 from .engine import assured_query_context, resolve_symbol_identity
 from .impact_pipeline import CollectionError, merge_collection_stats
 from .ledger import union_evidence
@@ -57,29 +67,27 @@ __all__ = [
 ]
 RECEIPT_SCHEMA_VERSION = "1.7"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger)
 
-#: Bounded-work cap on how many changed files a post-change receipt will
-#: measure (journal staleness, evidence invalidation, snapshot citation).
-#: The cap itself is fine; hiding it was not — receipts above the cap now
-#: carry ``changed_files_total`` / ``changed_files_truncated`` so the
-#: partial closure evidence is visible instead of silently assumed whole.
-RECEIPT_CITED_FILE_CAP = 200
-
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
 #: REPORTS its accounting (true enumerated vs returned via a twin COUNT
 #: query) instead of silently returning the first N rows. Each cap has a
-#: stable source id that lands in ``AssuranceFacts.truncation_sources``
-#: (and therefore in ``collection_truncated:<source>`` reason codes)
-#: whenever it actually cuts a collection.
+#: stable source id — owned by the registry in :mod:`.accounting`
+#: (P1-4), so the contract tests bind to (module, collector) names and
+#: stable ids instead of source line numbers — that lands in
+#: ``AssuranceFacts.truncation_sources`` (and therefore in
+#: ``collection_truncated:<source>`` reason codes) whenever it actually
+#: cuts a collection. ``ensure_accounted`` is the production-side
+#: fail-closed gate: an id outside the registry can never enter a
+#: receipt.
 _EDGES_CAP = 500                  # _edges_of per query (callers/callees/relations)
-_EDGES_SOURCE = "edges_cap_500"
+_EDGES_SOURCE = EDGES_SOURCE
 _EVIDENCE_PATH_CAP = 50           # invalidated provider_evidence per changed path
-_EVIDENCE_SOURCE = "evidence_cap_50"
+_EVIDENCE_SOURCE = EVIDENCE_SOURCE
 _LEDGER_RUNS_CAP = 200            # recent provider_runs cross-check
-_LEDGER_RUNS_SOURCE = "ledger_runs_cap_200"
+_LEDGER_RUNS_SOURCE = LEDGER_RUNS_SOURCE
 _TRANSITIVE_CAP = 200             # bounded transitive BFS walk
-_TRANSITIVE_SOURCE = "transitive_cap_200"
-_CHANGED_FILES_SOURCE = f"changed_files_cap_{RECEIPT_CITED_FILE_CAP}"
+_TRANSITIVE_SOURCE = TRANSITIVE_SOURCE
+_CHANGED_FILES_SOURCE = CHANGED_FILES_SOURCE
 
 
 _RELATION_FAMILIES = {
@@ -314,7 +322,7 @@ def _ledger_truncation_sources(
         sources.append(_LEDGER_RUNS_SOURCE)
     union = stats.get("ledger_union")
     if union and union.get("truncated"):
-        sources.append(f"ledger_union_cap_{int(union.get('cap') or 0)}")
+        sources.append(ledger_union_source(union.get("cap")))
     return sources
 
 def classify_change_risk(*, kind_of_change: str, symbol_kind: str = "",
@@ -555,6 +563,11 @@ def scope_receipt(
             {"symbol": target, "resolved": row is not None, "blocked": False,
              "reason": "rename gate not applicable"})
     truncated = bool(truncation_sources)
+    # SG-107 fail-closed accounting gate (P1-4): every truncation source
+    # entering this receipt must carry a registry id — an unregistered
+    # cap RAISES here instead of silently emitting an unrecognizable
+    # accounting reason.
+    ensure_accounted(truncation_sources, where="scope_receipt")
     # SG-107 per-collector cap accounting (schema 1.4): true enumerated vs
     # returned for every bounded collection that feeds this receipt.
     collection_stats: Dict[str, Any] = {
@@ -827,6 +840,10 @@ def diff_impact_receipt(
     for source in _ledger_truncation_sources(ledger_stats):
         if source not in truncation_sources:
             truncation_sources.append(source)
+    # SG-107 fail-closed accounting gate (P1-4), same contract as
+    # scope_receipt: no unregistered truncation source can enter a
+    # post-change receipt.
+    ensure_accounted(truncation_sources, where="diff_impact_receipt")
     provider_capability_ok = bool(diff_ledger.get("provider_capability_ok", True))
     manifest = build_scope_manifest(db, repo_root, changed_files)
     dynamic_unresolved = bool(manifest.unsupported_constructs)

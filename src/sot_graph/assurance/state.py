@@ -16,6 +16,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
+
+from .accounting import reason_code_for
 __all__ = [
     "CANONICAL_STATUSES",
     "CLAIM_PROFILES",
@@ -182,10 +184,11 @@ def decide(facts: AssuranceFacts) -> Dict[str, Any]:
     # the candidate at PARTIAL.
     if facts.truncation_sources:
         for source in facts.truncation_sources:
-            if source == "transitive_cap_200":
-                reasons.append("transitive_truncated")
-            else:
-                reasons.append(f"collection_truncated:{source}")
+            # The transitive source keeps its historical reason code
+            # (backward compat with live tests); every other source
+            # emits ``collection_truncated:<source>`` — the per-source
+            # mapping is owned by the accounting registry (P1-4).
+            reasons.append(reason_code_for(source))
             candidate_statuses.append("PARTIAL")
     elif facts.truncated:
         reasons.append("transitive_truncated")

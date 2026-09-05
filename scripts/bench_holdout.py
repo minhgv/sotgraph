@@ -78,6 +78,47 @@ MANIFEST_PATH = _REPO / "benchmarks" / "holdout" / "manifest.json"
 DEFAULT_REPOS_DIR = _REPO / ".holdout-cache"
 
 
+def accounting(
+    metric: str,
+    denominator: int,
+    measured: int,
+    excluded_reasons: Optional[Dict[str, int]] = None,
+    out_of_scope: Optional[Dict[str, int]] = None,
+    unmeasurable_reason: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Denominator metadata for ONE metric (advisor P1-5).
+
+    Published next to every score so "N/11 measurable" can never
+    masquerade as full coverage:
+
+    - ``denominator`` — total tasks/edges in the MEASURABLE universe;
+    - ``measured`` — how many of them were actually scored;
+    - ``excluded`` / ``excluded_reasons`` — in-universe but not scored,
+      each with a reason (e.g. the per-repo sample cap);
+    - ``out_of_scope`` / reason counts — NOT modelable at all, so never
+      in the denominator and never silently scored (e.g. jsonschema's
+      attribute-only test references for test-selection);
+    - ``unmeasurable`` — set when the repo has NO measurable universe
+      for this metric: the score is ``None``, not a pass-by-default;
+    - ``score_basis`` — the score is computed over the MEASURED
+      denominator only, labeled as such.
+    """
+    if unmeasurable_reason is not None:
+        denominator, measured = 0, 0
+    block: Dict[str, Any] = {
+        "metric": metric,
+        "denominator": int(denominator),
+        "measured": int(measured),
+        "excluded": int(denominator) - int(measured),
+        "excluded_reasons": dict(excluded_reasons or {}),
+        "out_of_scope": dict(out_of_scope or {}),
+        "score_basis": "measured_denominator_only",
+    }
+    if unmeasurable_reason is not None:
+        block["unmeasurable"] = unmeasurable_reason
+    return block
+
+
 # ---------------------------------------------------------------------------
 # Manifest / repo preparation
 # ---------------------------------------------------------------------------
@@ -227,6 +268,25 @@ def suite_presence(db: Any, repo_root: Path, seed: int) -> Dict[str, Any]:
             "oracle_definitions": len(defs),
             "verified": verified,
         },
+        # P1-5 denominators: precision scores EVERY engine symbol in the
+        # kept universe; false-absence scores EVERY oracle def. Files the
+        # oracle ast cannot parse are out of scope (their defs are
+        # unknowable), reported — never silently dropped.
+        "accounting": {
+            "presence_precision": accounting(
+                "presence_precision", denominator=indexed, measured=indexed
+            ),
+            "false_absence": accounting(
+                "false_absence",
+                denominator=len(defs),
+                measured=len(defs),
+                out_of_scope=(
+                    {"unsupported_syntax_file": len(parse_failures)}
+                    if parse_failures
+                    else None
+                ),
+            ),
+        },
         "parse_failures": parse_failures,
         "near_misses": near_miss[:25],
         "line_drift_sample": line_drift[:25],
@@ -286,6 +346,15 @@ def suite_retrieval_and_abstention(
             "abstention_probes": len(probes),
             "abstention_accuracy": round(
                 1 - len(false_presence) / max(1, len(probes)), 4
+            ),
+        },
+        # P1-5 denominators: every probe is scored; abstention has no
+        # sampling cap and no unmeasurable case today.
+        "accounting": {
+            "abstention_accuracy": accounting(
+                "abstention_accuracy",
+                denominator=len(probes),
+                measured=len(probes),
             ),
         },
         "unfound_queries": per_query_miss[:15],
@@ -354,11 +423,41 @@ def suite_impact(
                 }
             )
     recall = sum(recalls) / len(recalls) if recalls else None
+    # P1-5 denominators: the measurable universe is every UNAMBIGUOUS
+    # callee target; the deterministic sample cap means most repos score
+    # 25 of N — published, so 25-target recall cannot read as full
+    # coverage. Ambiguous bare names are out of scope (not modelable
+    # without type/name-qualified resolution), reported with a reason.
+    ambiguous_names = {
+        e.callee_name for e in edges if name_counts.get(e.callee_name, 0) != 1
+    }
+    unsampled = max(0, len(callee_targets) - len(rng_sample))
     return {
         "metrics": {
             "targets": len(rng_sample),
             "impact_recall": round(recall, 4) if recall is not None else None,
             "unresolved_calls": unresolved,
+        },
+        "accounting": {
+            "impact_recall": accounting(
+                "impact_recall",
+                denominator=len(callee_targets),
+                measured=len(rng_sample),
+                excluded_reasons=(
+                    {"sample_cap_25": unsampled} if unsampled else None
+                ),
+                out_of_scope=(
+                    {"ambiguous_callee_name": len(ambiguous_names)}
+                    if ambiguous_names
+                    else None
+                ),
+                unmeasurable_reason=(
+                    "no unambiguous direct-call targets in the supported "
+                    "static scope"
+                    if not callee_targets
+                    else None
+                ),
+            ),
         },
         "misses": misses[:15],
     }
@@ -396,6 +495,16 @@ def suite_test_selection(
                 "test_selection_recall": None,
                 "reason": "no source .py files in diff",
             },
+            # P1-5: no measurable universe — reported unmeasurable, never
+            # read as a pass (or as a miss).
+            "accounting": {
+                "test_selection_recall": accounting(
+                    "test_selection_recall",
+                    0,
+                    0,
+                    unmeasurable_reason="no source .py files in diff",
+                )
+            },
             "gt_tests": [],
             "engine_tests": [],
         }
@@ -411,6 +520,14 @@ def suite_test_selection(
                 "test_selection_recall": None,
                 "reason": "no top-level symbol changed",
             },
+            "accounting": {
+                "test_selection_recall": accounting(
+                    "test_selection_recall",
+                    0,
+                    0,
+                    unmeasurable_reason="no top-level symbol changed",
+                )
+            },
             "gt_tests": [],
             "engine_tests": [],
         }
@@ -425,8 +542,12 @@ def suite_test_selection(
     #       name. Attribute references (``obj.replace``) are deliberately
     #       excluded: they are usually methods on an unrelated object and
     #       would collide with common names (a documented GT limitation —
-    #       method-call references are undercounted).
+    #       method-call references are undercounted). P1-5: tests whose
+    #       ONLY contact with a changed symbol is attribute access are
+    #       counted out-of-scope with a reason — unmeasurable, never a
+    #       silent drop or an implicit pass.
     gt_tests: Set[str] = set()
+    attr_only_tests = 0
     for _old, new in changed_py:
         if oracle.is_test_path(new):
             gt_tests.add(new)
@@ -435,8 +556,12 @@ def suite_test_selection(
         if not rel or not oracle.is_test_path(rel):
             continue
         text = git(repo_dir, "show", f"{head}:{rel}", check=False)
-        if text and oracle.referenced_names(text) & changed_names:
+        if not text:
+            continue
+        if oracle.referenced_names(text) & changed_names:
             gt_tests.add(rel)
+        elif oracle.attribute_referenced_names(text) & changed_names:
+            attr_only_tests += 1
 
     engine = DiffImpactEngine(db, str(repo_root))
     impact = engine.analyze_diff_impact(target=head)
@@ -462,6 +587,19 @@ def suite_test_selection(
                 "test_selection_recall": None,
                 "reason": "no tests reference changed symbols",
             },
+            "accounting": {
+                "test_selection_recall": accounting(
+                    "test_selection_recall",
+                    0,
+                    0,
+                    out_of_scope=(
+                        {"attribute_only_reference_not_modelable": attr_only_tests}
+                        if attr_only_tests
+                        else None
+                    ),
+                    unmeasurable_reason="no tests reference changed symbols",
+                )
+            },
             "changed_symbols": sorted(changed_names),
             "gt_tests": [],
             "engine_tests": sorted(engine_tests),
@@ -471,6 +609,20 @@ def suite_test_selection(
         "metrics": {
             "test_selection_recall": round(recall, 4),
             "changed_symbols": sorted(changed_names),
+        },
+        # P1-5: every ground-truth obligation in the universe is scored;
+        # attribute-only tests are published out-of-scope, with a reason.
+        "accounting": {
+            "test_selection_recall": accounting(
+                "test_selection_recall",
+                denominator=len(gt_tests),
+                measured=len(gt_tests),
+                out_of_scope=(
+                    {"attribute_only_reference_not_modelable": attr_only_tests}
+                    if attr_only_tests
+                    else None
+                ),
+            )
         },
         "gt_tests": sorted(gt_tests),
         "engine_tests": sorted(engine_tests),
@@ -535,6 +687,68 @@ def run_repo(repo: Dict[str, Any], repos_dir: Path) -> Dict[str, Any]:
     return record
 
 
+#: P1-5: metric key -> (suite, accounting key within that suite)
+_ACCOUNTING_METRICS = {
+    "presence_precision": ("presence", "presence_precision"),
+    "false_absence": ("presence", "false_absence"),
+    "impact_recall": ("impact", "impact_recall"),
+    "test_selection_recall": ("test_selection", "test_selection_recall"),
+    "abstention_accuracy": ("retrieval", "abstention_accuracy"),
+}
+
+
+def _denominators(records: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Fold per-repo accounting blocks into aggregate denominators.
+
+    Sums denominators/measured/excluded, merges reason counts, and names
+    every repo that could not be measured at all WITH its reason — so a
+    macro over N of T repos is always published as exactly that.
+    """
+    out: Dict[str, Any] = {}
+    total = len(records)
+    for metric, (suite, key) in _ACCOUNTING_METRICS.items():
+        denom = measured = 0
+        excluded_reasons: Dict[str, int] = {}
+        out_of_scope: Dict[str, int] = {}
+        unmeasurable: Dict[str, str] = {}
+        repos_measured = 0
+        for r in records:
+            name = str(r.get("name") or "?")
+            acct = (
+                r.get(suite, {}).get("accounting", {}).get(key)
+                if isinstance(r.get(suite), dict)
+                else None
+            )
+            if "error" in r and acct is None:
+                unmeasurable[name] = f"run error: {str(r['error'])[:80]}"
+                continue
+            if acct is None:
+                unmeasurable[name] = f"{suite} suite did not report"
+                continue
+            if acct.get("unmeasurable"):
+                unmeasurable[name] = str(acct["unmeasurable"])
+                continue
+            denom += int(acct.get("denominator") or 0)
+            measured += int(acct.get("measured") or 0)
+            for reason, count in (acct.get("excluded_reasons") or {}).items():
+                excluded_reasons[reason] = excluded_reasons.get(reason, 0) + int(count)
+            for reason, count in (acct.get("out_of_scope") or {}).items():
+                out_of_scope[reason] = out_of_scope.get(reason, 0) + int(count)
+            repos_measured += 1
+        out[metric] = {
+            "denominator_total": denom,
+            "measured_total": measured,
+            "excluded_total": denom - measured,
+            "excluded_reasons": excluded_reasons,
+            "out_of_scope": out_of_scope,
+            "repos_total": total,
+            "repos_measured": repos_measured,
+            "unmeasurable_repos": unmeasurable,
+            "score_basis": "measured_denominator_only",
+        }
+    return out
+
+
 def aggregate(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     def collect(suite: str, key: str) -> List[float]:
         values = []
@@ -575,15 +789,38 @@ def aggregate(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         "test_selection_recall": metrics["test_selection_recall_macro"] is not None
         and metrics["test_selection_recall_macro"] >= GATES["test_selection_recall"],
     }
+    denominators = _denominators(records)
+    # P1-5: label every macro score with its measured basis — the macro
+    # is over repos/targets that COULD be measured, never the full
+    # universe. Values above are unchanged; only labeling is added.
+    for metric in _ACCOUNTING_METRICS:
+        d = denominators[metric]
+        macro_key = f"{metric}_macro"
+        if macro_key in metrics:
+            # Value unchanged; only the measured-basis label is added.
+            metrics[f"{metric}_macro_basis"] = (
+                f"macro over {d['repos_measured']}/{d['repos_total']} repos, "
+                f"{d['measured_total']}/{d['denominator_total']} measured "
+                "tasks (measured denominator only)"
+            )
     return {
         "metrics": metrics,
         "checks": checks,
         "gates": {**GATES, "passed": all(checks.values())},
+        "denominators": denominators,
     }
 
 
 def markdown_summary(report: Dict[str, Any]) -> str:
     m = report["aggregate"]["metrics"]
+    d = report["aggregate"].get("denominators", {})
+    ts = d.get("test_selection_recall", {})
+    unmeasurable = ts.get("unmeasurable_repos") or {}
+    unmeas_note = ""
+    if unmeasurable:
+        unmeas_note = "; ".join(
+            f"{name} ({reason})" for name, reason in sorted(unmeasurable.items())
+        )
     lines = [
         "# SG-204 holdout benchmark report",
         "",
@@ -593,12 +830,18 @@ def markdown_summary(report: Dict[str, Any]) -> str:
         f"- false absence total: **{m['false_absence_total']}**",
         f"- impact recall (macro, supported static scope): "
         f"**{m['impact_recall_macro']}**",
-        f"- test-selection recall (macro, "
-        f"{m['test_selection_measured_repos']} repos): "
-        f"**{m['test_selection_recall_macro']}**",
+        f"- test-selection recall (macro, measured repos only: "
+        f"{ts.get('repos_measured', m['test_selection_measured_repos'])}"
+        f"/{ts.get('repos_total', m['repos'])}): "
+        f"**{m['test_selection_recall_macro']}**"
+        + (f" — unmeasurable: {unmeas_note}" if unmeas_note else ""),
         f"- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): "
         f"{m['hit_at_1_macro']} / {m['hit_at_5_macro']} / {m['mrr_macro']}",
         f"- abstention accuracy: {m['abstention_accuracy_macro']}",
+        "",
+        "All macro scores are computed over the MEASURED denominator "
+        "only; unmeasurable and excluded tasks are published below, "
+        "never folded into a score.",
         "",
         "| repo | presence | false-abs | impact | test-sel |",
         "|---|---|---|---|---|",
@@ -607,10 +850,51 @@ def markdown_summary(report: Dict[str, Any]) -> str:
         p = r.get("presence", {}).get("metrics", {})
         i = r.get("impact", {}).get("metrics", {})
         t = r.get("test_selection", {}).get("metrics", {})
+        ts_acct = (
+            r.get("test_selection", {})
+            .get("accounting", {})
+            .get("test_selection_recall", {})
+        )
+        ts_cell = t.get("test_selection_recall")
+        if ts_cell is None and ts_acct.get("unmeasurable"):
+            ts_cell = f"unmeasurable ({ts_acct['unmeasurable']})"
         lines.append(
             f"| {r['name']} | {p.get('presence_precision')} "
             f"| {p.get('false_absence')} | {i.get('impact_recall')} "
-            f"| {t.get('test_selection_recall')} |"
+            f"| {ts_cell} |"
+        )
+    lines += [
+        "",
+        "Denominators (universe / measured / excluded — scores cover the "
+        "measured slice only):",
+        "",
+        "| metric | universe | measured | excluded | out-of-scope | unmeasurable repos |",
+        "|---|---|---|---|---|---|",
+    ]
+    for metric in _ACCOUNTING_METRICS:
+        dd = d.get(metric)
+        if dd is None:
+            continue
+        reasons = dd.get("excluded_reasons") or {}
+        oos = dd.get("out_of_scope") or {}
+        unmeas = dd.get("unmeasurable_repos") or {}
+
+        def _fmt(counts: Dict[str, int]) -> str:
+            return (
+                "; ".join(f"{k}: {v}" for k, v in sorted(counts.items()))
+                if counts
+                else "–"
+            )
+
+        unmeas_cell = (
+            "; ".join(f"{k}: {v}" for k, v in sorted(unmeas.items()))
+            if unmeas
+            else "–"
+        )
+        lines.append(
+            f"| {metric} | {dd['denominator_total']} "
+            f"| {dd['measured_total']} | {_fmt(reasons)} "
+            f"| {_fmt(oos)} | {unmeas_cell} |"
         )
     lines += [
         "",
@@ -682,7 +966,10 @@ def main(argv: List[str]) -> int:
 
     report = {
         "benchmark": "real-repo-holdout",
-        "schema_version": 1,
+        # schema 2 (P1-5): adds per-suite ``accounting`` blocks (per-repo)
+        # and aggregate ``denominators`` (universe / measured / excluded /
+        # unmeasurable with reasons). Scores unchanged from schema 1.
+        "schema_version": 2,
         "manifest_digest": subprocess.run(
             ["git", "hash-object", args.manifest], capture_output=True, text=True
         ).stdout.strip()[:12],

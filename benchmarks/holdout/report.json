@@ -1,6 +1,6 @@
 {
   "benchmark": "real-repo-holdout",
-  "schema_version": 1,
+  "schema_version": 2,
   "manifest_digest": "5f1977d3c0c9",
   "environment": {
     "python": "3.14.6",
@@ -21,6 +21,17 @@
             "_lazy_sha1"
           ]
         },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "gt_tests": [
           "tests/test_itsdangerous/test_serializer.py"
         ],
@@ -39,6 +50,26 @@
           "indexed_symbols": 136,
           "oracle_definitions": 132,
           "verified": 136
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 136,
+            "measured": 136,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 132,
+            "measured": 132,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -241,6 +272,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [],
         "false_presence_queries": []
       },
@@ -249,6 +291,19 @@
           "targets": 16,
           "impact_recall": 1.0,
           "unresolved_calls": 231
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 16,
+            "measured": 16,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "ambiguous_callee_name": 2
+            },
+            "score_basis": "measured_denominator_only"
+          }
         },
         "misses": []
       },
@@ -277,6 +332,19 @@
             "make_default_short_help",
             "safecall"
           ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 4,
+            "measured": 4,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 3
+            },
+            "score_basis": "measured_denominator_only"
+          }
         },
         "gt_tests": [
           "tests/test_testing.py",
@@ -336,6 +404,26 @@
           "indexed_symbols": 1779,
           "oracle_definitions": 1200,
           "verified": 1779
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1779,
+            "measured": 1779,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1200,
+            "measured": 1200,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -552,6 +640,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "src/click/core.py::Argument",
           "src/click/exceptions.py::__init__",
@@ -565,9 +664,24 @@
           "impact_recall": 1.0,
           "unresolved_calls": 4387
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 154,
+            "measured": 25,
+            "excluded": 129,
+            "excluded_reasons": {
+              "sample_cap_25": 129
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 5
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 9.7
+      "duration_s": 10.0
     },
     {
       "name": "structlog",
@@ -585,6 +699,17 @@
             "raiser",
             "stub"
           ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 8,
+            "measured": 8,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "gt_tests": [
           "tests/processors/test_renderers.py",
@@ -617,6 +742,26 @@
           "indexed_symbols": 1099,
           "oracle_definitions": 1030,
           "verified": 1099
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1099,
+            "measured": 1099,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1030,
+            "measured": 1030,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -833,6 +978,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "tests/processors/test_renderers.py::test_formats"
         ],
@@ -844,9 +1000,24 @@
           "impact_recall": 1.0,
           "unresolved_calls": 1626
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 96,
+            "measured": 25,
+            "excluded": 71,
+            "excluded_reasons": {
+              "sample_cap_25": 71
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 5
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 6.2
+      "duration_s": 6.1
     },
     {
       "name": "tenacity",
@@ -862,6 +1033,17 @@
             "TestIssue478",
             "asynctest"
           ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 2,
+            "measured": 2,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "gt_tests": [
           "tests/test_asyncio.py",
@@ -884,6 +1066,26 @@
           "indexed_symbols": 645,
           "oracle_definitions": 501,
           "verified": 645
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 645,
+            "measured": 645,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 501,
+            "measured": 501,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -1122,6 +1324,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "tenacity/retry.py::__call__",
           "tenacity/retry.py::__init__",
@@ -1137,6 +1350,21 @@
           "impact_recall": 0.96,
           "unresolved_calls": 1161
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 51,
+            "measured": 25,
+            "excluded": 26,
+            "excluded_reasons": {
+              "sample_cap_25": 26
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 4
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": [
           {
             "target": "CustomError",
@@ -1148,7 +1376,7 @@
           }
         ]
       },
-      "duration_s": 10.2
+      "duration_s": 9.3
     },
     {
       "name": "python-slugify",
@@ -1169,6 +1397,17 @@
             "slugify_params"
           ]
         },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "gt_tests": [
           "test.py"
         ],
@@ -1184,6 +1423,26 @@
           "indexed_symbols": 97,
           "oracle_definitions": 96,
           "verified": 97
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 97,
+            "measured": 97,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 96,
+            "measured": 96,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -1216,6 +1475,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "slugify/slugify.py::slugify"
         ],
@@ -1226,6 +1496,17 @@
           "targets": 6,
           "impact_recall": 0.838,
           "unresolved_calls": 221
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 6,
+            "measured": 6,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "misses": [
           {
@@ -1298,6 +1579,17 @@
             "test_time_localtime"
           ]
         },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 2,
+            "measured": 2,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "gt_tests": [
           "tests/test_class_import.py",
           "tests/test_datetimes.py"
@@ -1321,6 +1613,26 @@
           "indexed_symbols": 316,
           "oracle_definitions": 290,
           "verified": 316
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 316,
+            "measured": 316,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 290,
+            "measured": 290,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -1545,6 +1857,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [],
         "false_presence_queries": []
       },
@@ -1554,9 +1877,22 @@
           "impact_recall": 1.0,
           "unresolved_calls": 754
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 43,
+            "measured": 25,
+            "excluded": 18,
+            "excluded_reasons": {
+              "sample_cap_25": 18
+            },
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 3.9
+      "duration_s": 4.0
     },
     {
       "name": "schedule",
@@ -1573,6 +1909,19 @@
             "_weekday_index"
           ]
         },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "gt_tests": [
           "test_schedule.py"
         ],
@@ -1588,6 +1937,26 @@
           "indexed_symbols": 126,
           "oracle_definitions": 109,
           "verified": 126
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 126,
+            "measured": 126,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 109,
+            "measured": 109,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -1757,6 +2126,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [],
         "false_presence_queries": []
       },
@@ -1766,9 +2146,20 @@
           "impact_recall": 1.0,
           "unresolved_calls": 498
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 6,
+            "measured": 6,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 4.2
+      "duration_s": 4.3
     },
     {
       "name": "pexpect",
@@ -1785,6 +2176,19 @@
             "_PexpectTestCaseBase",
             "run"
           ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 4
+            },
+            "score_basis": "measured_denominator_only"
+          }
         },
         "gt_tests": [
           "tests/test_async.py"
@@ -1832,6 +2236,28 @@
           "indexed_symbols": 631,
           "oracle_definitions": 609,
           "verified": 631
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 631,
+            "measured": 631,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 609,
+            "measured": 609,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "unsupported_syntax_file": 8
+            },
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [
           "notes/my_forkpty.py",
@@ -1930,6 +2356,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "pexpect/pty_spawn.py::send"
         ],
@@ -1941,9 +2378,24 @@
           "impact_recall": 1.0,
           "unresolved_calls": 2610
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 29,
+            "measured": 25,
+            "excluded": 4,
+            "excluded_reasons": {
+              "sample_cap_25": 4
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 4
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 4.6
+      "duration_s": 4.4
     },
     {
       "name": "requests",
@@ -1958,6 +2410,17 @@
           "changed_symbols": [
             "TLSServer"
           ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "gt_tests": [
           "tests/test_requests.py"
@@ -2003,6 +2466,26 @@
           "indexed_symbols": 763,
           "oracle_definitions": 685,
           "verified": 763
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 763,
+            "measured": 763,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 685,
+            "measured": 685,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -2219,6 +2702,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "src/requests/models.py::prepare",
           "src/requests/structures.py::get"
@@ -2231,9 +2725,24 @@
           "impact_recall": 1.0,
           "unresolved_calls": 1513
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 91,
+            "measured": 25,
+            "excluded": 66,
+            "excluded_reasons": {
+              "sample_cap_25": 66
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 2
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 9.4
+      "duration_s": 9.3
     },
     {
       "name": "jsonschema",
@@ -2246,6 +2755,20 @@
         "metrics": {
           "test_selection_recall": null,
           "reason": "no tests reference changed symbols"
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 0,
+            "measured": 0,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 2
+            },
+            "score_basis": "measured_denominator_only",
+            "unmeasurable": "no tests reference changed symbols"
+          }
         },
         "changed_symbols": [
           "is_valid"
@@ -2260,6 +2783,26 @@
           "indexed_symbols": 763,
           "oracle_definitions": 691,
           "verified": 763
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 763,
+            "measured": 763,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 691,
+            "measured": 691,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -2476,6 +3019,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "jsonschema/_format.py::__init__",
           "jsonschema/_types.py::__repr__"
@@ -2488,6 +3042,21 @@
           "impact_recall": 0.98,
           "unresolved_calls": 2037
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 43,
+            "measured": 25,
+            "excluded": 18,
+            "excluded_reasons": {
+              "sample_cap_25": 18
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 4
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": [
           {
             "target": "_uniq_key",
@@ -2497,7 +3066,7 @@
           }
         ]
       },
-      "duration_s": 8.0
+      "duration_s": 8.4
     },
     {
       "name": "markdown-it-py",
@@ -2517,6 +3086,19 @@
             "test_typographer"
           ]
         },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 2,
+            "measured": 2,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 2
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "gt_tests": [
           "tests/test_api/test_main.py",
           "tests/test_port/test_fixtures.py"
@@ -2535,6 +3117,26 @@
           "indexed_symbols": 370,
           "oracle_definitions": 364,
           "verified": 370
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 370,
+            "measured": 370,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 364,
+            "measured": 364,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
         },
         "parse_failures": [],
         "near_misses": [],
@@ -2756,6 +3358,17 @@
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "unfound_queries": [
           "benchmarking/bench_core.py::parser"
         ],
@@ -2767,9 +3380,24 @@
           "impact_recall": 1.0,
           "unresolved_calls": 977
         },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 57,
+            "measured": 25,
+            "excluded": 32,
+            "excluded_reasons": {
+              "sample_cap_25": 32
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
         "misses": []
       },
-      "duration_s": 3.8
+      "duration_s": 3.9
     }
   ],
   "aggregate": {
@@ -2784,7 +3412,11 @@
       "hit_at_1_macro": 0.7879,
       "hit_at_5_macro": 0.9515,
       "mrr_macro": 0.8548,
-      "abstention_accuracy_macro": 1.0
+      "abstention_accuracy_macro": 1.0,
+      "presence_precision_macro_basis": "macro over 11/11 repos, 6725/6725 measured tasks (measured denominator only)",
+      "impact_recall_macro_basis": "macro over 11/11 repos, 228/592 measured tasks (measured denominator only)",
+      "test_selection_recall_macro_basis": "macro over 10/11 repos, 23/23 measured tasks (measured denominator only)",
+      "abstention_accuracy_macro_basis": "macro over 11/11 repos, 220/220 measured tasks (measured denominator only)"
     },
     "checks": {
       "presence_precision": true,
@@ -2798,7 +3430,74 @@
       "impact_recall": 0.95,
       "test_selection_recall": 0.98,
       "passed": true
+    },
+    "denominators": {
+      "presence_precision": {
+        "denominator_total": 6725,
+        "measured_total": 6725,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {},
+        "repos_total": 11,
+        "repos_measured": 11,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "false_absence": {
+        "denominator_total": 5707,
+        "measured_total": 5707,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {
+          "unsupported_syntax_file": 8
+        },
+        "repos_total": 11,
+        "repos_measured": 11,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "impact_recall": {
+        "denominator_total": 592,
+        "measured_total": 228,
+        "excluded_total": 364,
+        "excluded_reasons": {
+          "sample_cap_25": 364
+        },
+        "out_of_scope": {
+          "ambiguous_callee_name": 27
+        },
+        "repos_total": 11,
+        "repos_measured": 11,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "test_selection_recall": {
+        "denominator_total": 23,
+        "measured_total": 23,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {
+          "attribute_only_reference_not_modelable": 10
+        },
+        "repos_total": 11,
+        "repos_measured": 10,
+        "unmeasurable_repos": {
+          "jsonschema": "no tests reference changed symbols"
+        },
+        "score_basis": "measured_denominator_only"
+      },
+      "abstention_accuracy": {
+        "denominator_total": 220,
+        "measured_total": 220,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {},
+        "repos_total": 11,
+        "repos_measured": 11,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      }
     }
   },
-  "markdown": "# SG-204 holdout benchmark report\n\n- repos measured: **11** (pinned, licenses declared)\n- presence precision (macro / min): **1.0** / 1.0\n- false absence total: **0**\n- impact recall (macro, supported static scope): **0.9798**\n- test-selection recall (macro, 10 repos): **1.0**\n- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): 0.7879 / 0.9515 / 0.8548\n- abstention accuracy: 1.0\n\n| repo | presence | false-abs | impact | test-sel |\n|---|---|---|---|---|\n| itsdangerous | 1.0 | 0 | 1.0 | 1.0 |\n| click | 1.0 | 0 | 1.0 | 1.0 |\n| structlog | 1.0 | 0 | 1.0 | 1.0 |\n| tenacity | 1.0 | 0 | 0.96 | 1.0 |\n| python-slugify | 1.0 | 0 | 0.838 | 1.0 |\n| freezegun | 1.0 | 0 | 1.0 | 1.0 |\n| schedule | 1.0 | 0 | 1.0 | 1.0 |\n| pexpect | 1.0 | 0 | 1.0 | 1.0 |\n| requests | 1.0 | 0 | 1.0 | 1.0 |\n| jsonschema | 1.0 | 0 | 0.98 | None |\n| markdown-it-py | 1.0 | 0 | 1.0 | 1.0 |\n\ngates: **ALL PASS**\n"
+  "markdown": "# SG-204 holdout benchmark report\n\n- repos measured: **11** (pinned, licenses declared)\n- presence precision (macro / min): **1.0** / 1.0\n- false absence total: **0**\n- impact recall (macro, supported static scope): **0.9798**\n- test-selection recall (macro, measured repos only: 10/11): **1.0** \u2014 unmeasurable: jsonschema (no tests reference changed symbols)\n- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): 0.7879 / 0.9515 / 0.8548\n- abstention accuracy: 1.0\n\nAll macro scores are computed over the MEASURED denominator only; unmeasurable and excluded tasks are published below, never folded into a score.\n\n| repo | presence | false-abs | impact | test-sel |\n|---|---|---|---|---|\n| itsdangerous | 1.0 | 0 | 1.0 | 1.0 |\n| click | 1.0 | 0 | 1.0 | 1.0 |\n| structlog | 1.0 | 0 | 1.0 | 1.0 |\n| tenacity | 1.0 | 0 | 0.96 | 1.0 |\n| python-slugify | 1.0 | 0 | 0.838 | 1.0 |\n| freezegun | 1.0 | 0 | 1.0 | 1.0 |\n| schedule | 1.0 | 0 | 1.0 | 1.0 |\n| pexpect | 1.0 | 0 | 1.0 | 1.0 |\n| requests | 1.0 | 0 | 1.0 | 1.0 |\n| jsonschema | 1.0 | 0 | 0.98 | unmeasurable (no tests reference changed symbols) |\n| markdown-it-py | 1.0 | 0 | 1.0 | 1.0 |\n\nDenominators (universe / measured / excluded \u2014 scores cover the measured slice only):\n\n| metric | universe | measured | excluded | out-of-scope | unmeasurable repos |\n|---|---|---|---|---|---|\n| presence_precision | 6725 | 6725 | \u2013 | \u2013 | \u2013 |\n| false_absence | 5707 | 5707 | \u2013 | unsupported_syntax_file: 8 | \u2013 |\n| impact_recall | 592 | 228 | sample_cap_25: 364 | ambiguous_callee_name: 27 | \u2013 |\n| test_selection_recall | 23 | 23 | \u2013 | attribute_only_reference_not_modelable: 10 | jsonschema: no tests reference changed symbols |\n| abstention_accuracy | 220 | 220 | \u2013 | \u2013 | \u2013 |\n\ngates: **ALL PASS**\n"
 }
