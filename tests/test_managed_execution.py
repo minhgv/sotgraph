@@ -16,9 +16,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import sqlite3
 import stat
 import sys
+import uuid
 from pathlib import Path
 
 import pytest
@@ -43,6 +45,33 @@ from sot_graph.providers.runtime import (  # noqa: E402
     ManagedRuntimeProfile,
     ProfileRejected,
 )
+
+_SHORT_BASES = ("/private/tmp", "/tmp")
+
+
+def _short_base() -> str:
+    for base in _SHORT_BASES:
+        if os.path.isdir(base) and not os.path.islink(base):
+            return base
+    pytest.skip("no short symlink-free temp base available")
+
+
+@pytest.fixture
+def make_root():
+    """Short random roots — the native socket-path budget is measured from
+    the root (pytest tmp_path is too long for IPC). Cleanup only what the
+    test factory created."""
+    created: list[Path] = []
+
+    def _make() -> Path:
+        root = Path(_short_base()) / f"me{uuid.uuid4().hex[:10]}"
+        created.append(root)
+        return root
+
+    yield _make
+    for root in created:
+        shutil.rmtree(root, ignore_errors=True)
+
 
 FIXTURE = "b" * 64
 PROTOCOL = "cbm-cli-json-v1"
@@ -93,8 +122,12 @@ class FakeNative:
             return _rc0(json.dumps({"project": "proj", "nodes": 1, "edges": 2,
                                     "status": "indexed"}) + "\n")
         if argv[1:3] == ["cli", "list_projects"]:
+            # release 46ae source-confirmed: list_projects takes NO project key
+            args = json.loads(self.calls[-1]["args_content"] or "{}")
+            assert "project" not in args, "list_projects received a project key"
             return _rc0(json.dumps(
-                {"projects": [{"name": "proj", "root_path": self.repo}],
+                {"projects": [{"name": "foreign", "root_path": "/somewhere/else"},
+                              {"name": "proj", "root_path": self.repo}],
                  "has_more": False}) + "\n")
         return _rc0(json.dumps({"rows": [], "has_more": False}) + "\n")
 
@@ -161,9 +194,12 @@ def _context(artifact: str, ops=ALL_OPS, fixture: str = FIXTURE) -> ExactCompati
         protocol_compatibility_id=PROTOCOL)
 
 
-def _runtime(tmp_path: Path, native: FakeNative, *, ops=ALL_OPS):
-    """Profile + executor whose pinned digest is the fake artifact's digest."""
-    root, repo = tmp_path / "root", _mk_repo(tmp_path / "w")
+def _runtime(root: Path, tmp_path: Path, native: FakeNative, *, ops=ALL_OPS):
+    """Profile + executor whose pinned digest is the fake artifact's digest.
+
+    ``root`` MUST be short (native socket-path budget, see
+    tests/test_managed_runtime.py ``make_root``) — pytest tmp_path is too long."""
+    repo = _mk_repo(tmp_path / "w")
     exe, exe_digest = _make_exe(tmp_path / "bin")
     profile = ManagedRuntimeProfile(str(root), str(repo),
                                     artifact_digest=exe_digest)
@@ -173,9 +209,9 @@ def _runtime(tmp_path: Path, native: FakeNative, *, ops=ALL_OPS):
     return runtime, profile, repo, exe
 
 
-def _prepared(tmp_path: Path, native: FakeNative):
+def _prepared(root_factory, tmp_path: Path, native: FakeNative):
     """Runtime taken through prepare AND sync (verified project binding)."""
-    runtime, profile, repo, exe = _runtime(tmp_path, native)
+    runtime, profile, repo, exe = _runtime(root_factory(), tmp_path, native)
     assert runtime.prepare().status == "ok"
     assert runtime.sync(str(repo)).status == "ok"
     native.calls.clear()
@@ -196,8 +232,8 @@ def native(monkeypatch):
 
 # ------------------------------------------------------- constructor guards
 
-def test_ctor_rejects_profile_context_digest_mismatch(tmp_path) -> None:
-    root, repo = tmp_path / "root", _mk_repo(tmp_path / "w")
+def test_ctor_rejects_profile_context_digest_mismatch(tmp_path, make_root) -> None:
+    root, repo = make_root(), _mk_repo(tmp_path / "w")
     exe, exe_digest = _make_exe(tmp_path / "bin")
     profile = ManagedRuntimeProfile(str(root), str(repo),
                                     artifact_digest="a" * 64)  # != exe digest
@@ -205,8 +241,8 @@ def test_ctor_rejects_profile_context_digest_mismatch(tmp_path) -> None:
         ManagedNativeRuntime(profile, str(repo), (exe,), _context(exe_digest))
 
 
-def test_ctor_rejects_missing_fixture_digests(tmp_path) -> None:
-    root, repo = tmp_path / "root", _mk_repo(tmp_path / "w")
+def test_ctor_rejects_missing_fixture_digests(tmp_path, make_root) -> None:
+    root, repo = make_root(), _mk_repo(tmp_path / "w")
     exe, exe_digest = _make_exe(tmp_path / "bin")
     profile = ManagedRuntimeProfile(str(root), str(repo),
                                     artifact_digest=exe_digest)
@@ -215,8 +251,8 @@ def test_ctor_rejects_missing_fixture_digests(tmp_path) -> None:
                              _context(exe_digest, ops=["search_graph"]))
 
 
-def test_ctor_rejects_non_context(tmp_path) -> None:
-    root, repo = tmp_path / "root", _mk_repo(tmp_path / "w")
+def test_ctor_rejects_non_context(tmp_path, make_root) -> None:
+    root, repo = make_root(), _mk_repo(tmp_path / "w")
     exe, exe_digest = _make_exe(tmp_path / "bin")
     profile = ManagedRuntimeProfile(str(root), str(repo),
                                     artifact_digest=exe_digest)
@@ -226,19 +262,20 @@ def test_ctor_rejects_non_context(tmp_path) -> None:
 
 # ------------------------------------------------------- missing prepare
 
-def test_query_missing_prepare_no_filesystem(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _runtime(tmp_path, native)
+def test_query_missing_prepare_no_filesystem(tmp_path, native, make_root) -> None:
+    root = make_root()
+    runtime, _profile, _repo, _exe = _runtime(root, tmp_path, native)
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "not_prepared"
-    assert not (tmp_path / "root").exists()  # pure-read refusal created nothing
+    assert not root.exists()  # pure-read refusal created nothing
     assert native.calls == []
 
 
 # ------------------------------------------------------- prepare
 
-def test_prepare_exact_argv_env_and_marker(tmp_path, native, monkeypatch) -> None:
+def test_prepare_exact_argv_env_and_marker(tmp_path, native, monkeypatch, make_root) -> None:
     monkeypatch.setenv("SECRET_TOKEN", "leak-me")
-    runtime, profile, _repo, exe = _runtime(tmp_path, native)
+    runtime, profile, _repo, exe = _runtime(make_root(), tmp_path, native)
     result = runtime.prepare()
     assert result.status == "ok" and result.runtime_state == "READY"
     assert [c["argv"] for c in native.calls] == [
@@ -257,22 +294,22 @@ def test_prepare_exact_argv_env_and_marker(tmp_path, native, monkeypatch) -> Non
     assert "project" not in content  # binding only after a verified sync
 
 
-def test_prepare_idempotent_reuse_valid_marker_no_respawn(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _runtime(tmp_path, native)
+def test_prepare_idempotent_reuse_valid_marker_no_respawn(tmp_path, native, make_root) -> None:
+    runtime, _profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     assert runtime.prepare().status == "ok"
     assert len(native.calls) == 2
     assert runtime.prepare().status == "ok"
     assert len(native.calls) == 2  # reused the trusted marker, no re-dispatch
 
 
-def test_prepare_readback_true_quarantines_no_marker(tmp_path, native) -> None:
+def test_prepare_readback_true_quarantines_no_marker(tmp_path, native, make_root) -> None:
     def handler(argv):
         if argv[1:3] == ["config", "set"]:
             return native._receipts(argv)  # db persisted, output not trusted
         return _rc0("true\n")  # observed-shape violation: readback is not false
 
     native._handler = handler
-    runtime, profile, _repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     result = runtime.prepare()
     assert result.status == "runtime_refused"
     assert "not false" in (result.error or "")
@@ -280,8 +317,8 @@ def test_prepare_readback_true_quarantines_no_marker(tmp_path, native) -> None:
     assert profile.status()["state"] == "QUARANTINED"
 
 
-def test_prepare_db_field_verification_failure_quarantines(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _runtime(tmp_path, native)
+def test_prepare_db_field_verification_failure_quarantines(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
 
     def handler(argv):
         if argv[1:3] == ["config", "set"]:
@@ -305,9 +342,9 @@ def test_prepare_db_field_verification_failure_quarantines(tmp_path, native) -> 
     assert profile.status()["state"] == "QUARANTINED"
 
 
-def test_prepare_timeout_no_success_no_marker_no_retry(tmp_path, native) -> None:
+def test_prepare_timeout_no_success_no_marker_no_retry(tmp_path, native, make_root) -> None:
     native._handler = lambda argv: _timeout(tuple(argv))
-    runtime, profile, _repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     result = runtime.prepare()
     assert result.status == "runtime_refused"
     assert result.cancellation_state == "cancellation_unknown"
@@ -318,8 +355,8 @@ def test_prepare_timeout_no_success_no_marker_no_retry(tmp_path, native) -> None
     assert len(native.calls) == before  # quarantined profile: no retry spawn
 
 
-def test_prepare_gate_refusal_before_any_launch(tmp_path, native) -> None:
-    runtime, profile, _repo, exe = _runtime(tmp_path, native)
+def test_prepare_gate_refusal_before_any_launch(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, exe = _runtime(make_root(), tmp_path, native)
     os.unlink(exe)  # artifact not readable -> digest gate UNKNOWN
     result = runtime.prepare()
     assert result.status == "gate_refused"
@@ -328,8 +365,8 @@ def test_prepare_gate_refusal_before_any_launch(tmp_path, native) -> None:
     assert profile.status()["state"] == "READY"  # evidence absence is not tamper
 
 
-def test_marker_write_failure_persists_quarantine(tmp_path, native, monkeypatch) -> None:
-    runtime, profile, _repo, _exe = _runtime(tmp_path, native)
+def test_marker_write_failure_persists_quarantine(tmp_path, native, monkeypatch, make_root) -> None:
+    runtime, profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     real_replace = os.replace
 
     def failing_replace(src, dst, *a, **k):
@@ -348,9 +385,9 @@ def test_marker_write_failure_persists_quarantine(tmp_path, native, monkeypatch)
 
 # ------------------------------------------------------- query
 
-def test_query_dispatch_args_file_env_and_cleanup(tmp_path, native, monkeypatch) -> None:
+def test_query_dispatch_args_file_env_and_cleanup(tmp_path, native, monkeypatch, make_root) -> None:
     monkeypatch.setenv("SECRET_TOKEN", "leak-me")
-    runtime, profile, repo, exe = _prepared(tmp_path, native)
+    runtime, profile, repo, exe = _prepared(make_root, tmp_path, native)
     result = runtime.query("search_graph", {"query": "run_command"})
     assert result.status == "ok"
     assert result.payload == {"rows": [], "has_more": False}
@@ -369,8 +406,8 @@ def test_query_dispatch_args_file_env_and_cleanup(tmp_path, native, monkeypatch)
     assert set(call["env"]) == ENV_KEYS and "SECRET_TOKEN" not in call["env"]
 
 
-def test_query_requires_verified_project_binding(tmp_path, native) -> None:
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+def test_query_requires_verified_project_binding(tmp_path, native, make_root) -> None:
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     assert runtime.prepare().status == "ok"
     native.calls.clear()
     result = runtime.query("search_graph", {"query": "x"})
@@ -381,8 +418,8 @@ def test_query_requires_verified_project_binding(tmp_path, native) -> None:
     assert runtime.query("search_graph", {"query": "x"}).status == "ok"
 
 
-def test_query_denies_mutations_unknown_ops_and_overrides(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _runtime(tmp_path, native)
+def test_query_denies_mutations_unknown_ops_and_overrides(tmp_path, native, make_root) -> None:
+    runtime, _profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     assert runtime.prepare().status == "ok"
     native.calls.clear()
     for operation, args in (("index_repository", {}), ("config_set_auto_watch", {}),
@@ -399,18 +436,34 @@ def test_query_denies_mutations_unknown_ops_and_overrides(tmp_path, native) -> N
     assert native.calls == []
 
 
-def test_query_trace_path_explicitly_denied_no_spawn(tmp_path, native) -> None:
+def test_query_listing_global_scope_no_project_and_filtered(tmp_path, native, make_root) -> None:
+    """list_projects takes NO project key; its public payload is filtered to
+    the bound repo (wrong-root entries are rejected from the response)."""
+    runtime, _profile, repo, exe = _prepared(make_root, tmp_path, native)
+    result = runtime.query("list_projects", {})
+    assert result.status == "ok"
+    call = native.calls[0]
+    assert call["argv"][:4] == [exe, "cli", "list_projects", "--args-file"]
+    assert json.loads(call["args_content"]) == {}  # NO injected project key
+    assert result.payload["projects"] == [  # foreign entry rejected
+        {"name": "proj", "root_path": str(repo)}]
+    # search_scope ops still carry the verified binding:
+    assert runtime.query("index_status", {}).status == "ok"
+    assert json.loads(native.calls[1]["args_content"]) == {"project": "proj"}
+
+
+def test_query_trace_path_explicitly_denied_no_spawn(tmp_path, native, make_root) -> None:
     # trace_path's real native parameters were never observed; fabricated
     # arguments are refused until a future wire exists.
-    runtime, _profile, _repo, _exe = _prepared(tmp_path, native)
+    runtime, _profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     result = runtime.query("trace_path", {"query": "x"})
     assert result.status == "denied_operation"
     assert "trace_path" in (result.error or "")
     assert native.calls == []
 
 
-def test_query_malformed_receipt_never_succeeds(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _prepared(tmp_path, native)
+def test_query_malformed_receipt_never_succeeds(tmp_path, native, make_root) -> None:
+    runtime, _profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     for stdout in ("[1, 2]", '"scalar"', "junk", "total: 1\nresults: x"):
         native._handler = lambda argv, s=stdout: _rc0(s)
         result = runtime.query("search_graph", {"query": "x"})
@@ -418,8 +471,8 @@ def test_query_malformed_receipt_never_succeeds(tmp_path, native) -> None:
         assert result.payload is None  # non-dict receipts are never ok
 
 
-def test_query_refuses_legacy_wrapped_envelope(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _prepared(tmp_path, native)
+def test_query_refuses_legacy_wrapped_envelope(tmp_path, native, make_root) -> None:
+    runtime, _profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     wrapped = json.dumps({"content": [{"type": "text", "text": "{}"}],
                           "isError": False, "structuredContent": {}})
     native._handler = lambda argv: _rc0(wrapped)
@@ -428,16 +481,16 @@ def test_query_refuses_legacy_wrapped_envelope(tmp_path, native) -> None:
     assert "wrapped" in (result.error or "")
 
 
-def test_query_empty_stdout_silent_noop_refused(tmp_path, native) -> None:
-    runtime, _profile, _repo, _exe = _prepared(tmp_path, native)
+def test_query_empty_stdout_silent_noop_refused(tmp_path, native, make_root) -> None:
+    runtime, _profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     native._handler = lambda argv: _rc0("")  # 0-byte stdout rc=0 (documented)
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "receipt_invalid"
     assert native.calls[0]["argv"][2:4] == ["search_graph", "--args-file"]
 
 
-def test_query_timeout_conservative_quarantine(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _prepared(tmp_path, native)
+def test_query_timeout_conservative_quarantine(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     native._handler = lambda argv: _timeout(tuple(argv))
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "timeout"
@@ -445,8 +498,8 @@ def test_query_timeout_conservative_quarantine(tmp_path, native) -> None:
     assert profile.status()["state"] == "QUARANTINED"  # conservative, sticky
 
 
-def test_query_gate_digest_swap_refused_no_spawn(tmp_path, native) -> None:
-    runtime, profile, _repo, exe = _prepared(tmp_path, native)
+def test_query_gate_digest_swap_refused_no_spawn(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, exe = _prepared(make_root, tmp_path, native)
     Path(exe).write_bytes(b"#!/bin/swapped\n")  # new bytes = new digest
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "gate_refused"
@@ -454,8 +507,8 @@ def test_query_gate_digest_swap_refused_no_spawn(tmp_path, native) -> None:
     assert profile.status()["state"] == "READY"  # refusal, not tamper
 
 
-def test_config_db_tamper_refused_no_spawn(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _prepared(tmp_path, native)
+def test_config_db_tamper_refused_no_spawn(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     with open(_config_db(profile), "ab") as handle:  # store changed post-prepare
         handle.write(b"tampered")
     result = runtime.query("search_graph", {"query": "x"})
@@ -465,8 +518,8 @@ def test_config_db_tamper_refused_no_spawn(tmp_path, native) -> None:
     assert profile.status()["state"] == "QUARANTINED"
 
 
-def test_config_wal_appearance_refused_no_spawn(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _prepared(tmp_path, native)
+def test_config_wal_appearance_refused_no_spawn(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     Path(str(_config_db(profile)) + "-wal").write_bytes(b"wal-bytes")
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "runtime_refused"  # wal is part of the fingerprint
@@ -475,8 +528,8 @@ def test_config_wal_appearance_refused_no_spawn(tmp_path, native) -> None:
 
 # ------------------------------------------------------- sync
 
-def test_sync_rejects_wrong_repo_no_state_change(tmp_path, native) -> None:
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+def test_sync_rejects_wrong_repo_no_state_change(tmp_path, native, make_root) -> None:
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     other = _mk_repo(tmp_path / "other")
     result = runtime.sync(str(other))
@@ -485,8 +538,8 @@ def test_sync_rejects_wrong_repo_no_state_change(tmp_path, native) -> None:
     assert profile.status()["state"] == "READY"
 
 
-def test_sync_index_receipt_status_indexed_completes(tmp_path, native) -> None:
-    runtime, profile, repo, exe = _runtime(tmp_path, native)
+def test_sync_index_receipt_status_indexed_completes(tmp_path, native, make_root) -> None:
+    runtime, profile, repo, exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     native.calls.clear()
     result = runtime.sync(str(repo))
@@ -504,7 +557,7 @@ def test_sync_index_receipt_status_indexed_completes(tmp_path, native) -> None:
     assert marker["project"] == "proj"  # verified binding owned by the marker
 
 
-def test_sync_unverifiable_project_binding_fails(tmp_path, native) -> None:
+def test_sync_unverifiable_project_binding_fails(tmp_path, native, make_root) -> None:
     def handler(argv):
         if argv[1:3] in (["config", "set"], ["config", "get"]):
             return native._receipts(argv)
@@ -518,7 +571,7 @@ def test_sync_unverifiable_project_binding_fails(tmp_path, native) -> None:
         return _rc0(json.dumps({"rows": []}) + "\n")
 
     native._handler = handler
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     native.calls.clear()
     result = runtime.sync(str(repo))
@@ -530,14 +583,14 @@ def test_sync_unverifiable_project_binding_fails(tmp_path, native) -> None:
     assert "project" not in marker  # no unverified binding is ever recorded
 
 
-def test_sync_rc0_without_indexed_receipt_quarantines(tmp_path, native) -> None:
+def test_sync_rc0_without_indexed_receipt_quarantines(tmp_path, native, make_root) -> None:
     def handler(argv):
         if argv[1:3] in (["config", "set"], ["config", "get"]):
             return native._receipts(argv)
         return _rc0("{}\n")  # rc=0 but no status=indexed receipt
 
     native._handler = handler
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     native.calls.clear()
     result = runtime.sync(str(repo))
@@ -546,14 +599,14 @@ def test_sync_rc0_without_indexed_receipt_quarantines(tmp_path, native) -> None:
     assert manifest["state"] == "QUARANTINED"  # rc=0 alone never proves success
 
 
-def test_sync_timeout_persists_cancellation_unknown(tmp_path, native) -> None:
+def test_sync_timeout_persists_cancellation_unknown(tmp_path, native, make_root) -> None:
     def handler(argv):
         if argv[1:3] in (["config", "set"], ["config", "get"]):
             return native._receipts(argv)
         return _timeout(tuple(argv))
 
     native._handler = handler
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     native.calls.clear()
     result = runtime.sync(str(repo))
@@ -564,8 +617,8 @@ def test_sync_timeout_persists_cancellation_unknown(tmp_path, native) -> None:
 
 
 def test_complete_sync_failure_is_nonok_and_quarantines(tmp_path, native,
-                                                        monkeypatch) -> None:
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+                                                        monkeypatch, make_root) -> None:
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     native.calls.clear()
 
@@ -579,14 +632,14 @@ def test_complete_sync_failure_is_nonok_and_quarantines(tmp_path, native,
     assert profile.status()["state"] == "QUARANTINED"
 
 
-def test_quarantine_failure_still_nonok(tmp_path, native, monkeypatch) -> None:
+def test_quarantine_failure_still_nonok(tmp_path, native, monkeypatch, make_root) -> None:
     """Even when persisting quarantine itself fails, outcomes stay non-ok."""
 
     def failing_quarantine(reason):
         raise OSError("manifest unwritable")
 
     # (1) prepare failure routed through the safe _quarantine helper
-    runtime, profile, _repo, _exe = _runtime(tmp_path, native)
+    runtime, profile, _repo, _exe = _runtime(make_root(), tmp_path, native)
     monkeypatch.setattr(profile, "quarantine", failing_quarantine)
 
     def handler(argv):
@@ -599,7 +652,7 @@ def test_quarantine_failure_still_nonok(tmp_path, native, monkeypatch) -> None:
 
     # (2) sync completion failure where the quarantine write also fails
     native._handler = None  # observed receipts again
-    runtime2, profile2, repo2, _exe2 = _runtime(tmp_path, native)
+    runtime2, profile2, repo2, _exe2 = _runtime(make_root(), tmp_path, native)
     assert runtime2.prepare().status == "ok"
     monkeypatch.setattr(profile2, "quarantine", failing_quarantine)
 
@@ -613,8 +666,8 @@ def test_quarantine_failure_still_nonok(tmp_path, native, monkeypatch) -> None:
 
 
 def test_sync_lock_busy_refused_without_state_change(tmp_path, native,
-                                                     monkeypatch) -> None:
-    runtime, profile, repo, _exe = _runtime(tmp_path, native)
+                                                     monkeypatch, make_root) -> None:
+    runtime, profile, repo, _exe = _runtime(make_root(), tmp_path, native)
     runtime.prepare()
     manifest_before = (profile.namespace / "manifest.json").read_bytes()
     marker_before = (profile.namespace / "managed-ready.json").read_bytes()
@@ -632,8 +685,8 @@ def test_sync_lock_busy_refused_without_state_change(tmp_path, native,
     assert (profile.namespace / "managed-ready.json").read_bytes() == marker_before
 
 
-def test_query_lock_busy_refused_no_spawn(tmp_path, native, monkeypatch) -> None:
-    runtime, _profile, _repo, _exe = _prepared(tmp_path, native)
+def test_query_lock_busy_refused_no_spawn(tmp_path, native, monkeypatch, make_root) -> None:
+    runtime, _profile, _repo, _exe = _prepared(make_root, tmp_path, native)
 
     def held(self):
         raise LockTimeoutError("Could not acquire write lock (held by test)")
@@ -647,8 +700,8 @@ def test_query_lock_busy_refused_no_spawn(tmp_path, native, monkeypatch) -> None
 
 # ------------------------------------------------------- tamper
 
-def test_marker_tamper_refuses_and_persists_quarantine(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _prepared(tmp_path, native)
+def test_marker_tamper_refuses_and_persists_quarantine(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     marker = profile.namespace / "managed-ready.json"
     tampered = json.loads(marker.read_bytes())
     tampered["artifact_sha256"] = "c" * 64
@@ -660,8 +713,8 @@ def test_marker_tamper_refuses_and_persists_quarantine(tmp_path, native) -> None
     assert profile.status()["state"] == "QUARANTINED"
 
 
-def test_marker_loose_permissions_refused(tmp_path, native) -> None:
-    runtime, profile, _repo, _exe = _prepared(tmp_path, native)
+def test_marker_loose_permissions_refused(tmp_path, native, make_root) -> None:
+    runtime, profile, _repo, _exe = _prepared(make_root, tmp_path, native)
     os.chmod(profile.namespace / "managed-ready.json", 0o644)
     result = runtime.query("search_graph", {"query": "x"})
     assert result.status == "runtime_refused"
@@ -670,8 +723,8 @@ def test_marker_loose_permissions_refused(tmp_path, native) -> None:
 
 # ------------------------------------------------------- G2
 
-def test_g2_source_tree_untouched_by_all_flows(tmp_path, native) -> None:
-    runtime, _profile, repo, _exe = _runtime(tmp_path, native)
+def test_g2_source_tree_untouched_by_all_flows(tmp_path, native, make_root) -> None:
+    runtime, _profile, repo, _exe = _runtime(make_root(), tmp_path, native)
 
     def tree_digest() -> str:
         return hashlib.sha256(b"".join(

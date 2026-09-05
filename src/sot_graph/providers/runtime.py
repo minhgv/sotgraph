@@ -8,6 +8,18 @@ private dirs (0700) plus the mandatory UI-off pre-seed ``cache/config.json`` =
 7-key replacement env for ``proc.run_command(env=...)`` (no inheritance, fixed
 PATH).
 
+IPC length budget (measured): the native daemon binds
+``$CBM_RUNTIME_DIR/cbm-daemon-<uid>/cbm-<16hex>.sock`` and a Unix socket
+``sun_path`` holds at most 104 bytes, so the full path must stay <= 103
+UTF-8 bytes. With CBM_RUNTIME_DIR = ``<root>/m-<24hex>/runtime`` the fixed
+overhead after ``root`` is 35 bytes, and the native suffix is
+38 + len(str(uid)) bytes — the constructor PREFLIGHTS this arithmetic and
+REJECTS (typed, before any native start) a root whose socket path would
+reach 104 bytes, telling the admin to choose a shorter root. There is no
+silent fallback to a shared/global IPC directory. Exact budget:
+``max_root_utf8_bytes = 103 - 35 - (38 + len(str(os.getuid())))``
+(= 27 for a 3-digit uid such as macOS 501).
+
 Read-only honesty: ``environment`` and ``status`` DETECT tamper/unknown state
 and refuse, but never persist anything — a QUARANTINED report derived from a
 read-only call is NOT sticky. Only explicit mutation paths
@@ -36,6 +48,14 @@ tautology). A quarantined namespace stays frozen; explicit recovery is the
 admin creating a FRESH namespace via a new ``generation`` (same repo+artifact
 allowed), leaving the old one untouched. Unknown manifest states derive
 QUARANTINED, never READY.
+
+Namespace format (experimental, unreleased — no migration needed; older
+long-format namespaces are simply never referenced): ``m-<24hex>`` where the
+combined hash covers repo realpath + protocol + generation + artifact digest.
+The generation is INSIDE the hash, not a literal in the name; the full
+identity stays in the manifest and is re-checked on every use (collision
+detection is the identity check, the hash is only collision-resistant
+addressing).
 """
 
 from __future__ import annotations
@@ -68,6 +88,10 @@ _LAUNCH_PAIRS = (("HOME", "home"), ("CBM_CACHE_DIR", "cache"), ("CBM_RUNTIME_DIR
 _LOCK_NAME = "managed.lock"
 _FIXED_PATH = "/usr/bin:/bin"
 _WIN32 = sys.platform == "win32"
+# Native IPC socket: $CBM_RUNTIME_DIR/cbm-daemon-<uid>/cbm-<16hex>.sock
+_NS_PREFIX, _NS_HASH_HEX = "m-", 24
+_SUN_PATH_LIMIT = 104  # bytes; the bound path must be strictly shorter (<= 103)
+_SOCK_DAEMON_DIR, _SOCK_NAME = "/cbm-daemon-", "/cbm-" + "0" * 16 + ".sock"
 
 
 class ManagedRuntimeError(RuntimeError):
@@ -75,7 +99,7 @@ class ManagedRuntimeError(RuntimeError):
 
 
 class ProfileRejected(ManagedRuntimeError):
-    """Fail-closed security refusal (identity, ownership, platform, tamper)."""
+    """Fail-closed security refusal (identity, ownership, platform, length)."""
 
 
 class ProfileQuarantined(ManagedRuntimeError):
@@ -85,12 +109,12 @@ class ProfileQuarantined(ManagedRuntimeError):
 class ManagedRuntimeProfile:
     """Immutable per-repo+artifact workspace under an admin-owned root.
 
-    Namespace: ``<root>/managed-<generation>-<repo_hash32>-<digest32>`` (32-hex
-    SHA-256 components; ``digest32`` hashes ``<PROTOCOL_VERSION>\\0<digest>``).
-    The hash namespace is collision-RESISTANT separation, never an absolute
-    guarantee — the full identity recorded in the manifest is re-verified on
-    every use. ``artifact_digest`` pins the immutable runtime artifact
-    identity (P4 installs content later; nothing is copied here).
+    Namespace: ``<root>/m-<24hex>`` (combined hash of repo realpath, protocol,
+    generation, artifact digest — generation is hashed, not literal). The full
+    identity lives in the manifest and is re-verified on every use. The
+    runtime dir ``<ns>/runtime`` becomes ``CBM_RUNTIME_DIR``; the constructor
+    prefights the native socket ``sun_path`` byte budget (see module doc) and
+    rejects long roots with the exact per-uid byte allowance.
     """
 
     def __init__(self, root: str | os.PathLike[str], repo_path: str | os.PathLike[str], *,
@@ -115,14 +139,34 @@ class ManagedRuntimeProfile:
         if resolved == repo_str or resolved.startswith(repo_str + os.sep):
             raise ProfileRejected("runtime root must live outside the repository")
         self._root = Path(resolved)
-        self._repo_hash = hashlib.sha256(repo_str.encode("utf-8")).hexdigest()[:32]
-        digest32 = hashlib.sha256(
-            f"{PROTOCOL_VERSION}\0{digest}".encode("utf-8")).hexdigest()[:32]
-        self._ns = self._root / f"managed-{self._generation}-{self._repo_hash}-{digest32}"
+        self._repo_hash = hashlib.sha256(repo_str.encode("utf-8")).hexdigest()
+        combined = hashlib.sha256("\0".join(
+            ("sot-managed-runtime", PROTOCOL_VERSION, self._generation,
+             repo_str, digest)).encode("utf-8")).hexdigest()[:_NS_HASH_HEX]
+        self._ns = self._root / f"{_NS_PREFIX}{combined}"
         self._manifest_path = self._ns / "manifest.json"
         self._paths: dict[str, Path] = {name: self._ns / name for name in _PROFILE_DIRS}
+        self._preflight_socket_bytes(raw)
         self._syncing = False  # in-memory sync ownership (this instance, one thread)
         self._sync_thread: int | None = None
+
+    def _preflight_socket_bytes(self, root_str: str) -> None:
+        """Reject long roots BEFORE any native start (no shared/global IPC fallback).
+
+        Native socket = CBM_RUNTIME_DIR + "/cbm-daemon-<uid>/cbm-<16hex>.sock";
+        its UTF-8 byte length must stay strictly under ``_SUN_PATH_LIMIT``.
+        """
+        runtime_dir = f"{root_str}{os.sep}{_NS_PREFIX}{'0' * _NS_HASH_HEX}{os.sep}runtime"
+        sock_bytes = (len(runtime_dir.encode("utf-8")) + len(_SOCK_DAEMON_DIR)
+                      + len(str(os.getuid())) + len(_SOCK_NAME.encode("utf-8")))
+        if sock_bytes >= _SUN_PATH_LIMIT:
+            budget = (_SUN_PATH_LIMIT - 1 - len(_SOCK_DAEMON_DIR) - len(str(os.getuid()))
+                      - len(_SOCK_NAME) - (1 + len(_NS_PREFIX) + _NS_HASH_HEX + len("/runtime")))
+            raise ProfileRejected(
+                f"runtime root too long for native IPC: computed socket path is "
+                f"{sock_bytes} UTF-8 bytes (sun_path limit {_SUN_PATH_LIMIT}); "
+                f"max root is {budget} UTF-8 bytes for uid {os.getuid()} — "
+                f"choose a shorter root (no shared/global IPC fallback exists)")
 
     @property
     def identity(self) -> dict[str, str]:

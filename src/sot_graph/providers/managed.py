@@ -211,11 +211,19 @@ class ManagedNativeRuntime:
             refused = self._guard_ready(require_binding=True) or self._gate(operation)
             if refused is not None:
                 return refused
-            payload_args = {**dict(args), "project": self._bound_project()}
+            payload_args = dict(args)
+            if operation != "list_projects":
+                # list_projects is global-scoped and takes NO project key
+                # (release 46ae source-confirmed); the private namespace's
+                # cache can only hold this repo via sync. search_graph /
+                # index_status carry the verified binding.
+                payload_args["project"] = self._bound_project()
             if operation == "search_graph":  # adapter-verified search wire
                 payload_args["format"] = "json"
                 payload_args["limit"] = _SEARCH_DEFAULT_LIMIT
             outcome = self._args_dispatch(operation, payload_args, _QUERY_TIMEOUT)
+            if operation == "list_projects" and outcome.status == "ok":
+                outcome = self._filter_listing(outcome)
             if outcome.status == "timeout":
                 # Conservative: a timed-out read normally cannot mutate the
                 # index, but an unknown writer cannot be excluded.
@@ -420,6 +428,22 @@ class ManagedNativeRuntime:
             return self._result("receipt_invalid", error=(
                 "legacy MCP-wrapped envelope refused; plain CLI JSON required"))
         return self._result("ok", parsed)
+
+    def _filter_listing(self, outcome: ManagedResult) -> ManagedResult:
+        """Public list_projects payload is filtered to the bound repo:
+        entries whose root_path realpath is not exactly the bound repo are
+        rejected from the response (the owned cache can only hold this repo
+        via sync, so a surviving foreign entry would mean foreign data)."""
+        payload = outcome.payload or {}
+        projects = payload.get("projects")
+        if not isinstance(projects, list):
+            return outcome
+        bound = [p for p in projects
+                 if isinstance(p, Mapping) and isinstance(p.get("name"), str)
+                 and isinstance(p.get("root_path"), str)
+                 and os.path.realpath(p["root_path"]) == self._repo]
+        return self._result(outcome.status, {**payload, "projects": bound},
+                            outcome.error, outcome.cancellation_state)
 
     def _bind_project(self, receipt: Any) -> str | None:
         """Verified project binding: exactly one list_projects entry whose
