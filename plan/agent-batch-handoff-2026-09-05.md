@@ -32,22 +32,17 @@
 - `sot claims lint`: clean qua mọi bước (10 claims, 26 absolute-phrase hits covered).
 - Holdout `--gate`: ALL PASS, scores byte-identical sau nhóm 3.
 
+## Nhóm 4 (advisor P1-6) — ĐÃ XONG, commit `c745b47`
+
+Root cause thật: tokenizer FTS dùng `tokenchars '_-.:$@'` khiến `Class.method` là MỘT token — query bare-name không bao giờ match nổi. Đã sửa:
+
+- Tokenizer `unicode61` (split identifier thành component); DB cũ self-migrate khi writer mở (`_ensure_fts_tokenizer`, read-only bỏ qua, fail degrade — không cần reconcile lại).
+- Query builder gom về helper chung `fts_query_terms` / `fts_rank_tier` / `exact_bare_name_flags` trong db.py; MCP bỏ logic duplicate, CLI không đổi.
+- Exact-bare-name là **flag thứ hạng có giới hạn** (grade 2/1/0), không cộng điểm; trên `EXACT_BARE_NAME_CAP = 8` candidate cùng tên thì rút toàn bộ flag (chống push symbol cùng tên lên trên match qualified thật sự).
+- Kết quả đo: holdout **Hit@1 0.7879 → 0.8818**, Hit@5 0.9515 → 0.9636, MRR 0.8548 → 0.9167 (jsonschema tụt nhẹ 0.833 → 0.800, báo cáo trung thực); synthetic semantic 75% → 100%, overall 93.8% → 100%, exact không đổi; 14 adversarial probes.
+- Registry/docs sync 3 entries (commit cite `9127367`); full suite **1386 passed, 2 skipped**; claims lint clean; cả hai benchmark gates PASS.
+
 ## Chưa làm — thứ tự ưu tiên
-
-### Tiếp theo: Nhóm 4 (advisor P1-6) — retrieval bare-name matching
-
-**Vấn đề**: query bare name (`render`) không match mạnh symbol qualified (`Class.method`); Hit@1 = 0.7879 (Hit@5 0.9515, MRR 0.8548) trên holdout.
-
-**Spec đã chốt**:
-1. Sửa ở tầng **ranker/indexing** (vector.py + FTS/BM25 trong db.py), không sửa CLI/MCP adapter; CLI và MCP dùng chung một interpretation.
-2. Identifier-component analysis: tách `Class.method` / snake_case / camelCase thành component; index/query **last component** (bare name) như token mạnh; exact-bare-name boost có trọng số **bounded**.
-3. Chống failure mode advisor: bare name ambiguous (nhiều symbol trùng tên) ⇒ boost phải damp theo match-count, không được đẩy symbol qualified thật sự relevant xuống.
-4. Đánh giá theo thứ tự: (a) regression synthetic `benchmarks/search-quality.json` — exact-mode không được tụt; (b) holdout retrieval before/after (số before như trên); (c) adversarial probes tự viết (test file mới `tests/test_search_bare_name_ranking.py`): bare→Class.method, ambiguous không bury exact qualified match, prefix vs exact, bare name đúng là function ngoài class.
-5. **Claims discipline**: `benchmarks/search-quality.json` được cite trong `claims/registry.yaml` (search-exact-row, search-semantic-row...) và `docs/BENCHMARKS.md`. Nếu số đổi: regenerate artifact + update docs row + sync registry (artifact_value + commit = HEAD sha trước thay đổi) rồi `sot claims lint` phải pass.
-6. Trung thực: nếu Hit@1 không cải thiện trên holdout thì báo thẳng, không tune đến khi xanh (holdout từng dùng tuning — Corpus warning của advisor).
-7. Test: `tests/test_search_bare_name_ranking.py` + `tests/test_sot_graph.py tests/test_vector.py`.
-
-(Một sub-agent đã được dispatch với spec này hôm 2026-09-05 nhưng bị hủy trước khi chạy — working tree sạch, không có thay đổi dở dang.)
 
 ### Sau Nhóm 4 (đã xác minh còn mở tại HEAD)
 
