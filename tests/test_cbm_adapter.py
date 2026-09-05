@@ -21,6 +21,7 @@ import sot_graph.providers.codebase_memory as cbm_module
 
 from sot_graph.providers.base import supports_method
 from sot_graph.providers.codebase_memory import (
+    NEXT_ACTION_EXPLICIT_PROJECT,
     NEXT_ACTION_SYNC,
     CodebaseMemoryProvider,
     redact_argv,
@@ -196,7 +197,10 @@ class TestInvocationContract:
         )
         assert outcome.ok is False
         assert outcome.metadata["wire_status"] == "provider_error"
-        assert "stale" in outcome.error
+        # Hardening contract: native message text is withheld from the
+        # public error (fixed classification + reason only).
+        assert "stale" not in outcome.error
+        assert "native diagnostic withheld" in outcome.error
         assert outcome.next_action == NEXT_ACTION_SYNC
 
     def test_jsonrpc_error_envelope_detected(self, tmp_path):
@@ -212,7 +216,11 @@ class TestInvocationContract:
         )
         assert outcome.ok is False
         assert outcome.metadata["wire_status"] == "jsonrpc_error"
-        assert outcome.error == "bootstrap failed"
+        # Generic envelope classification; native message withheld and no
+        # invented bootstrap framing (the envelope is not always bootstrap).
+        assert "jsonrpc error envelope" in outcome.error
+        assert "native diagnostic withheld" in outcome.error
+        assert "bootstrap" not in outcome.error
 
     def test_exit_nonzero_after_ok_envelope_fails_closed(self, tmp_path):
         exe = success_exe(tmp_path, "cbm", {"ok": True}, exit_code=1)
@@ -708,7 +716,10 @@ class TestProjectResolution:
         assert outcome.ok is False
         assert outcome.metadata["wire_status"] == "abstained"
         assert "ambiguous" in outcome.error
-        assert "list_projects" in outcome.next_action
+        # Hardening contract: the old native disambiguation instruction is
+        # replaced by the SOT-only explicit-project remediation.
+        assert outcome.next_action == NEXT_ACTION_EXPLICIT_PROJECT
+        assert "list_projects" not in outcome.next_action
 
     def test_resolution_cached_per_repo_root(self, tmp_path):
         counter = tmp_path / "invocations"

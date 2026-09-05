@@ -16,6 +16,10 @@ P1 boundaries (honest abstention):
   codebase-memory"`` so the caller can fall back truthfully.
 - Evidence normalization/trust ceilings live in ``normalization`` and are
   applied by callers; this module extracts payloads verbatim.
+- Remediation surface (hardening): public ``next_action`` comes only from
+  an SOT-only allowlist; public errors and record details carry only the
+  generic operation + classification — raw native text is withheld
+  everywhere (no admin/debug echo path exists).
 """
 from __future__ import annotations
 
@@ -57,6 +61,10 @@ __all__ = [
     "PROVIDER_NAME",
     "NEXT_ACTION_SYNC",
     "NEXT_ACTION_VERSION_PIN",
+    "NEXT_ACTION_EXPLICIT_PROJECT",
+    "NEXT_ACTION_ADAPTER_UPDATE",
+    "NEXT_ACTION_ALLOWLIST",
+    "allowlisted_next_action",
     "SnapshotBinding",
     "SnapshotMatch",
     "snapshot_flags",
@@ -67,13 +75,61 @@ logger = logging.getLogger(__name__)
 PROVIDER_NAME = "codebase-memory"
 
 #: Actionable fix attached to every index-missing/stale abstention (P1).
+#: Verified against the CLI parser: ``sot providers sync <provider_name>``
+#: exists (src/sot_graph/cli.py, ``prov_subs.add_parser("sync")``).
 NEXT_ACTION_SYNC = "run sot providers sync codebase-memory"
 
-#: Actionable fix attached to every wire-incompatible fail-close (G1.5).
+#: Wire-incompatible fail-close (G1.5): explicitly unavailable via sot (no
+#: pin/upgrade/install command exists); golden version is provenance only.
 NEXT_ACTION_VERSION_PIN = (
-    f"pin codebase-memory-mcp=={TESTED_CBM_VERSION} (golden-verified wire) "
-    "or re-capture tests/fixtures/cbm_golden for the new release"
+    "unavailable via sot: no command can pin, upgrade, or install the "
+    "codebase-memory binary; queries fail closed on this wire "
+    f"(golden-tested {TESTED_CBM_VERSION})"
 )
+
+#: Ambiguous or unresolvable project match: sot currently exposes no public
+#: way to state a provider project (and no dedupe command), so the outcome
+#: honestly reports the resolution as unresolvable — no workaround offered.
+NEXT_ACTION_EXPLICIT_PROJECT = (
+    "sot cannot currently resolve ambiguous codebase-memory projects; "
+    "no sot command applies"
+)
+
+#: Adapter schema drift: no sot command fixes a wire format change; rerun
+#: once the adapter itself is updated. Ledger-receipt guidance only.
+NEXT_ACTION_ADAPTER_UPDATE = (
+    "rerun after a sot provider adapter update; no sot command fixes "
+    "provider schema drift"
+)
+
+#: Public remediation allowlist. ``next_action`` on public outcomes may ONLY
+#: carry one of these values (or None): sot commands verified against the
+#: CLI parser, explicit "unavailable via sot" markers, or the neutral
+#: adapter-update note. Native provider output must never be echoed here.
+NEXT_ACTION_ALLOWLIST = frozenset({
+    NEXT_ACTION_SYNC,
+    NEXT_ACTION_VERSION_PIN,
+    NEXT_ACTION_EXPLICIT_PROJECT,
+    NEXT_ACTION_ADAPTER_UPDATE,
+})
+
+
+def allowlisted_next_action(value: str | None) -> str | None:
+    """Fail-closed pass-through for public ``next_action`` values.
+
+    Allowlisted SOT remediation (and None) passes unchanged; anything else —
+    especially any string derived from native provider output — is dropped
+    to None with a warning, so hostile native text can never become an
+    operational instruction on the public error path.
+    """
+    if value is None or value in NEXT_ACTION_ALLOWLIST:
+        return value
+    logger.warning(
+        "cbm: dropped non-allowlisted next_action (possible native text "
+        "leak): %.160r", value,
+    )
+    return None
+
 
 #: ``codebase-memory-mcp <semver>`` — anchored at start of first stdout line.
 _VERSION_PATTERN = re.compile(r"^codebase-memory-mcp\s+(\S+)")
@@ -202,6 +258,13 @@ def _command_digest(redacted: tuple[str, ...]) -> str:
     return hashlib.sha256("\0".join(redacted).encode("utf-8")).hexdigest()
 
 
+#: Suffix marking that raw native text is NOT included in a public error or
+#: record detail: provider-controlled stderr/stdout/envelope text is never
+#: quoted, bounded, or paraphrased anywhere — only the generic operation +
+#: classification travels.
+_NATIVE_TEXT_WITHHELD = "native diagnostic withheld"
+
+
 def _count_json_documents(text: str) -> int:
     """Count whitespace-separated top-level JSON documents in ``text``.
 
@@ -223,21 +286,6 @@ def _count_json_documents(text: str) -> int:
         count += 1
         idx = end
     return count
-
-
-def _extract_message(envelope: Mapping[str, Any]) -> str:
-    """Best-effort human-readable message from an MCP error envelope."""
-    content = envelope.get("content")
-    if isinstance(content, list) and content:
-        first = content[0]
-        if isinstance(first, Mapping) and isinstance(first.get("text"), str):
-            return first["text"]
-    structured = envelope.get("structuredContent")
-    if isinstance(structured, Mapping):
-        message = structured.get("message") or structured.get("error")
-        if isinstance(message, str):
-            return message
-    return "provider returned an error without a message"
 
 
 def _extract_payload(envelope: Mapping[str, Any]) -> tuple[Any, str | None]:
@@ -369,7 +417,7 @@ class CodebaseMemoryProvider:
         if result.returncode != 0 or match is None:
             detail = "unhealthy: " + (
                 f"exit={result.returncode}" if result.returncode != 0
-                else f"unparseable version output: {result.stdout.strip()[:120]!r}"
+                else f"unparseable version output; {_NATIVE_TEXT_WITHHELD}"
             )
             return ProviderStatus(
                 name=PROVIDER_NAME,
@@ -556,29 +604,28 @@ class CodebaseMemoryProvider:
                        "partial evidence"),
             )
         # Contract: exit != 0 means failure regardless of stdout content
-        # (1 = tool error / isError, 2 = bad arguments).
+        # (1 = tool error / isError, 2 = bad arguments). Public errors carry
+        # only the generic operation + classification: raw native text is
+        # never quoted (it can carry actionable provider instructions).
         if result.returncode not in (0, None):
             status = (
                 "bad_arguments" if result.returncode == 2 else "provider_error"
             )
             return _InvokeOutcome(
                 False, status,
-                error=(f"{tool} exited {result.returncode}; "
-                       f"stderr={result.stderr.strip()[:200]!r}"),
+                error=f"{tool} exited {result.returncode}; {_NATIVE_TEXT_WITHHELD}",
             )
         if not result.stdout.strip():
             return _InvokeOutcome(
                 False, "empty_stdout",
-                error=(f"{tool} produced no stdout "
-                       f"(stderr={result.stderr.strip()[:200]!r})"),
+                error=f"{tool} produced no stdout; {_NATIVE_TEXT_WITHHELD}",
             )
 
         doc_count = _count_json_documents(result.stdout)
         if doc_count < 0:
             return _InvokeOutcome(
                 False, "invalid_json",
-                error=(f"{tool} stdout is not valid JSON: "
-                       f"{result.stdout.strip()[:200]!r}"),
+                error=f"{tool} stdout is not valid JSON; {_NATIVE_TEXT_WITHHELD}",
             )
         if doc_count > 1:
             return _InvokeOutcome(
@@ -588,13 +635,12 @@ class CodebaseMemoryProvider:
             )
 
         envelope: Any = json.loads(result.stdout.strip())
-        # JSON-RPC bootstrap failure: {"jsonrpc":..,"error":{..}} without content.
+        # JSON-RPC error envelope: {"jsonrpc":..,"error":{..}} without content.
         if isinstance(envelope, dict) and "error" in envelope and "content" not in envelope:
-            err = envelope.get("error")
-            message = (
-                err.get("message") if isinstance(err, Mapping) else str(err)
-            ) or "JSON-RPC error envelope"
-            return _InvokeOutcome(False, "jsonrpc_error", error=str(message))
+            return _InvokeOutcome(
+                False, "jsonrpc_error",
+                error=f"{tool} jsonrpc error envelope; {_NATIVE_TEXT_WITHHELD}",
+            )
         if not isinstance(envelope, dict):
             return _InvokeOutcome(
                 False, "schema_drift",
@@ -604,7 +650,9 @@ class CodebaseMemoryProvider:
 
         if envelope.get("isError"):
             return _InvokeOutcome(
-                False, "provider_error", error=_extract_message(envelope),
+                False, "provider_error",
+                error=(f"{tool} error envelope; provider reported failure; "
+                       f"{_NATIVE_TEXT_WITHHELD}"),
             )
 
         payload, problem = _extract_payload(envelope)
@@ -755,7 +803,9 @@ class CodebaseMemoryProvider:
             run=outcome.run,  # type: ignore[arg-type]
             payload=outcome.payload,
             error=outcome.error,
-            next_action=next_action,
+            # Fail-closed allowlist: never promote anything (least of all
+            # native-derived text) into an operational instruction.
+            next_action=allowlisted_next_action(next_action),
             metadata=metadata,
         )
 
@@ -772,6 +822,7 @@ class CodebaseMemoryProvider:
     ) -> QueryOutcome:
         """Honest no-spawn outcome when a query cannot even be addressed."""
         detail = detail or "query could not be addressed"
+        next_action = allowlisted_next_action(next_action)
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
@@ -798,8 +849,9 @@ class CodebaseMemoryProvider:
 
         Never guesses: exactly one ``list_projects`` entry whose canonicalized
         ``root_path`` equals ``realpath(repo_root)`` wins; zero matches or two
-        or more matches abstain with an explicit ``next_action``. Results are
-        cached per repo root for the lifetime of this instance.
+        or more matches abstain with an SOT-only ``next_action`` (sync, or
+        explicit-project since sot has no command to disambiguate). Results
+        are cached per repo root for the lifetime of this instance.
         """
         target = os.path.realpath(repo_root)
         cached = self._project_cache.get(target)
@@ -859,8 +911,10 @@ class CodebaseMemoryProvider:
         if loop_abort or cap_exhausted:
             return (
                 None,
-                f"list_projects pagination incomplete (loop={loop_abort}, cap={cap_exhausted}); pass project explicitly",
-                "disambiguate with `codebase-memory-mcp cli list_projects` and pass the project explicitly",
+                "list_projects pagination incomplete (loop=%s, cap=%s); "
+                "sot cannot currently resolve ambiguous provider projects"
+                % (loop_abort, cap_exhausted),
+                NEXT_ACTION_EXPLICIT_PROJECT,
             )
         matches = [
             p["name"] for p in all_projects
@@ -880,11 +934,11 @@ class CodebaseMemoryProvider:
         else:
             resolved = (
                 None,
-                "ambiguous: %d indexed projects share %s (%s); pass project "
-                "explicitly or delete duplicates"
-                % (len(matches), target, ", ".join(sorted(matches))),
-                "disambiguate with `codebase-memory-mcp cli list_projects` "
-                "and pass the project explicitly",
+                # Count only: raw project names are never echoed publicly.
+                "ambiguous: %d indexed projects cover %s; sot cannot "
+                "currently disambiguate provider projects"
+                % (len(matches), target),
+                NEXT_ACTION_EXPLICIT_PROJECT,
             )
         self._project_cache[target] = resolved
         return resolved
@@ -1121,9 +1175,12 @@ class CodebaseMemoryProvider:
                 "index_repository output exceeded the byte cap; index state unknown"
             )
         elif result.returncode not in (0, None):
+            # Sync is a public CLI/MCP surface, not a debug mode: no native
+            # text is echoed here either.
             status, detail = (
                 "bad_arguments" if result.returncode == 2 else "provider_error"
-            ), f"index_repository exited {result.returncode}; stderr={result.stderr.strip()[:200]!r}"
+            ), (f"index_repository exited {result.returncode}; "
+                f"{_NATIVE_TEXT_WITHHELD}")
         else:
             status, detail = "ok", "index_repository completed"
         return self._index_record(
@@ -1245,7 +1302,7 @@ class CodebaseMemoryProvider:
             exit_code=None,
             duration_ms=0,
             arguments_redacted=(tool,),
-            next_action="rerun after provider adapter update",
+            next_action=NEXT_ACTION_ADAPTER_UPDATE,
             detail=detail,
         )
         return QueryOutcome(
