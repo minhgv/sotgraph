@@ -168,10 +168,12 @@ class HardeningFixesTests(unittest.TestCase):
             build_bundle(self.db, str(self.root), "test_fn", max_tokens=10)
 
         # Valid token budget should produce bundle strictly within max_tokens
-        bundle = build_bundle(self.db, str(self.root), "test_fn", max_tokens=300)
+        # (SG-202 honesty metadata raised the non-droppable metadata floor,
+        # so the valid budget sits at 450 rather than 300.)
+        bundle = build_bundle(self.db, str(self.root), "test_fn", max_tokens=450)
         rendered = render_yaml(bundle)
         tok_count = estimate_tokens(rendered)
-        self.assertLessEqual(tok_count, 300)
+        self.assertLessEqual(tok_count, 450)
         self.assertEqual(bundle["limits"]["tokens_estimate"], tok_count)
 
     def test_pack_token_budget_convergence_tight_and_small(self):
@@ -202,11 +204,13 @@ class HardeningFixesTests(unittest.TestCase):
                     (abs_path, sha, int(st.st_size), int(st.st_mtime * 1000)),
                 )
 
-        # Tight token budget (e.g. 350 tokens for a ~1500 token source) should converge without infinite loop
-        bundle = build_bundle(self.db, str(self.root), "large_fn", max_tokens=350)
+        # Tight token budget (e.g. 450 tokens for a ~1500 token source) should converge without infinite loop
+        # (SG-202 honesty metadata raised the metadata floor from ~280 to ~380,
+        # so the tight budget sits at 450 rather than 350.)
+        bundle = build_bundle(self.db, str(self.root), "large_fn", max_tokens=450)
         rendered = render_yaml(bundle)
         tok_count = estimate_tokens(rendered)
-        self.assertLessEqual(tok_count, 350)
+        self.assertLessEqual(tok_count, 450)
         self.assertTrue(bundle["limits"]["truncated"])
 
         # Extremely small budget (where even metadata alone exceeds budget, e.g. 50 tokens) should raise PackError

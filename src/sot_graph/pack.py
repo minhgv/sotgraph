@@ -16,14 +16,27 @@ import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
+from sot_graph.envelope import compute_snapshot_generation
 from sot_graph.tokenizer import estimate_tokens, truncate_to_token_budget
 
 __all__ = ["PackError", "build_bundle", "render_yaml"]
 
-BUNDLE_SCHEMA_VERSION = "2.1.0"
+BUNDLE_SCHEMA_VERSION = "2.2.0"
 _DEFAULT_MAX_HOPS = 2
 _DEFAULT_MAX_NODES = 50
 _DEFAULT_MAX_BYTES = 65_536
+
+# Completeness vocabulary mirrors CompletenessStatus (sot_graph.evidence):
+# a truncated projection is PARTIAL; only an uncut bundle stays within the
+# index capability. Never report a complete status when limits.truncated.
+_COMPLETENESS_WITHIN_INDEX = "COMPLETE_WITHIN_INDEX_CAPABILITY"
+_COMPLETENESS_TRUNCATED = "PARTIAL"
+#: Shown only on truncated bundles: absence of entries is budget-driven,
+#: never evidence of zero callers/callees.
+_ABSENCE_INTERPRETATION = (
+    "truncated_bundle: absent entries do NOT imply zero callers/callees; see accounting"
+)
+_OMITTED_REFS_SAMPLE = 20
 
 
 class PackError(RuntimeError):
@@ -67,8 +80,10 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
     """Resolve a target by exact FQN, FQN suffix, then bare symbol.
 
     Ambiguous matches are auto-resolved to the dominant candidate by inbound
-    edge count; the node dict carries ``_ambiguous_auto_resolved`` so callers
-    can surface a warning. Raises :class:`PackError` when no candidate wins.
+    edge count — never silently: the node dict carries
+    ``_ambiguous_auto_resolved`` plus the full ``_ambiguous_candidates`` list
+    so the bundle can surface the resolution explicitly. Raises
+    :class:`PackError` (with candidates) when no candidate wins.
     """
     row = db.conn.execute(
         "SELECT id,path,kind,symbol,fqn,signature,label,body,"
@@ -85,6 +100,7 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
             (f"%.{target}", f"{target}.%"),
         ).fetchall()
     auto_resolved = False
+    amb_candidates: List[str] = []
     if len(row) > 1:
         dominant = _dominant_candidate(db, row)
         if dominant is None:
@@ -93,6 +109,7 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
                 f"target '{target}' matches {len(row)} nodes; qualify with a FQN",
                 candidates=[r[4] for r in row[:10]],
             )
+        amb_candidates = [r[4] for r in row[:10]]
         row = [dominant]
         auto_resolved = True
     if not row:
@@ -109,6 +126,7 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
                     f"symbol '{target}' is defined in {len(row)} places; use a FQN",
                     candidates=[r[4] for r in row[:10]],
                 )
+            amb_candidates = [r[4] for r in row[:10]]
             row = [dominant]
             auto_resolved = True
     if not row:
@@ -119,6 +137,7 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
         "signature": r[5], "label": r[6], "body": r[7],
         "line_start": r[8], "line_end": r[9], "col_start": r[10], "col_end": r[11],
         "_ambiguous_auto_resolved": auto_resolved,
+        "_ambiguous_candidates": amb_candidates,
     }
     return node, target
 
@@ -216,6 +235,7 @@ def build_bundle(
 ) -> Dict[str, Any]:
     """Build the ContextBundle structure; raises :class:`PackError` closed."""
     node, matched = _find_target(db, target)
+    amb_candidates: List[str] = node.pop("_ambiguous_candidates", [])
 
     journal = db.conn.execute(
         "SELECT sha256, generation FROM file_journal WHERE path = ?",
@@ -227,6 +247,9 @@ def build_bundle(
             f"target file is not reconciled: {node['path']}; run `sot reconcile`",
         )
     indexed_sha, base_generation = journal[0], int(journal[1] or 1)
+    # Global staleness binding (same mechanism as envelopes/receipts): a caller
+    # compares this against the DB's current MAX(generation) to detect drift.
+    snapshot_generation = compute_snapshot_generation(db)
 
     try:
         with open(node["path"], "rb") as handle:
@@ -243,6 +266,14 @@ def build_bundle(
         )
 
     full_source, warnings = _slice_source_from_bytes(node, raw_bytes)
+    resolution: Dict[str, Any] = {
+        "status": "AMBIGUOUS_AUTO_RESOLVED" if amb_candidates else "EXACT",
+        "query": target,
+        "selected_fqn": node["fqn"] or node["symbol"],
+    }
+    if amb_candidates:
+        resolution["method"] = "dominant_inbound_edges"
+        resolution["candidates"] = list(amb_candidates)
     if node.pop("_ambiguous_auto_resolved", False):
         warnings.append(
             f"ambiguous_target_auto_resolved: '{target}' matched multiple nodes; "
@@ -280,7 +311,25 @@ def build_bundle(
     outbound: List[Dict[str, Any]] = []
     level1_ids: List[str] = []
 
+    # Discover the full 1-hop neighborhood up front so accounting can report
+    # honest discovered/omitted counts even when caps stop traversal early.
+    discovered_1hop: List[Tuple[str, str, Optional[int]]] = []
+    seen_1hop = set()
     for direction, neighbor_id, line in _neighbors(db, node["id"]):
+        if neighbor_id in visited or neighbor_id in seen_1hop:
+            continue
+        seen_1hop.add(neighbor_id)
+        discovered_1hop.append((direction, neighbor_id, line))
+    discovered_in_ids = [nid for d, nid, _ in discovered_1hop if d == "in"]
+    discovered_out_ids = [nid for d, nid, _ in discovered_1hop if d == "out"]
+
+    #: Per-category drop-phase flags: the last phase that dropped items in a
+    #: category determines its omit_reason (token > byte > node cap).
+    cap_dropped = {"inbound_callers": False, "outbound_callees": False, "transitive_stubs": False}
+    byte_dropped = {"inbound_callers": False, "outbound_callees": False, "transitive_stubs": False}
+    token_dropped = {"inbound_callers": False, "outbound_callees": False, "transitive_stubs": False}
+
+    for direction, neighbor_id, line in discovered_1hop:
         if neighbor_id in visited:
             continue
         neighbor = _node_row(db, neighbor_id)
@@ -288,6 +337,8 @@ def build_bundle(
             continue
         visited.add(neighbor_id)
         if len(inbound) + len(outbound) >= max_nodes:
+            cap_dropped["inbound_callers"] = True
+            cap_dropped["outbound_callees"] = True
             warnings.append("node_cap_reached: 1-hop neighbors truncated")
             break
 
@@ -317,17 +368,25 @@ def build_bundle(
         level1_ids.append(neighbor_id)
 
     stubs: List[Dict[str, Any]] = []
+    discovered_stub_refs: List[str] = []
     if max_hops >= 2:
         budget = max_nodes - len(visited) + 1
+        stub_seen = set()
         for level1_id in level1_ids:
             if budget <= 0:
+                cap_dropped["transitive_stubs"] = True
                 warnings.append("node_cap_reached: 2-hop stubs truncated")
                 break
             for _direction, neighbor_id, _line in _neighbors(db, level1_id):
-                if neighbor_id in visited or budget <= 0:
+                if neighbor_id in visited or neighbor_id in stub_seen:
                     continue
                 neighbor = _node_row(db, neighbor_id)
                 if neighbor is None or neighbor["kind"] == "file":
+                    continue
+                stub_seen.add(neighbor_id)
+                discovered_stub_refs.append(neighbor["fqn"] or neighbor["symbol"])
+                if budget <= 0:
+                    cap_dropped["transitive_stubs"] = True
                     continue
                 visited.add(neighbor_id)
                 budget -= 1
@@ -339,26 +398,61 @@ def build_bundle(
     # Hard byte cap: keep target + inbound contracts; drop from the tail.
     # Load trusted instructions first so the cap accounts for them too.
     trusted = _load_trusted_instructions(root, max_bytes)
+    trusted_discovered = trusted is not None
+
+    def _initial_accounting() -> Dict[str, Dict[str, Any]]:
+        return {
+            "instructions": {
+                "discovered": 1 if trusted_discovered else 0,
+                "returned": 1 if trusted_discovered else 0,
+                "omitted": 0,
+            },
+            "target_source": {
+                "discovered": 1,
+                "returned": 1 if full_source is not None else 0,
+                "omitted": 0 if full_source is not None else 1,
+            },
+            "inbound_callers": {
+                "discovered": len(discovered_in_ids),
+                "returned": len(inbound),
+                "omitted": max(0, len(discovered_in_ids) - len(inbound)),
+            },
+            "outbound_callees": {
+                "discovered": len(discovered_out_ids),
+                "returned": len(outbound),
+                "omitted": max(0, len(discovered_out_ids) - len(outbound)),
+            },
+            "transitive_stubs": {
+                "discovered": len(discovered_stub_refs),
+                "returned": len(stubs),
+                "omitted": max(0, len(discovered_stub_refs) - len(stubs)),
+            },
+        }
 
     def _approx_bytes() -> int:
         draft = {
             "schema_version": BUNDLE_SCHEMA_VERSION,
             "bundle_id": "bundle:preview",
             "base_generation": base_generation,
+            "snapshot_generation": snapshot_generation,
             "generated_at": int(time.time()),
             "content_is_untrusted": True,
+            # Size-only placeholder: the honest value is synced before render.
+            "completeness": _COMPLETENESS_WITHIN_INDEX,
+            "resolution": resolution,
             "trusted_instructions": trusted,
             "target": target_block,
             "inbound_callers": inbound,
             "outbound_callees": outbound,
             "transitive_stubs": stubs,
+            "accounting": _initial_accounting(),
             "limits": {
                 "max_hops": max_hops,
                 "max_nodes": max_nodes,
                 "max_bytes": max_bytes,
                 "max_tokens": max_tokens,
                 "tokens_estimate": 0,
-                "discovered_nodes": len(visited),
+                "discovered_nodes": 1 + len(seen_1hop) + len(discovered_stub_refs),
                 "returned_nodes": 1 + len(inbound) + len(outbound) + len(stubs),
                 "truncated": False,
                 "warnings": warnings,
@@ -368,9 +462,11 @@ def build_bundle(
     truncated = False
     while _approx_bytes() > max_bytes and stubs:
         stubs.pop()
+        byte_dropped["transitive_stubs"] = True
         truncated = True
     while _approx_bytes() > max_bytes and outbound:
         outbound.pop()
+        byte_dropped["outbound_callees"] = True
         truncated = True
     # Build draft bundle
     bundle = {
@@ -379,20 +475,24 @@ def build_bundle(
             f"{node['id']}:{base_generation}".encode()
         ).hexdigest()[:12],
         "base_generation": base_generation,
+        "snapshot_generation": snapshot_generation,
         "generated_at": int(time.time()),
         # Security gate: source-derived payloads are data, never instructions.
         "content_is_untrusted": True,
+        "completeness": _COMPLETENESS_WITHIN_INDEX,
+        "resolution": resolution,
         "target": target_block,
         "inbound_callers": inbound,
         "outbound_callees": outbound,
         "transitive_stubs": stubs,
+        "accounting": _initial_accounting(),
         "limits": {
             "max_hops": max_hops,
             "max_nodes": max_nodes,
             "max_bytes": max_bytes,
             "max_tokens": max_tokens,
             "tokens_estimate": 0,
-            "discovered_nodes": len(visited),
+            "discovered_nodes": 1 + len(seen_1hop) + len(discovered_stub_refs),
             "returned_nodes": 1 + len(inbound) + len(outbound) + len(stubs),
             "truncated": truncated,
             "warnings": warnings,
@@ -401,104 +501,218 @@ def build_bundle(
     if trusted is not None:
         bundle["trusted_instructions"] = trusted
 
+    def _refresh_accounting() -> None:
+        """Recompute per-category discovered/returned/omitted from live state."""
+        def reason_for(category: str) -> Optional[str]:
+            if token_dropped[category]:
+                return "token_budget_exhausted"
+            if byte_dropped[category]:
+                return "byte_budget_exhausted"
+            if cap_dropped[category]:
+                return "node_cap"
+            return None
+
+        accounting: Dict[str, Dict[str, Any]] = {}
+        if trusted_discovered:
+            present = bundle.get("trusted_instructions") is not None
+            inst_truncated = any("trusted instructions truncated" in w for w in warnings)
+            entry: Dict[str, Any] = {
+                "discovered": 1,
+                "returned": 1 if present else 0,
+                "omitted": 0 if present else 1,
+            }
+            if not present:
+                entry["omit_reason"] = "token_budget_exhausted"
+            elif inst_truncated:
+                entry["truncated"] = True
+                entry["omit_reason"] = "token_budget_exhausted"
+            accounting["instructions"] = entry
+
+        if full_source is None:
+            # Seed never rendered: the recorded span was unusable, not budget.
+            src_reason = "span_unavailable"
+            if not any(w.startswith(("span_unavailable", "span_empty")) for w in warnings):
+                src_reason = "budget_exhausted"
+            accounting["target_source"] = {
+                "discovered": 1, "returned": 0, "omitted": 1, "omit_reason": src_reason,
+            }
+        else:
+            src_now = target_block.get("full_source")
+            src_entry: Dict[str, Any] = {
+                "discovered": 1,
+                "returned": 0 if src_now == "" else 1,
+                "omitted": 1 if src_now == "" else 0,
+            }
+            if src_now == "":
+                src_entry["omit_reason"] = "token_budget_exhausted"
+            elif any("full_source truncated" in w for w in warnings):
+                src_entry["truncated"] = True
+                src_entry["omit_reason"] = "token_budget_exhausted"
+            accounting["target_source"] = src_entry
+
+        neighbor_state = (
+            ("inbound_callers", discovered_in_ids, [c["node_id"] for c in inbound]),
+            ("outbound_callees", discovered_out_ids, [c["node_id"] for c in outbound]),
+            ("transitive_stubs", discovered_stub_refs, [s["fqn"] for s in stubs]),
+        )
+        for category, discovered_refs, returned_refs in neighbor_state:
+            returned_set = set(returned_refs)
+            omitted_refs = [ref for ref in discovered_refs if ref not in returned_set]
+            entry = {
+                "discovered": len(discovered_refs),
+                "returned": len(returned_refs),
+                "omitted": len(omitted_refs),
+            }
+            if omitted_refs:
+                entry["omit_reason"] = reason_for(category) or "budget_exhausted"
+                # Sample of refs so the caller can fetch the remainder.
+                entry["omitted_refs"] = omitted_refs[:_OMITTED_REFS_SAMPLE]
+            accounting[category] = entry
+        bundle["accounting"] = accounting
+
+    def _sync_honesty() -> None:
+        truncated_now = bool(bundle["limits"]["truncated"])
+        bundle["completeness"] = (
+            _COMPLETENESS_TRUNCATED if truncated_now else _COMPLETENESS_WITHIN_INDEX
+        )
+        if truncated_now:
+            bundle["absence_interpretation"] = _ABSENCE_INTERPRETATION
+        else:
+            bundle.pop("absence_interpretation", None)
+
+    def _measured_yaml() -> str:
+        _refresh_accounting()
+        _sync_honesty()
+        return render_yaml(bundle)
+
     # Hard token budget enforcement if max_tokens is provided
     if max_tokens is not None:
         if max_tokens < 32:
             raise PackError("BUDGET_TOO_SMALL", f"max_tokens ({max_tokens}) is too small to fit target block metadata (minimum 32 tokens required)")
-        rendered = render_yaml(bundle)
+        rendered = _measured_yaml()
         tok_count = estimate_tokens(rendered)
-        while tok_count > max_tokens and stubs:
-            stubs.pop()
-            bundle["transitive_stubs"] = stubs
-            bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
-            truncated = True
-            bundle["limits"]["truncated"] = True
-            rendered = render_yaml(bundle)
-            tok_count = estimate_tokens(rendered)
-
-        while tok_count > max_tokens and outbound:
-            outbound.pop()
-            bundle["outbound_callees"] = outbound
-            bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
-            truncated = True
-            bundle["limits"]["truncated"] = True
-            rendered = render_yaml(bundle)
-            tok_count = estimate_tokens(rendered)
-
-        while tok_count > max_tokens and inbound:
-            inbound.pop()
-            bundle["inbound_callers"] = inbound
-            bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
-            truncated = True
-            bundle["limits"]["truncated"] = True
-            rendered = render_yaml(bundle)
-            tok_count = estimate_tokens(rendered)
-
-        if tok_count > max_tokens and target_block.get("full_source"):
-            # Target span truncation
-            overhead_tokens = estimate_tokens(render_yaml({**bundle, "target": {**target_block, "full_source": ""}}))
-            avail_source_tokens = max(16, max_tokens - overhead_tokens)
-            trunc_src, is_trunc, _ = truncate_to_token_budget(target_block["full_source"], avail_source_tokens)
-            if is_trunc:
-                target_block["full_source"] = trunc_src
+        # Truncation itself costs tokens (completeness flips to PARTIAL, the
+        # absence note and accounting refs appear, estimate digits change), so
+        # a single pruning pass can land just above budget. Iterate until the
+        # measured render fits or nothing is left to cut; fail closed then.
+        for _pass in range(8):
+            progressed = False
+            while tok_count > max_tokens and stubs:
+                stubs.pop()
+                bundle["transitive_stubs"] = stubs
+                bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
                 truncated = True
                 bundle["limits"]["truncated"] = True
-                warnings.append("token_cap_reached: target full_source truncated")
-                rendered = render_yaml(bundle)
+                token_dropped["transitive_stubs"] = True
+                progressed = True
+                rendered = _measured_yaml()
                 tok_count = estimate_tokens(rendered)
 
-        if tok_count > max_tokens and bundle.get("trusted_instructions"):
-            inst_block = bundle["trusted_instructions"]
-            inst_text = inst_block.get("content", "")
-            if inst_text:
-                avail_inst_tokens = max(16, max_tokens // 4)
-                trunc_inst, is_trunc_inst, _ = truncate_to_token_budget(inst_text, avail_inst_tokens)
-                if is_trunc_inst:
-                    inst_block["content"] = trunc_inst
+            while tok_count > max_tokens and outbound:
+                outbound.pop()
+                bundle["outbound_callees"] = outbound
+                bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
+                truncated = True
+                bundle["limits"]["truncated"] = True
+                token_dropped["outbound_callees"] = True
+                progressed = True
+                rendered = _measured_yaml()
+                tok_count = estimate_tokens(rendered)
+
+            while tok_count > max_tokens and inbound:
+                inbound.pop()
+                bundle["inbound_callers"] = inbound
+                bundle["limits"]["returned_nodes"] = 1 + len(inbound) + len(outbound) + len(stubs)
+                truncated = True
+                bundle["limits"]["truncated"] = True
+                token_dropped["inbound_callers"] = True
+                progressed = True
+                rendered = _measured_yaml()
+                tok_count = estimate_tokens(rendered)
+
+            if tok_count > max_tokens and target_block.get("full_source"):
+                # Target span truncation
+                overhead_tokens = estimate_tokens(render_yaml({**bundle, "target": {**target_block, "full_source": ""}}))
+                avail_source_tokens = max(16, max_tokens - overhead_tokens)
+                trunc_src, is_trunc, _ = truncate_to_token_budget(target_block["full_source"], avail_source_tokens)
+                if is_trunc:
+                    target_block["full_source"] = trunc_src
                     truncated = True
                     bundle["limits"]["truncated"] = True
-                    warnings.append("token_cap_reached: trusted instructions truncated")
-                    rendered = render_yaml(bundle)
+                    progressed = True
+                    warnings.append("token_cap_reached: target full_source truncated")
+                    rendered = _measured_yaml()
                     tok_count = estimate_tokens(rendered)
 
-        # Strict budget enforcement: if still exceeding max_tokens, drop remaining components or truncate cleanly
-        if tok_count > max_tokens and bundle.get("trusted_instructions"):
-            del bundle["trusted_instructions"]
-            truncated = True
-            bundle["limits"]["truncated"] = True
-            warnings.append("token_cap_reached: trusted instructions omitted")
-            rendered = render_yaml(bundle)
-            tok_count = estimate_tokens(rendered)
+            if tok_count > max_tokens and bundle.get("trusted_instructions"):
+                inst_block = bundle["trusted_instructions"]
+                inst_text = inst_block.get("content", "")
+                if inst_text:
+                    avail_inst_tokens = max(16, max_tokens // 4)
+                    trunc_inst, is_trunc_inst, _ = truncate_to_token_budget(inst_text, avail_inst_tokens)
+                    if is_trunc_inst:
+                        inst_block["content"] = trunc_inst
+                        truncated = True
+                        bundle["limits"]["truncated"] = True
+                        progressed = True
+                        warnings.append("token_cap_reached: trusted instructions truncated")
+                        rendered = _measured_yaml()
+                        tok_count = estimate_tokens(rendered)
 
-        if tok_count > max_tokens and target_block.get("full_source"):
-            # Truncate source further down if needed
-            while tok_count > max_tokens and target_block.get("full_source"):
-                curr_src = target_block["full_source"]
-                if len(curr_src) <= 50:
-                    target_block["full_source"] = ""
-                else:
-                    new_len = len(curr_src) // 2
-                    trunc_candidate = curr_src[:new_len] + "\n# ... truncated ..."
-                    if len(trunc_candidate) >= len(curr_src):
-                        trunc_candidate = curr_src[:new_len]
-                    target_block["full_source"] = trunc_candidate
+            # Strict budget enforcement: if still exceeding max_tokens, drop remaining components or truncate cleanly
+            if tok_count > max_tokens and bundle.get("trusted_instructions"):
+                del bundle["trusted_instructions"]
                 truncated = True
                 bundle["limits"]["truncated"] = True
-                rendered = render_yaml(bundle)
+                progressed = True
+                warnings.append("token_cap_reached: trusted instructions omitted")
+                rendered = _measured_yaml()
                 tok_count = estimate_tokens(rendered)
-        # Stable token estimation & final validation
-        tok_est = estimate_tokens(render_yaml(bundle))
-        bundle["limits"]["tokens_estimate"] = tok_est
-        rendered = render_yaml(bundle)
-        tok_count = estimate_tokens(rendered)
-        if tok_count != tok_est:
-            bundle["limits"]["tokens_estimate"] = tok_count
-            rendered = render_yaml(bundle)
-            tok_count = estimate_tokens(rendered)
 
-        if tok_count > max_tokens:
+            if tok_count > max_tokens and target_block.get("full_source"):
+                # Truncate source further down if needed
+                while tok_count > max_tokens and target_block.get("full_source"):
+                    curr_src = target_block["full_source"]
+                    if len(curr_src) <= 50:
+                        target_block["full_source"] = ""
+                    else:
+                        new_len = len(curr_src) // 2
+                        trunc_candidate = curr_src[:new_len] + "\n# ... truncated ..."
+                        if len(trunc_candidate) >= len(curr_src):
+                            trunc_candidate = curr_src[:new_len]
+                        target_block["full_source"] = trunc_candidate
+                    truncated = True
+                    bundle["limits"]["truncated"] = True
+                    progressed = True
+                    rendered = _measured_yaml()
+                    tok_count = estimate_tokens(rendered)
+
+            # Stable token estimation & final validation. Writing the real
+            # estimate can change its own digit width, so re-measure until the
+            # reported number matches the rendered bundle exactly.
+            tok_est = estimate_tokens(_measured_yaml())
+            bundle["limits"]["tokens_estimate"] = tok_est
+            tok_count = estimate_tokens(_measured_yaml())
+            if tok_count != tok_est:
+                bundle["limits"]["tokens_estimate"] = tok_count
+                tok_count = estimate_tokens(_measured_yaml())
+
+            if tok_count <= max_tokens:
+                break
+            if not progressed and not (
+                stubs or outbound or inbound
+                or bundle.get("trusted_instructions")
+                or target_block.get("full_source")
+            ):
+                raise PackError("BUDGET_TOO_SMALL", f"rendered bundle ({tok_count} tokens) exceeds budget ({max_tokens} tokens)")
+            # Writing the real estimate can push the render a token or two
+            # over (digit width); loop back into pruning with the re-measured
+            # count instead of failing while content remains to cut.
+        else:
             raise PackError("BUDGET_TOO_SMALL", f"rendered bundle ({tok_count} tokens) exceeds budget ({max_tokens} tokens)")
     else:
+        _refresh_accounting()
+        _sync_honesty()
         tok_est = estimate_tokens(render_yaml(bundle))
         bundle["limits"]["tokens_estimate"] = tok_est
         rendered = render_yaml(bundle)
@@ -567,8 +781,25 @@ def render_yaml(bundle: Dict[str, Any]) -> str:
     out.append(f"schema_version: {_yaml_scalar(bundle['schema_version'])}")
     out.append(f"bundle_id: {_yaml_scalar(bundle['bundle_id'])}")
     out.append(f"base_generation: {bundle['base_generation']}")
+    if "snapshot_generation" in bundle:
+        out.append(f"snapshot_generation: {bundle['snapshot_generation']}")
     out.append(f"generated_at: {bundle['generated_at']}")
     out.append(f"content_is_untrusted: {_yaml_scalar(bundle['content_is_untrusted'])}")
+    completeness = bundle.get("completeness")
+    if completeness:
+        out.append(f"completeness: {_yaml_scalar(completeness)}")
+    resolution = bundle.get("resolution")
+    if resolution:
+        # Flow-style: honesty metadata must not crowd code context out of
+        # tight token budgets, so each block renders on a single line.
+        parts = []
+        for key in ("status", "query", "selected_fqn", "method"):
+            if resolution.get(key):
+                parts.append(f"{key}: {_yaml_scalar(resolution[key])}")
+        candidates = resolution.get("candidates") or []
+        if candidates:
+            parts.append("candidates: [" + ", ".join(_yaml_scalar(c) for c in candidates) + "]")
+        out.append(f"resolution: {{{', '.join(parts)}}}")
     trusted = bundle.get("trusted_instructions")
     if trusted:
         out.append("")
@@ -577,6 +808,12 @@ def render_yaml(bundle: Dict[str, Any]) -> str:
         out.append(f"  bytes: {trusted['bytes']}")
         out.append(f"  content_is_untrusted: {_yaml_scalar(trusted['content_is_untrusted'])}")
         out.append(f"  content: {_yaml_block(trusted['content'], 4)}")
+    absence = bundle.get("absence_interpretation")
+    if absence:
+        # Anti-inference gate: sits directly above the neighbor sections so a
+        # reader cannot mistake empty/short lists for "no callers exist".
+        out.append("")
+        out.append(f"absence_interpretation: {_yaml_scalar(absence)}")
     out.append("")
     out.append("target:")
     for key in ("node_id", "fqn", "symbol", "kind", "relative_path", "trust_verdict",
@@ -641,4 +878,20 @@ def render_yaml(bundle: Dict[str, Any]) -> str:
             out.append(f"    - {_yaml_scalar(warning)}")
     else:
         out.append("  warnings: []")
+    accounting = bundle.get("accounting")
+    if accounting:
+        out.append("")
+        out.append("accounting:")
+        for category, entry in accounting.items():
+            parts = []
+            for key in ("discovered", "returned", "omitted"):
+                parts.append(f"{key}: {entry.get(key, 0)}")
+            if entry.get("omit_reason"):
+                parts.append(f"omit_reason: {_yaml_scalar(entry['omit_reason'])}")
+            if entry.get("truncated"):
+                parts.append("truncated: true")
+            refs = entry.get("omitted_refs") or []
+            if refs:
+                parts.append("omitted_refs: [" + ", ".join(_yaml_scalar(r) for r in refs) + "]")
+            out.append(f"  {category}: {{{', '.join(parts)}}}")
     return "\n".join(out) + "\n"

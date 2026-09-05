@@ -916,7 +916,13 @@ def cmd_pack(args: argparse.Namespace, db: Database, root: str) -> int:
         print(f"❌ pack failed [{exc.code}]: {exc}{detail}")
         return 2
     if getattr(args, "json", False):
-        envelope = wrap_envelope(bundle, db=db, project_root=root)
+        # One interpretation shared with MCP: honesty fields come straight
+        # from the bundle, never re-derived per surface.
+        envelope = wrap_envelope(
+            bundle, db=db, project_root=root,
+            completeness=bundle.get("completeness", "COMPLETE_WITHIN_INDEX_CAPABILITY"),
+            truncated=bool(bundle.get("limits", {}).get("truncated", False)),
+        )
         payload_json = json.dumps(envelope, indent=2)
         if args.output:
             os.makedirs(os.path.dirname(os.path.abspath(args.output)) or ".", exist_ok=True)
@@ -934,6 +940,7 @@ def cmd_pack(args: argparse.Namespace, db: Database, root: str) -> int:
         print(
             f"📦 ContextBundle {bundle['bundle_id']} -> {args.output} "
             f"({bundle['limits']['returned_nodes']} nodes, "
+            f"completeness={bundle.get('completeness', 'COMPLETE_WITHIN_INDEX_CAPABILITY')}, "
             f"truncated={str(bundle['limits']['truncated']).lower()})"
         )
     else:

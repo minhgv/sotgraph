@@ -1330,6 +1330,9 @@ class McpService:
                 "ok": True,
                 "status": "success",
                 "yaml": render_yaml(bundle),
+                # Same honesty fields as the CLI envelope: read from the
+                # bundle itself, never re-derived per surface.
+                "completeness": bundle.get("completeness", "COMPLETE_WITHIN_INDEX_CAPABILITY"),
                 "limits": bundle["limits"],
                 "providers": self._providers(conn),
             })

@@ -350,8 +350,10 @@ class Sprint4CompassAndPackTests(unittest.TestCase):
 
     def test_pack_hard_token_budget_pruning(self):
         """Verify build_bundle strictly enforces max_tokens by dropping stubs/callees and truncating."""
-        # Request a tight budget e.g. 350 tokens
-        tight_budget = 350
+        # SG-202: honesty metadata (completeness/accounting/resolution) raised
+        # the non-droppable metadata floor (~576 here), so the tight budget
+        # sits at 600 — below the natural size (655) but above the floor.
+        tight_budget = 600
         bundle_tight = build_bundle(self.db, self.test_dir, "MainService.process", max_tokens=tight_budget)
         tight_tokens = bundle_tight["limits"]["tokens_estimate"]
         self.assertTrue(bundle_tight["limits"]["truncated"])
