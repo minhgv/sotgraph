@@ -1,7 +1,6 @@
 """v2 upgrade acceptance tests: binding-aware resolution, CAS publication,
 schema v2, ContextBundle packaging, watcher, and determinism locks."""
 
-import os
 import shutil
 import sqlite3
 import sys
@@ -14,10 +13,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from sot_graph.db import SCHEMA_VERSION, Database
-from sot_graph.extractor import parse_file_graph
-from sot_graph.locking import LockBusy, WriteLock
-from sot_graph.reconciler import Reconciler
+from sot_graph.db import SCHEMA_VERSION, Database  # noqa: E402
+from sot_graph.extractor import parse_file_graph  # noqa: E402
+from sot_graph.locking import LockBusy, WriteLock  # noqa: E402
+from sot_graph.reconciler import Reconciler  # noqa: E402
 
 
 class TempProject(unittest.TestCase):
@@ -428,11 +427,20 @@ class PackTests(TempProject):
             self.pack("does_not_exist")
         self.assertEqual(ctx.exception.code, "TARGET_NOT_FOUND")
 
-    def test_target_too_large_fails_closed(self):
-        from sot_graph.pack import PackError
-        with self.assertRaises(PackError) as ctx:
-            self.pack("endpoint", max_bytes=16)
-        self.assertEqual(ctx.exception.code, "TARGET_TOO_LARGE")
+    def test_target_oversize_source_delivered_truncated(self):
+        # SG-202 contract change: an oversize span no longer fails the whole
+        # bundle closed. The bundle returns identity metadata plus a source
+        # prefix bounded by max_bytes, with the truncation explicit in the
+        # warning list and the accounting (never silent).
+        bundle = self.pack("endpoint", max_bytes=16)
+        source = bundle["target"]["full_source"]
+        self.assertTrue(source)
+        self.assertLessEqual(len(source.encode("utf-8")), 16)
+        self.assertTrue(bundle["limits"]["truncated"])
+        self.assertTrue(
+            any("target_source_oversize" in w for w in bundle["limits"]["warnings"]))
+        self.assertEqual(
+            bundle["accounting"]["target_source"]["truncated"], True)
 
     def test_stale_snapshot_detected(self):
         from sot_graph.pack import PackError
@@ -446,7 +454,7 @@ class PackTests(TempProject):
         self.assertEqual(ctx.exception.code, "STALE_SNAPSHOT")
 
     def test_yaml_rendering(self):
-        from sot_graph.pack import build_bundle, render_yaml
+        from sot_graph.pack import render_yaml
         text = render_yaml(self.pack("endpoint"))
         self.assertTrue(text.startswith("schema_version:"))
         self.assertIn("content_is_untrusted: true", text)

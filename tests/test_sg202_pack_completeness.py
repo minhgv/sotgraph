@@ -169,8 +169,11 @@ class SG202PackCompletenessTests(unittest.TestCase):
 
         out_entry = acct["outbound_callees"]
         self.assertEqual(out_entry["discovered"], out_entry["returned"] + out_entry["omitted"])
-        self.assertGreater(out_entry["omitted"], 0)
-        self.assertEqual(out_entry["omit_reason"], "node_cap")
+        # SG-202 priority selection: the direct contract outranks surplus
+        # callers, so the node cap retains the callee (no omission, no
+        # omit_reason) and spends the cap budget on callers instead.
+        self.assertEqual(out_entry["omitted"], 0)
+        self.assertNotIn("omit_reason", out_entry)
 
     def test_accounting_token_budget_reason_with_refs(self):
         full = build_bundle(self.db, self.test_dir, "service_main")
