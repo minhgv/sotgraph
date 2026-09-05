@@ -22,7 +22,7 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ### Core Value Pillars
 
-1. **Verified Anchors (advisory)**: The filesystem is the single source of truth. Every symbol anchor is physically span-verified on disk with confidence scores and Trust Verdicts (`[STRONG]`, `[WEAK]`, `[REBUILT]`); semantic fit and exhaustiveness are NOT guaranteed — read the snippet and treat absence claims as scope-bounded.
+1. **Verified Anchors (advisory)**: The filesystem is the single source of truth. Search reports anchor verification through four per-hit axes (`hit.axes`) — `anchor_freshness` (indexed anchor vs disk), `identity` (whole-index bare-symbol uniqueness, not true compiler resolution), `query_relevance` (lexical heuristic: `exact` | `semantic` = raw-query token coverage | `weak` | `unknown`; not calibrated, not correctness), `scope_completeness` (always `unknown` per hit; result-set coverage is asserted separately as `result_set.scope_completeness`, e.g. `bounded` — never repo-wide). Legacy verdict labels (`[STRONG]`, `[WEAK]`, `[REBUILT]`) are backward-compatibility only; some anchors are unmeasurable (`unknown`/nopath), semantic fit and exhaustiveness are NOT guaranteed — read the snippet and treat absence claims as scope-bounded.
 2. **Multi-Provider Provenance Ledger (Schema v8)**: Transparently records fast AST Heuristics (`AST_HEURISTIC_PARSER`), compiler-backed SCIP indices (`COMPILER_INDEXED_SYMBOLS`), and external provider telemetry (Codebase Memory) in dedicated `provider_runs` and `provider_evidence` tables.
 3. **Bounded Impact Trust Chain & Canonical Root Isolation**: Strictly evaluates scope coverage through a fail-closed 6-state decision machine (`ASSURED_WITHIN_SCOPE`, `PARTIAL`, `CONFLICTED`, `STALE`, `UNVERIFIABLE`, `ABSTAINED`). Enforces canonical `os.path.realpath` bounding across DB persistence and ledger queries, preventing cross-repository evidence leakage and symlink retarget exploits in multi-tenant environments.
 4. **Token-Bounded Context Packaging (`sot pack`)**: Extracts exact target spans (L0) + 1-hop caller/callee contracts (L1) + 2-hop signature stubs (L2) within strict hard token budgets (`--tokens` / `--max-tokens`), preventing prompt bloat.
@@ -144,7 +144,7 @@ sot vacuum --analyze
 
 ### 2. Pure-Read Code Search & Trust Verdicts
 ```bash
-# Ranked symbol search with Trust Verdicts ([STRONG], [WEAK], [REBUILT])
+# Ranked symbol search — per-hit trust axes (anchor_freshness, identity, query_relevance, scope_completeness); legacy [STRONG]/[WEAK]/[REBUILT] labels are compat-only
 sot search "Database.commit_file_batch"
 
 # Search scoped to specific path or module

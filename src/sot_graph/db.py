@@ -377,6 +377,33 @@ def exact_bare_name_flags(symbols: Sequence[Optional[str]],
     return flags
 
 
+def identity_name_counts(conn: Any, identity_names: Sequence[Optional[str]]) -> Dict[str, int]:
+    """Count indexed nodes sharing each identity name over the ENTIRE
+    graph_nodes table (never just the returned candidates) — the measured
+    basis for the identity axis: count == 1 -> unique, > 1 -> ambiguous.
+
+    A node's identity name is its ``symbol`` (bare name) with fallback to
+    ``label``; the count is one batched ``IN`` query for the whole hit list
+    (no per-hit N+1). Unmeasurable inputs stay absent from the mapping so
+    callers treat a missing key as axis-unknown.
+    """
+    wanted = sorted({(n or "").strip() for n in identity_names if n and str(n).strip()})
+    if not wanted:
+        return {}
+    placeholders = ",".join("?" for _ in wanted)
+    try:
+        rows = conn.execute(
+            f"SELECT COALESCE(NULLIF(symbol, ''), label) AS ident, COUNT(*) AS c "
+            f"FROM graph_nodes "
+            f"WHERE COALESCE(NULLIF(symbol, ''), label) IN ({placeholders}) "
+            f"GROUP BY ident",
+            wanted,
+        ).fetchall()
+    except sqlite3.Error:
+        return {}
+    return {r[0]: int(r[1]) for r in rows if r[0]}
+
+
 def fts_rank_tier(kind: str, text: str, query_parts: Set[str]) -> Tuple[int, int]:
     """Coarse relevance tier shared by Database.search_fts and the MCP
     search ranker: ``(name_hit_tier, file_demote)``.

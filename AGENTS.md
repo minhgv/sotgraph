@@ -6,7 +6,8 @@ Before implementing any new feature, fix, or refactoring:
 1. Check existing work across projects using the Single Source of Truth search:
    `sot search "<what you are looking for>" --scope <optional-dir> [--json]`
 2. Follow Multi-Provider Trust Verdict Guidance:
-   - `[STRONG]`: High confidence — file and symbols physically verified on disk (Schema v8).
+   - `[STRONG]`: Legacy compat label only — file and symbols physically verified on disk (Schema v8). Trust decisions should read the four per-hit axes (`hit.axes`) reported with each search hit (see below).
+   - Per-hit trust axes (`hit.axes`): `anchor_freshness`; `identity` (whole-index bare-symbol uniqueness — NOT true compiler resolution); `query_relevance` (lexical heuristic: exact | semantic = query-token overlap | weak | unknown — not calibrated); `scope_completeness` (always `unknown` per hit; result-set coverage is a separate `result_set.scope_completeness`, e.g. `bounded` — never repo-wide).
    - `[WEAK]`: Semantic match only — inspect the file snippet before relying on it.
    - `[REBUILT]`: File has moved location; use the updated reported path.
    - `[REMOVED]`: Node deleted on disk; do NOT reference or hallucinate.
@@ -31,7 +32,8 @@ Before implementing any new feature, fix, or refactoring:
 Before writing any new utility, helper function, or class:
 1. Run `sot search "<keyword>" [--json]` or use the `sot_search` MCP tool (Pure-Read Search; never mutates SQLite).
 2. Check Multi-Provider Trust Verdicts:
-   - `[STRONG]`: Code physically exists and is verified on disk (`confidence ≥ 0.9`).
+   - `[STRONG]`: Legacy compat label only; code physically exists and is verified on disk. Trust decisions should read the four per-hit axes (`hit.axes`) reported with each search hit:
+     `anchor_freshness`; `identity` (whole-index bare-symbol uniqueness — NOT true compiler resolution); `query_relevance` (lexical heuristic: exact | semantic = query-token overlap | weak | unknown — not calibrated); `scope_completeness` (always `unknown` per hit; result-set coverage is a separate `result_set.scope_completeness`, e.g. `bounded` — never repo-wide).
    - `[WEAK]`: Semantic match only; inspect the file snippet before relying on it.
    - `[REBUILT]`: File was moved; use the updated path.
    - `[REMOVED]`: Node deleted on disk; do NOT reference.

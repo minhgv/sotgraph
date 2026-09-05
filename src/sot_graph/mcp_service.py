@@ -12,13 +12,12 @@ import hashlib
 import inspect
 import json
 import os
-import re
 import sqlite3
 import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, cast
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 from urllib.parse import quote
 
 from sot_graph.analytics.graph import OperationCancelledError
@@ -27,6 +26,13 @@ from sot_graph.db import (
     exact_bare_name_flags,
     fts_query_terms,
     fts_rank_tier,
+    identity_name_counts,
+)
+from sot_graph.evidence import (
+    AXES_SCHEMA_VERSION,
+    AXES_SEMANTICS,
+    LEGACY_VERDICT_NOTE,
+    derive_trust_axes,
 )
 from sot_graph.verifier import TrustVerifier, tokenize
 from sot_graph.assurance import assured_query_context
@@ -741,6 +747,14 @@ class McpService:
                     "stale": 0,
                     "policy": policy_meta,
                     "providers": self._providers(conn),
+                    "axes_schema_version": AXES_SCHEMA_VERSION,
+                    "axes_semantics": AXES_SEMANTICS,
+                    "legacy_verdict_note": LEGACY_VERDICT_NOTE,
+                    "result_set": {
+                        "scope_completeness": "bounded",
+                        "note": ("limit/scope-bounded within index capability; "
+                                 "not a repo-coverage or exhaustiveness claim"),
+                    },
                 }
                 if assurance:
                     resp["coverage"] = self._coverage_note(conn)
@@ -749,7 +763,7 @@ class McpService:
         expr = " OR ".join(sorted(tokens))
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
-            sql = """SELECT k.id,k.path,k.kind,k.symbol,k.label,k.body,k.keywords,k.line_start,
+            sql = """SELECT k.id,k.path,k.kind,k.symbol,k.label,k.fqn,k.body,k.keywords,k.line_start,
                       bm25(graph_fts) AS rank_score
                       FROM graph_fts f JOIN graph_nodes k ON f.rowid=k.rowid
                       WHERE graph_fts MATCH ?"""
@@ -769,6 +783,10 @@ class McpService:
             # prefix-only / body-coincidental matches.
             flags = exact_bare_name_flags(
                 [row["symbol"] for row in rows], parts_l)
+            # Identity-axis basis: one COUNT over the ENTIRE index per label
+            # set (batched, no per-hit N+1).
+            counts = identity_name_counts(
+                conn, [row["symbol"] or row["label"] for row in rows])
 
             def _bucket(pair: Any) -> Tuple[int, int, int, float]:
                 row, flag = pair
@@ -795,6 +813,21 @@ class McpService:
                 rel = self._relative_path(real or candidate.get("path"))
                 if candidate.get("path") and rel is None:
                     verdict = "STALE"
+                evd = evidence.to_dict()
+                # Four-axes interface (P1-3): measured, independent trust
+                # dimensions. `verdict` stays legacy-compat only. In this
+                # path the verifier ran with tokenize(query), so
+                # evidence.coverage IS raw-query token coverage.
+                axes = derive_trust_axes(
+                    evidence,
+                    query=query,
+                    same_identity_count=counts.get(
+                        ((candidate.get("symbol") or candidate.get("label")) or "").strip()),
+                    symbol=candidate.get("symbol") or "",
+                    label=candidate.get("label") or "",
+                    fqn=candidate.get("fqn") or "",
+                    query_token_coverage=evd.get("coverage"),
+                )
                 out.append({
                     "_bucket": bucket,
                     "id": candidate["id"], "verdict": verdict,
@@ -803,7 +836,8 @@ class McpService:
                     "label": candidate["label"], "line": candidate.get("line_start"),
                     "body": self._body(candidate.get("body")),
                     "rank_score": round(float(candidate.get("rank_score") or 0), 6),
-                    "evidence": evidence.to_dict(),
+                    "evidence": evd,
+                    "axes": axes,
                 })
             rank = {"STRONG": 0, "REBUILT": 0, "WEAK": 1, "NOPATH": 2, "STALE": 3}
             out.sort(key=lambda item: (
@@ -820,6 +854,14 @@ class McpService:
                 "policy": policy_meta,
                 "coverage": self._coverage_note(conn) if assurance else None,
                 "providers": self._providers(conn),
+                "axes_schema_version": AXES_SCHEMA_VERSION,
+                "axes_semantics": AXES_SEMANTICS,
+                "legacy_verdict_note": LEGACY_VERDICT_NOTE,
+                "result_set": {
+                    "scope_completeness": "bounded",
+                    "note": ("limit/scope-bounded within index capability; "
+                             "not a repo-coverage or exhaustiveness claim"),
+                },
             })
         return self._run(op)
 

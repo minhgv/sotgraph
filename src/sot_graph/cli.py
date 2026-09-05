@@ -13,7 +13,13 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, cast
 
 import sqlite3
 
-from sot_graph.db import Database
+from sot_graph.db import Database, identity_name_counts
+from sot_graph.evidence import (
+    AXES_SCHEMA_VERSION,
+    AXES_SEMANTICS,
+    LEGACY_VERDICT_NOTE,
+    derive_trust_axes,
+)
 from sot_graph.locking import LockBusy
 from sot_graph.reconciler import Reconciler
 from sot_graph.envelope import wrap_envelope
@@ -234,6 +240,7 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
             "coverage": f"{int((cov or 0) * 100)}%",
             "label": cand["label"],
             "fqn": cand.get("fqn"),
+            "symbol": cand.get("symbol"),
             "path": real_path or cand.get("path") or "",
             "kind": cand["kind"],
             "line": cand.get("line_start"),
@@ -241,6 +248,7 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
             "score": round(cand.get("fused_score", cand["score"]), 6),
             "sources": cand.get("sources"),
             "evidence": evidence.to_dict(),
+            "_ev": evidence,
         })
 
     # P4 ranking: verdict -> exact-identity grade -> provider evidence ->
@@ -260,17 +268,48 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
         )
     verified.sort(key=_p4_sort_key)
     final_list = verified[:args.limit]
+    # Four-axes interface (P1-3): independent, measured dimensions per hit.
+    # The identity COUNT below scans the ENTIRE index (not just candidates).
+    # Legacy `verdict` stays a compatibility field only.
+    counts = identity_name_counts(
+        db.conn, [v.get("symbol") or v.get("label") for v in final_list])
+    for v in final_list:
+        v["axes"] = derive_trust_axes(
+            v.pop("_ev"),
+            query=args.query,
+            same_identity_count=counts.get(
+                (v.get("symbol") or v.get("label") or "").strip()),
+            symbol=v.get("symbol") or "",
+            label=v.get("label") or "",
+            fqn=v.get("fqn") or "",
+            query_token_coverage=v["evidence"].get("coverage"),
+        )
     for v in final_list:
         v.pop("_identity_grade", None)
         v.pop("_evidence_count", None)
 
     if args.json:
-        envelope = wrap_envelope({"query": args.query, "results": final_list}, db=db, project_root=root)
+        data = {
+            "query": args.query,
+            "results": final_list,
+            "axes_schema_version": AXES_SCHEMA_VERSION,
+            "axes_semantics": AXES_SEMANTICS,
+            "legacy_verdict_note": LEGACY_VERDICT_NOTE,
+            "result_set": {
+                "scope_completeness": "bounded",
+                "note": ("result set is limit/scope-bounded within index "
+                         "capability; not a repo-coverage or exhaustiveness "
+                         "claim"),
+            },
+        }
+        envelope = wrap_envelope(data, db=db, project_root=root)
         print(json.dumps(envelope, indent=2))
         return 0
     mode_note = " [hybrid: bm25+vector]" if hybrid and mode == "hybrid" else ""
     print(f"\n🔍 Knowledge Search: \"{args.query}\" (Found: {len(final_list)} verified hits){mode_note}")
     print("=" * 80)
+    print("  ℹ️  verdict = legacy anchor-compat field (never a correctness/coverage claim);"
+          " trust axes per hit below.")
     if not final_list:
         print("  (No verified matching knowledge found in graph)")
         try:
@@ -293,6 +332,11 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
             print(f"      📍 File: {loc}")
         first_line = r['body'].splitlines()[0][:110]
         print(f"      💡 Content: {first_line}...")
+        ax = r.get("axes") or {}
+        print(f"      🧭 anchor={ax.get('anchor_freshness', 'unknown')} "
+              f"identity={ax.get('identity', 'unknown')} "
+              f"relevance={ax.get('query_relevance', 'unknown')} "
+              f"scope={ax.get('scope_completeness', 'unknown')}")
         if r.get("reasons"):
             print(f"      🧾 Rank: {'; '.join(r['reasons'])}")
         print()
