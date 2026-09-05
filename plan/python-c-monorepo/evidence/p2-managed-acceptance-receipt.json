@@ -1,0 +1,209 @@
+{
+ "scratch": "<SCRATCH>",
+ "stages": {
+  "artifacts": "sanitized-only; raw bytes stay in scratch",
+  "env": {
+   "root_bytes": 23,
+   "binary": "<HOME>/.local/bin/codebase-memory-mcp",
+   "binary_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+   "pgrep_pre": [
+    "47134",
+    "66482",
+    "73103",
+    "73104",
+    "73105",
+    "73106",
+    "7917",
+    "8104"
+   ]
+  },
+  "registry": {
+   "per_op_verdict": {
+    "config_set_auto_watch": "compatible",
+    "config_get_auto_watch": "compatible",
+    "index_repository": "compatible",
+    "list_projects": "compatible",
+    "search_graph": "compatible",
+    "index_status": "compatible"
+   },
+   "version": "codebase-memory-mcp 0.10.8",
+   "records": [
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "config_set_auto_watch",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "9f876e3f30b0c2cc4bea5ec2d9dd605ba8594060f1fd5c8d5da34ca898f12b5c",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    },
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "config_get_auto_watch",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    },
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "index_repository",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "059400beff11d4cfe19a8680881fcea348141472dbfc6daef319891e0fd1e778",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    },
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "list_projects",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "5e30ecef011cd6613077865b38c4b9049d79ff16f42e74c3ee5f2ed2a500442c",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    },
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "search_graph",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "de493eef550e4066374752809a5e80cda4c2fdb59c96278e5dc82c215ce77b04",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    },
+    {
+     "schema_version": 1,
+     "provider_name": "codebase-memory",
+     "operation": "index_status",
+     "artifact_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+     "fixture_digest": "8696ccf4eb276db090aa7a4d8c4c8dfdeeac17289c8c4cffdc7c90952d6e5bda",
+     "protocol_compatibility_id": "p2-managed-measured-acceptance-v1",
+     "version": "codebase-memory-mcp 0.10.8",
+     "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+     "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+     "tested_at": "2026-09-05T22:29:24+00:00"
+    }
+   ]
+  },
+  "accept_prepare1": {
+   "status": "ok",
+   "state": "READY",
+   "err": null,
+   "wall": 6.02,
+   "marker_mode": "0o600"
+  },
+  "accept_prepare2": {
+   "status": "ok",
+   "err": null,
+   "wall": 0.0
+  },
+  "accept_sync": {
+   "status": "ok",
+   "payload_status": "indexed",
+   "err": null,
+   "wall": 20.06
+  },
+  "accept_queries": {
+   "search_graph": {
+    "status": "ok",
+    "err": null,
+    "payload_sha256_16": "9fc6d4b5fa6d507a",
+    "payload_keys": [
+     "cols",
+     "has_more",
+     "rows",
+     "search_mode",
+     "total"
+    ],
+    "wall": 8.67
+   },
+   "index_status": {
+    "status": "ok",
+    "err": null,
+    "payload_sha256_16": "21c5cddeaec5beb5",
+    "payload_keys": [
+     "edges",
+     "nodes",
+     "not_indexed",
+     "parse_partial",
+     "project",
+     "root_path",
+     "skipped",
+     "status"
+    ],
+    "wall": 8.64
+   },
+   "list_projects": {
+    "status": "ok",
+    "err": null,
+    "payload_sha256_16": "6cd5bf31ea6cbc34",
+    "payload_keys": [
+     "has_more",
+     "limit",
+     "offset",
+     "projects",
+     "returned",
+     "total"
+    ],
+    "wall": 8.68
+   }
+  },
+  "accept_fs_invariant": "identical",
+  "accept_denied_nospawn": {
+   "trace_path": "denied_operation"
+  },
+  "timebound": {
+   "status": "runtime_refused",
+   "cancel": "cancellation_unknown",
+   "profile_state": "QUARANTINED",
+   "marker_absent": true,
+   "wall": 1.79
+  },
+  "timebound_no_reuse": {
+   "prepare_again": "runtime_refused",
+   "wall": 0.0
+  },
+  "hygiene": {
+   "new_pids_final": "none",
+   "binary_sha256_unchanged": true,
+   "quarantined_namespaces_frozen": {
+    "timebound-NEVER-CLEAR": "<SCRATCH>/m-e504e4eafdf6e04539aab1b2"
+   },
+   "native_wall_total_s": 42.61,
+   "signals_user_or_preexisting": 0,
+   "signals_owned_deadline": "timebound prepare hit the run_command deadline: owned process-group SIGKILL via proc._kill_process_group \u2014 a signal WAS delivered, harness-facilitated, never manual"
+  },
+  "wall_breakdown": {
+   "capture_wall_s": 42.61,
+   "acceptance_wall_s": 52.07,
+   "timeout_wall_s": 1.79,
+   "all_recorded_sum_s": 96.47,
+   "scope": "sums of recorded wall clocks; every wall includes Python/spawn overhead \u2014 NOT a pure native-time breakdown; the 15s timebound observation wait and zero-native stages (prepare2 idempotent, no-reuse, denials) are excluded"
+  },
+  "superseded": {
+   "native_wall_total_s": 42.61,
+   "meaning": "capture-dispatch SUBTOTAL only \u2014 was mislabeled as total in revision 1",
+   "timebound_daemon_terminal": "terminal",
+   "meaning_2": "first-poll pgrep diff empty; does NOT evidence an observed daemon exit"
+  },
+  "timebound_daemon_observation": "no additional daemon observed after timeout; spawning/terminal cause unknown"
+ },
+ "revision_note": "evidence-only revision 2: wall breakdown corrected (42.61 was capture subtotal, not total; precise recorded sum 96.47s incl. Python overhead); budget guard now all-phase in harness source (fix NOT re-validated by a full rerun); daemon-observation verdict corrected; signal accounting corrected (owned deadline SIGKILL counted, zero user/preexisting signals)"
+}

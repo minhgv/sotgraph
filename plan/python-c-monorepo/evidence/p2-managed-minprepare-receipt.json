@@ -1,0 +1,34 @@
+{
+ "scratch": "/private/tmp/p2-minprep-wyw1684d",
+ "prepare_status": "runtime_refused",
+ "runtime_state": "QUARANTINED",
+ "cancellation_state": null,
+ "error": "config_set_auto_watch native receipt invalid (rc=1); native diagnostic withheld",
+ "wall_s": 0.3,
+ "profile_state_after": "QUARANTINED",
+ "marker_exists": false,
+ "socket_path_len_under_profile_env": 163,
+ "sun_path_cap_macos": 104,
+ "quarantined_namespace_left_frozen": "/private/tmp/p2-minprep-wyw1684d/managed-minprep-1ee0eaf2d91509d54f18f5e388a5f5a7-2011f33be65b9814d6d0a3a6e6890aa0",
+ "registry": "PROVISIONAL in-memory lab trial records, placeholder digests, never persisted",
+ "pgrep_pre": [
+  "47134",
+  "66482",
+  "73103",
+  "73104",
+  "73105",
+  "73106",
+  "7917",
+  "8104"
+ ],
+ "pgrep_post": [
+  "47134",
+  "66482",
+  "73103",
+  "73104",
+  "73105",
+  "73106",
+  "7917",
+  "8104"
+ ]
+}
