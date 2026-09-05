@@ -42,7 +42,7 @@ claims:
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.by_class.semantic.hit_at_1
     artifact_value: 1.0
-    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
+    commit: c745b4720b9e3315758b4a2582c7e984718747f7
     capability: search
     language: multi
     provider: builtin-ast
@@ -84,7 +84,7 @@ claims:
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.overall.hit_at_1
     artifact_value: 1.0
-    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
+    commit: c745b4720b9e3315758b4a2582c7e984718747f7
     capability: search
     language: multi
     provider: builtin-ast
@@ -98,7 +98,7 @@ claims:
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.overall.hit_at_1
     artifact_value: 1.0
-    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
+    commit: c745b4720b9e3315758b4a2582c7e984718747f7
     capability: search
     language: multi
     provider: builtin-ast
