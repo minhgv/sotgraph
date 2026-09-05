@@ -312,12 +312,18 @@ class _LimitVisitor(ast.NodeVisitor):
         self.sites: List[LimitSite] = []
         self._seen: Set[Tuple[str, str, str]] = set()
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+    def _visit_function(
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> None:
         self._fn_stack.append(node.name)
         self.generic_visit(node)
         self._fn_stack.pop()
 
-    visit_AsyncFunctionDef = visit_FunctionDef
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_function(node)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_function(node)
 
     def visit_Expr(self, node: ast.Expr) -> None:
         # Docstring / standalone string statement: prose, not SQL.
