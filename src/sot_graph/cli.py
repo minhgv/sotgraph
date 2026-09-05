@@ -1502,6 +1502,69 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
     return 2 if (ass["status"] in blocked_statuses or gate_blocked) else 0
 
 
+def _resolve_receipt_input(ref: str, root: str) -> Dict[str, Any]:
+    """Load one serialized receipt from a file path or a store digest.
+
+    Read-only: file reads plus ReceiptStore.get; the store directory is
+    never created on a read path.
+    """
+    import json
+
+    from sot_graph.assurance.impact_pipeline import (
+        _DIGEST_RE,
+        ReceiptIntegrityError,
+        ReceiptStore,
+    )
+
+    if os.path.isfile(ref):
+        with open(ref, "r", encoding="utf-8", errors="surrogateescape") as fh:
+            return json.load(fh)
+    if _DIGEST_RE.fullmatch(ref):
+        receipts_dir = os.path.join(root, ".sot", "receipts")
+        if not os.path.isdir(receipts_dir):
+            raise FileNotFoundError(
+                f"no receipt store at {receipts_dir}; pass a receipt JSON "
+                "file path instead")
+        try:
+            return ReceiptStore(receipts_dir).get(ref)
+        except KeyError:
+            raise FileNotFoundError(
+                f"digest {ref} not found in {receipts_dir}") from None
+        except ReceiptIntegrityError as exc:
+            raise ValueError(f"receipt failed integrity check: {exc}") from None
+    raise FileNotFoundError(
+        f"{ref!r} is neither an existing receipt file nor a 64-hex digest")
+
+
+def cmd_receipt(args: argparse.Namespace, root: str) -> int:
+    """SG-205: human view / diff of serialized receipts (read-only)."""
+    from sot_graph.receipt_explorer import (
+        UnsupportedReceiptVersion,
+        diff_receipts,
+        gate_receipt_version,
+        render_receipt,
+    )
+    try:
+        old = _resolve_receipt_input(args.receipt, root)
+        if args.receipt_subcommand == "show":
+            gate = gate_receipt_version(old)
+            if gate.state == "legacy":
+                print(f"[!] {gate.banner}", file=sys.stderr)
+            if getattr(args, "json", False):
+                print(json.dumps(old, ensure_ascii=False, indent=2,
+                                 default=str))
+            else:
+                print(render_receipt(old))
+            return 0
+        new = _resolve_receipt_input(args.new_receipt, root)
+        print(diff_receipts(old, new))
+        return 0
+    except (FileNotFoundError, json.JSONDecodeError,
+            UnsupportedReceiptVersion, ValueError) as exc:
+        print(f"❌ receipt: {exc}", file=sys.stderr)
+        return 1
+
+
 def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     from sot_graph.diff_impact import (
         format_diff_impact_github,
@@ -2227,6 +2290,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_sr.add_argument("--auth", action="store_true", help="Change touches auth/tenant logic")
     p_sr.add_argument("--dynamic", action="store_true", help="Change is dynamic-heavy (dispatch/reflection)")
     p_sr.add_argument("--json", action="store_true", help="Output raw JSON receipt")
+    p_receipt = subparsers.add_parser(
+        "receipt", help="Human-readable view of serialized assurance receipts (read-only, SG-205)")
+    receipt_subs = p_receipt.add_subparsers(dest="receipt_subcommand", required=True)
+    p_receipt_show = receipt_subs.add_parser(
+        "show", help="Render ONE serialized receipt for humans (claim, scope, outside-scope, evidence, downgrade, remediation)")
+    p_receipt_show.add_argument("receipt", help="Path to a receipt JSON file, or a 64-hex digest resolved from <root>/.sot/receipts/")
+    p_receipt_show.add_argument("--json", action="store_true", help="Print the raw receipt JSON (version gate still applies)")
+    p_receipt_diff = receipt_subs.add_parser(
+        "diff", help="Field-level diff of TWO serialized receipts (before/after)")
+    p_receipt_diff.add_argument("receipt", help="Old receipt: JSON file path or 64-hex digest")
+    p_receipt_diff.add_argument("new_receipt", help="New receipt: JSON file path or 64-hex digest")
     p_prov = subparsers.add_parser("providers", help="Detect, list, and diagnose evidence providers (read-only)")
     prov_subs = p_prov.add_subparsers(dest="providers_subcommand", required=True)
 
@@ -2351,6 +2425,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         else:
             print(format_report(report))
         return 0 if report["ok"] else 1
+    if args.command == "receipt":
+        # SG-205 receipt explorer is read-only over serialized receipt
+        # files; it never needs the graph DB, so it dispatches before
+        # Database init (same short-circuit as `claims`/`providers`).
+        return cmd_receipt(args, root)
     try:
         db = Database(db_path)
     except (LockBusy, RuntimeError) as exc:
