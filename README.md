@@ -160,7 +160,7 @@ sot search "retry backoff policy" --hybrid
 # Bounded graph traversal (inward callers and outward dependencies)
 sot explore "Database" --depth 2
 
-# Find all references grouped by caller with bare-name renaming risk
+# Find indexed references grouped by caller with bare-name renaming risk
 sot usages "commit_file_batch"
 
 # Find implementations and interface extensions in both directions
@@ -286,7 +286,7 @@ sot mcp
 | :--- | :--- | :--- | :--- |
 | `sot_search` | Read-only verified graph search with resource links (`sot://node/{id}`) | `query` (str) | `limit` (int, default 6), `scope` (str), `threshold` (float 0-1), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
 | `sot_explore` | Bounded graph traversal (inbound and outbound) | `node_id` (str) | `depth` (int, default 1), `limit` (int, default 100) |
-| `sot_usages` | Find all references grouped by caller + bare-name shadowing risk | `target` (str) | `limit` (int, default 100), `scope` (str), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
+| `sot_usages` | Find indexed references grouped by caller + bare-name shadowing risk | `target` (str) | `limit` (int, default 100), `scope` (str), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
 | `sot_implementations`| Extends and implements type hierarchy relationships | `target` (str) | — |
 | `sot_verify_drift` | Non-destructive filesystem vs database drift check | — | `deep` (bool), `limit` (int) |
 | `sot_architecture_report` | Architectural analysis with god nodes and modularity metrics | — | `scope` (str), `min_size` (int), `sigma` (float) |

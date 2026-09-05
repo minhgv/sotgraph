@@ -112,7 +112,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 * **Kịch bản sử dụng:** Khảo sát các lớp xung quanh một hàm trước khi sửa code để nắm rõ bối cảnh phụ thuộc.
 
 #### 5. `sot-graph_sot_usages`
-* **Mô tả:** Tìm kiếm toàn bộ vị trí tham chiếu (Find All References) của một symbol trên toàn bộ mã nguồn, nhóm theo từng hàm gọi (caller), đồng thời phát hiện các nguy cơ bare-name (tên biến/hàm bị trùng lặp mơ hồ).
+* **Mô tả:** Tìm kiếm các vị trí tham chiếu đã được đánh chỉ mục (indexed references) của một symbol trong phạm vi kết quả báo cáo, nhóm theo từng hàm gọi (caller), đồng thời phát hiện các nguy cơ bare-name (tên biến/hàm bị trùng lặp mơ hồ).
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Tên class, phương thức hoặc symbol cần tra cứu.
   * `limit` *(integer, mặc định: 100)*: Số lượng reference tối đa.
@@ -393,7 +393,7 @@ sot explore "approveContract" --all --json
 ```
 
 #### `sot usages`
-Tìm kiếm toàn bộ vị trí gọi/sử dụng một symbol trong toàn bộ codebase.
+Tìm kiếm các vị trí gọi/sử dụng đã được đánh chỉ mục (indexed) của một symbol trong phạm vi kết quả báo cáo.
 ```bash
 sot usages "changeStatus"
 sot usages "UserModel" --json

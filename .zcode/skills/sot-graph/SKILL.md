@@ -85,7 +85,7 @@ Before writing any new utility, helper function, or class:
 ### 3. Dependency Impact & Safe Refactoring Protocol
 Before modifying, refactoring, or renaming core functions/classes:
 1. Run `sot explore "<symbol>"` or `sot_explore` to inspect Outward Calls and Incoming References.
-2. Run `sot usages "<symbol>"` or `sot_usages` to locate all calling sites.
+2. Run `sot usages "<symbol>"` or `sot_usages` to locate indexed calling sites within the reported scope.
 3. For interfaces or abstract classes, run `sot implementations "<symbol>"` or `sot_implementations`.
 4. For multi-file symbol renames, run `sot rename "<symbol>" --to "<new_name>"` to review staged changes.
 5. Before submitting PRs or finalizing diffs, run `sot diff-impact` or `sot_diff_impact` to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.

@@ -166,8 +166,18 @@ class TestClaimValidation:
         (repo / "claims" / "registry.yaml").write_text(
             reg.replace(head_sha, "f" * 40), encoding="utf-8"
         )
-        codes = {v["code"] for v in lint_claims(repo)["violations"]}
+        report = lint_claims(repo)
+        codes = {v["code"] for v in report["violations"]}
         assert "commit-unknown" in codes
+        # The diagnostic must name the shallow-clone remedy so a CI runner
+        # with truncated history can act on it; still fail-closed.
+        detail = next(
+            v["detail"] for v in report["violations"]
+            if v["code"] == "commit-unknown"
+        )
+        assert "shallow clone" in detail
+        assert "git fetch --unshallow" in detail
+        assert claims_main([str(repo)]) == 1
 
     def test_commit_not_ancestor(self, tmp_path: Path):
         repo = _fixture_repo(tmp_path)
@@ -185,8 +195,18 @@ class TestClaimValidation:
         (repo / "claims" / "registry.yaml").write_text(
             reg.replace(head_sha, orphan_sha), encoding="utf-8"
         )
-        codes = {v["code"] for v in lint_claims(repo)["violations"]}
+        report = lint_claims(repo)
+        codes = {v["code"] for v in report["violations"]}
         assert "commit-not-ancestor" in codes
+        # An existing-but-off-HEAD commit is a provenance problem, not a
+        # shallow-clone one: the two failure modes must stay distinguishable.
+        detail = next(
+            v["detail"] for v in report["violations"]
+            if v["code"] == "commit-not-ancestor"
+        )
+        assert "ancestor of HEAD" in detail
+        assert "unshallow" not in detail
+        assert claims_main([str(repo)]) == 1
 
     def test_artifact_value_mismatch(self, tmp_path: Path):
         repo = _fixture_repo(

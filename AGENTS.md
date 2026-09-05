@@ -41,7 +41,7 @@ Before writing any new utility, helper function, or class:
 ## 3. Dependency Impact & Safe Refactoring Protocol (Honest Usages)
 Before modifying, refactoring, or renaming core functions/classes:
 1. Run `sot explore "<symbol>" [--depth 2] [--json]` or `sot_explore` to inspect Outward Calls and Incoming References.
-2. Run `sot usages "<symbol>" [--json]` or `sot_usages` to locate all calling sites.
+2. Run `sot usages "<symbol>" [--json]` or `sot_usages` to locate indexed calling sites within the reported scope.
 3. For interfaces or abstract classes, run `sot implementations "<symbol>"` or `sot_implementations`.
 4. For compiler-exact cross-package symbol resolution, run `sot import-scip <path_to_index.scip>`.
 5. For multi-file symbol renames, run `sot rename "<symbol>" --to "<new_name>"` to review staged changes.

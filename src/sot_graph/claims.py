@@ -375,10 +375,15 @@ def lint_claims(
             )
         ok, err = _git_ok(root, "cat-file", "-e", f"{c.commit}^{{commit}}")
         if not ok:
+            # The commit object itself is absent from the local store; on
+            # shallow clones that is a fetch problem, not fake provenance.
+            # Still fail-closed — this only sharpens the diagnostic.
             violations.append(
                 _violation(
                     "commit-unknown",
-                    f"{c.id}: provenance commit {c.commit} not found ({err})",
+                    f"{c.id}: cited commit {c.commit} not in local object "
+                    "store — shallow clone? fetch full history "
+                    "(git fetch --unshallow) and re-run",
                     file=c.artifact,
                 )
             )
