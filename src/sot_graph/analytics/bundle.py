@@ -12,33 +12,25 @@ import re
 from typing import Any, Callable, Dict, List, Optional
 
 from sot_graph.analytics.architecture import (
-    ArchitecturalLayer,
     ArchitectureProfile,
     FunctionalModule,
-    classify_node_layer,
     is_test_or_mock_path,
 )
 from sot_graph.analytics.diagnostics import AnalysisResult, analyze_graph
 from sot_graph.analytics.graph import AnalyticsGraph
 from sot_graph.db import Database
 
-# Conformance status vocabulary, emitted identically in
-# 04_dependencies_violations.md and 05_system_metrics.json. The bundler never
-# reads a declared layer-policy artifact, so strict conformance is never claimed.
-CONFORMANCE_NOT_ASSESSED = "NOT_ASSESSED"
-CONFORMANCE_NO_DETECTED_VIOLATIONS = "NO_DETECTED_VIOLATIONS"
-CONFORMANCE_VIOLATIONS_DETECTED = "VIOLATIONS_DETECTED"
-
-_DETECTOR_CLASSIFICATION = "AST_PATH_HEURISTIC"
-_DETECTOR_SUPPORTED_RULES = ["LAYER_BYPASS", "INVERTED_DEPENDENCY"]
-_DETECTOR_LIMITATIONS = [
-    "Layer policy is not observable: no declared architecture-rules artifact is ingested; "
-    "layer roles are inferred from path/label/keyword heuristics.",
-    "Only LAYER_BYPASS (Presentation->Data) and INVERTED_DEPENDENCY (Data/Domain->Presentation) "
-    "rules are supported; all other constraint types are out of scope.",
-    "Edges with any UNKNOWN-layer endpoint are not assessed; assessed_edge_fraction publishes "
-    "the denominator. Absence of findings is NOT evidence of conformance.",
-]
+# Conformance status vocabulary and detector metadata now live in the shared
+# helper (analytics/conformance.py) so the bundler and the report render ONE
+# assessment. Re-exported here for backward compatibility.
+from sot_graph.analytics.conformance import (  # noqa: F401
+    CONFORMANCE_NOT_ASSESSED,
+    CONFORMANCE_NO_DETECTED_VIOLATIONS,
+    CONFORMANCE_VIOLATIONS_DETECTED,
+    assess_conformance as _shared_assess_conformance,
+    compute_detector_coverage as _shared_compute_detector_coverage,
+    qualify_pattern_inference,
+)
 
 class ArchitectureBundler:
     """Extracts and writes structured architectural fact bundles from AnalyticsGraph."""
@@ -355,78 +347,11 @@ class ArchitectureBundler:
     def _compute_detector_coverage(self) -> Dict[str, Any]:
         """Publish denominators matching the detector's eligibility: an edge is
         assessed only when both endpoints exist and classify as non-UNKNOWN layers."""
-        node_layers = {
-            node_id: classify_node_layer(node_id, data)
-            for node_id, data in self.graph.nodes.items()
-        }
-        total_nodes = len(node_layers)
-        classified_nodes = sum(
-            1 for layer in node_layers.values() if layer is not ArchitecturalLayer.UNKNOWN
-        )
-
-        total_edges = len(self.graph.edges)
-        assessed_edges = 0
-        for edge in self.graph.edges:
-            l_src = node_layers.get(edge["src"], ArchitecturalLayer.UNKNOWN)
-            l_dst = node_layers.get(edge["dst"], ArchitecturalLayer.UNKNOWN)
-            if l_src is not ArchitecturalLayer.UNKNOWN and l_dst is not ArchitecturalLayer.UNKNOWN:
-                assessed_edges += 1
-
-        return {
-            "total_nodes": total_nodes,
-            "classified_nodes": classified_nodes,
-            "classified_node_fraction": round(classified_nodes / total_nodes, 4) if total_nodes else 0.0,
-            "total_edges": total_edges,
-            "assessed_edges": assessed_edges,
-            "assessed_edge_fraction": round(assessed_edges / total_edges, 4) if total_edges else 0.0,
-        }
+        return _shared_compute_detector_coverage(self.graph)
 
     def _assess_conformance(self) -> Dict[str, Any]:
         """Single source of truth for the conformance verdict, shared by markdown + JSON."""
-        violations = self.profile.violations if self.profile else None
-        coverage = self._compute_detector_coverage()
-
-        if violations is None:
-            # Detector never ran, so no edge counts as assessed.
-            coverage["assessed_edges"] = 0
-            coverage["assessed_edge_fraction"] = 0.0
-            status = CONFORMANCE_NOT_ASSESSED
-            summary = "Architecture profile unavailable; the violation detector did not run."
-        elif violations:
-            status = CONFORMANCE_VIOLATIONS_DETECTED
-            summary = (
-                f"{len(violations)} candidate finding(s) from heuristic rules; each is anchored "
-                "to the observed edge (source/target symbols and paths) and is NOT verified "
-                "against any declared layer policy."
-            )
-        elif coverage["assessed_edges"] == 0:
-            status = CONFORMANCE_NOT_ASSESSED
-            summary = (
-                "No layer policy observable and no edges within the detector's supported scope; "
-                "the detector had nothing to assess. Absence of findings is not evidence of conformance."
-            )
-        else:
-            status = CONFORMANCE_NO_DETECTED_VIOLATIONS
-            summary = (
-                f"Detector ran over {coverage['assessed_edges']} in-scope edge(s) and found no "
-                "violations within the supported scope. Strict conformance is NOT claimed: the "
-                "layer policy is not observable and classification is heuristic."
-            )
-
-        return {
-            "status": status,
-            "summary": summary,
-            "layer_policy_observable": False,
-            "strict_conformance_claimed": False,
-            "violations_detected": len(violations) if violations else 0,
-            "finding_nature": "HEURISTIC_RULE_CANDIDATES",
-            "detector": {
-                "classification_method": _DETECTOR_CLASSIFICATION,
-                "supported_rules": list(_DETECTOR_SUPPORTED_RULES),
-                **coverage,
-                "limitations": list(_DETECTOR_LIMITATIONS),
-            },
-        }
+        return _shared_assess_conformance(self.profile, self._compute_detector_coverage())
 
     def _render_conformance_markdown(self, conf: Dict[str, Any]) -> List[str]:
         """Render the conformance block for 04_dependencies_violations.md (mirrors the JSON)."""
@@ -516,10 +441,18 @@ class ArchitectureBundler:
         """Generate 05_system_metrics.json summarizing quantitative metrics."""
         m = self.analysis.metrics
         prof = self.profile
+        conf = self._assess_conformance()
+        # Pattern inference is honestly qualified: UNKNOWN when the profile is
+        # absent OR when zero nodes were classified (no classified evidence).
+        pattern = qualify_pattern_inference(
+            prof,
+            conf["detector"] if conf["detector"]["coverage_available"] else None,
+        )
 
         data = {
             "project_root": self.root_dir,
-            "pattern_name": prof.pattern_name if prof else "UNKNOWN",
+            "pattern_name": pattern["pattern_name"],
+            "pattern_inference": pattern["pattern_inference"],
             "primary_language": prof.primary_language if prof else "UNKNOWN",
             "framework_hints": prof.framework_hints if prof else [],
             "modularity_score_q": round(m.modularity, 4),
@@ -535,6 +468,6 @@ class ArchitectureBundler:
             "total_routes": prof.routing_architecture.total_routes if prof and prof.routing_architecture else 0,
             "total_functional_modules": len(prof.functional_modules) if prof else 0,
             # Honest conformance verdict: same dict rendered in 04_dependencies_violations.md.
-            "conformance": self._assess_conformance(),
+            "conformance": conf,
         }
         return json.dumps(data, indent=2)

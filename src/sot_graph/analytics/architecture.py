@@ -1152,18 +1152,14 @@ def build_architecture_profile(
             f"into independent internal packages/libraries with explicit public API export boundaries."
         )
 
-    if not recs_p0:
-        recs_p0.append(
-            "**[Architectural Invariants Verified]** Zero high-risk circular dependencies or inverted layer calls detected across the codebase."
-        )
-    if not recs_p1:
-        recs_p1.append(
-            "**[State-to-UI Integrity]** Presentation components adhere cleanly to unidirectional reactive data-binding rules."
-        )
-    if not recs_p2:
-        recs_p2.append(
-            "**[Modular Scalability]** Maintain current clean separation of concerns as new feature modules are added."
-        )
+    # NOTE: no padding of empty rec groups with global clean-assurance lines
+    # (e.g. "[Architectural Invariants Verified] Zero high-risk ... across the
+    # codebase", "[State-to-UI Integrity] adhere cleanly", "[Modular
+    # Scalability] clean separation"). The scoped heuristic detector cannot
+    # ground such claims, and they contradict the conformance section whenever
+    # a candidate finding exists (even MEDIUM) or nothing was assessable.
+    # Empty lists are legitimate; renderers print a scoped
+    # "no candidate recommendations" fallback instead of global assurance.
 
     mod_q = community_res.modularity
     if mod_q >= 0.4:

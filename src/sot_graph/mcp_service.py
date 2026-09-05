@@ -1234,6 +1234,7 @@ class McpService:
             report_md = generate_markdown_report(
                 analysis,
                 project_name=os.path.basename(self.project_root),
+                graph=graph,
             )
             comms_summary = [
                 {

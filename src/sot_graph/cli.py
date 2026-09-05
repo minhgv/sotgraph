@@ -1891,7 +1891,9 @@ def cmd_report(args: argparse.Namespace, db: Database, root: str) -> int:
         return 0
 
     project_name = os.path.basename(os.path.abspath(root))
-    report_md = generate_markdown_report(analysis, project_name=project_name, scope=args.scope)
+    report_md = generate_markdown_report(
+        analysis, project_name=project_name, scope=args.scope, graph=graph
+    )
 
     out_path = args.output
     if out_path:

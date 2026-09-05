@@ -11,16 +11,69 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from sot_graph.analytics.architecture import ArchitecturalLayer
+from sot_graph.analytics.conformance import (
+    CONFORMANCE_NO_DETECTED_VIOLATIONS,
+    assess_conformance,
+    compute_detector_coverage,
+    qualify_pattern_inference,
+)
 from sot_graph.analytics.diagnostics import AnalysisResult
+
+# Global clean-assurance phrasing that a scoped heuristic detector cannot
+# ground. Recommendation lines containing these (case-insensitive) are dropped
+# at render time, even if a producer emits them.
+_UNGROUNDED_ASSURANCE_TERMS = (
+    "invariants verified",
+    "adhere cleanly",
+    "clean separation",
+    "well-modularized",
+    "zero high-risk",
+)
+
+
+def _scoped_candidate_recs(recs):
+    """Filter recommendation lines down to grounded, scoped candidates."""
+    return [r for r in recs if not any(t in r.lower() for t in _UNGROUNDED_ASSURANCE_TERMS)]
+
+
+def _append_scoped_recommendation_lines(lines, recs, prof, scope_label):
+    """Render one section-11 priority group as candidate recommendations only.
+
+    Global clean-assurance lines are dropped; an empty (or fully filtered)
+    group gets a scoped no-candidates fallback — never global assurance.
+    """
+    if prof is None:
+        lines.append("- *(Not assessed: architecture profile unavailable)*")
+        return
+    kept = _scoped_candidate_recs(recs or [])
+    if kept:
+        for rec in kept:
+            lines.append(f"- {rec}")
+    else:
+        lines.append(
+            f"- *(No candidate {scope_label} recommendations within the scoped "
+            "detector rules; not a global assurance.)*"
+        )
 
 
 def generate_jsonld_schema(
     analysis: AnalysisResult,
     project_name: str = "Project",
+    graph: Optional[Any] = None,
+    conformance: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Generate structured JSON-LD architectural metadata for AI Agents and LLMs."""
+    """Generate structured JSON-LD architectural metadata for AI Agents and LLMs.
+
+    ``conformance`` carries the shared honest conformance assessment (see
+    ``analytics/conformance.py``); when omitted it is computed here, using
+    ``graph`` for exact detector coverage when available.
+    """
     m = analysis.metrics
     prof = analysis.architecture_profile
+    coverage = compute_detector_coverage(graph) if graph is not None else None
+    if conformance is None:
+        conformance = assess_conformance(prof, coverage)
+    pattern = qualify_pattern_inference(prof, coverage)
 
     modules_data: List[Dict[str, Any]] = []
     if prof and prof.functional_modules:
@@ -94,7 +147,8 @@ def generate_jsonld_schema(
         "name": project_name,
         "engine": "sot-graph v3.0 Architectural Intelligence",
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "primaryPattern": prof.pattern_name if prof else "Modular Architecture",
+        "primaryPattern": pattern["pattern_name"],
+        "primaryPatternNote": pattern["pattern_inference"],
         "primaryLanguage": prof.primary_language if prof else "General",
         "frameworks": prof.framework_hints if prof else [],
         "metrics": {
@@ -113,6 +167,12 @@ def generate_jsonld_schema(
         },
         "criticalHubs": god_nodes_data,
         "violations": violations_data,
+        "violationsNote": (
+            "Heuristic rule candidates from a scoped detector (LAYER_BYPASS, "
+            "INVERTED_DEPENDENCY); NOT verified against any declared layer policy. "
+            "See conformance block for status, coverage, and limitations."
+        ),
+        "conformance": conformance,
     }
 
 
@@ -120,15 +180,40 @@ def generate_markdown_report(
     analysis: AnalysisResult,
     project_name: str = "Project",
     scope: Optional[str] = None,
+    graph: Optional[Any] = None,
 ) -> str:
-    """Generate a comprehensive, structured Markdown architectural analysis report."""
+    """Generate a comprehensive, structured Markdown architectural analysis report.
+
+    ``graph`` (an ``AnalyticsGraph``) is optional; when provided, the conformance
+    section publishes exact detector-eligibility coverage over the actual graph
+    endpoints. Without it, coverage denominators are reported as unavailable
+    rather than fabricated.
+    """
     m = analysis.metrics
     prof = analysis.architecture_profile
+    # Shared honest assessment + pattern qualification, computed once and used
+    # by the exec summary, section 9, and the JSON-LD block (mirrors the fact
+    # bundler's 04/05 artifacts; see analytics/conformance.py).
+    coverage = compute_detector_coverage(graph) if graph is not None else None
+    conf = assess_conformance(prof, coverage)
+    qualified_pattern = qualify_pattern_inference(prof, coverage)
     now = datetime.datetime.now(datetime.timezone.utc).strftime(
         "%Y-%m-%d %H:%M:%S UTC"
     )
 
-    pattern_name = prof.pattern_name if prof else "Modular Layered Architecture"
+    pattern_name = qualified_pattern["pattern_name"]
+    pattern_evidence = qualified_pattern["pattern_inference"]
+    integrity_assessment = (
+        f"`{len(prof.violations)}` heuristic candidate finding(s)"
+        if prof
+        else "`Not assessed`"
+    )
+    integrity_evidence = (
+        "Scoped detector candidates (LAYER_BYPASS, INVERTED_DEPENDENCY); not verified "
+        "against a declared layer policy"
+        if prof
+        else "Detector did not run (architecture profile unavailable)"
+    )
     primary_lang = prof.primary_language if prof else "General"
     frameworks_str = (
         ", ".join(prof.framework_hints)
@@ -154,7 +239,7 @@ def generate_markdown_report(
         "",
         "| Architecture Dimension | Profile Assessment | Key Evidence / Metric |",
         "| :--- | :--- | :--- |",
-        f"| **Primary Architectural Pattern** | **{pattern_name}** | Discovered via AST signatures & layer directory conventions |",
+        f"| **Primary Architectural Pattern** | **{pattern_name}** | {pattern_evidence} |",
         f"| **Language & Framework Stack** | `{primary_lang}` | Frameworks: *{frameworks_str}* |",
         f"| **Architectural Modularity** | {modularity_verdict} | Louvain Community Quality Score ($Q$) |",
         f"| **Total System Entities** | `{m.node_count}` Nodes (`{m.file_count}` files, `{m.symbol_count}` symbols) | Complete indexed codebase graph surface |",
@@ -162,7 +247,7 @@ def generate_markdown_report(
         f"| **Functional Business Domains** | `{len(prof.domains) if prof else m.community_count}` High-Level Domains | Aggregated from `{m.community_count}` topological clusters |",
         f"| **Functional Modules (Features)** | `{len(prof.functional_modules) if prof and prof.functional_modules else 0}` Structured Modules | Feature taxonomy with responsibilities & core models |",
         f"| **Routing & Entrypoints** | `{prof.routing_architecture.total_routes if prof and prof.routing_architecture else 0}` Endpoints | HTTP APIs, UI Pages & Event Dispatches |",
-        f"| **Architectural Integrity** | `{len(prof.violations) if prof else 0}` Warnings / Anti-patterns | Layer bypasses & inverted dependencies |",
+        f"| **Architectural Integrity** | {integrity_assessment} | {integrity_evidence} |",
         "",
         "---",
         "",
@@ -379,6 +464,8 @@ def generate_markdown_report(
             ]
         )
 
+    d = conf["detector"]
+
     lines.extend(
         [
             "",
@@ -386,7 +473,38 @@ def generate_markdown_report(
             "",
             "## 9. Architectural Violations & Structural Warnings",
             "",
-            "Detection of architectural smells, layer bypassing, and inverted dependency anti-patterns:",
+            "Evidence policy: this section reports ONLY what the scoped rule detector observed. "
+            "The detector cannot observe the project's declared layer policy (none is ingested); "
+            f"layer roles are heuristic (`{d['classification_method']}`). Findings are "
+            f"`{conf['finding_nature']}` — candidate matches, NOT verified violations. "
+            "Absence of findings is NOT evidence of conformance.",
+            "",
+            f"- **Conformance status:** `{conf['status']}` — {conf['summary']}",
+        ]
+    )
+
+    if d["coverage_available"]:
+        lines.append(
+            f"- **Detector coverage:** assessed edges `{d['assessed_edges']}` / `{d['total_edges']}` "
+            f"(`{d['assessed_edge_fraction']}`); classified nodes `{d['classified_nodes']}` / "
+            f"`{d['total_nodes']}` (`{d['classified_node_fraction']}`)"
+        )
+    else:
+        lines.append(
+            "- **Detector coverage:** unavailable — report generated without graph access, so "
+            "eligibility denominators were not computed (none are fabricated)"
+        )
+    lines.append(
+        f"- **Supported rules:** {', '.join(f'`{r}`' for r in d['supported_rules'])}"
+    )
+    lines.append("- **Limitations:**")
+    for lim in d["limitations"]:
+        lines.append(f"  - {lim}")
+
+    lines.extend(
+        [
+            "",
+            "### 9.1 Candidate Rule Findings (heuristic; within supported scope)",
             "",
             "| Severity | Violation Type | Source Component | Target Component | Description & Remediation |",
             "| :-: | :--- | :--- | :--- | :--- |",
@@ -413,9 +531,15 @@ def generate_markdown_report(
             lines.append(
                 f"| - | *... and {len(prof.violations) - 10} additional warnings* | - | - | - |"
             )
+    elif conf["status"] == CONFORMANCE_NO_DETECTED_VIOLATIONS:
+        lines.append(
+            "| - | - | - | - | *(No findings within the supported scope published above — a scoped "
+            "absence-of-findings statement, not a conformance guarantee.)* |"
+        )
     else:
         lines.append(
-            "| 🟢 **CLEAN** | `ZERO_VIOLATIONS` | *(All Layers)* | *(All Layers)* | No layer bypasses or inverted dependencies detected. Architecture conforms to unidirectional constraints. |"
+            "| - | - | - | - | *(Not assessed: no conformance statement can be made — see status, "
+            "coverage, and limitations above.)* |"
         )
 
     lines.extend(
@@ -469,11 +593,9 @@ def generate_markdown_report(
         ]
     )
 
-    if prof and prof.recommendations_p0:
-        for rec in prof.recommendations_p0:
-            lines.append(f"- {rec}")
-    else:
-        lines.append("- *(No immediate P0 critical blockers)*")
+    _append_scoped_recommendation_lines(
+        lines, prof.recommendations_p0 if prof else [], prof, "P0"
+    )
 
     lines.extend(
         [
@@ -482,11 +604,9 @@ def generate_markdown_report(
         ]
     )
 
-    if prof and prof.recommendations_p1:
-        for rec in prof.recommendations_p1:
-            lines.append(f"- {rec}")
-    else:
-        lines.append("- *(No immediate P1 layer separation warnings)*")
+    _append_scoped_recommendation_lines(
+        lines, prof.recommendations_p1 if prof else [], prof, "P1"
+    )
 
     lines.extend(
         [
@@ -495,14 +615,13 @@ def generate_markdown_report(
         ]
     )
 
-    if prof and prof.recommendations_p2:
-        for rec in prof.recommendations_p2:
-            lines.append(f"- {rec}")
-    else:
-        lines.append("- *(Architecture is well-modularized)*")
+    _append_scoped_recommendation_lines(
+        lines, prof.recommendations_p2 if prof else [], prof, "P2"
+    )
 
-    # Section 12: Machine-Readable JSON-LD
-    schema_data = generate_jsonld_schema(analysis, project_name)
+    # Section 12: Machine-Readable JSON-LD (shares the SAME conformance dict
+    # rendered in section 9, so human and machine paths can never diverge).
+    schema_data = generate_jsonld_schema(analysis, project_name, graph=graph, conformance=conf)
     schema_json = json.dumps(schema_data, indent=2, ensure_ascii=False)
 
     lines.extend(
