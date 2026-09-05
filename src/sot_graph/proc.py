@@ -25,6 +25,7 @@ import subprocess
 import sys
 import threading
 import time
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 __all__ = ["RunResult", "run_command"]
@@ -265,6 +266,7 @@ def run_command(
     cwd: str | os.PathLike[str] | None = None,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     max_output_bytes: int = DEFAULT_MAX_OUTPUT_BYTES,
+    env: Mapping[str, str] | None = None,
     env_extra: dict[str, str] | None = None,
 ) -> RunResult:
     """Run ``argv`` without a shell and never raise on spawn/timeout failure.
@@ -275,7 +277,15 @@ def run_command(
         timeout_seconds: Wall-clock budget; expiry kills the process group.
         max_output_bytes: Hard per-stream byte cap enforced WHILE streaming;
             overflow kills the process group immediately (``truncated=True``).
-        env_extra: Extra environment variables merged over ``os.environ``.
+        env: Explicit child environment REPLACING the inherited ``os.environ``
+            entirely (``{}`` = empty environment, no inheritance); the mapping
+            is copied and never mutated. ``None`` inherits ``os.environ``.
+            An explicit ``env`` is passed verbatim: platform-required
+            variables (e.g. ``SystemRoot`` on Windows) are the caller's
+            responsibility; nothing is inherited automatically.
+        env_extra: Extra variables merged additively over the base (explicit
+            ``env`` if given, else ``os.environ``); wins on key conflicts.
+            Bad values surface as ``RunResult.error``, never raised.
 
     Returns:
         A :class:`RunResult`. ``returncode is None`` plus a populated
@@ -285,10 +295,18 @@ def run_command(
         ``max_output_bytes`` bytes retained.
     """
     frozen_argv = tuple(str(part) for part in argv)
-    env: dict[str, str] | None = None
-    if env_extra:
-        env = dict(os.environ)
-        env.update(env_extra)
+    try:
+        if env is None:
+            child_env: dict[str, str] | None = dict(os.environ)
+        else:
+            child_env = dict(env)  # explicit mapping fully replaces inherited environ
+        if env_extra:
+            child_env.update(env_extra)
+    except (TypeError, ValueError, AttributeError) as exc:
+        return RunResult(
+            argv=frozen_argv, returncode=None, stdout="", stderr="",
+            timed_out=False, truncated=False, error=_short_error(exc),
+        )
 
     job = _open_kill_on_close_job()
     try:
@@ -300,10 +318,10 @@ def run_command(
             cwd=None if cwd is None else os.fspath(cwd),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            env=env,
+            env=child_env,
             start_new_session=not _WIN32,
         )
-    except (FileNotFoundError, OSError) as exc:
+    except (FileNotFoundError, OSError, TypeError, ValueError) as exc:
         if job is not None:
             _close_job_handle(job)
         return RunResult(
