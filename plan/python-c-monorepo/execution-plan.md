@@ -30,10 +30,11 @@ Work packages:
 
 ## 2. P1 — Chuẩn hóa contract, chưa đổi topology (3–5 ngày)
 
-- Tái sử dụng `provider_contract.py`, `providers/base.py`, `normalization.py`; tách native envelope parsing / normalized outcome / trust assessment chỉ khi dependency map chứng minh phù hợp.
-- Bổ sung capability-specific compatibility metadata; unsupported phải explicit.
-- Golden fixtures: success/error/malformed/truncated/unknown fields/version mismatch; SOT CLI và MCP cùng interpretation.
-- **Gate G1:** toàn bộ fixture/contract tests pass; output hiện có không đổi ngoài extension version hóa; no silent fallback.
+- Tái sử dụng `provider_contract.py`, `providers/base.py`, `normalization.py`; tách native envelope parsing / normalized outcome / trust assessment chỉ khi dependency map chứng minh phù hợp. **[DONE — reuse giữ nguyên topology; strict exact-compat thêm ở `providers/compatibility.py` theo chain main `a506f01` → `fc1ec4d` → `01518f2`]**
+- Bổ sung capability-specific compatibility metadata; unsupported phải explicit. **[DONE — gating theo operation/artifact đo được; refusal explicit, không silent fallback: `tests/test_cbm_exact_compatibility.py` pass]**
+- Golden fixtures: success/error/malformed/truncated/unknown fields/version mismatch; SOT CLI và MCP cùng interpretation. **[DONE — 8 canonical goldens `tests/fixtures/cbm_golden` KHÔNG đổi; suite digest `bd65c856…` khớp manifest P0 và được enforce trong test inventory; các lớp fixture success/error/malformed/truncated/unknown-fields/version-mismatch phủ bởi `test_cbm_golden` + `TestStdoutCorruption`/`TestSchemaDrift`/`TestVersionGate` (cbm_adapter) + `TestUnknownFailClosed` (snapshot_p2); CLI/MCP cùng interpretation: `tests/test_cbm_contract_parity.py` (2026-09-05) — parity 3 policy failure/version/builtin_only qua `assurance.federation_plan|federated_extras` ↔ `McpService.usages(provider_policy)`, fake runner, 0 spawn native]**
+- **Gate G1 (nguyên văn tài liệu gốc):** toàn bộ fixture/contract tests pass; output hiện có không đổi ngoài extension version hóa; no silent fallback.
+- **Trạng thái G1 hiện tại: PASS — scope có biên (2026-09-05).** 297 passed / exit 0 trên 12 file test liên quan (provider_contract, provider_compatibility, cbm_exact_compatibility, cbm_adapter, cbm_golden, cbm_normalization, cbm_verification, cbm_snapshot_p2, p2_orchestrator, cli_provider_wiring, adapters, cbm_contract_parity — 2 lần chạy 36.24s/25.79s, external timeout 180s); **0 file production thay đổi** trong gói parity (schema không đổi, envelope legacy giữ mặc định); no silent fallback được assert (require fail-closed, degrade explicit, builtin_only 0 spawn đo trên marker). **Ngoại lệ explicit (không pretend hoàn tất):** automated canonical importer = P2 (digest G1 tính trong test bằng đúng thuật toán manifest P0; registry per-operation user-supplied là đủ); strict context **programmatic-only** — chưa có public CLI managed default (P2); command/pinning TOCTOU = P2; parity ở mức policy/interpretation, không phải byte-parity output native thật; 11/15 native tool vẫn UNKNOWN (G2); packaging/budget = P4. Chi tiết: `p1-handoff.md`.
 
 ## 3. P2 — Managed lifecycle và mutation isolation (4–8 ngày)
 
