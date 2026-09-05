@@ -36,11 +36,16 @@ import tempfile
 import threading
 import time
 import uuid
+from collections import Counter
 from dataclasses import dataclass, replace
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol, runtime_checkable
 
 from sot_graph.proc import RunResult, run_command
-from sot_graph.provider_contract import ProviderIdentity, normalize_sha256_digest
+from sot_graph.provider_contract import (
+    Capability,
+    ProviderIdentity,
+    normalize_sha256_digest,
+)
 from sot_graph.snapshot import dirty_state, get_head_sha
 
 from .base import (
@@ -68,6 +73,9 @@ from .normalization import (
     VERSION_UNTESTED,
     VERSION_UNKNOWN,
 )
+
+if TYPE_CHECKING:  # managed.py imports THIS module at runtime; never reverse
+    from .managed import ManagedResult
 
 __all__ = [
     "CodebaseMemoryProvider",
@@ -176,6 +184,67 @@ class _InvokeOutcome:
     run: ProviderRunRecord | None = None
     match: "SnapshotMatch | None" = None
     assessment: "CompatibilityAssessment | None" = None
+
+
+@runtime_checkable
+class ManagedQueryRuntime(Protocol):
+    """Structural duck type of ``managed.ManagedNativeRuntime`` (P2).
+
+    Typing-only: ``managed.py`` constructs a CodebaseMemoryProvider at
+    runtime, so importing it here would be circular. Injection is validated
+    structurally (method presence) plus defensive reads of the runtime's
+    bound ``_repo``/``_exe`` — a same-package seam to promote to public
+    read-only properties in a later managed.py revision.
+    """
+
+    def prepare(self) -> "ManagedResult": ...
+    def query(self, operation: str, args: Mapping[str, Any]) -> "ManagedResult": ...
+    def sync(self, repo_path: str) -> "ManagedResult": ...
+
+
+#: Provider query tools a managed runtime serves; every other tool refuses
+#: WITHOUT legacy fallback (the unmanaged spawn path is never taken).
+_MANAGED_QUERY_TOOLS = frozenset({"search_graph", "list_projects", "index_status"})
+#: ManagedResult.status -> legacy outcome status: one normalized outcome shape
+#: for downstream ``_query_outcome`` (fail-closed mapping for unknown keys).
+_MANAGED_STATUS_MAP = {
+    "ok": "ok",
+    "not_prepared": "provider_error",
+    "denied_operation": "unsupported_managed",
+    "gate_refused": "compatibility_unknown",
+    "runtime_refused": "provider_error",
+    "receipt_invalid": "provider_error",
+    "timeout": "timeout",
+}
+#: The managed search wire pins the adapter default limit (managed.py).
+_MANAGED_SEARCH_LIMIT = 20
+#: Capabilities the managed runtime can actually serve, drawn from the
+#: EXISTING Capability enum: search_graph reads (symbols) and index_status
+#: binding/sync receipts (source-verification). Managed advertisement is the
+#: intersection with the provider's configured capabilities, never the rest.
+_MANAGED_SERVED_CAPABILITIES = frozenset({
+    Capability.SYMBOLS.value,
+    Capability.SOURCE_VERIFICATION.value,
+})
+
+
+@dataclass(frozen=True)
+class _ManagedRunShell:
+    """RunResult-shaped view of one managed dispatch for ``_index_record``.
+
+    ``returncode`` is ALWAYS None: a managed receipt exposes no native
+    process exit code, so an unknown native exit is persisted as unknown —
+    never a fabricated 0/1. The dispatch verdict travels in ``status``;
+    no native argv or output text is fabricated either.
+    """
+
+    argv: tuple[str, ...] = ("index_repository", "managed")
+    returncode: int | None = None
+    stdout: str = ""
+    stderr: str = ""
+    timed_out: bool = False
+    truncated: bool = False
+    error: str | None = None
 
 
 #: Chunk size for bounded-memory artifact hashing (1 MiB).
@@ -430,6 +499,7 @@ class CodebaseMemoryProvider:
         max_output_bytes: int = DEFAULT_MAX_OUTPUT_BYTES,
         provider_version: str | None = None,
         exact_context: ExactCompatibilityContext | None = None,
+        managed_runtime: "ManagedQueryRuntime | None" = None,
     ) -> None:
         cfg_command: list[str] | None = getattr(config, "command", None)
         cfg_caps = tuple(getattr(config, "capabilities", ()) or ())
@@ -494,6 +564,89 @@ class CodebaseMemoryProvider:
                     "executable path; PATH discovery is refused"
                 )
         self._exact = exact_context
+        # P2 managed injection (programmatic only; not wired to config/CLI):
+        # the caller supplies an already-constructed ManagedNativeRuntime
+        # bound to THIS exact context. The command/repo binding captured here
+        # is immutable-consistent: every managed dispatch re-checks it and
+        # refuses divergence instead of re-binding (no spawn, fail-closed).
+        self._managed: ManagedQueryRuntime | None = None
+        self._managed_repo: str | None = None
+        self._managed_command: tuple[str, ...] | None = None
+        if managed_runtime is not None:
+            if exact_context is None:
+                raise ValueError(
+                    "managed_runtime requires exact_context: a managed "
+                    "runtime dispatches only under digest-exact gating"
+                )
+            if not isinstance(managed_runtime, ManagedQueryRuntime):
+                raise TypeError(
+                    "managed_runtime must expose prepare/query/sync "
+                    f"(ManagedQueryRuntime), got {type(managed_runtime).__name__}"
+                )
+            bound_repo = getattr(managed_runtime, "_repo", None)
+            if not isinstance(bound_repo, str) or not bound_repo:
+                raise ValueError(
+                    "managed runtime does not expose its bound repo; refusing "
+                    "an ambiguous repo binding (seam: managed.py should "
+                    "promote _repo to a public read-only property)"
+                )
+            # The runtime must carry the SAME trusted exact context (same
+            # object, or equivalent public identity/records/fixture
+            # mappings); a divergent trust root is refused, never skipped.
+            inner_ctx = getattr(
+                getattr(managed_runtime, "_provider", None), "_exact", None)
+            if not isinstance(inner_ctx, ExactCompatibilityContext):
+                raise ValueError(
+                    "managed runtime does not expose its exact-compatibility "
+                    "context; refusing an unverifiable identity binding"
+                )
+            if inner_ctx is not exact_context and not self._managed_context_equivalent(
+                    exact_context, inner_ctx):
+                raise ValueError(
+                    "managed runtime exact context is not the trusted context "
+                    "(identity, fixture digests, protocol id, or registry "
+                    "records differ); refusing divergent trust roots"
+                )
+            bound_exe = getattr(managed_runtime, "_exe", None)
+            if not isinstance(bound_exe, str) or not bound_exe:
+                raise ValueError(
+                    "managed runtime does not expose its executable binding; "
+                    "refusing an untestable artifact identity"
+                )
+            if (os.path.realpath(bound_exe)
+                    != os.path.realpath(self.command[0])):
+                raise ValueError(
+                    "managed runtime executable differs from the provider "
+                    "command; per-dispatch artifact identity would diverge"
+                )
+            self._managed = managed_runtime
+            self._managed_repo = os.path.realpath(bound_repo)
+            self._managed_command = self.command
+
+    @staticmethod
+    def _managed_context_equivalent(
+        a: ExactCompatibilityContext, b: ExactCompatibilityContext
+    ) -> bool:
+        """Public-field equivalence of two exact contexts: runtime identity,
+        per-operation fixture digests, protocol id, and registry records
+        (by value, via the public ``records()`` accessor). No private
+        protocol data is read or fabricated."""
+        if a.runtime_identity != b.runtime_identity:
+            return False
+        if dict(a.operation_fixture_digests or {}) != dict(
+                b.operation_fixture_digests or {}):
+            return False
+        if (a.protocol_compatibility_id or None) != (
+                b.protocol_compatibility_id or None):
+            return False
+        if a.registry is None or b.registry is None:
+            return a.registry is b.registry
+        if a.registry is b.registry:
+            return True
+        try:
+            return Counter(a.registry.records()) == Counter(b.registry.records())
+        except Exception:  # noqa: BLE001 - equivalence must never raise
+            return False
 
     @property
     def _strict_compat(self) -> bool:
@@ -671,6 +824,8 @@ class CodebaseMemoryProvider:
         string does not block the probe — the verified digest is the
         identity, ``--version`` merely fills descriptive metadata.
         """
+        if self._managed is not None:
+            return self._managed_probe()
         gate: CompatibilityAssessment | None = None
         if self._strict_compat:
             gate = self._compat_gate(PROBE_OPERATION)
@@ -748,6 +903,286 @@ class CodebaseMemoryProvider:
             return "ok"
         return "error"
 
+    # -------------------------------------------------- managed runtime (P2)
+
+    def _managed_probe(self) -> ProviderStatus:
+        """Managed probe: prepared-state read only; NO native dispatch.
+
+        The managed runtime exposes no probe operation, and a native
+        ``--version`` spawn would be an unmanaged path that could write into
+        an unprepared profile. The trust gate is therefore assessed against a
+        MANAGED-SERVED operation (``index_status``) — evidence a --version
+        record can never provide — and health additionally requires a valid
+        readiness marker. ``--version`` stays an explicit operation
+        diagnostic, never part of the managed probe, and a state read
+        persists no run receipt. Advertised capabilities are the
+        intersection with what the managed runtime can serve.
+        """
+        problem = self._managed_binding_problem(self._managed_repo or "")
+        gate = self._compat_gate("index_status")
+        if problem is None and gate.verdict is not CompatibilityVerdict.COMPATIBLE:
+            problem = (
+                f"index_status exact-compatibility {gate.verdict.value}; "
+                "native diagnostic withheld"
+            )
+        installed = _file_sha256(os.path.realpath(self.command[0])) is not None
+        if problem is None and not self._managed_prepared():
+            problem = (
+                "managed runtime present but not prepared (or state "
+                "unreadable); run the explicit sync path; the managed probe "
+                "performs no native call"
+            )
+        if problem is not None:
+            return ProviderStatus(
+                name=PROVIDER_NAME, installed=installed, healthy=False,
+                version=None, detail=problem,
+                capabilities=self._managed_capabilities(),
+            )
+        return ProviderStatus(
+            name=PROVIDER_NAME, installed=installed, healthy=True, version=None,
+            detail=("ok; managed runtime prepared; exact-compat(index_status)"
+                    "=compatible; version withheld (managed probe performs "
+                    "no --version)"),
+            capabilities=self._managed_capabilities(),
+        )
+
+    def _managed_capabilities(self) -> tuple[str, ...]:
+        """Advertised capabilities intersected with managed-served ones:
+        only the operations this runtime can actually serve are claimed."""
+        return tuple(
+            c for c in self.capabilities
+            if str(c) in _MANAGED_SERVED_CAPABILITIES
+        )
+
+    def _managed_binding_problem(self, repo_root: str) -> str | None:
+        """Immutable-binding check re-run before EVERY managed dispatch."""
+        if self._managed is None:
+            return "no managed runtime bound"
+        if self.command != self._managed_command:
+            return (
+                "provider command changed after managed binding; refusing to "
+                "dispatch through the runtime"
+            )
+        if os.path.realpath(repo_root) != self._managed_repo:
+            return (
+                "repo does not match the managed runtime binding; managed "
+                "evidence covers exactly one repo and is never re-bound"
+            )
+        return None
+
+    def _managed_prepared(self) -> bool:
+        """Read runtime readiness WITHOUT any dispatch (probe path).
+
+        Structural same-package read of the profile state and readiness
+        marker (managed.py exposes prepared state only privately at this
+        stage). Any unreadable/foreign runtime reports not prepared.
+        """
+        profile = getattr(self._managed, "_profile", None)
+        marker_state = getattr(self._managed, "_marker_state", None)
+        if profile is None or not callable(marker_state):
+            return False
+        try:
+            if profile.status().get("state") != "READY":
+                return False
+            return marker_state()[0] == "valid"
+        except Exception:  # noqa: BLE001 - a state read must never raise
+            return False
+
+    def _managed_run_record(
+        self, tool: str, status: str, duration_ms: int, detail: str,
+        gate: CompatibilityAssessment | None,
+    ) -> ProviderRunRecord:
+        """Record for one managed dispatch. NEVER persisted from a query
+        path (queries write no ledger); runtime state and identity travel
+        in the detail (artifact_verified only via a COMPATIBLE gate)."""
+        profile = getattr(self._managed, "_profile", None)
+        state: Any = None
+        try:
+            state = profile.status().get("state") if profile is not None else None
+        except Exception:  # noqa: BLE001
+            state = None
+        return ProviderRunRecord(
+            run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
+            provider_name=PROVIDER_NAME,
+            provider_version=self._locked_version(),
+            capability=tool,
+            status=status,
+            exit_code=None,  # managed receipts expose no native exit code
+            duration_ms=duration_ms,
+            arguments_redacted=(tool, "managed"),
+            next_action=(
+                NEXT_ACTION_VERSION_PIN if status == "compatibility_unknown"
+                else None
+            ),
+            detail=(
+                f"{detail}; managed runtime_state={state or 'unknown'}; "
+                f"identity_basis={self._identity_basis(gate)}"
+            ),
+        )
+
+    def _managed_invoke(
+        self,
+        tool: str,
+        args: Mapping[str, Any],
+        *,
+        repo_root: str,
+        project: str | None,
+        snapshot_bind: bool,
+        gate: CompatibilityAssessment | None,
+    ) -> _InvokeOutcome:
+        """Route one query through the managed runtime.
+
+        NO unmanaged spawn and NO ledger write: a query never prepares,
+        never initializes, and never persists (read-only contract). Only
+        the allowlisted wire args travel; the runtime injects the verified
+        project binding itself. Outcome keeps the legacy normalized shape
+        so ``_query_outcome``/snapshot normalization are reused unchanged.
+        """
+        refusal_status = "runtime_refused"
+        problem = self._managed_binding_problem(repo_root)
+        if problem is None and tool not in _MANAGED_QUERY_TOOLS:
+            refusal_status = "unsupported_managed"
+            problem = (
+                f"{tool} is not a managed runtime read (managed reads: "
+                f"{sorted(_MANAGED_QUERY_TOOLS)}); refusing without legacy "
+                "fallback"
+            )
+        if problem is None and tool == "search_graph":
+            if args.get("language") is not None:
+                refusal_status = "unsupported_managed"
+                problem = (
+                    "search_graph language filter has no managed read "
+                    "argument; refusing without legacy fallback"
+                )
+            elif args.get("limit", _MANAGED_SEARCH_LIMIT) != _MANAGED_SEARCH_LIMIT:
+                refusal_status = "unsupported_managed"
+                problem = (
+                    "search_graph limit "
+                    f"{args.get('limit')!r} is not the managed wire limit; "
+                    "refusing without legacy fallback"
+                )
+        if problem is not None:
+            record = self._managed_run_record(
+                tool, refusal_status, 0, problem, gate)
+            return _InvokeOutcome(False, refusal_status, error=problem,
+                                  run=record, assessment=gate)
+        margs: dict[str, Any] = (
+            {"query": args["query"]} if tool == "search_graph" else {}
+        )
+        started = time.monotonic()
+        failure: str | None = None
+        status = "runtime_refused"
+        mr: "ManagedResult | None" = None
+        try:
+            mr = self._managed.query(tool, margs)
+        except Exception as exc:  # noqa: BLE001 - dispatch never raises
+            failure = (
+                f"managed dispatch raised {type(exc).__name__}; "
+                "diagnostic withheld"
+            )
+        else:
+            status = _MANAGED_STATUS_MAP.get(mr.status, "provider_error")
+            failure = mr.error
+            if mr.cancellation_state:
+                failure = f"{failure or mr.status}; {mr.cancellation_state}"
+        duration_ms = int((time.monotonic() - started) * 1000)
+        if mr is None:
+            record = self._managed_run_record(
+                tool, "runtime_refused", duration_ms, failure or "", gate)
+            return _InvokeOutcome(False, "runtime_refused", error=failure,
+                                  run=record, assessment=gate)
+        payload = mr.payload if isinstance(mr.payload, dict) else None
+        if (
+            tool == "list_projects" and status == "ok"
+            and isinstance(mr.payload, dict) and mr.payload.get("has_more")
+        ):
+            status, failure, payload = "schema_drift", (
+                "managed listing exceeded one page; pagination is not a "
+                "managed read capability"
+            ), None
+        # A runtime-side gate refusal overrides this dispatch's identity
+        # claim: artifact_verified is never reported from a refused gate.
+        assessment = None if mr.status == "gate_refused" else gate
+        run = self._managed_run_record(
+            tool, status, duration_ms, failure or "managed dispatch ok",
+            assessment,
+        )
+        match = (
+            self.snapshot_match(repo_root, project=project)
+            if snapshot_bind and status == "ok" else None
+        )
+        return _InvokeOutcome(status == "ok", status, payload, failure,
+                              run=run, match=match, assessment=assessment)
+
+    def _managed_index(
+        self, request: IndexRequest, gate: CompatibilityAssessment | None
+    ) -> ProviderRunRecord:
+        """Explicit managed sync: ``prepare()`` then ``sync()`` on the
+        BOUND repo only. Success is a bool on receipt verification alone
+        (status=indexed plus a runtime-verified project binding). The
+        receipt is persisted through the SAME ``_index_record`` ledger path
+        as the legacy sync — snapshot/evidence rules are never bypassed —
+        and a snapshot binding is published ONLY when the worktree can
+        prove freshness AND an independent native ``index_status`` reports
+        the same head_sha (the SOT head alone never publishes). Runtime
+        exceptions become safe non-ok receipts; nothing raises past this
+        method."""
+        repo_path = os.path.realpath(request.repo_root)
+        pre_head = get_head_sha(repo_path)
+        pre_dirty, _ = dirty_state(repo_path)
+        started = time.monotonic()
+        problem = self._managed_binding_problem(repo_path)
+        status, detail = "provider_error", problem or ""
+        if problem is None:
+            prep: "ManagedResult | None" = None
+            sync_res: "ManagedResult | None" = None
+            try:
+                prep = self._managed.prepare()
+            except Exception as exc:  # noqa: BLE001 - receipt, never raise
+                detail = (
+                    "managed prepare raised "
+                    f"{type(exc).__name__}; diagnostic withheld"
+                )
+            if prep is not None and prep.status != "ok":
+                detail = prep.error or "managed prepare refused"
+                if prep.cancellation_state:
+                    detail += f"; {prep.cancellation_state}"
+            elif prep is not None:
+                try:
+                    sync_res = self._managed.sync(repo_path)
+                except Exception as exc:  # noqa: BLE001 - receipt, never raise
+                    detail = (
+                        "managed sync raised "
+                        f"{type(exc).__name__}; diagnostic withheld"
+                    )
+                else:
+                    if sync_res.status == "ok":
+                        status, detail = "ok", (
+                            "managed sync completed; receipt verified "
+                            "(status=indexed, project binding verified)"
+                        )
+                    else:
+                        status = (
+                            "timeout" if sync_res.status == "timeout"
+                            else "provider_error"
+                        )
+                        detail = sync_res.error or (
+                            f"managed sync refused ({sync_res.status})"
+                        )
+                        if sync_res.cancellation_state:
+                            detail += f"; {sync_res.cancellation_state}"
+        shell = _ManagedRunShell(
+            timed_out=status == "timeout",
+            error=None if status == "ok" else detail,
+        )
+        return self._index_record(
+            request, result=shell, status=status,
+            duration_ms=int((time.monotonic() - started) * 1000),
+            detail=detail, redacted=("index_repository", "managed"),
+            pre_head=pre_head, pre_dirty=pre_dirty,
+            require_native_head=True,
+        )
+
     # ----------------------------------------------------------------- invoke
 
     def _invoke(
@@ -797,6 +1232,13 @@ class CodebaseMemoryProvider:
             return _InvokeOutcome(
                 ok=False, status="version_incompatible",
                 error=detail, run=record,
+            )
+        if self._managed is not None:
+            # Managed routing (strict gate already passed above): the
+            # unmanaged spawn/args-file path below is never reached.
+            return self._managed_invoke(
+                tool, args, repo_root=repo_root, project=project,
+                snapshot_bind=snapshot_bind, gate=gate,
             )
         cwd = os.path.realpath(repo_root)
         args_file: str | None = None
@@ -1328,7 +1770,14 @@ class CodebaseMemoryProvider:
         head = payload.get("head_sha")
         branch = payload.get("branch")
         status = payload.get("status")
-        if not head and (status in ("ready", "ok")) and self._db is not None and project is not None:
+        # Managed mode: the SOT-ledger stored head is NEVER native proof.
+        # Only the provider's own index_status output may bind a head, so
+        # the legacy ledger fallback below is skipped entirely when a
+        # managed runtime is bound (a missing native head stays missing).
+        if (
+            not head and (status in ("ready", "ok")) and self._db is not None
+            and project is not None and self._managed is None
+        ):
             db_binding_api = getattr(self._db, "get_provider_binding", None)
             if db_binding_api is not None:
                 row = (
@@ -1484,6 +1933,10 @@ class CodebaseMemoryProvider:
                     redacted=("index_repository",),
                     next_action=NEXT_ACTION_VERSION_PIN,
                 )
+        if self._managed is not None:
+            # Managed sync: prepare() + sync() through the runtime, receipt
+            # persisted via the same _index_record ledger path below.
+            return self._managed_index(request, gate)
         timeout = (
             request.timeout_seconds
             if request.timeout_seconds is not None
@@ -1559,6 +2012,7 @@ class CodebaseMemoryProvider:
         duration_ms: int, detail: str, redacted: tuple,
         pre_head: str | None = None, pre_dirty: bool | None = None,
         next_action: str | None = None,
+        require_native_head: bool = False,
     ) -> ProviderRunRecord:
         version = self._locked_version()
         record = ProviderRunRecord(
@@ -1592,7 +2046,21 @@ class CodebaseMemoryProvider:
                     ):
                         self._project_cache.pop(repo_path, None)
                         resolved_proj, _, _ = self.resolve_project(request.repo_root)
-                        if resolved_proj:
+                        publish = bool(resolved_proj)
+                        if resolved_proj and require_native_head:
+                            # Managed sync: the SOT HEAD alone is NEVER proof
+                            # that the provider index reflects it. An
+                            # independent native index_status must report the
+                            # SAME head_sha, or no binding is published (the
+                            # prior ledger binding, if any, is preserved).
+                            native = self._index_binding(
+                                request.repo_root, resolved_proj)
+                            publish = (
+                                native is not None
+                                and native.head_sha is not None
+                                and native.head_sha == post_head
+                            )
+                        if publish:
                             snap_hash = post_head
                             binding_dict = {
                                 "sot_repo_id": request.repo_root,
