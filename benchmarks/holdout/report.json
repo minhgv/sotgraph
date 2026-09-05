@@ -248,7 +248,7 @@
         "metrics": {
           "targets": 16,
           "impact_recall": 1.0,
-          "unresolved_calls": 232
+          "unresolved_calls": 231
         },
         "misses": []
       },
@@ -334,7 +334,7 @@
           "presence_precision": 1.0,
           "false_absence": 0,
           "indexed_symbols": 1779,
-          "oracle_definitions": 1194,
+          "oracle_definitions": 1200,
           "verified": 1779
         },
         "parse_failures": [],
@@ -546,34 +546,28 @@
       "retrieval": {
         "metrics": {
           "queries": 30,
-          "hit_at_1": 0.7667,
-          "hit_at_5": 0.9333,
-          "mrr": 0.8361,
+          "hit_at_1": 0.7333,
+          "hit_at_5": 0.9,
+          "mrr": 0.8011,
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
         "unfound_queries": [
           "src/click/core.py::Argument",
-          "src/click/exceptions.py::__init__"
+          "src/click/exceptions.py::__init__",
+          "tests/test_utils/test_open_file.py::test_open_file"
         ],
         "false_presence_queries": []
       },
       "impact": {
         "metrics": {
           "targets": 25,
-          "impact_recall": 0.992,
-          "unresolved_calls": 4390
+          "impact_recall": 1.0,
+          "unresolved_calls": 4387
         },
-        "misses": [
-          {
-            "target": "CompletionItem",
-            "missing": [
-              "src/click/core.py::shell_complete"
-            ]
-          }
-        ]
+        "misses": []
       },
-      "duration_s": 10.2
+      "duration_s": 9.7
     },
     {
       "name": "structlog",
@@ -852,7 +846,7 @@
         },
         "misses": []
       },
-      "duration_s": 6.1
+      "duration_s": 6.2
     },
     {
       "name": "tenacity",
@@ -1140,7 +1134,7 @@
       "impact": {
         "metrics": {
           "targets": 25,
-          "impact_recall": 0.88,
+          "impact_recall": 0.96,
           "unresolved_calls": 1161
         },
         "misses": [
@@ -1151,22 +1145,10 @@
               "tests/test_tenacity.py::go",
               "tests/test_tenacity.py::test"
             ]
-          },
-          {
-            "target": "DoAttempt",
-            "missing": [
-              "tenacity/__init__.py::_begin_iter"
-            ]
-          },
-          {
-            "target": "DoSleep",
-            "missing": [
-              "tenacity/__init__.py::_post_stop_check_actions"
-            ]
           }
         ]
       },
-      "duration_s": 9.2
+      "duration_s": 10.2
     },
     {
       "name": "python-slugify",
@@ -1288,7 +1270,7 @@
           }
         ]
       },
-      "duration_s": 3.1
+      "duration_s": 3.2
     },
     {
       "name": "freezegun",
@@ -1574,7 +1556,7 @@
         },
         "misses": []
       },
-      "duration_s": 4.1
+      "duration_s": 3.9
     },
     {
       "name": "schedule",
@@ -1786,7 +1768,7 @@
         },
         "misses": []
       },
-      "duration_s": 4.3
+      "duration_s": 4.2
     },
     {
       "name": "pexpect",
@@ -1956,19 +1938,12 @@
       "impact": {
         "metrics": {
           "targets": 25,
-          "impact_recall": 0.96,
+          "impact_recall": 1.0,
           "unresolved_calls": 2610
         },
-        "misses": [
-          {
-            "target": "hex_dump",
-            "missing": [
-              "tests/test_expect.py::hex_diff"
-            ]
-          }
-        ]
+        "misses": []
       },
-      "duration_s": 4.8
+      "duration_s": 4.6
     },
     {
       "name": "requests",
@@ -2026,7 +2001,7 @@
           "presence_precision": 1.0,
           "false_absence": 0,
           "indexed_symbols": 763,
-          "oracle_definitions": 679,
+          "oracle_definitions": 685,
           "verified": 763
         },
         "parse_failures": [],
@@ -2238,16 +2213,15 @@
       "retrieval": {
         "metrics": {
           "queries": 30,
-          "hit_at_1": 0.8,
-          "hit_at_5": 0.9,
-          "mrr": 0.85,
+          "hit_at_1": 0.8333,
+          "hit_at_5": 0.9333,
+          "mrr": 0.8778,
           "abstention_probes": 20,
           "abstention_accuracy": 1.0
         },
         "unfound_queries": [
-          "src/requests/adapters.py::__init__",
-          "src/requests/models.py::Request",
-          "src/requests/sessions.py::Session"
+          "src/requests/models.py::prepare",
+          "src/requests/structures.py::get"
         ],
         "false_presence_queries": []
       },
@@ -2259,7 +2233,7 @@
         },
         "misses": []
       },
-      "duration_s": 8.2
+      "duration_s": 9.4
     },
     {
       "name": "jsonschema",
@@ -2511,22 +2485,10 @@
       "impact": {
         "metrics": {
           "targets": 25,
-          "impact_recall": 0.9,
+          "impact_recall": 0.98,
           "unresolved_calls": 2037
         },
         "misses": [
-          {
-            "target": "Validator",
-            "missing": [
-              "jsonschema/validators.py::check_schema"
-            ]
-          },
-          {
-            "target": "_Test",
-            "missing": [
-              "jsonschema/tests/_suite.py::from_dict"
-            ]
-          },
           {
             "target": "_uniq_key",
             "missing": [
@@ -2816,12 +2778,12 @@
       "presence_precision_macro": 1.0,
       "presence_precision_min": 1.0,
       "false_absence_total": 0,
-      "impact_recall_macro": 0.9609,
+      "impact_recall_macro": 0.9798,
       "test_selection_recall_macro": 1.0,
       "test_selection_measured_repos": 10,
       "hit_at_1_macro": 0.7879,
       "hit_at_5_macro": 0.9515,
-      "mrr_macro": 0.8555,
+      "mrr_macro": 0.8548,
       "abstention_accuracy_macro": 1.0
     },
     "checks": {
@@ -2838,5 +2800,5 @@
       "passed": true
     }
   },
-  "markdown": "# SG-204 holdout benchmark report\n\n- repos measured: **11** (pinned, licenses declared)\n- presence precision (macro / min): **1.0** / 1.0\n- false absence total: **0**\n- impact recall (macro, supported static scope): **0.9609**\n- test-selection recall (macro, 10 repos): **1.0**\n- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): 0.7879 / 0.9515 / 0.8555\n- abstention accuracy: 1.0\n\n| repo | presence | false-abs | impact | test-sel |\n|---|---|---|---|---|\n| itsdangerous | 1.0 | 0 | 1.0 | 1.0 |\n| click | 1.0 | 0 | 0.992 | 1.0 |\n| structlog | 1.0 | 0 | 1.0 | 1.0 |\n| tenacity | 1.0 | 0 | 0.88 | 1.0 |\n| python-slugify | 1.0 | 0 | 0.838 | 1.0 |\n| freezegun | 1.0 | 0 | 1.0 | 1.0 |\n| schedule | 1.0 | 0 | 1.0 | 1.0 |\n| pexpect | 1.0 | 0 | 0.96 | 1.0 |\n| requests | 1.0 | 0 | 1.0 | 1.0 |\n| jsonschema | 1.0 | 0 | 0.9 | None |\n| markdown-it-py | 1.0 | 0 | 1.0 | 1.0 |\n\ngates: **ALL PASS**\n"
+  "markdown": "# SG-204 holdout benchmark report\n\n- repos measured: **11** (pinned, licenses declared)\n- presence precision (macro / min): **1.0** / 1.0\n- false absence total: **0**\n- impact recall (macro, supported static scope): **0.9798**\n- test-selection recall (macro, 10 repos): **1.0**\n- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): 0.7879 / 0.9515 / 0.8548\n- abstention accuracy: 1.0\n\n| repo | presence | false-abs | impact | test-sel |\n|---|---|---|---|---|\n| itsdangerous | 1.0 | 0 | 1.0 | 1.0 |\n| click | 1.0 | 0 | 1.0 | 1.0 |\n| structlog | 1.0 | 0 | 1.0 | 1.0 |\n| tenacity | 1.0 | 0 | 0.96 | 1.0 |\n| python-slugify | 1.0 | 0 | 0.838 | 1.0 |\n| freezegun | 1.0 | 0 | 1.0 | 1.0 |\n| schedule | 1.0 | 0 | 1.0 | 1.0 |\n| pexpect | 1.0 | 0 | 1.0 | 1.0 |\n| requests | 1.0 | 0 | 1.0 | 1.0 |\n| jsonschema | 1.0 | 0 | 0.98 | None |\n| markdown-it-py | 1.0 | 0 | 1.0 | 1.0 |\n\ngates: **ALL PASS**\n"
 }

@@ -282,6 +282,14 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         doc = rn.get("doc", "")
         body = f"{label} ({kind}) at {rel_posix}:{line_no or 1}\n{doc}".strip()
 
+        keywords = _decompose_keywords(raw_id, rn.get("label"), kind, lang, p.name, p.stem)
+        # Raw extractor markers (e.g. the ``type_checking`` tag on
+        # declarations inside `if TYPE_CHECKING:` guards) are appended
+        # verbatim so they stay searchable as exact tokens.
+        for raw_kw in rn.get("keywords") or []:
+            if raw_kw not in keywords:
+                keywords.append(raw_kw)
+
         nodes.append({
             "id": node_id,
             "kind": kind,
@@ -290,7 +298,7 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
             "signature": rn.get("signature"),
             "label": f"{label} — {rel_posix}:{line_no or 1}",
             "body": body,
-            "keywords": _decompose_keywords(raw_id, rn.get("label"), kind, lang, p.name, p.stem),
+            "keywords": keywords,
             "line_start": line_no,
             "line_end": line_end,
             "col_start": rn.get("col_start"),

@@ -46,6 +46,11 @@ class Definition:
     name: str
     kind: str  # "function" | "class"
     line: int  # 1-based def/class statement line
+    # True for symbols declared inside an ``if TYPE_CHECKING:`` guard:
+    # they are part of the DECLARATION-PRESENCE universe (the engine must
+    # index and expose them for symbol lookup) but stay OUT of the
+    # runtime-impact universe (no runtime call edges involve them).
+    type_only: bool = False
 
 
 @dataclass
@@ -116,34 +121,50 @@ def _walk_definitions(tree: ast.AST, path: str) -> List[Definition]:
     """Defs in the engine's supported static scope: MODULE scope and
     CLASS scope (methods, properties, nested classes).
 
-    Deliberately excluded, matching the engine's one-node-per-name model:
-    - defs nested inside functions (locals; the engine has no nodes for
-      them and dedupes same-name duplicates into one representative);
-    - ``if TYPE_CHECKING:`` bodies (typing-only, never importable at
-      runtime — the engine does not model them);
-    - ``@overload`` stubs (the implementation def is the real symbol).
+    Declaration PRESENCE vs runtime REACHABILITY are separate universes:
+
+    - ``if TYPE_CHECKING:`` bodies ARE in this universe (declared symbols
+      the engine must index for lookup) and are flagged ``type_only`` —
+      the runtime-impact oracle (:func:`resolve_direct_calls`) excludes
+      them. The ``else`` branch of such a guard is the runtime path and
+      is kept unflagged.
+    - defs nested inside functions are excluded (locals; the engine has
+      no nodes for them and dedupes same-name duplicates into one
+      representative);
+    - ``@overload`` stubs are excluded (the implementation def is the
+      real symbol).
     """
     defs: List[Definition] = []
 
-    def visit_class(node: ast.ClassDef) -> None:
-        defs.append(Definition(path, node.name, "class", _start_line(node)))
+    def visit_class(node: ast.ClassDef, type_only: bool) -> None:
+        defs.append(Definition(path, node.name, "class", _start_line(node), type_only))
         for child in node.body:
             if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 if not _is_overload(child):
                     defs.append(
-                        Definition(path, child.name, "function", _start_line(child))
+                        Definition(path, child.name, "function",
+                                   _start_line(child), type_only)
                     )
             elif isinstance(child, ast.ClassDef):
-                visit_class(child)
+                visit_class(child, type_only)
 
-    for stmt in tree.body:  # type: ignore[attr-defined]
-        if isinstance(stmt, ast.If) and _is_type_checking(stmt.test):
-            continue
-        if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            if not _is_overload(stmt):
-                defs.append(Definition(path, stmt.name, "function", _start_line(stmt)))
-        elif isinstance(stmt, ast.ClassDef):
-            visit_class(stmt)
+    def visit_stmts(stmts: List[ast.stmt], type_only: bool) -> None:
+        for stmt in stmts:
+            if isinstance(stmt, ast.If) and _is_type_checking(stmt.test):
+                # Guard body: declared but type-only. The else branch is
+                # the runtime path — walk it with type_only reset.
+                visit_stmts(stmt.body, True)
+                visit_stmts(stmt.orelse, False)
+            elif isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                if not _is_overload(stmt):
+                    defs.append(
+                        Definition(path, stmt.name, "function",
+                                   _start_line(stmt), type_only)
+                    )
+            elif isinstance(stmt, ast.ClassDef):
+                visit_class(stmt, type_only)
+
+    visit_stmts(tree.body, False)  # type: ignore[attr-defined]
     return defs
 
 
@@ -198,6 +219,28 @@ def _module_key(rel: str) -> str:
     return Path(rel).stem
 
 
+def _type_checking_spans(tree: ast.AST) -> List[Tuple[int, int]]:
+    """Inclusive line ranges covered by the bodies of ``if TYPE_CHECKING:``
+    guards (anywhere in the file). Call/import statements lexically inside
+    a guard never execute, so they are not runtime edges and stay out of
+    the impact oracle — mirroring the engine's extractor policy.
+    """
+    spans: List[Tuple[int, int]] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.If) and _is_type_checking(node.test):
+            starts = [_start_line(s) for s in node.body]
+            ends = [
+                getattr(s, "end_lineno", None) or s.lineno for s in node.body
+            ]
+            if starts and ends:
+                spans.append((min(starts), max(ends)))
+    return spans
+
+
+def _in_spans(lineno: int, spans: List[Tuple[int, int]]) -> bool:
+    return any(start <= lineno <= end for start, end in spans)
+
+
 def resolve_direct_calls(
     root: Path,
     defs: List[Definition],
@@ -209,11 +252,17 @@ def resolve_direct_calls(
     by ``from <module> import <name>`` where exactly one kept file has
     that module stem and defines that name. Attribute calls, star
     imports and re-exports are out of scope (counted as unresolved).
+
+    RUNTIME-IMPACT universe: ``type_only`` definitions (declared inside
+    ``if TYPE_CHECKING:`` guards) never resolve calls here, and call or
+    import statements lexically inside a guard body are skipped — the
+    engine must not fabricate runtime edges for them either.
     Returns (edges, unresolved_call_names).
     """
+    runtime_defs = [d for d in defs if not d.type_only]
     by_module: Dict[str, List[Definition]] = {}
     by_file_name: Dict[str, Set[str]] = {}
-    for d in defs:
+    for d in runtime_defs:
         by_module.setdefault(_module_key(d.path), []).append(d)
         by_file_name.setdefault(d.path, set()).add(d.name)
 
@@ -224,10 +273,13 @@ def resolve_direct_calls(
             tree = ast.parse((root / rel).read_text(encoding="utf-8"), filename=rel)
         except (SyntaxError, UnicodeDecodeError, ValueError):
             continue
+        tc_spans = _type_checking_spans(tree)
         # from-import aliases: local name -> (module stem, original name)
         imported: Dict[str, Tuple[str, str]] = {}
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module:
+                if _in_spans(node.lineno, tc_spans):
+                    continue  # type-only import: not a runtime binding
                 stem = node.module.split(".")[-1]
                 for alias in node.names:
                     if alias.name == "*":
@@ -236,6 +288,8 @@ def resolve_direct_calls(
         local_defs = by_file_name.get(rel, set())
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
+                if _in_spans(node.lineno, tc_spans):
+                    continue  # call inside a TYPE_CHECKING guard: no runtime edge
                 func = node.func
                 callee_name: Optional[str] = None
                 via_import = False

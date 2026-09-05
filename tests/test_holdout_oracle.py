@@ -181,7 +181,9 @@ def test_extract_definitions_scope_and_overloads(corpus):
     assert "util" in names and "Engine" in names and "run" in names
     assert "hidden" not in names, "docs/ prefix must be excluded"
     assert "also_hidden" not in names, "setup.py must be excluded"
-    assert "Phantom" not in names, "TYPE_CHECKING classes are out of model"
+    phantom = [d for d in defs if d.name == "Phantom"]
+    assert phantom, "TYPE_CHECKING classes are DECLARED — presence universe"
+    assert all(d.type_only for d in phantom), "but flagged type-only"
     assert "inner" not in names, "function-local defs are out of model"
     assert "outer" in names
     core_lines = sorted(

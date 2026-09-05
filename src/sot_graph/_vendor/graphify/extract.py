@@ -64,19 +64,41 @@ def _iter_scope_nodes(node: ast.AST):
         yield child
         yield from _iter_scope_nodes(child)
 
+def _param_names(args: ast.arguments) -> set:
+    """Every parameter name bound by an ``ast.arguments`` node."""
+    names: set = set()
+    all_args = getattr(args, "posonlyargs", []) + args.args + getattr(args, "kwonlyargs", [])
+    for arg in all_args:
+        names.add(arg.arg)
+    if args.vararg:
+        names.add(args.vararg.arg)
+    if args.kwarg:
+        names.add(args.kwarg.arg)
+    return names
+
+
+def _target_names(target: ast.AST) -> set:
+    """Names bound by an assignment/comprehension target (``x``, ``x, y``,
+    ``[x, y]``, ``*rest`` ...)."""
+    return {
+        n.id for n in ast.walk(target)
+        if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)
+    }
+
+
 def _collect_bound_names(func: ast.AST) -> set:
     """Names bound directly inside this function scope (params, assignments,
     for/with/except/comprehension targets, local imports).
+
+    NOTE: this is the FUNCTION-level bound set only. Lambda parameters and
+    comprehension targets live in their own inline scopes and are added
+    per-call-site by :func:`_iter_owned_calls` (``inline_bound``), so a
+    name reused inside a comprehension or lambda is resolved against the
+    correct innermost binding instead of outer bindings.
     """
     bound: set = set()
     if hasattr(func, "args") and func.args:
-        all_args = getattr(func.args, "posonlyargs", []) + func.args.args + getattr(func.args, "kwonlyargs", [])
-        for arg in all_args:
-            bound.add(arg.arg)
-        if func.args.vararg:
-            bound.add(func.args.vararg.arg)
-        if func.args.kwarg:
-            bound.add(func.args.kwarg.arg)
+        bound |= _param_names(func.args)
     for node in _iter_scope_nodes(func):
         if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
             bound.add(node.id)
@@ -86,6 +108,66 @@ def _collect_bound_names(func: ast.AST) -> set:
         elif isinstance(node, ast.ExceptHandler) and node.name:
             bound.add(node.name)
     return bound
+
+
+def _iter_owned_calls(func: ast.AST):
+    """Yield ``(call, inline_bound)`` for every Call expression OWNED by this
+    scope, with correct caller attribution:
+
+    - Calls in the function body proper: ``inline_bound`` is empty.
+    - Calls inside lambdas, list/set/dict comprehensions and generator
+      expressions ARE included — those constructs have no symbol of their
+      own, so their calls belong to the enclosing symbol scope.
+    - Nested ``def`` /``class`` bodies are NOT entered — they own their
+      calls (walked separately by the visitor); entering them blindly
+      would fabricate wrong-caller edges.
+    - ``inline_bound`` carries the lambda parameters / comprehension
+      targets that shadow outer names at that exact call site, following
+      Python's evaluation order: the first comprehension iterable is
+      evaluated in the enclosing scope; each subsequent iterable, its
+      target and conditions bind left-to-right.
+
+    Shadowed names keep call classification honest: a call whose callee is
+    an inline-bound name is marked ``is_local_var`` by ``_classify_call``
+    and therefore never becomes a pending external symbol edge.
+    """
+
+    def walk(node: ast.AST, bound: frozenset):
+        if isinstance(node, ast.Call):
+            yield node, bound
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                continue  # owns its calls; never attribute them to this scope
+            if isinstance(child, ast.Lambda):
+                # default expressions evaluate in the ENCLOSING scope
+                for d in child.args.defaults:
+                    yield from walk(d, bound)
+                for d in child.args.kw_defaults:
+                    if d is not None:
+                        yield from walk(d, bound)
+                yield from walk(child.body, bound | _param_names(child.args))
+            elif isinstance(child, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+                gens = child.generators
+                if not gens:  # defensive; cannot happen in valid Python
+                    yield from walk(child.elt, bound)
+                    continue
+                yield from walk(gens[0].iter, bound)  # evaluated in enclosing scope
+                acc = bound
+                for i, gen in enumerate(gens):
+                    if i:
+                        yield from walk(gen.iter, acc)  # sees previous targets
+                    acc = acc | _target_names(gen.target)
+                    for cond in gen.ifs:
+                        yield from walk(cond, acc)
+                if isinstance(child, ast.DictComp):
+                    yield from walk(child.key, acc)
+                    yield from walk(child.value, acc)
+                else:
+                    yield from walk(child.elt, acc)
+            else:
+                yield from walk(child, bound)
+
+    yield from walk(func, frozenset())
 def _dotted_expr(node: ast.AST) -> Optional[str]:
     """Render a Name/Attribute chain ('self.db'), or None for complex exprs."""
     parts: List[str] = []
@@ -189,6 +271,21 @@ def _span_fields(node: ast.AST) -> Dict[str, Any]:
     }
 
 
+def _is_tc_guard(test: ast.AST) -> bool:
+    """``if TYPE_CHECKING:`` / ``if t.TYPE_CHECKING:`` guard tests.
+
+    Declarations inside such guards are type-only: they are indexed as
+    declaration nodes (tagged with the ``type_checking`` keyword) but are
+    never given runtime edges — an import or call inside the guard does
+    not exist at runtime.
+    """
+    if isinstance(test, ast.Name):
+        return test.id == "TYPE_CHECKING"
+    if isinstance(test, ast.Attribute):
+        return test.attr == "TYPE_CHECKING"
+    return False
+
+
 def extract_python(path: Path) -> Dict[str, Any]:
     """Extract AST nodes and intra-file call/inheritance edges from Python files."""
     nodes = []
@@ -214,6 +311,27 @@ def extract_python(path: Path) -> Dict[str, Any]:
         def __init__(self):
             self.scope_stack = [path.name]
             self.bound_stack: List[set] = [set()]
+            # > 0 while visiting the body of an `if TYPE_CHECKING:` guard:
+            # declarations there are indexed (tagged ``type_checking``) but
+            # never emit runtime imports/calls edges.
+            self.tc_depth = 0
+
+        def visit_If(self, node: ast.If):
+            """Descend guards with correct type-only scoping.
+
+            The guard BODY is type-only (tc_depth + 1); the ELSE branch is
+            the runtime path and must stay untagged. Non-guard Ifs are
+            visited generically, exactly as before.
+            """
+            if _is_tc_guard(node.test):
+                self.tc_depth += 1
+                for stmt in node.body:
+                    self.visit(stmt)
+                self.tc_depth -= 1
+                for stmt in node.orelse:
+                    self.visit(stmt)
+            else:
+                self.generic_visit(node)
 
         def visit_ClassDef(self, node: ast.ClassDef):
             class_id = node.name
@@ -226,6 +344,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                 "doc": doc,
                 "signature": _format_signature(node, "class", node.name),
                 **_span_fields(node),
+                **({"keywords": ["type_checking"]} if self.tc_depth else {}),
             })
             # Edges: File contains class, or outer scope contains class
             edges.append({
@@ -276,6 +395,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                 "doc": doc,
                 "signature": _format_signature(node, prefix, node.name),
                 **_span_fields(node),
+                **({"keywords": ["type_checking"]} if self.tc_depth else {}),
             })
             edges.append({
                 "source": parent,
@@ -330,48 +450,61 @@ def extract_python(path: Path) -> Dict[str, Any]:
                         local_import_map[asname] = ("." * child.level) + mod
                         local_alias_map[asname] = alias.name
 
-            # Detect call expressions inside function with cumulative lexical binding context
+            # Detect call expressions inside function with cumulative lexical binding context.
+            # A def inside an `if TYPE_CHECKING:` guard never runs, so none of
+            # its calls are runtime edges — suppress them entirely (the node
+            # itself is still indexed, tagged type-only).
             bound = _collect_bound_names(node)
             for b in self.bound_stack:
                 bound.update(b)
-            for child in _iter_scope_nodes(node):
-                if not isinstance(child, ast.Call):
-                    continue
-                callee = None
-                if isinstance(child.func, ast.Name):
-                    if child.func.id == node.name:
+            if self.tc_depth == 0:
+                for child, inline_bound in _iter_owned_calls(node):
+                    # Calls inside lambdas/comprehensions have no symbol of
+                    # their own: they are owned by (attributed to) this
+                    # enclosing symbol scope, classified against the
+                    # function-level bindings PLUS the inline names bound by
+                    # the lambda params / comprehension targets governing
+                    # that exact site.
+                    call_bound = bound | inline_bound if inline_bound else bound
+                    if not isinstance(child.func, (ast.Name, ast.Attribute)):
                         continue
-                    callee = local_alias_map.get(child.func.id, child.func.id)
-                elif isinstance(child.func, ast.Attribute):
-                    attr_recv = child.func.value
-                    # super().x() dispatches to parent class method
-                    if (isinstance(attr_recv, ast.Call)
-                            and isinstance(attr_recv.func, ast.Name)
-                            and attr_recv.func.id == "super"):
+                    callee = None
+                    if isinstance(child.func, ast.Name):
+                        if child.func.id == node.name:
+                            continue
+                        callee = local_alias_map.get(child.func.id, child.func.id)
+                    else:
+                        attr_recv = child.func.value
+                        # super().x() dispatches to parent class method
+                        if (isinstance(attr_recv, ast.Call)
+                                and isinstance(attr_recv.func, ast.Name)
+                                and attr_recv.func.id == "super"):
+                            continue
+                        if (child.func.attr == node.name
+                                and not (isinstance(attr_recv, ast.Name)
+                                         and attr_recv.id in ("self", "cls"))):
+                            continue
+                        callee = child.func.attr
+                    if callee is None:
                         continue
-                    if (child.func.attr == node.name
-                            and not (isinstance(attr_recv, ast.Name)
-                                     and attr_recv.id in ("self", "cls"))):
-                        continue
-                    callee = child.func.attr
-                if callee is None:
-                    continue
-                context = _classify_call(
-                    child, bound, local_import_map, local_alias_map, local_types, enclosing_class
-                ) or {}
-                edges.append({
-                    "source": func_id,
-                    "target": callee,
-                    "relation": "calls",
-                    "source_location": f"L{getattr(child, 'lineno', node.lineno)}",
-                    **context,
-                })
+                    context = _classify_call(
+                        child, call_bound, local_import_map, local_alias_map, local_types, enclosing_class
+                    ) or {}
+                    edges.append({
+                        "source": func_id,
+                        "target": callee,
+                        "relation": "calls",
+                        "source_location": f"L{getattr(child, 'lineno', node.lineno)}",
+                        **context,
+                    })
             self.scope_stack.append(func_id)
             self.bound_stack.append(bound)
             self.generic_visit(node)
             self.bound_stack.pop()
             self.scope_stack.pop()
         def visit_Import(self, node: ast.Import):
+            if self.tc_depth:
+                return  # a type-checking-only import is not a runtime dependency
             for alias in node.names:
                 edges.append({
                     "source": path.name,
@@ -382,6 +515,8 @@ def extract_python(path: Path) -> Dict[str, Any]:
                 })
 
         def visit_ImportFrom(self, node: ast.ImportFrom):
+            if self.tc_depth:
+                return  # a type-checking-only import is not a runtime dependency
             mod = node.module or ""
             for alias in node.names:
                 target_sym = alias.name if alias.name != "*" else mod
@@ -403,6 +538,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                     "doc": "",
                     "signature": f"type {name}",
                     **_span_fields(node),
+                    **({"keywords": ["type_checking"]} if self.tc_depth else {}),
                 })
                 edges.append({
                     "source": self.scope_stack[-1],
