@@ -11,11 +11,35 @@ Field rules (contract):
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
 ENVELOPE_SCHEMA_VERSION = 1
+
+#: VerificationResult.status vocabulary (same constant the docstring lists).
+#: Used only by EvidenceEnvelope.validate as an additive guard.
+VERIFICATION_STATUS_VOCABULARY = frozenset(
+    {"SUPPORTED", "HEURISTIC", "AMBIGUOUS", "STALE", "UNVERIFIABLE"}
+)
+
+#: Exact sha256 hex digest (64 hex chars), optionally ``sha256:``-prefixed.
+_SHA256_RE = re.compile(r"^(?:sha256:)?([0-9a-fA-F]{64})$")
+
+
+def normalize_sha256_digest(value: str) -> str:
+    """Normalize a sha256 digest to bare lowercase 64-hex (``sha256:`` prefix optional).
+
+    Raises ``ValueError`` on malformed input — never silently coerces, so a
+    truncated or fabricated digest cannot masquerade as a content identity.
+    """
+    if not isinstance(value, str):
+        raise ValueError(f"sha256 digest must be a string, got {type(value).__name__}")
+    match = _SHA256_RE.match(value.strip())
+    if match is None:
+        raise ValueError(f"malformed sha256 digest: {value!r}")
+    return match.group(1).lower()
 
 
 class Capability(str, Enum):
@@ -44,12 +68,22 @@ class IntegrationMode(str, Enum):
 
 @dataclass(frozen=True)
 class ProviderIdentity:
-    """Who produced an assertion."""
+    """Who produced an assertion.
+
+    ``version`` is a detected release string — it is descriptive metadata,
+    never binary identity. ``artifact_sha256`` (exact sha256 of the installed
+    binary/artifact) is the only identity-bearing field. All three extra
+    fields are optional so existing positional construction and the default
+    ``EvidenceEnvelope.to_dict`` shape are preserved unchanged.
+    """
 
     name: str
     version: str | None
     mode: IntegrationMode
     capability: Capability
+    engine_commit: str | None = None
+    artifact_sha256: str | None = None
+    protocol_compatibility_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -114,6 +148,10 @@ class EvidenceEnvelope:
     def validate(self) -> list[str]:
         """Return contract violations; empty list means valid."""
         problems: list[str] = []
+        if self.verification.status not in VERIFICATION_STATUS_VOCABULARY:
+            problems.append(
+                f"verification.status {self.verification.status!r} outside contract vocabulary"
+            )
         if self.snapshot.snapshot_id is None and self.verification.status == "SUPPORTED":
             problems.append("UNBOUND snapshot cannot yield SUPPORTED")
         if self.provider.mode is IntegrationMode.FEDERATED_CLI and self.provider.version is None:
@@ -122,8 +160,19 @@ class EvidenceEnvelope:
             0.0 <= self.assertion.provider_confidence <= 1.0
         ):
             problems.append("provider_confidence outside [0,1]")
-        if self.subject.path.startswith("/"):
+        if not isinstance(self.subject.path, str) or not self.subject.path:
+            problems.append("subject.path must be a non-empty string")
+        elif self.subject.path.startswith("/"):
             problems.append("subject.path must be repo-relative, not absolute")
+        if self.provider.artifact_sha256 is not None:
+            try:
+                normalize_sha256_digest(self.provider.artifact_sha256)
+            except ValueError:
+                problems.append("provider.artifact_sha256 is not a valid sha256 digest")
+        for _fname in ("engine_commit", "protocol_compatibility_id"):
+            _fval = getattr(self.provider, _fname)
+            if isinstance(_fval, str) and not _fval.strip():
+                problems.append(f"provider.{_fname} must be non-empty when present")
         return problems
 
     def to_dict(self) -> dict[str, Any]:
@@ -134,6 +183,24 @@ class EvidenceEnvelope:
                 "version": self.provider.version,
                 "mode": self.provider.mode.value,
                 "capability": self.provider.capability.value,
+                # Additive identity fields: serialized only when set so the
+                # default (unset) dict shape stays byte-identical for
+                # consumers of the P0 vocabulary.
+                **(
+                    {}
+                    if self.provider.engine_commit is None
+                    else {"engine_commit": self.provider.engine_commit}
+                ),
+                **(
+                    {}
+                    if self.provider.artifact_sha256 is None
+                    else {"artifact_sha256": self.provider.artifact_sha256}
+                ),
+                **(
+                    {}
+                    if self.provider.protocol_compatibility_id is None
+                    else {"protocol_compatibility_id": self.provider.protocol_compatibility_id}
+                ),
             },
             "snapshot": {
                 "repository_root": self.snapshot.repository_root,
