@@ -90,3 +90,9 @@ tar -xzf codebase-memory-mcp-darwin-arm64.tar.gz && shasum -a 256 codebase-memor
 shasum -a 256 ~/.local/bin/codebase-memory-mcp   # = 996bad5f… (file-level KHÁC do signature)
 # byte-region diff: python3 memcmp script (đã chạy 2026-09-05): 2208 regions, tất cả nằm ở header(7B) + signature block; thân code/data identical
 ```
+
+## 8. Signature verification status & limits (reviewer note 2026-09-05)
+
+- **Quan sát được:** mỗi release asset có sigstore bundle (`.bundle`) — CHỈ ghi nhận **presence**; bundle CHƯA được verify bằng công cụ (cosign/sigstore) trong P0.
+- **Trust hiện tại:** GitHub TLS + tài khoản GitHub của kênh phân phối, tức **same-channel checksum** (checksums.txt tải từ chính release đó). Đây KHÔNG phải independent authenticated publisher identity.
+- **Prerequisite mang về sau (hard gate):** trước khi managed artifact release (GS-SURFACE/P4), bắt buộc verify signature bundle thật (cosign verify hoặc tương đương) gắn publisher identity độc lập với kênh tải. Cho tới lúc đó: provenance = release-manifest binding (hash chain), KHÔNG có xác thực publisher độc lập hơn thế.

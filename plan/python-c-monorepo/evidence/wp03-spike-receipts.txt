@@ -1,0 +1,72 @@
+# WP0.3 live spike — sanitized compact receipts (mirror of /tmp/sot-p0-scratch, 2026-09-05)
+# Purpose: repo-side proof so P0 does not rely only on disposable /tmp. Sanitized: user home replaced by ~.
+# Scratch root: /tmp/sot-p0-scratch (spike/ = live run; codebase-memory-mcp/ = upstream source clone)
+
+## A. sha256 of raw artifacts (re-verify with: shasum -a 256 <path>)
+cbm-darwin-arm64-v0.10.8.tar.gz (release tarball)  9bd840dfb3ec7eaef4f310382057adaa5b0e904df883104d03ffcf39836afd07
+spike/version.out                                  66b2b779426d2f268eb512200a91fafdd0ed953321411aaa1985422351c77cbc
+spike/help.out                                     f17362e348e8ad0bc81fd70c6b755f84494d90d04740ec5ee836dc612f94bd9b
+spike/index2.out  (successful default index)       ad20bee0866f3e24acd1d798efacc498974fd40aba74ccff650028cf0a768cbe
+spike/index2.err  (stderr + time of index2)        976f27eb0186a83384816b87f2033543d9ad44e1ffbd5fd7a94cd36866c0c5af
+spike/index3.out  (index --persistence true)       fb148c6772893ea4691978e6984f9293cf1d0fa136ba19e8410c537d44dfdf65
+spike/q.out       (list_projects)                  cd0251ae0f00d65e96bdeaa9d26c772835f327e73479d368d32718e336c5943f
+spike/q1.out      (search_graph bm25)              a1ffcf867e2af3ec6b5586a0a2d4f9af3563f733816c081af87d0d0df795fef6
+spike/q2.out      (index_status ready)             c38d1d73f505e941a95b428d742eb677cf002155504d4d0239e2e4b13fc1e34a
+spike/repo-files-before.txt                        137097be9807c3a4cc2a5671e2c303453ec28d7c1833d8ddb9db54b7de4935e3
+spike/index1.out  (failed run, empty stdout)       e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  (= sha256 of empty)
+spike/index1.err  (failed run: unknown flag)       8d3f37f62112f29318cc5adee2ead9d6aef573f44e8bc0743c4a16e0568b47ce
+spike/index-big.out  (cancelled run, empty stdout) e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  (= sha256 of empty)
+spike/index-big.err  (cancelled run stderr)        9c2ccb17df281af80a39cfd2e498fd1abdc6ebf6f3be9a4d68c37610221298fd
+spike/index-big2.out (cancelled run, empty stdout) e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  (= sha256 of empty)
+spike/index-big2.err (cancelled run stderr)        6b99c03531b1638b88bb03d3a4d24b7bf4035525407ff871c77b35288251ebb3
+spike/cache-before.txt  (pre-assert, empty)        e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  (= sha256 of empty)
+spike/runtime-before.txt (pre-assert, empty)       e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  (= sha256 of empty)
+prestate.txt                                       d1bf2f5ee42daffeabccbc37b0b9975015df4f75c9e39f1984492cf219d7816d
+poststate.txt                                      267138b9e6b57c3b16d1b8b718f6b95130379de55440f6225a3f11b52910c141
+spike/home/.cache/codebase-memory-mcp/logs/cbm-daemon.log  50dfba36aeab6053c13bda92c0e7ef1fa52fcff6f57fb4a87a5a1630cca6bb4e (128 lines, NO timestamps)
+
+## B. Verified excerpts (grep over raw files, counts = exact occurrences)
+version.out:        "codebase-memory-mcp 0.10.8"
+help.out:           15 tool names listed (index_repository, search_graph, query_graph, trace_path,
+                    get_code_snippet, get_graph_schema, get_architecture, search_code, list_projects,
+                    delete_project, index_status, check_index_coverage, detect_changes, manage_adr,
+                    ingest_traces)  == help surface ONLY, not live-verified operations
+help.out UI block:  "--ui=true | --ui=false  (persisted) | --port=N (default 9749, persisted)"
+index2.out:         "status=indexed", nodes=54, edges=119, artifact_present=false,
+                    project=private-tmp-sot-p0-scratch-spike-repo
+index2.err:         "real 11.67" (time -p of SUCCESSFUL cold index incl. temp daemon startup)
+index1.err:         "error: unknown flag --path for this tool", "real 2.89" (FAILED invocation; NOT an index timing)
+index3.out:         artifact_present=true (created .codebase-memory/{artifact.json,graph.db.zst} + .gitattributes in repo)
+q1.out:             "search_mode: bm25, results: 1 (cols: qn label file lines rank)"
+q2.out:             "nodes: 54, edges: 119, status: ready" — NO head_sha/base_sha/branch fields (git binding absent on 0.10.8, live-confirmed)
+repo-files diff:    before vs after-index empty (default index did not touch repo files)
+cbm-daemon.log:     ui.unavailable port=9749 reason=in_use            x18 (global UI bind attempted every run)
+                    watcher.watch project=private-tmp-...             x7  (auto_watch default true, live)
+                    lifetime_end reason=runtime_exited                x8
+                    last_committed_client_disconnected                x8
+                    lifetime_end reason=initial_window_expired        x1  (SIGKILL CLI at startup; daemon self-terminated)
+                    connection_end received=-1                        x1
+                    index.supervisor.reap outcome=killed exit_code=-1 signal=15  x1 (SIGKILL CLI mid-job)
+                    index.supervisor.worker_cancelled                 x1
+                    watcher.unwatch / watcher.stop / daemon.stop      present after each termination
+                    supervisor.reap outcome=clean exit_code=0         x2
+NOTE: log lines carry no timestamps -> daemon self-termination latency NOT measured (was previously
+claimed "<=5s measured"; corrected in wp03-live-spike.md).
+
+## C. Namespace asserts (pre -> post, from prestate.txt / poststate.txt)
+- User daemon PID 47134 (`--cbm-daemon-internal`) alive before and after; only cbm-daemon-internal process post-run.
+- /private/tmp/cbm-daemon-501/ (user rendezvous dir) unchanged: newest mtime Sep 3 15:09 pre and post.
+- ~/.cache/codebase-memory-mcp/ newest entries Sep 3 pre and post; ~/Library/Caches/codebase-memory-mcp absent pre and post.
+- Spike ran with env -i HOME/CBM_CACHE_DIR/CBM_RUNTIME_DIR/XDG_CONFIG_HOME/TMPDIR pointed at scratch (see wp03-live-spike.md header).
+
+## D. Upstream source clone (scratch)
+Path: /tmp/sot-p0-scratch/codebase-memory-mcp ; HEAD = 3c7427efb740934bf66653413b484118652ce649 (candidate commit from original plan, now locally available)
+Footprint: 1.5 GB on disk (clone incl. .git), 2119 working files (excl. .git)
+License: LICENSE (MIT) + THIRD_PARTY.md present at clone root; release ships THIRD_PARTY_NOTICES.md (see provenance-upstream.md)
+
+## E. Failed / cancelled experiments — full classification (no hidden runs)
+- index1   : FAILED   — wrong flag `--path`, exit 1, stdout empty, "real 2.89" (NOT an index timing). File: index1.{out,err}
+- index-big : CANCELLED — SIGKILL CLI during daemon startup scenario; stderr stops after mem.init (no daemon-started hint), stdout empty, no index result. File: index-big.{out,err}
+- index-big2: CANCELLED — SIGKILL CLI mid-job scenario; stderr includes temp-daemon-started hint, stdout empty; corresponding daemon-side evidence = supervisor.reap outcome=killed signal=15 in cbm-daemon.log. File: index-big2.{out,err}
+- cache-before.txt / runtime-before.txt : EMPTY pre-state assert captures (scratch cache/runtime dirs were clean before first run).
+- No other runs exist in the spike directory; every .out/.err in spike/ is listed in section A or D of this receipt.
