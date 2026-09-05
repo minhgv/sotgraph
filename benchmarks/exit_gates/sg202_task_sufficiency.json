@@ -1,0 +1,1454 @@
+{
+  "benchmark": "sg202-task-sufficiency",
+  "denominators": {
+    "attempted_tasks": 90,
+    "contracts_overflow": 1,
+    "full_success": 0,
+    "gt_subset_cases_checked": 9,
+    "measurable_tasks": 42,
+    "no_relevant_test": 48,
+    "oracle_unmeasurable": 48,
+    "parse_failure_note": "paths published; oracle-wide (includes non-universe trees such as .holdout-cache fixture corpora \u2014 outside the src/ task universe)",
+    "parse_failure_paths": [
+      ".holdout-cache/pexpect/notes/my_forkpty.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check2.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check_control_terminal.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check_handler.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check_read.py",
+      ".holdout-cache/pexpect/tests/platform_checks/check_signals.py",
+      ".holdout-cache/pexpect/tests/ticker.py"
+    ],
+    "parse_failures": 8,
+    "production_defs_universe": 961
+  },
+  "failures": [
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/adapters/antigravity.py::_append_gemini_rules,src/sot_graph/adapters/antigravity.py::_merge_gemini_settings",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/adapters/antigravity.py::setup_antigravity"
+    },
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/architecture.py::aggregate_functional_modules"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/bundle.py::_render_conformance_markdown"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/bundle.py::_generate_dependencies_and_violations"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/bundle.py::_generate_system_metrics_json"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 8,
+      "task": "src/sot_graph/analytics/graph.py::AnalyticsGraph"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/graph.py::calculate_blast_radius"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/graph.py::_repo_path_prefix"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/analytics/graph.py::_generate_community_label"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/assurance/accounting.py::_LimitVisitor"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 2,
+      "task": "src/sot_graph/assurance/coverage.py::CoverageState"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/assurance/coverage.py::CoverageReport"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/assurance/coverage.py::_language_of"
+    },
+    {
+      "contracts_expected": 4,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/assurance/coverage.py::ScopeManifest,src/sot_graph/assurance/coverage.py::_language_of,src/sot_graph/assurance/coverage.py::_matches_exclusion,src/sot_graph/assurance/coverage.py::_normalize_rel_path",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 3,
+      "task": "src/sot_graph/assurance/coverage.py::build_scope_manifest"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/assurance/identity.py::identity_key",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/assurance/identity.py::identity_hash"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "PACK_ERROR",
+      "reasons": [
+        "AMBIGUOUS_TARGET: target 'as_dict' matches 5 nodes; qualify with a FQN"
+      ],
+      "relevant_test_files": 6,
+      "task": "src/sot_graph/assurance/impact_pipeline.py::as_dict"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/assurance/orchestrator.py::_span_from_lines",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/assurance/orchestrator.py::search_rows_from_payload"
+    },
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/assurance/orchestrator.py::resolve_federated_spec"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/assurance/receipts.py::_node_row"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/claims.py::Claim"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/claims.py::_norm_rel"
+    },
+    {
+      "contracts_expected": 8,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/claims.py::_git_ok,src/sot_graph/claims.py::_line_of,src/sot_graph/claims.py::_norm_rel,src/sot_graph/claims.py::_occurrences,src/sot_graph/claims.py::_resolve_dotpath,src/sot_graph/claims.py::_values_match,src/sot_graph/claims.py::_violation,src/sot_graph/claims.py::load_registry",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/claims.py::lint_claims"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/cli.py::_rank_reasons"
+    },
+    {
+      "contracts_expected": 8,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/cli.py::cmd_watch"
+    },
+    {
+      "contracts_expected": 12,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "contracts_overflow (12 > cap 8)",
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/cli.py::cmd_providers"
+    },
+    {
+      "contracts_expected": 4,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/export/exporter.py::export_graphml,src/sot_graph/export/exporter.py::export_graphrag_json,src/sot_graph/export/exporter.py::export_obsidian_vault,src/sot_graph/export/scip.py::export_scip",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/cli.py::cmd_export"
+    },
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/envelope.py::wrap_envelope,src/sot_graph/importer/scip.py::ScipImporter",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/cli.py::cmd_import_scip"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/config.py::_coerce_enum"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::_init_schema"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::get_node_by_id"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::update_node_path"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::save_communities"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::_insert_run_row"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/db.py::get_provider_binding"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 3,
+      "task": "src/sot_graph/db.py::record_provider_evidence"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 2,
+      "task": "src/sot_graph/db.py::purge_provider_run"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 5,
+      "task": "src/sot_graph/diff_impact.py::to_dict"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 2,
+      "task": "src/sot_graph/diff_impact.py::DiffImpactEngine"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/diff_impact.py::format_diff_impact_json"
+    },
+    {
+      "contracts_expected": 3,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/diff_impact.py::_details_block,src/sot_graph/diff_impact.py::_repo_relative,src/sot_graph/diff_impact.py::_strip_ansi",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/diff_impact.py::format_diff_impact_github"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 6,
+      "task": "src/sot_graph/evidence.py::FreshnessStatus"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "PACK_ERROR",
+      "reasons": [
+        "AMBIGUOUS_TARGET: target '_tag' matches 2 nodes; qualify with a FQN"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/export/scip.py::_tag"
+    },
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/export/scip.py::_message"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/export/scip.py::_tool_version"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/holdout/evaluator.py::CallEdge"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 2,
+      "task": "src/sot_graph/holdout/evaluator.py::referenced_names"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/ignore.py::add_pattern"
+    },
+    {
+      "contracts_expected": 3,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/importer/scip.py::_parse_descriptors,src/sot_graph/importer/scip.py::_split_scip_spaces,src/sot_graph/importer/scip.py::_unescape_scip_ident",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/importer/scip.py::parse_scip_symbol"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 4,
+      "task": "src/sot_graph/locking.py::LockBusy"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/locking.py::_fd_guards_live_path"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "PACK_ERROR",
+      "reasons": [
+        "AMBIGUOUS_TARGET: target '__exit__' matches 5 nodes; qualify with a FQN"
+      ],
+      "relevant_test_files": 5,
+      "task": "src/sot_graph/locking.py::__exit__"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/mcp_server.py::_sdk"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/mcp_server.py::_error"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 8,
+      "task": "src/sot_graph/mcp_service.py::McpServiceError"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/mcp_service.py::_ConnView"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "PACK_ERROR",
+      "reasons": [
+        "TARGET_TOO_LARGE: target source span is 78890 bytes (cap 65536); raise --max-bytes or split the symbol"
+      ],
+      "relevant_test_files": 26,
+      "task": "src/sot_graph/mcp_service.py::McpService"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/mcp_service.py::_reconcile_before_analysis"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/mcp_service.py::_degrade_assurance_after_trim"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/mcp_service.py::_resolve_target_row"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 3,
+      "task": "src/sot_graph/mcp_service.py::repo_map"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 7,
+      "task": "src/sot_graph/mcp_service.py::diff_impact"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/modutil.py::module_candidates"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/provider_contract.py::ProviderIdentity"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/provider_contract.py::Assertion"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 3,
+      "task": "src/sot_graph/providers/base.py::IndexRequest"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/providers/base.py::ImpactRequest"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/providers/codebase_memory.py::_index_binding"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 19,
+      "task": "src/sot_graph/providers/codebase_memory.py::index"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/providers/cross_check.py::_external_relation_for"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/providers/normalization.py::RelationMapping"
+    },
+    {
+      "contracts_expected": 2,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/providers/normalization.py::CanonicalSubject,src/sot_graph/providers/normalization.py::_extract_span",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/providers/normalization.py::normalize_subject"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/providers/normalization.py::_sm_field"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/providers_registry.py::_rank_names"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/receipt_explorer.py::_pick"
+    },
+    {
+      "contracts_expected": 5,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/receipt_explorer.py::_render_downgrade"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/reconciler.py::_lexical_path"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/reconciler.py::_known_abs_paths"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/reconciler.py::_deletion_scope"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 57,
+      "task": "src/sot_graph/reconciler.py::reconcile"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/reconciler.py::scan_and_reconcile"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/repo_map.py::_display_path"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/solution.py::_detect_role_from_path_or_name"
+    },
+    {
+      "contracts_expected": 1,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/tokenizer.py::estimate_tokens",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/tokenizer.py::fit_lines_to_token_budget"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/trace.py::render_trace_markdown"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/vector.py::HashEmbedder"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/vector.py::_tokens"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/watcher.py::_process_identity"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "MISSING_TEST",
+      "reasons": [
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 1,
+      "task": "src/sot_graph/watcher.py::_read_pid_metadata"
+    },
+    {
+      "contracts_expected": 0,
+      "contracts_returned": 0,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "reasons": [
+        "no_relevant_test_in_corpus"
+      ],
+      "relevant_test_files": 0,
+      "task": "src/sot_graph/watcher.py::_remove_pid_file"
+    },
+    {
+      "contracts_expected": 7,
+      "contracts_returned": 0,
+      "outcome": "MISSING_CONTRACTS",
+      "reasons": [
+        "missing_direct_contracts: src/sot_graph/watcher.py::_daemon_gate,src/sot_graph/watcher.py::_get_pid_and_log_paths,src/sot_graph/watcher.py::_process_identity,src/sot_graph/watcher.py::_read_pid_metadata,src/sot_graph/watcher.py::_remove_pid_file,src/sot_graph/watcher.py::_watcher_identity_matches,src/sot_graph/watcher.py::_write_pid_metadata",
+        "missing_relevant_test_caller"
+      ],
+      "relevant_test_files": 2,
+      "task": "src/sot_graph/watcher.py::start_daemon"
+    }
+  ],
+  "gate": {
+    "denominator": 42,
+    "direction": "metric>=floor",
+    "floor": 0.95,
+    "gate": "sg202_task_sufficiency>=0.95",
+    "metric": 0.0,
+    "min_denominator": 30,
+    "oracle_validation": "PASSED (9 curated cases checked)",
+    "passed": false,
+    "verdict": "FAIL"
+  },
+  "metrics": {
+    "target_receipt_rate": 0.9048,
+    "task_sufficiency_all_sampled": 0.0,
+    "task_sufficiency_measurable": 0.0,
+    "test_receipt_rate": 0.0,
+    "tokens_median_recomputed": 1226
+  },
+  "oracle_validation": {
+    "checked": 9,
+    "mismatches": []
+  },
+  "outcome_counts": {
+    "MISSING_CONTRACTS": 12,
+    "MISSING_TEST": 26,
+    "ORACLE_UNMEASURABLE": 48,
+    "PACK_ERROR": 4
+  },
+  "policy": {
+    "budget_tokens": 1500,
+    "contract_satisfaction": "identity (callee_path, callee_name) on outbound_callees entries only; inbound/stubs never credit",
+    "contracts_cap": 8,
+    "contracts_overflow_handling": "task ORACLE_UNMEASURABLE, excluded from numerators, denominator published",
+    "gate_floor": 0.95,
+    "gate_metric_note": "gate metric is measured-subset sufficiency; all-sampled sufficiency published alongside",
+    "min_measurable_tasks": 30,
+    "oracle_validation": "curated fixed subset, ALL cases always evaluated",
+    "relevant_test_oracle": "HEURISTIC reference superset (ast Name/Attribute bare-name in test module); receipt = inbound caller edge from a relevant test module",
+    "requested_tasks": 90,
+    "seed": 20260905,
+    "task_sampling": "seeded sample_definitions over src/ source-tree defs (oracle production category; vendor/fixture/test excluded)",
+    "task_universe_label": "src source-tree defs (oracle production category)"
+  },
+  "provenance": {
+    "content_files_hashed": 31,
+    "digest_basis": "HEAD + porcelain-v1 -z status + per-file content sha256 (untracked-files=all; generated reports under benchmarks/exit_gates/ excluded)",
+    "digest_truncated": false,
+    "dirty_entries": 37,
+    "git_head": "8b45686a0ccfc1d02a3645d920366b20ad0f41bb",
+    "note": "snapshot binding: scores apply to exactly this HEAD+worktree (content-exact digest)",
+    "worktree_digest": "e590733defd8540e"
+  },
+  "reason_counts": {
+    "AMBIGUOUS_TARGET": 3,
+    "TARGET_TOO_LARGE": 1,
+    "contracts_overflow": 1,
+    "missing_direct_contracts": 12,
+    "missing_relevant_test_caller": 38,
+    "no_relevant_test_in_corpus": 48
+  },
+  "scope": "PILOT \u2014 self-repo corpus (sot-graph); does NOT close the global exit gate",
+  "task_roster": [
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/adapters/antigravity.py::setup_antigravity"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/architecture.py::aggregate_functional_modules"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/bundle.py::_render_conformance_markdown"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/bundle.py::_generate_dependencies_and_violations"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/bundle.py::_generate_system_metrics_json"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/analytics/graph.py::AnalyticsGraph"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/graph.py::calculate_blast_radius"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/graph.py::_repo_path_prefix"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/analytics/graph.py::_generate_community_label"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/assurance/accounting.py::_LimitVisitor"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/assurance/coverage.py::CoverageState"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/assurance/coverage.py::CoverageReport"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/assurance/coverage.py::_language_of"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/assurance/coverage.py::build_scope_manifest"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/assurance/identity.py::identity_hash"
+    },
+    {
+      "full_success": false,
+      "outcome": "PACK_ERROR",
+      "task": "src/sot_graph/assurance/impact_pipeline.py::as_dict"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/assurance/orchestrator.py::search_rows_from_payload"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/assurance/orchestrator.py::resolve_federated_spec"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/assurance/receipts.py::_node_row"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/claims.py::Claim"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/claims.py::_norm_rel"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/claims.py::lint_claims"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/cli.py::_rank_reasons"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/cli.py::cmd_watch"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/cli.py::cmd_providers"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/cli.py::cmd_export"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/cli.py::cmd_import_scip"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/config.py::_coerce_enum"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::_init_schema"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::get_node_by_id"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::update_node_path"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::save_communities"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::_insert_run_row"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/db.py::get_provider_binding"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/db.py::record_provider_evidence"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/db.py::purge_provider_run"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/diff_impact.py::to_dict"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/diff_impact.py::DiffImpactEngine"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/diff_impact.py::format_diff_impact_json"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/diff_impact.py::format_diff_impact_github"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/evidence.py::FreshnessStatus"
+    },
+    {
+      "full_success": false,
+      "outcome": "PACK_ERROR",
+      "task": "src/sot_graph/export/scip.py::_tag"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/export/scip.py::_message"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/export/scip.py::_tool_version"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/holdout/evaluator.py::CallEdge"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/holdout/evaluator.py::referenced_names"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/ignore.py::add_pattern"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/importer/scip.py::parse_scip_symbol"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/locking.py::LockBusy"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/locking.py::_fd_guards_live_path"
+    },
+    {
+      "full_success": false,
+      "outcome": "PACK_ERROR",
+      "task": "src/sot_graph/locking.py::__exit__"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/mcp_server.py::_sdk"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/mcp_server.py::_error"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/mcp_service.py::McpServiceError"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/mcp_service.py::_ConnView"
+    },
+    {
+      "full_success": false,
+      "outcome": "PACK_ERROR",
+      "task": "src/sot_graph/mcp_service.py::McpService"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/mcp_service.py::_reconcile_before_analysis"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/mcp_service.py::_degrade_assurance_after_trim"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/mcp_service.py::_resolve_target_row"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/mcp_service.py::repo_map"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/mcp_service.py::diff_impact"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/modutil.py::module_candidates"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/provider_contract.py::ProviderIdentity"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/provider_contract.py::Assertion"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/providers/base.py::IndexRequest"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/providers/base.py::ImpactRequest"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/providers/codebase_memory.py::_index_binding"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/providers/codebase_memory.py::index"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/providers/cross_check.py::_external_relation_for"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/providers/normalization.py::RelationMapping"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/providers/normalization.py::normalize_subject"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/providers/normalization.py::_sm_field"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/providers_registry.py::_rank_names"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/receipt_explorer.py::_pick"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/receipt_explorer.py::_render_downgrade"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/reconciler.py::_lexical_path"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/reconciler.py::_known_abs_paths"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/reconciler.py::_deletion_scope"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/reconciler.py::reconcile"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/reconciler.py::scan_and_reconcile"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/repo_map.py::_display_path"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/solution.py::_detect_role_from_path_or_name"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/tokenizer.py::fit_lines_to_token_budget"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/trace.py::render_trace_markdown"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/vector.py::HashEmbedder"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/vector.py::_tokens"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/watcher.py::_process_identity"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_TEST",
+      "task": "src/sot_graph/watcher.py::_read_pid_metadata"
+    },
+    {
+      "full_success": false,
+      "outcome": "ORACLE_UNMEASURABLE",
+      "task": "src/sot_graph/watcher.py::_remove_pid_file"
+    },
+    {
+      "full_success": false,
+      "outcome": "MISSING_CONTRACTS",
+      "task": "src/sot_graph/watcher.py::start_daemon"
+    }
+  ],
+  "unresolved_oracle_calls": 51983
+}

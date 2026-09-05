@@ -1,0 +1,87 @@
+{
+  "budget_tokens": 1024,
+  "worksheet_sha256": "bfda8bae8a398fe8",
+  "rows": [
+    {
+      "rank": 1,
+      "path": "src/sot_graph/adapters/opencode_plugin.ts"
+    },
+    {
+      "rank": 2,
+      "path": "src/sot_graph/analytics/architecture.py"
+    },
+    {
+      "rank": 3,
+      "path": "src/sot_graph/analytics/diagnostics.py"
+    },
+    {
+      "rank": 4,
+      "path": "src/sot_graph/analytics/graph.py"
+    },
+    {
+      "rank": 5,
+      "path": "src/sot_graph/assurance/identity.py"
+    },
+    {
+      "rank": 6,
+      "path": "src/sot_graph/assurance/impact_pipeline.py"
+    },
+    {
+      "rank": 7,
+      "path": "src/sot_graph/assurance/receipts.py"
+    },
+    {
+      "rank": 8,
+      "path": "src/sot_graph/config.py"
+    },
+    {
+      "rank": 9,
+      "path": "src/sot_graph/db.py"
+    },
+    {
+      "rank": 10,
+      "path": "src/sot_graph/export/scip.py"
+    },
+    {
+      "rank": 11,
+      "path": "src/sot_graph/holdout/evaluator.py"
+    },
+    {
+      "rank": 12,
+      "path": "src/sot_graph/ignore.py"
+    },
+    {
+      "rank": 13,
+      "path": "src/sot_graph/importer/scip.py"
+    },
+    {
+      "rank": 14,
+      "path": "src/sot_graph/locking.py"
+    },
+    {
+      "rank": 15,
+      "path": "src/sot_graph/mcp_service.py"
+    },
+    {
+      "rank": 16,
+      "path": "src/sot_graph/proc.py"
+    },
+    {
+      "rank": 17,
+      "path": "src/sot_graph/providers/base.py"
+    },
+    {
+      "rank": 18,
+      "path": "src/sot_graph/providers/codebase_memory.py"
+    },
+    {
+      "rank": 19,
+      "path": "src/sot_graph/providers/identity_join.py"
+    },
+    {
+      "rank": 20,
+      "path": "src/sot_graph/providers/verification.py"
+    }
+  ],
+  "note": "reviewer CSVs are validated against this manifest (rank set, unique paths); a filled CSV without a matching manifest is invalid"
+}

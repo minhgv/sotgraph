@@ -1,0 +1,223 @@
+{
+  "benchmark": "sg201-map-contamination",
+  "denominators": {
+    "rendered_files": 42,
+    "rendered_symbols": 91
+  },
+  "gate": {
+    "all_budgets_under_floor": true,
+    "budgets_with_sufficient_sampling": [
+      2048
+    ],
+    "denominator": 91,
+    "direction": "metric<floor",
+    "floor": 0.02,
+    "gate": "sg201_top_map_contamination<2%",
+    "metric": 0.0,
+    "metric_percent": 0.0,
+    "metric_unit": "fraction of rendered symbols (metric_percent = 100x metric)",
+    "min_denominator": 50,
+    "passed": true,
+    "verdict": "PASS"
+  },
+  "parse_mismatches": [],
+  "policy": {
+    "category_oracle": "declared superset oracle (common.ORACLE_*_RULES); over-flagging only, divergences published",
+    "default_categories": "production only (the shipped default)",
+    "gate": "symbol-level fixture+vendor contamination < 2% of rendered symbols, min rendered symbols 50",
+    "landmark_precision@20": "NOT measured here \u2014 requires human reviewer (plan/sg201-landmark-study-protocol.md)",
+    "selection": "ACTUAL rendered map text within declared token budget (default budgets 1024,2048)"
+  },
+  "primary_run": {
+    "budget_tokens": 2048,
+    "category_breakdown_symbols": {
+      "production": 91
+    },
+    "contaminated_files": 0,
+    "contaminated_symbols": 0,
+    "file_contamination_pct": 0.0,
+    "filters_echo": {
+      "absence_note": "absence from this map does not imply absence from the index",
+      "categories_excluded": [
+        "test",
+        "fixture",
+        "vendor",
+        "generated",
+        "docs",
+        "tooling"
+      ],
+      "categories_included": [
+        "production"
+      ],
+      "description": "map scope: production only \u2014 hid 3492 of 4615 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded)",
+      "excluded_symbols": 3492
+    },
+    "head20_contaminated": 0,
+    "head20_symbols": 50,
+    "production_vs_oracle_divergences": [],
+    "rendered_files": 42,
+    "rendered_sha256": "80df4d8abdbce497",
+    "rendered_symbols": 91,
+    "src_production_share_pct": 96.7,
+    "src_production_symbols": 88,
+    "symbol_contamination_pct": 0.0,
+    "truncated": true
+  },
+  "provenance": {
+    "content_files_hashed": 31,
+    "digest_basis": "HEAD + porcelain-v1 -z status + per-file content sha256 (untracked-files=all; generated reports under benchmarks/exit_gates/ excluded)",
+    "digest_truncated": false,
+    "dirty_entries": 37,
+    "git_head": "8b45686a0ccfc1d02a3645d920366b20ad0f41bb",
+    "note": "snapshot binding: scores apply to exactly this HEAD+worktree (content-exact digest)",
+    "worktree_digest": "e590733defd8540e"
+  },
+  "runs": [
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 44
+      },
+      "contaminated_files": 0,
+      "contaminated_symbols": 0,
+      "file_contamination_pct": 0.0,
+      "filters_echo": {
+        "absence_note": "absence from this map does not imply absence from the index",
+        "categories_excluded": [
+          "test",
+          "fixture",
+          "vendor",
+          "generated",
+          "docs",
+          "tooling"
+        ],
+        "categories_included": [
+          "production"
+        ],
+        "description": "map scope: production only \u2014 hid 3492 of 4615 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded)",
+        "excluded_symbols": 3492
+      },
+      "head20_contaminated": 0,
+      "head20_symbols": 35,
+      "production_vs_oracle_divergences": [],
+      "rendered_files": 27,
+      "rendered_sha256": "524a4b8535456950",
+      "rendered_symbols": 44,
+      "src_production_share_pct": 100.0,
+      "src_production_symbols": 44,
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "fixture": 1,
+        "production": 25,
+        "test": 2,
+        "vendor": 5
+      },
+      "contaminated_files": 3,
+      "contaminated_symbols": 6,
+      "control_all_categories": true,
+      "file_contamination_pct": 14.286,
+      "filters_echo": {
+        "absence_note": "absence from this map does not imply absence from the index",
+        "categories_excluded": [],
+        "categories_included": [
+          "production",
+          "test",
+          "fixture",
+          "vendor",
+          "generated",
+          "docs",
+          "tooling"
+        ],
+        "description": "map scope: all categories \u2014 no category filter",
+        "excluded_symbols": 0
+      },
+      "head20_contaminated": 6,
+      "head20_symbols": 32,
+      "production_vs_oracle_divergences": [],
+      "rendered_files": 21,
+      "rendered_symbols": 33,
+      "src_production_share_pct": 75.76,
+      "src_production_symbols": 25,
+      "symbol_contamination_pct": 18.182,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 91
+      },
+      "contaminated_files": 0,
+      "contaminated_symbols": 0,
+      "file_contamination_pct": 0.0,
+      "filters_echo": {
+        "absence_note": "absence from this map does not imply absence from the index",
+        "categories_excluded": [
+          "test",
+          "fixture",
+          "vendor",
+          "generated",
+          "docs",
+          "tooling"
+        ],
+        "categories_included": [
+          "production"
+        ],
+        "description": "map scope: production only \u2014 hid 3492 of 4615 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded)",
+        "excluded_symbols": 3492
+      },
+      "head20_contaminated": 0,
+      "head20_symbols": 50,
+      "production_vs_oracle_divergences": [],
+      "rendered_files": 42,
+      "rendered_sha256": "80df4d8abdbce497",
+      "rendered_symbols": 91,
+      "src_production_share_pct": 96.7,
+      "src_production_symbols": 88,
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "fixture": 1,
+        "production": 57,
+        "test": 7,
+        "tooling": 1,
+        "vendor": 10
+      },
+      "contaminated_files": 4,
+      "contaminated_symbols": 11,
+      "control_all_categories": true,
+      "file_contamination_pct": 9.756,
+      "filters_echo": {
+        "absence_note": "absence from this map does not imply absence from the index",
+        "categories_excluded": [],
+        "categories_included": [
+          "production",
+          "test",
+          "fixture",
+          "vendor",
+          "generated",
+          "docs",
+          "tooling"
+        ],
+        "description": "map scope: all categories \u2014 no category filter",
+        "excluded_symbols": 0
+      },
+      "head20_contaminated": 10,
+      "head20_symbols": 38,
+      "production_vs_oracle_divergences": [],
+      "rendered_files": 41,
+      "rendered_symbols": 76,
+      "src_production_share_pct": 75.0,
+      "src_production_symbols": 57,
+      "symbol_contamination_pct": 14.474,
+      "truncated": true
+    }
+  ],
+  "scope": "PILOT \u2014 self-repo corpus (sot-graph); does NOT close the global exit gate"
+}

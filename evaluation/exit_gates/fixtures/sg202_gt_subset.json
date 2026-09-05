@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "corpus_commit": "work/holdout-honesty-gates working tree",
+    "curated_on": "2026-09-05",
+    "curation_method": "grep -rlw/-rnw over tests/**.py followed by manual reading of matched lines to confirm code-level (not comment/string-only) references",
+    "note": "reference-level ground truth: the heuristic (and this subset) detect REFERENCES, not deep execution semantics; receipt scoring separately requires a graph caller edge",
+    "purpose": "Hand-curated fixed ground-truth subset validating the SG-202 relevant-test heuristic oracle. Each entry maps 'repo-relative/path.py::symbol_name' to the COMPLETE list of test modules that genuinely reference the symbol in CODE (import or call/reference), verified manually via grep -w line inspection on 2026-09-05. The evaluator must reproduce these lists EXACTLY with its ast Name/Attribute heuristic; checked==0 or any mismatch fails oracle validation and the gate cannot pass."
+  },
+  "src/sot_graph/envelope.py::compute_snapshot_generation": [
+    "tests/test_sg202_pack_completeness.py"
+  ],
+  "src/sot_graph/holdout/evaluator.py::extract_definitions": [
+    "tests/test_holdout_oracle.py",
+    "tests/test_type_checking_universe.py"
+  ],
+  "src/sot_graph/mcp_service.py::McpService": [
+    "tests/test_adversarial_edge_cases.py",
+    "tests/test_analytics.py",
+    "tests/test_bundle.py",
+    "tests/test_collection_accounting.py",
+    "tests/test_diff_impact.py",
+    "tests/test_impact_pipeline.py",
+    "tests/test_jit_reconcile.py",
+    "tests/test_mcp.py",
+    "tests/test_mcp_modern.py",
+    "tests/test_mcp_prompts.py",
+    "tests/test_mcp_receipt_tools.py",
+    "tests/test_navigation.py",
+    "tests/test_p2_orchestrator.py",
+    "tests/test_p5_coverage_verification.py",
+    "tests/test_p6_ledger.py",
+    "tests/test_p8_omp_integration.py",
+    "tests/test_phase1_scip_and_schema_v5.py",
+    "tests/test_repo_map.py",
+    "tests/test_report_conformance.py",
+    "tests/test_search_bare_name_ranking.py",
+    "tests/test_sg107_stress.py",
+    "tests/test_sg201_repo_map_filters.py",
+    "tests/test_sg202_pack_completeness.py",
+    "tests/test_solution_trace.py",
+    "tests/test_sprint4_compass_and_pack.py",
+    "tests/test_trust_axes.py",
+    "tests/test_trust_chain_hardening.py"
+  ],
+  "src/sot_graph/pack.py::build_bundle": [
+    "tests/property/test_invariants.py",
+    "tests/test_hardening_fixes.py",
+    "tests/test_pack_sg202_priority.py",
+    "tests/test_repo_map.py",
+    "tests/test_sg202_pack_completeness.py",
+    "tests/test_sprint4_compass_and_pack.py",
+    "tests/test_v2_upgrade.py"
+  ],
+  "src/sot_graph/pack.py::render_yaml": [
+    "tests/property/test_invariants.py",
+    "tests/test_hardening_fixes.py",
+    "tests/test_pack_sg202_priority.py",
+    "tests/test_repo_map.py",
+    "tests/test_sg202_pack_completeness.py",
+    "tests/test_v2_upgrade.py"
+  ],
+  "src/sot_graph/repo_map.py::build_repo_map": [
+    "tests/test_repo_map.py",
+    "tests/test_sg201_repo_map_filters.py",
+    "tests/test_sprint4_compass_and_pack.py"
+  ],
+  "src/sot_graph/repo_map.py::classify_path": [
+    "tests/test_sg201_repo_map_filters.py"
+  ],
+  "src/sot_graph/repo_map.py::parse_include_categories": [
+    "tests/test_sg201_repo_map_filters.py"
+  ],
+  "src/sot_graph/tokenizer.py::estimate_tokens": [
+    "tests/property/test_invariants.py",
+    "tests/test_hardening_fixes.py",
+    "tests/test_pack_sg202_priority.py",
+    "tests/test_sg201_repo_map_filters.py",
+    "tests/test_sprint4_compass_and_pack.py"
+  ]
+}
