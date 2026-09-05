@@ -1,0 +1,157 @@
+benchmarking/bench_core.py:
+  def spec_text()
+  def parser()
+  def test_spec(benchmark, parser, spec_text)
+benchmarking/bench_packages.py:
+  def spec_text()
+  def test_markdown_it_py(benchmark, spec_text)
+  def test_markdown_it_pyrs(benchmark, spec_text)
+  def test_mistune(benchmark, spec_text)
+  def test_commonmark_py(benchmark, spec_text)
+  def test_pymarkdown(benchmark, spec_text)
+  def test_pymarkdown_extra(benchmark, spec_text)
+  def test_mistletoe(benchmark, spec_text)
+  def test_panflute(benchmark, spec_text)
+markdown_it/_punycode.py:
+  def encode(uni: str) -> str
+  def decode(ascii: str) -> str
+  def map_domain(string: str, fn: Callable[[str], str]) -> str
+  def to_unicode(obj: str) -> str
+  def mapping(obj: str) -> str
+  def to_ascii(obj: str) -> str
+  def mapping(obj: str) -> str
+markdown_it/cli/parse.py:
+  def main(args: Sequence[str] | None=None) -> int
+  def convert(filenames: Iterable[str]) -> None
+  def convert_stdin() -> None
+  def convert_file(filename: str) -> None
+  def interactive() -> None
+  def parse_args(args: Sequence[str] | None) -> argparse.Namespace
+  def print_heading() -> None
+markdown_it/common/normalize_url.py:
+  def normalizeLink(url: str) -> str
+  def normalizeLinkText(url: str) -> str
+  def validateLink(url: str, validator: Callable[[str], bool] | None=None) -> bool
+markdown_it/common/utils.py:
+  def charCodeAt(src: str, pos: int) -> int | None
+  def charStrAt(src: str, pos: int) -> str | None
+  def arrayReplaceAt(src: list[_ItemTV], pos: int, newElements: list[_ItemTV]) -> list[_ItemTV]
+  def isValidEntityCode(c: int) -> bool
+  def fromCodePoint(c: int) -> str
+  def replaceEntityPattern(match: str, name: str) -> str
+  def unescapeAll(string: str) -> str
+  def replacer_func(match: Match[str]) -> str
+  def stripEscape(string: str) -> str
+  def escapeHtml(raw: str) -> str
+  def escapeRE(string: str) -> str
+  def isSpace(code: int | None) -> bool
+  def isStrSpace(ch: str | None) -> bool
+  def isWhiteSpace(code: int) -> bool
+  def isPunctChar(ch: str) -> bool
+  def isMdAsciiPunct(ch: int) -> bool
+  def normalizeReference(string: str) -> str
+  def isLinkOpen(string: str) -> bool
+  def isLinkClose(string: str) -> bool
+markdown_it/helpers/parse_link_destination.py:
+  class _Result
+  def __init__(self) -> None
+  def parseLinkDestination(string: str, pos: int, maximum: int) -> _Result
+markdown_it/helpers/parse_link_label.py:
+  def parseLinkLabel(state: StateInline, start: int, disableNested: bool=False) -> int
+markdown_it/helpers/parse_link_title.py:
+  class _State
+  def __init__(self) -> None
+  def __str__(self) -> str
+  def parseLinkTitle(string: str, start: int, maximum: int, prev_state: _State | None=None) -> _State
+markdown_it/main.py:
+  class MarkdownIt
+  def set(self, options: OptionsType) -> None
+  def configure(self, presets: str | PresetType, options_update: Mapping[str, Any] | None=None) -> MarkdownIt
+  def get_active_rules(self) -> dict[str, list[str]]
+  def parse(self, src: str, env: EnvType | None=None) -> list[Token]
+  def render(self, src: str, env: EnvType | None=None) -> Any
+  def parseInline(self, src: str, env: EnvType | None=None) -> list[Token]
+markdown_it/parser_block.py:
+  class ParserBlock
+  def tokenize(self, state: StateBlock, startLine: int, endLine: int) -> None
+markdown_it/parser_core.py:
+  class ParserCore
+markdown_it/parser_inline.py:
+  def _default_terminator_re() -> re.Pattern[str]
+  class ParserInline
+  def tokenize(self, state: StateInline) -> None
+markdown_it/renderer.py:
+  class RendererProtocol(Protocol)
+  def renderInline(self, tokens: Sequence[Token], options: OptionsDict, env: EnvType) -> str
+  def renderToken(self, tokens: Sequence[Token], idx: int, options: OptionsDict, env: EnvType) -> str
+  def renderAttrs(token: Token) -> str
+  def renderInlineAsText(self, tokens: Sequence[Token] | None, options: OptionsDict, env: EnvType) -> str
+markdown_it/ruler.py:
+  class StateBase
+  def __find__(self, name: str) -> int
+  def __compile__(self) -> None
+  def enable(self, names: str | Iterable[str], ignoreInvalid: bool=False) -> list[str]
+markdown_it/rules_block/blockquote.py:
+  def _detect_alert(state: StateBlock, startLine: int) -> str | None
+markdown_it/rules_block/list.py:
+  def skipBulletListMarker(state: StateBlock, startLine: int) -> int
+  def skipOrderedListMarker(state: StateBlock, startLine: int) -> int
+  def markTightParagraphs(state: StateBlock, idx: int) -> None
+  def _detect_task_checkbox(src: str, pos: int, maximum: int) -> bool | None
+markdown_it/rules_block/reference.py:
+  def getNextLine(state: StateBlock, nextLine: int) -> None | str
+markdown_it/rules_block/state_block.py:
+  class StateBlock(StateBase)
+  def push(self, ttype: str, tag: str, nesting: Literal[-1, 0, 1]) -> Token
+  def isEmpty(self, line: int) -> bool
+  def skipEmptyLines(self, from_pos: int) -> int
+  def skipSpaces(self, pos: int) -> int
+  def skipSpacesBack(self, pos: int, minimum: int) -> int
+  def skipCharsStr(self, pos: int, ch: str) -> int
+  def skipCharsStrBack(self, pos: int, ch: str, minimum: int) -> int
+  def getLines(self, begin: int, end: int, indent: int, keepLastLF: bool) -> str
+  def is_code_block(self, line: int) -> bool
+markdown_it/rules_block/table.py:
+  def getLine(state: StateBlock, line: int) -> str
+  def escapedSplit(string: str) -> list[str]
+markdown_it/rules_core/replacements.py:
+  def replace_scoped(inlineTokens: list[Token]) -> None
+  def replace_rare(inlineTokens: list[Token]) -> None
+  def replace(state: StateCore) -> None
+markdown_it/rules_core/smartquotes.py:
+  def replaceAt(string: str, index: int, ch: str) -> str
+  def process_inlines(tokens: list[Token], state: StateCore) -> None
+markdown_it/rules_core/state_core.py:
+  class StateCore(StateBase)
+markdown_it/rules_inline/balance_pairs.py:
+  def processDelimiters(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/rules_inline/emphasis.py:
+  def _postProcess(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/rules_inline/html_inline.py:
+  def isLetter(ch: int) -> bool
+markdown_it/rules_inline/state_inline.py:
+  class Delimiter
+  class Scanned(NamedTuple)
+  class StateInline(StateBase)
+  def pushPending(self) -> Token
+  def push(self, ttype: str, tag: str, nesting: Literal[-1, 0, 1]) -> Token
+  def scanDelims(self, start: int, canSplitWord: bool) -> Scanned
+markdown_it/rules_inline/strikethrough.py:
+  def _postProcess(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/token.py:
+  def convert_attrs(value: Any) -> Any
+  class Token
+  def attrItems(self) -> list[tuple[str, str | int | float]]
+  def attrSet(self, name: str, value: str | int | float) -> None
+  def attrJoin(self, name: str, value: str) -> None
+markdown_it/tree.py:
+  class _NesterTokens(NamedTuple)
+  def type(self) -> str
+  def _add_child(self, tokens: Sequence[Token]) -> None
+  def _set_children_from_tokens(self, tokens: Sequence[Token]) -> None
+  def _attribute_token(self) -> Token
+markdown_it/utils.py:
+  class OptionsDict(MutableMappingABC)
+  def highlight(self, value: Callable[[str, str, str], str] | None) -> None
+(map scope: production only — hid 97 of 373 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

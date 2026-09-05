@@ -1,0 +1,129 @@
+show_off.py:
+  class SomeClass
+  def make_call_stack_more_impressive()
+src/structlog/__init__.py:
+  def __getattr__(name: str) -> str
+src/structlog/_base.py:
+  class BoundLoggerBase
+  def __init__(self, logger: WrappedLogger, processors: Iterable[Processor], context: Context)
+  def __repr__(self) -> str
+  def __eq__(self, other: object) -> bool
+  def __ne__(self, other: object) -> bool
+  def bind(self, **new_values: Any) -> Self
+  def unbind(self, *keys: str) -> Self
+  def try_unbind(self, *keys: str) -> Self
+  def new(self, **new_values: Any) -> Self
+  def _process_event(self, method_name: str, event: str | None, event_kw: dict[str, Any]) -> tuple[Sequence[Any], Mapping[str, Any]]
+  def _proxy_to_logger(self, method_name: str, event: str | None=None, **event_kw: Any) -> Any
+  def get_context(bound_logger: BindableLogger) -> Context
+src/structlog/_config.py:
+  class _Configuration
+  def is_configured() -> bool
+  def get_config() -> dict[str, Any]
+  def get_logger(*args: Any, **initial_values: Any) -> Any
+  def wrap_logger(logger: WrappedLogger | None, processors: Iterable[Processor] | None=None, wrapper_class: type[BindableLogger] | None=None, context_class: type[Context] | None=None, cache_logger_on_first_use: bool | None=None, logger_factory_args: Iterable[Any] | None=None, **initial_values: Any) -> Any
+  def configure(processors: Iterable[Processor] | None=None, wrapper_class: type[BindableLogger] | None=None, context_class: type[Context] | None=None, logger_factory: Callable[..., WrappedLogger] | None=None, cache_logger_on_first_use: bool | None=None) -> None
+  def configure_once(processors: Iterable[Processor] | None=None, wrapper_class: type[BindableLogger] | None=None, context_class: type[Context] | None=None, logger_factory: Callable[..., WrappedLogger] | None=None, cache_logger_on_first_use: bool | None=None) -> None
+  def reset_defaults() -> None
+  class BoundLoggerLazyProxy
+  def _context(self) -> dict[str, str]
+  def __init__(self, logger: WrappedLogger | None, wrapper_class: type[BindableLogger] | None=None, processors: Iterable[Processor] | None=None, context_class: type[Context] | None=None, cache_logger_on_first_use: bool | None=None, initial_values: dict[str, Any] | None=None, logger_factory_args: Any=None) -> None
+  def __repr__(self) -> str
+  def bind(self, **new_values: Any) -> BindableLogger
+  def finalized_bind(**new_values: Any) -> BindableLogger
+  def unbind(self, *keys: str) -> BindableLogger
+  def try_unbind(self, *keys: str) -> BindableLogger
+  def new(self, **new_values: Any) -> BindableLogger
+  def __getattr__(self, name: str) -> Any
+  def __getstate__(self) -> dict[str, Any]
+  def __setstate__(self, state: dict[str, Any]) -> None
+src/structlog/_frames.py:
+  def _format_exception(exc_info: ExcInfo) -> str
+  def _find_first_app_frame_and_name(additional_ignores: list[str] | None=None, *, stacklevel: int | None=None, _getframe: Callable[[], FrameType]=sys._getframe) -> tuple[FrameType, str]
+  def _format_stack(frame: FrameType) -> str
+src/structlog/_generic.py:
+  class BoundLogger(BoundLoggerBase)
+  def __getattr__(self, method_name: str) -> Any
+  def __getstate__(self) -> dict[str, Any]
+  def __setstate__(self, state: dict[str, Any]) -> None
+src/structlog/_greenlets.py:
+  class GreenThreadLocal
+  def __init__(self) -> None
+  def __getattr__(self, name: str) -> Any
+  def __setattr__(self, name: str, val: Any) -> None
+  def __delattr__(self, name: str) -> None
+src/structlog/_log_levels.py:
+  def map_method_name(method_name: str) -> str
+  def add_log_level(logger: Any, method_name: str, event_dict: EventDict) -> EventDict
+src/structlog/_native.py:
+  async def _anop(self: Any, event: str, *args: Any, **kw: Any) -> Any
+  def exception(self: FilteringBoundLogger, event: str, *args: Any, **kw: Any) -> Any
+  def _maybe_interpolate(event: str, args: tuple[Any, ...]) -> str
+  def _make_filtering_bound_logger(min_level: int) -> type[FilteringBoundLogger]
+  async def alog(self: Any, level: int, event: str, *args: Any, **kw: Any) -> Any
+src/structlog/_output.py:
+  def _get_lock_for_file(file: IO[Any]) -> threading.Lock
+  class PrintLogger
+  class WriteLogger
+  class BytesLogger
+src/structlog/_utils.py:
+  def get_processname() -> str
+src/structlog/contextvars.py:
+  def get_contextvars() -> dict[str, Any]
+  def bind_contextvars(**kw: Any) -> Mapping[str, contextvars.Token[Any]]
+  def unbind_contextvars(*keys: str) -> None
+src/structlog/dev.py:
+  def _init_terminal(who: str, force_colors: bool) -> None
+  def _pad(s: str, length: int) -> str
+  class Column
+  class KeyValueColumnFormatter
+  class LogLevelColumnFormatter
+  def get_default_column_styles(cls, colors: bool, force_colors: bool=False) -> ColumnStyles
+  def get_default_level_styles(colors: bool=True) -> dict[str, str]
+  def _configure_columns(self) -> None
+src/structlog/processors.py:
+  def _items_sorter(sort_keys: bool, key_order: Sequence[str] | None, drop_missing: bool) -> Callable[[EventDict], list[tuple[str, object]]]
+  class TimeStamper
+  def _make_stamper(fmt: str | None, utc: bool, key: str) -> Callable[[EventDict], EventDict]
+  def now() -> datetime.datetime
+  def _figure_out_exc_info(v: Any) -> ExcInfo | None
+  class StackInfoRenderer
+  class _RecordMapping(NamedTuple)
+src/structlog/stdlib.py:
+  def _proxy_to_logger(self, method_name: str, event: str | None=None, *event_args: str, **event_kw: Any) -> Any
+  async def _dispatch_to_sync(self, meth: Callable[..., Any], event: str, args: tuple[Any, ...], kw: dict[str, Any]) -> None
+  async def _dispatch_to_sync(self, meth: Callable[..., Any], event: str, args: tuple[Any, ...], kw: dict[str, Any]) -> None
+  class LoggerFactory
+  class PositionalArgumentsFormatter
+src/structlog/testing.py:
+  class LogCapture
+  class ReturnLogger
+  class CapturedCall(NamedTuple)
+  class CapturingLogger
+src/structlog/threadlocal.py:
+  def _deprecated() -> None
+  def as_immutable(logger: TLLogger) -> TLLogger
+  def __eq__(self, other: object) -> bool
+  def get_threadlocal() -> Context
+  def bind_threadlocal(**kw: Any) -> None
+  def unbind_threadlocal(*keys: str) -> None
+  def _get_context() -> Context
+src/structlog/tracebacks.py:
+  class Frame
+  class SyntaxError_
+  class Stack
+  class Trace
+  def safe_str(_object: Any) -> str
+  def to_repr(obj: Any, max_length: int | None=None, max_string: int | None=None, use_rich: bool=True) -> str
+  def extract(exc_type: type[BaseException], exc_value: BaseException, traceback: TracebackType | None, *, show_locals: bool=False, locals_max_length: int=LOCALS_MAX_LENGTH, locals_max_string: int=LOCALS_MAX_STRING, locals_hide_dunder: bool=True, locals_hide_sunder: bool=False, use_rich: bool=True, _seen: set[int] | None=None) -> Trace
+  def _as_dict(self, trace: Trace) -> list[dict[str, Any]]
+src/structlog/twisted.py:
+  def _extractStuffAndWhy(eventDict: EventDict) -> tuple[Any, Any, EventDict]
+  class ReprWrapper
+  class PlainFileLogObserver
+  class JSONLogObserverWrapper
+src/structlog/typing.py:
+  class BindableLogger(Protocol)
+  def error(self, event: str, *args: Any, **kw: Any) -> Any
+(map scope: production only — hid 709 of 1107 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

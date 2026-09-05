@@ -1,0 +1,66 @@
+src/structlog/_base.py:
+  class BoundLoggerBase
+  def __eq__(self, other: object) -> bool
+  def bind(self, **new_values: Any) -> Self
+  def _process_event(self, method_name: str, event: str | None, event_kw: dict[str, Any]) -> tuple[Sequence[Any], Mapping[str, Any]]
+  def get_context(bound_logger: BindableLogger) -> Context
+src/structlog/_config.py:
+  def get_config() -> dict[str, Any]
+  def wrap_logger(logger: WrappedLogger | None, processors: Iterable[Processor] | None=None, wrapper_class: type[BindableLogger] | None=None, context_class: type[Context] | None=None, cache_logger_on_first_use: bool | None=None, logger_factory_args: Iterable[Any] | None=None, **initial_values: Any) -> Any
+  def configure(processors: Iterable[Processor] | None=None, wrapper_class: type[BindableLogger] | None=None, context_class: type[Context] | None=None, logger_factory: Callable[..., WrappedLogger] | None=None, cache_logger_on_first_use: bool | None=None) -> None
+  class BoundLoggerLazyProxy
+  def bind(self, **new_values: Any) -> BindableLogger
+src/structlog/_frames.py:
+  def _format_exception(exc_info: ExcInfo) -> str
+  def _find_first_app_frame_and_name(additional_ignores: list[str] | None=None, *, stacklevel: int | None=None, _getframe: Callable[[], FrameType]=sys._getframe) -> tuple[FrameType, str]
+  def _format_stack(frame: FrameType) -> str
+src/structlog/_log_levels.py:
+  def map_method_name(method_name: str) -> str
+src/structlog/_native.py:
+  def _maybe_interpolate(event: str, args: tuple[Any, ...]) -> str
+src/structlog/_output.py:
+  def _get_lock_for_file(file: IO[Any]) -> threading.Lock
+  class PrintLogger
+  class WriteLogger
+  class BytesLogger
+src/structlog/_utils.py:
+  def get_processname() -> str
+src/structlog/contextvars.py:
+  def get_contextvars() -> dict[str, Any]
+src/structlog/dev.py:
+  def _init_terminal(who: str, force_colors: bool) -> None
+  def _pad(s: str, length: int) -> str
+  class Column
+  class KeyValueColumnFormatter
+  class LogLevelColumnFormatter
+  def get_default_column_styles(cls, colors: bool, force_colors: bool=False) -> ColumnStyles
+  def get_default_level_styles(colors: bool=True) -> dict[str, str]
+  def _configure_columns(self) -> None
+src/structlog/processors.py:
+  def _items_sorter(sort_keys: bool, key_order: Sequence[str] | None, drop_missing: bool) -> Callable[[EventDict], list[tuple[str, object]]]
+  class TimeStamper
+  def _make_stamper(fmt: str | None, utc: bool, key: str) -> Callable[[EventDict], EventDict]
+  def now() -> datetime.datetime
+  def _figure_out_exc_info(v: Any) -> ExcInfo | None
+  class _RecordMapping(NamedTuple)
+src/structlog/stdlib.py:
+  def _proxy_to_logger(self, method_name: str, event: str | None=None, *event_args: str, **event_kw: Any) -> Any
+  async def _dispatch_to_sync(self, meth: Callable[..., Any], event: str, args: tuple[Any, ...], kw: dict[str, Any]) -> None
+  async def _dispatch_to_sync(self, meth: Callable[..., Any], event: str, args: tuple[Any, ...], kw: dict[str, Any]) -> None
+src/structlog/testing.py:
+  class ReturnLogger
+  class CapturedCall(NamedTuple)
+  class CapturingLogger
+src/structlog/threadlocal.py:
+  def _deprecated() -> None
+  def __eq__(self, other: object) -> bool
+  def _get_context() -> Context
+src/structlog/tracebacks.py:
+  class Frame
+src/structlog/twisted.py:
+  def _extractStuffAndWhy(eventDict: EventDict) -> tuple[Any, Any, EventDict]
+src/structlog/typing.py:
+  class BindableLogger(Protocol)
+  def error(self, event: str, *args: Any, **kw: Any) -> Any
+(map scope: production only — hid 709 of 1107 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

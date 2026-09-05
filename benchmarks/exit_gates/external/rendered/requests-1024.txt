@@ -1,0 +1,61 @@
+src/requests/_internal_utils.py:
+  def to_native_string(string: str | bytes, encoding: str='ascii') -> str
+src/requests/_types.py:
+  def is_prepared(request: PreparedRequest) -> TypeIs[_ValidatedRequest]
+  class BaseRequestKwargs(TypedDict)
+src/requests/adapters.py:
+  def init_poolmanager(self, connections: int, maxsize: int, block: bool=DEFAULT_POOLBLOCK, **pool_kwargs: Any) -> None
+src/requests/api.py:
+  def request(method: str, url: _t.UriType, **kwargs: Unpack[_t.RequestKwargs]) -> Response
+  def get(url: _t.UriType, params: _t.ParamsType=None, **kwargs: Unpack[_t.GetKwargs]) -> Response
+src/requests/auth.py:
+  def _basic_auth_str(username: bytes | str, password: bytes | str) -> str
+  class AuthBase
+  class HTTPBasicAuth(AuthBase)
+src/requests/cookies.py:
+  def get_host(self) -> str
+  class CookieConflictError(RuntimeError)
+  class RequestsCookieJar(CookieJar, MutableMapping[str, str | None])
+  def set_cookie(self, cookie: Cookie, *args: Any, **kwargs: Any) -> None
+  def update(self, other: CookieJar | SupportsKeysAndGetItem[str, str]) -> None
+  def _find_no_duplicates(self, name: str, domain: str | None=None, path: str | None=None) -> str
+  def create_cookie(name: str, value: str, **kwargs: Any) -> Cookie
+  def cookiejar_from_dict(cookie_dict: dict[str, str] | None, cookiejar: CookieJar | None=None, overwrite: bool=True) -> CookieJar
+src/requests/exceptions.py:
+  class RequestException(IOError)
+  class InvalidJSONError(RequestException)
+  class HTTPError(RequestException)
+  class ConnectionError(RequestException)
+  class Timeout(RequestException)
+  class InvalidSchema(RequestException, ValueError)
+  class InvalidURL(RequestException, ValueError)
+  class InvalidHeader(RequestException, ValueError)
+  class RequestsWarning(Warning)
+src/requests/help.py:
+  def _implementation()
+src/requests/hooks.py:
+  def default_hooks() -> dict[str, list[_t.HookType]]
+src/requests/models.py:
+  class RequestEncodingMixin
+  class RequestHooksMixin
+  def register_hook(self, event: str, hook: Iterable[_t.HookType] | _t.HookType) -> None
+  class Request(RequestHooksMixin)
+  class PreparedRequest(RequestEncodingMixin, RequestHooksMixin)
+  def iter_content(self, chunk_size: int | None=1, decode_unicode: bool=False) -> Iterator[str | bytes]
+src/requests/sessions.py:
+  def merge_setting(request_setting: Any, session_setting: Any, dict_class: type=OrderedDict) -> Any
+  class SessionRedirectMixin
+  class Session(SessionRedirectMixin)
+  def request(self, method: str, url: _t.UriType, params: _t.ParamsType=None, data: _t.DataType=None, headers: _t.HeadersType=None, cookies: RequestsCookieJar | CookieJar | dict[str, str] | None=None, files: _t.FilesType=None, auth: _t.AuthType=None, timeout: _t.TimeoutType=None, allow_redirects: bool=True, proxies: dict[str, str] | None=None, hooks: _t.HooksInputType | None=None, stream: bool | None=None, verify: _t.VerifyType | None=None, cert: _t.CertType=None, json: _t.JsonType=None) -> Response
+src/requests/structures.py:
+  class CaseInsensitiveDict(MutableMapping[str, _VT], Generic[_VT])
+src/requests/utils.py:
+  def proxy_bypass_registry(host: str) -> bool
+  def to_key_val_list(value: _t.SupportsItems[_KT, _VT] | Iterable[tuple[_KT, _VT]] | None) -> list[tuple[_KT, _VT]] | None
+  def unquote_header_value(value: str, is_filename: bool=False) -> str
+  def dotted_netmask(mask: int) -> str
+  def should_bypass_proxies(url: str, no_proxy: str | None) -> bool
+  def get_environ_proxies(url: str, no_proxy: str | None=None) -> dict[str, str]
+  def get_auth_from_url(url: str) -> tuple[str, str]
+(map scope: production only — hid 471 of 770 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

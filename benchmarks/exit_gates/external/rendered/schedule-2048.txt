@@ -1,0 +1,66 @@
+schedule/__init__.py:
+  class ScheduleError(Exception)
+  class ScheduleValueError(ScheduleError)
+  class IntervalError(ScheduleValueError)
+  class CancelJob
+  class Scheduler
+  def __init__(self) -> None
+  def run_pending(self) -> None
+  def run_all(self, delay_seconds: int=0) -> None
+  def get_jobs(self, tag: Optional[Hashable]=None) -> List['Job']
+  def clear(self, tag: Optional[Hashable]=None) -> None
+  def cancel_job(self, job: 'Job') -> None
+  def every(self, interval: int=1) -> 'Job'
+  def _run_job(self, job: 'Job') -> None
+  def get_next_run(self, tag: Optional[Hashable]=None) -> Optional[datetime.datetime]
+  def idle_seconds(self) -> Optional[float]
+  class Job
+  def __init__(self, interval: int, scheduler: Optional[Scheduler]=None)
+  def __lt__(self, other) -> bool
+  def __str__(self) -> str
+  def __repr__(self)
+  def format_time(t)
+  def is_repr(j)
+  def second(self)
+  def seconds(self)
+  def minute(self)
+  def minutes(self)
+  def hour(self)
+  def hours(self)
+  def day(self)
+  def days(self)
+  def week(self)
+  def weeks(self)
+  def monday(self)
+  def tuesday(self)
+  def wednesday(self)
+  def thursday(self)
+  def friday(self)
+  def saturday(self)
+  def sunday(self)
+  def tag(self, *tags: Hashable)
+  def at(self, time_str: str, tz: Optional[str]=None)
+  def to(self, latest: int)
+  def until(self, until_time: Union[datetime.datetime, datetime.timedelta, datetime.time, str])
+  def do(self, job_func: Callable, *args, **kwargs)
+  def should_run(self) -> bool
+  def run(self)
+  def _schedule_next_run(self) -> None
+  def _normalize_preserve_timestamp(self, input: datetime.datetime) -> datetime.datetime
+  def _to_at_timezone(self, input: Optional[datetime.datetime]) -> Optional[datetime.datetime]
+  def _is_overdue(self, when: datetime.datetime)
+  def _decode_datetimestr(self, datetime_str: str, formats: List[str]) -> Optional[datetime.datetime]
+  def every(interval: int=1) -> Job
+  def run_pending() -> None
+  def run_all(delay_seconds: int=0) -> None
+  def get_jobs(tag: Optional[Hashable]=None) -> List[Job]
+  def clear(tag: Optional[Hashable]=None) -> None
+  def cancel_job(job: Job) -> None
+  def next_run(tag: Optional[Hashable]=None) -> Optional[datetime.datetime]
+  def idle_seconds() -> Optional[float]
+  def repeat(job, *args, **kwargs)
+  def _schedule_decorator(decorated_function)
+setup.py:
+  def read_file(filename)
+(map scope: production only — hid 65 of 127 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

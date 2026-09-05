@@ -1,0 +1,81 @@
+jsonschema/__init__.py:
+  def __getattr__(name)
+jsonschema/_format.py:
+  class FormatChecker
+  def __init__(self, formats: typing.Iterable[str] | None=None)
+  def __repr__(self)
+  def checks(self, format: str, raises: _RaisesType=()) -> typing.Callable[[_F], _F]
+  def _cls_checks(cls, format: str, raises: _RaisesType=()) -> typing.Callable[[_F], _F]
+  def _checks(func: _F) -> _F
+  def check(self, instance: object, format: str) -> None
+  def _checks_drafts(name=None, draft3=None, draft4=None, draft6=None, draft7=None, draft201909=None, draft202012=None, raises=()) -> typing.Callable[[_F], _F]
+  def is_datetime(instance: object) -> bool
+jsonschema/_keywords.py:
+  def items(validator, items, instance, schema)
+  def format(validator, format, instance, schema)
+jsonschema/_legacy_keywords.py:
+  def find_evaluated_item_indexes_by_schema(validator, instance, schema)
+  def find_evaluated_property_keys_by_schema(validator, instance, schema)
+jsonschema/_types.py:
+  def redefine_many(self, definitions=()) -> TypeChecker
+jsonschema/_utils.py:
+  class URIDict(MutableMapping)
+  def normalize(self, uri)
+  def format_as_index(container, indices)
+  def find_additional_properties(instance, schema)
+  def extras_msg(extras)
+  def ensure_list(thing)
+  def _mapping_equal(one, two)
+  def _sequence_equal(one, two)
+  def equal(one, two)
+  def unbool(element, true=object(), false=object())
+  def _uniq_key(element)
+  def uniq(container)
+  def find_evaluated_item_indexes_by_schema(validator, instance, schema)
+  def find_evaluated_property_keys_by_schema(validator, instance, schema)
+  def is_valid(errs_it)
+jsonschema/cli.py:
+  class _CannotLoadFile(Exception)
+  def from_arguments(cls, arguments, stdout, stderr)
+  def filenotfound_error(self, **kwargs)
+  def parsing_error(self, **kwargs)
+  class _PrettyFormatter
+  class _PlainFormatter
+  def parse_args(args)
+  def _validate_instance(instance_path, instance, validator, outputter)
+  def run(arguments, stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
+jsonschema/exceptions.py:
+  def _pretty(thing: Any, prefix: str)
+  class _Error(Exception)
+  def _set(self, type_checker: _types.TypeChecker | None=None, **kwargs: Any) -> None
+  def _contents(self)
+  class ValidationError(_Error)
+  class _RefResolutionError(Exception)
+  class _WrappedReferencingError(_RefResolutionError, _Unresolvable)
+  class UndefinedTypeCheck(Exception)
+  class UnknownType(Exception)
+  class FormatError(Exception)
+  def best_match(errors, key=relevance)
+jsonschema/validators.py:
+  def validates(version)
+  def create(meta_schema: referencing.jsonschema.ObjectSchema, validators: Mapping[str, _typing.SchemaKeywordValidator] | Iterable[tuple[str, _typing.SchemaKeywordValidator]]=(), version: str | None=None, type_checker: _types.TypeChecker=_types.draft202012_type_checker, format_checker: _format.FormatChecker=_format.draft202012_format_checker, id_of: _typing.id_of=referencing.jsonschema.DRAFT202012.id_of, applicable_validators: _typing.ApplicableValidators=methodcaller('items')) -> type[Validator]
+  def evolve(self, **changes)
+  def iter_errors(self, instance, _schema=None)
+  def descend(self, instance, schema, path=None, schema_path=None, resolver=None)
+  def extend(validator, validators=(), version=None, type_checker=None, format_checker=None)
+  class _RefResolver
+  def from_schema(cls, schema, id_of=referencing.jsonschema.DRAFT202012.id_of, *args, **kwargs)
+  def push_scope(self, scope)
+  def pop_scope(self)
+  def _get_subschemas_cache(self)
+  def _find_in_subschemas(self, url)
+  def resolve(self, ref)
+  def resolve_fragment(self, document, fragment)
+  def resolve_remote(self, uri)
+  def _match_keyword(keyword)
+  def _search_schema(schema, matcher)
+  def validator_for(schema, default: type[Validator] | _utils.Unset=_UNSET) -> type[Validator]
+noxfile.py:
+  def session(default=True, python=LATEST_STABLE, **kwargs)
+(map scope: production only — hid 506 of 766 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

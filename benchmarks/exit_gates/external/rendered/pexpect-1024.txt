@@ -1,0 +1,113 @@
+examples/chess.py:
+  def read_until_cursor(self, r, c)
+examples/chess2.py:
+  def read_until_cursor(self, r, c, e=0)
+examples/chess3.py:
+  def read_until_cursor(self, r, c)
+examples/hive.py:
+  def parse_host_connect_string(hcs)
+pexpect/ANSI.py:
+  class term(screen.screen)
+  class ANSI(term)
+  def process(self, c)
+  def write(self, s)
+pexpect/FSM.py:
+  class ExceptionFSM(Exception)
+  class FSM
+  def add_transition(self, input_symbol, state, action=None, next_state=None)
+  def get_transition(self, input_symbol, state)
+  def process(self, input_symbol)
+pexpect/_async_pre_await.py:
+  def found(self, result)
+  def error(self, exc)
+pexpect/_async_w_await.py:
+  def set_expecter(self, expecter)
+  def found(self, result)
+  def error(self, exc)
+pexpect/exceptions.py:
+  class ExceptionPexpect(Exception)
+  class EOF(ExceptionPexpect)
+  class TIMEOUT(ExceptionPexpect)
+pexpect/expect.py:
+  class Expecter(object)
+  def do_search(self, window, freshlen)
+  def expect_loop(self, timeout=-1)
+  class searcher_re(object)
+pexpect/fdpexpect.py:
+  def send(self, s)
+  def write(self, s)
+pexpect/popen_spawn.py:
+  def write(self, s)
+  def send(self, s)
+pexpect/pty_spawn.py:
+  def _wrap_ptyprocess_err()
+  class spawn(SpawnBase)
+  def _spawn(self, command, args=[], preexec_fn=None, dimensions=None)
+  def close(self, force=True)
+  def getecho(self)
+  def read_nonblocking(self, size=1, timeout=-1)
+  def write(self, s)
+  def send(self, s)
+  def sendline(self, s='')
+  def _log_control(self, s)
+  def isalive(self)
+pexpect/pxssh.py:
+  class pxssh(spawn)
+pexpect/replwrap.py:
+  class REPLWrapper(object)
+  def _expect_prompt(self, timeout=-1, async_=False)
+  def _repl_sh(command, args, non_printable_insert)
+pexpect/run.py:
+  def run(command, timeout=30, withexitstatus=False, events=None, extra_args=None, logfile=None, cwd=None, env=None, **kwargs)
+pexpect/screen.py:
+  def constrain(n, min, max)
+  class screen
+  def _decode(self, s)
+  def _unicode(self)
+  def fill(self, ch=SPACE)
+  def fill_region(self, rs, cs, re, ce, ch=SPACE)
+  def cr(self)
+  def lf(self)
+  def crlf(self)
+  def put_abs(self, r, c, ch)
+  def get_abs(self, r, c)
+  def cursor_constrain(self)
+  def cursor_home(self, r=1, c=1)
+  def cursor_back(self, count=1)
+  def cursor_down(self, count=1)
+  def cursor_forward(self, count=1)
+  def cursor_up(self, count=1)
+  def cursor_up_reverse(self)
+  def cursor_save_attrs(self)
+  def cursor_restore_attrs(self)
+  def scroll_constrain(self)
+  def scroll_screen(self)
+  def scroll_screen_rows(self, rs, re)
+  def scroll_up(self)
+  def erase_end_of_line(self)
+  def erase_start_of_line(self)
+  def erase_line(self)
+  def erase_down(self)
+pexpect/socket_pexpect.py:
+  def send(self, s) -> int
+  def write(self, s)
+pexpect/spawnbase.py:
+  class _NullCoder(object)
+  class SpawnBase(object)
+  def _log(self, s, direction)
+  def _coerce_expect_string(self, s)
+  def _coerce_expect_re(self, r)
+  def _coerce_send_string(self, s)
+  def _pattern_type_err(self, pattern)
+  def compile_pattern_list(self, patterns)
+  def expect(self, pattern, timeout=-1, searchwindowsize=-1, async_=False, **kw)
+  def expect_list(self, pattern_list, timeout=-1, searchwindowsize=-1, async_=False, **kw)
+  def readline(self, size=-1)
+  def fileno(self)
+  def flush(self)
+pexpect/utils.py:
+  def is_executable_file(path)
+  def select_ignore_interrupts(iwtd, owtd, ewtd, timeout=None)
+  def poll_ignore_interrupts(fds, timeout=None)
+(map scope: production only — hid 367 of 692 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

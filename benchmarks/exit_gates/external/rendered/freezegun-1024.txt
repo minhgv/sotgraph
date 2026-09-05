@@ -1,0 +1,71 @@
+create_tag.py:
+  def read_version()
+  def create_tag()
+freezegun/_async.py:
+  def wrap_coroutine(api: Any, coroutine: _CallableT) -> _CallableT
+  async def wrapper(*args: Any, **kwargs: Any) -> Any
+freezegun/api.py:
+  def _get_module_attributes(module: types.ModuleType) -> List[Tuple[str, Any]]
+  def _setup_module_cache(module: types.ModuleType) -> None
+  def _get_module_attributes_hash(module: types.ModuleType) -> str
+  def _get_cached_module_attributes(module: types.ModuleType) -> List[Tuple[str, Any]]
+  def _should_use_real_time() -> bool
+  def get_current_time() -> datetime.datetime
+  def fake_time() -> float
+  def fake_localtime(t: Optional[float]=None) -> time.struct_time
+  def _get_fake_monotonic() -> float
+  def _get_fake_monotonic_ns() -> int
+  class FakeDateMeta(type)
+  def __instancecheck__(self, obj: Any) -> bool
+  def __subclasscheck__(cls, subclass: Any) -> bool
+  def datetime_to_fakedatetime(datetime: datetime.datetime) -> 'FakeDatetime'
+  def date_to_fakedate(date: datetime.date) -> 'FakeDate'
+  class FakeDate(real_date)
+  def __add__(self, other: Any) -> 'FakeDate'
+  def __sub__(self, other: Any) -> 'FakeDate'
+  def today(cls: Type['FakeDate']) -> 'FakeDate'
+  def _date_to_freeze() -> datetime.datetime
+  def _tz_offset(cls) -> datetime.timedelta
+  class FakeDatetimeMeta(FakeDateMeta)
+  def __instancecheck__(self, obj: Any) -> bool
+  def __subclasscheck__(cls, subclass: Any) -> bool
+  class FakeDatetime(real_datetime, FakeDate)
+  def __add__(self, other: Any) -> 'FakeDatetime'
+  def __sub__(self, other: Any) -> 'FakeDatetime'
+  def astimezone(self, tz: Optional[datetime.tzinfo]=None) -> 'FakeDatetime'
+  def fromtimestamp(cls, t: float, tz: Optional[datetime.tzinfo]=None) -> 'FakeDatetime'
+  def timestamp(self) -> float
+  def now(cls, tz: Optional[datetime.tzinfo]=None) -> 'FakeDatetime'
+  def date(self) -> 'FakeDate'
+  def nanosecond(self) -> int
+  def today(cls) -> 'FakeDatetime'
+  def utcnow(cls) -> 'FakeDatetime'
+  def _time_to_freeze() -> Optional[datetime.datetime]
+  def _tz_offset(cls) -> datetime.timedelta
+  def convert_to_timezone_naive(time_to_freeze: datetime.datetime) -> datetime.datetime
+  def _parse_time_to_freeze(time_to_freeze_str: Optional[_Freezable]) -> datetime.datetime
+  def _parse_tz_offset(tz_offset: Union[datetime.timedelta, float]) -> datetime.timedelta
+  class TickingDateTimeFactory
+  def move_to(self, target_datetime: _Freezable) -> None
+  class FrozenDateTimeFactory
+  def __init__(self, time_to_freeze: datetime.datetime)
+  def __call__(self) -> datetime.datetime
+  def tick(self, delta: Union[datetime.timedelta, float]=datetime.timedelta(seconds=1)) -> datetime.datetime
+  def move_to(self, target_datetime: _Freezable) -> None
+  class StepTickTimeFactory
+  def __init__(self, time_to_freeze: datetime.datetime, step_width: float)
+  def __call__(self) -> datetime.datetime
+  def tick(self, delta: Union[datetime.timedelta, float, None]=None) -> datetime.datetime
+  def move_to(self, target_datetime: _Freezable) -> None
+  class _freeze_time
+  def decorate_class(self, klass: Type[T2]) -> Type[T2]
+  def start(self) -> Union[StepTickTimeFactory, TickingDateTimeFactory, FrozenDateTimeFactory]
+  def stop(self) -> None
+  def decorate_coroutine(self, coroutine: 'Callable[P, Awaitable[T]]') -> 'Callable[P, Awaitable[T]]'
+  def decorate_generator_function(self, func: 'Callable[P, Iterator[T]]') -> 'Callable[P, Iterator[T]]'
+  def decorate_callable(self, func: 'Callable[P, T]') -> 'Callable[P, T]'
+freezegun/config.py:
+  class Settings
+  class ConfigurationError(Exception)
+(map scope: production only — hid 220 of 316 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

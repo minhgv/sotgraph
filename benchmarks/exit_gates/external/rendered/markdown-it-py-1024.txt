@@ -1,0 +1,79 @@
+markdown_it/_punycode.py:
+  def encode(uni: str) -> str
+  def decode(ascii: str) -> str
+  def map_domain(string: str, fn: Callable[[str], str]) -> str
+  def to_unicode(obj: str) -> str
+  def to_ascii(obj: str) -> str
+markdown_it/cli/parse.py:
+  def convert_file(filename: str) -> None
+  def print_heading() -> None
+markdown_it/common/normalize_url.py:
+  def normalizeLink(url: str) -> str
+  def normalizeLinkText(url: str) -> str
+  def validateLink(url: str, validator: Callable[[str], bool] | None=None) -> bool
+markdown_it/common/utils.py:
+  def charCodeAt(src: str, pos: int) -> int | None
+  def charStrAt(src: str, pos: int) -> str | None
+  def isValidEntityCode(c: int) -> bool
+  def fromCodePoint(c: int) -> str
+  def replaceEntityPattern(match: str, name: str) -> str
+  def unescapeAll(string: str) -> str
+  def escapeHtml(raw: str) -> str
+  def isStrSpace(ch: str | None) -> bool
+  def isWhiteSpace(code: int) -> bool
+  def isPunctChar(ch: str) -> bool
+  def isMdAsciiPunct(ch: int) -> bool
+markdown_it/main.py:
+  class MarkdownIt
+  def set(self, options: OptionsType) -> None
+  def get_active_rules(self) -> dict[str, list[str]]
+  def parse(self, src: str, env: EnvType | None=None) -> list[Token]
+markdown_it/parser_inline.py:
+  def _default_terminator_re() -> re.Pattern[str]
+markdown_it/renderer.py:
+  class RendererProtocol(Protocol)
+  def renderToken(self, tokens: Sequence[Token], idx: int, options: OptionsDict, env: EnvType) -> str
+  def renderAttrs(token: Token) -> str
+markdown_it/ruler.py:
+  class StateBase
+  def __find__(self, name: str) -> int
+  def __compile__(self) -> None
+  def enable(self, names: str | Iterable[str], ignoreInvalid: bool=False) -> list[str]
+markdown_it/rules_block/state_block.py:
+  def push(self, ttype: str, tag: str, nesting: Literal[-1, 0, 1]) -> Token
+  def isEmpty(self, line: int) -> bool
+  def skipEmptyLines(self, from_pos: int) -> int
+  def getLines(self, begin: int, end: int, indent: int, keepLastLF: bool) -> str
+  def is_code_block(self, line: int) -> bool
+markdown_it/rules_core/replacements.py:
+  def replace_scoped(inlineTokens: list[Token]) -> None
+  def replace_rare(inlineTokens: list[Token]) -> None
+  def replace(state: StateCore) -> None
+markdown_it/rules_core/smartquotes.py:
+  def process_inlines(tokens: list[Token], state: StateCore) -> None
+markdown_it/rules_core/state_core.py:
+  class StateCore(StateBase)
+markdown_it/rules_inline/balance_pairs.py:
+  def processDelimiters(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/rules_inline/emphasis.py:
+  def _postProcess(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/rules_inline/state_inline.py:
+  class Delimiter
+  def pushPending(self) -> Token
+  def push(self, ttype: str, tag: str, nesting: Literal[-1, 0, 1]) -> Token
+  def scanDelims(self, start: int, canSplitWord: bool) -> Scanned
+markdown_it/rules_inline/strikethrough.py:
+  def _postProcess(state: StateInline, delimiters: list[Delimiter]) -> None
+markdown_it/token.py:
+  def convert_attrs(value: Any) -> Any
+  class Token
+  def attrItems(self) -> list[tuple[str, str | int | float]]
+  def attrSet(self, name: str, value: str | int | float) -> None
+markdown_it/tree.py:
+  def type(self) -> str
+  def _add_child(self, tokens: Sequence[Token]) -> None
+  def _attribute_token(self) -> Token
+markdown_it/utils.py:
+  class OptionsDict(MutableMappingABC)
+(map scope: production only — hid 97 of 373 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

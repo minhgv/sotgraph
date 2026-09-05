@@ -1,0 +1,55 @@
+src/itsdangerous/__init__.py:
+  def __getattr__(name: str) -> t.Any
+src/itsdangerous/_json.py:
+  class _CompactJSON
+  def loads(payload: str | bytes) -> t.Any
+  def dumps(obj: t.Any, **kwargs: t.Any) -> str
+src/itsdangerous/encoding.py:
+  def want_bytes(s: str | bytes, encoding: str='utf-8', errors: str='strict') -> bytes
+  def base64_encode(string: str | bytes) -> bytes
+  def base64_decode(string: str | bytes) -> bytes
+  def int_to_bytes(num: int) -> bytes
+  def bytes_to_int(bytestr: bytes) -> int
+src/itsdangerous/exc.py:
+  class BadData(Exception)
+  def __init__(self, message: str)
+  def __str__(self) -> str
+  class BadSignature(BadData)
+  def __init__(self, message: str, payload: t.Any | None=None)
+  class BadTimeSignature(BadSignature)
+  def __init__(self, message: str, payload: t.Any | None=None, date_signed: datetime | None=None)
+  class SignatureExpired(BadTimeSignature)
+  class BadHeader(BadSignature)
+  def __init__(self, message: str, payload: t.Any | None=None, header: t.Any | None=None, original_error: Exception | None=None)
+  class BadPayload(BadData)
+  def __init__(self, message: str, original_error: Exception | None=None)
+src/itsdangerous/serializer.py:
+  def is_text_serializer(serializer: _PDataSerializer[t.Any]) -> te.TypeGuard[_PDataSerializer[str]]
+  class Serializer(t.Generic[_TSerialized])
+  def load_payload(self, payload: bytes, serializer: _PDataSerializer[t.Any] | None=None) -> t.Any
+  def dump_payload(self, obj: t.Any) -> bytes
+  def make_signer(self, salt: str | bytes | None=None) -> Signer
+  def iter_unsigners(self, salt: str | bytes | None=None) -> cabc.Iterator[Signer]
+  def dumps(self, obj: t.Any, salt: str | bytes | None=None) -> _TSerialized
+  def loads(self, s: str | bytes, salt: str | bytes | None=None, **kwargs: t.Any) -> t.Any
+  def loads_unsafe(self, s: str | bytes, salt: str | bytes | None=None) -> tuple[bool, t.Any]
+  def _loads_unsafe_impl(self, s: str | bytes, salt: str | bytes | None, load_kwargs: dict[str, t.Any] | None=None, load_payload_kwargs: dict[str, t.Any] | None=None) -> tuple[bool, t.Any]
+src/itsdangerous/signer.py:
+  class SigningAlgorithm
+  def get_signature(self, key: bytes, value: bytes) -> bytes
+  class HMACAlgorithm(SigningAlgorithm)
+  def _make_keys_list(secret_key: str | bytes | cabc.Iterable[str] | cabc.Iterable[bytes]) -> list[bytes]
+  class Signer
+  def derive_key(self, secret_key: str | bytes | None=None) -> bytes
+  def get_signature(self, value: str | bytes) -> bytes
+  def verify_signature(self, value: str | bytes, sig: str | bytes) -> bool
+  def unsign(self, signed_value: str | bytes) -> bytes
+src/itsdangerous/timed.py:
+  def get_timestamp(self) -> int
+  def timestamp_to_datetime(self, ts: int) -> datetime
+  def unsign(self, signed_value: str | bytes, max_age: int | None=None, return_timestamp: bool=False) -> tuple[bytes, datetime] | bytes
+  def iter_unsigners(self, salt: str | bytes | None=None) -> cabc.Iterator[TimestampSigner]
+src/itsdangerous/url_safe.py:
+  class URLSafeSerializerMixin(Serializer[str])
+(map scope: production only — hid 63 of 136 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

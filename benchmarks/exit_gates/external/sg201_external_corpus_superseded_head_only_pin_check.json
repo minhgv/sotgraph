@@ -1,0 +1,965 @@
+{
+  "aggregate_gate": {
+    "budgets": [
+      1024,
+      2048
+    ],
+    "expected_repos": 11,
+    "floor": 0.02,
+    "gate": "sg201_external_corpus_contamination<2%",
+    "measured_repos": 11,
+    "min_symbols": 50,
+    "per_repo_verdict": {
+      "click": "PASS",
+      "freezegun": "PASS",
+      "itsdangerous": "PASS",
+      "jsonschema": "PASS",
+      "markdown-it-py": "PASS",
+      "pexpect": "PASS",
+      "python-slugify": "PASS",
+      "requests": "PASS",
+      "schedule": "PASS",
+      "structlog": "PASS",
+      "tenacity": "PASS"
+    },
+    "repos_errored": 0,
+    "repos_failed": 0,
+    "repos_insufficient_sampling": 0,
+    "repos_not_evaluable": 0,
+    "repos_passed": 11,
+    "verdict": "PASS",
+    "verdict_precedence": "measured FAIL > incomplete coverage (NOT_EVALUABLE) > undersampled (INSUFFICIENT_SAMPLING) > PASS; anything other than full-coverage PASS never passes"
+  },
+  "artifacts": {
+    "per_repo_reports": "/Users/giapminh79/code/GitHub/sot-graph/benchmarks/exit_gates/external/per_repo",
+    "rendered_texts": "/Users/giapminh79/code/GitHub/sot-graph/benchmarks/exit_gates/external/rendered"
+  },
+  "benchmark": "sg201-external-corpus-map-contamination",
+  "budgets": [
+    1024,
+    2048
+  ],
+  "control_sensitivity": {
+    "disk_fixture_files": 45,
+    "disk_vendor_files": 0,
+    "fixture_vendor_extensions": {
+      ".md": 44,
+      ".txt": 1
+    },
+    "note": "control runs (include_categories=all) rendered 0 contaminated symbols. Publishes WHY per repo: fixture/vendor files existing on disk are counted with their extensions \u2014 non-code data files (e.g. .md/.txt samples) produce no indexable symbols, so a 0% control is a genuine corpus property, not a broken control. Oracle sensitivity to real renderable contamination is exercised by synthetic tests instead (tests/test_sg201_sg202_exit_gates.py)."
+  },
+  "expected_repos": 11,
+  "manifest": "/Users/giapminh79/code/GitHub/sot-graph/benchmarks/holdout/manifest.json",
+  "manifest_role": "development-regression",
+  "measured_repos": 11,
+  "min_symbols": 50,
+  "policy": {
+    "corpus": "ALL repos of the development-regression manifest (old11); full 40-hex pinned SHAs; holdout_unseen refused",
+    "gate": "fixture+vendor < 2% of rendered symbols per repo, min 50 rendered symbols; thresholds unchanged from the pilot",
+    "landmark": "human precision@20 >= 90% NOT measured here \u2014 PENDING_HUMAN_EVIDENCE (>= 3 real reviewers)",
+    "omission": "errors, pin mismatches and insufficient sampling are published; no repo is silently skipped",
+    "selection": "ACTUAL rendered map text within declared budgets [1024, 2048]; actual per-repo per-budget rendered denominators published"
+  },
+  "repos": [
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 15,
+          "production": 20,
+          "test": 6,
+          "tooling": 8
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 106
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "c294b2fb47447d83be02470525c9c6292ce5fd74",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "itsdangerous",
+      "pinned_sha": "c294b2fb47447d83be02470525c9c6292ce5fd74",
+      "primary_denominator": 73,
+      "url": "https://github.com/pallets/itsdangerous"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 41,
+          "production": 68,
+          "test": 46,
+          "tooling": 10
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 236
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "a6256bfb5971d5e58585fe7b6c656134e1ade5a4",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "click",
+      "pinned_sha": "a6256bfb5971d5e58585fe7b6c656134e1ade5a4",
+      "primary_denominator": 94,
+      "url": "https://github.com/pallets/click"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 46,
+          "production": 37,
+          "test": 23,
+          "tooling": 12
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 175
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "f194271d998edb9662c825adeca155e685345595",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "structlog",
+      "pinned_sha": "f194271d998edb9662c825adeca155e685345595",
+      "primary_denominator": 107,
+      "url": "https://github.com/hynek/structlog"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 4,
+          "production": 78,
+          "test": 7,
+          "tooling": 3
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 148
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "949dcfa6c0a4f0109dbbd019ff58208a580d185b",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "tenacity",
+      "pinned_sha": "949dcfa6c0a4f0109dbbd019ff58208a580d185b",
+      "primary_denominator": 108,
+      "url": "https://github.com/jd/tenacity"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "production": 16,
+          "tooling": 3
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 70
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "26b81c2e224ebb65c7fba40d37d17d762be3782f",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "python-slugify",
+      "pinned_sha": "26b81c2e224ebb65c7fba40d37d17d762be3782f",
+      "primary_denominator": 98,
+      "url": "https://github.com/un33k/python-slugify"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "production": 20,
+          "test": 18,
+          "tooling": 2
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 91
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "c9bf52c5aa12ea1b5b8647a136a92504ea071f2f",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "freezegun",
+      "pinned_sha": "c9bf52c5aa12ea1b5b8647a136a92504ea071f2f",
+      "primary_denominator": 96,
+      "url": "https://github.com/spulec/freezegun"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 17,
+          "production": 12,
+          "test": 1,
+          "tooling": 1
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 84
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "4386f4562df3ed24fd198324e279d215db2154d6",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "schedule",
+      "pinned_sha": "4386f4562df3ed24fd198324e279d215db2154d6",
+      "primary_denominator": 62,
+      "url": "https://github.com/dbader/schedule"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 19,
+          "production": 49,
+          "test": 69,
+          "tooling": 7
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 203
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "aa989594e1e413f45c18b26ded1783f7d5990fe5",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "pexpect",
+      "pinned_sha": "aa989594e1e413f45c18b26ded1783f7d5990fe5",
+      "primary_denominator": 191,
+      "url": "https://github.com/pexpect/pexpect"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 26,
+          "production": 43,
+          "test": 40,
+          "tooling": 19
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 200
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "6f205ff422bccd5e4c4fc0b64c5f3e7df5181db6",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "requests",
+      "pinned_sha": "6f205ff422bccd5e4c4fc0b64c5f3e7df5181db6",
+      "primary_denominator": 103,
+      "url": "https://github.com/psf/requests"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 16,
+          "production": 135,
+          "test": 453,
+          "tooling": 24
+        },
+        "fixture_vendor_extensions": {},
+        "walk_truncated": false,
+        "walked_entries": 750
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "bb947f1e2cb4447da0647d79cbcb33f791cddd87",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "jsonschema",
+      "pinned_sha": "bb947f1e2cb4447da0647d79cbcb33f791cddd87",
+      "primary_denominator": 145,
+      "url": "https://github.com/python-jsonschema/jsonschema"
+    },
+    {
+      "disk_oracle_universe": {
+        "files_by_oracle_category": {
+          "docs": 13,
+          "fixture": 45,
+          "production": 82,
+          "test": 27,
+          "tooling": 10
+        },
+        "fixture_vendor_extensions": {
+          ".md": 44,
+          ".txt": 1
+        },
+        "walk_truncated": false,
+        "walked_entries": 250
+      },
+      "error": null,
+      "gate_verdict": "PASS",
+      "head_matches_pinned": true,
+      "head_sha": "3b4ff6ddd368b679643d12debf09e10ef602d4db",
+      "language": "python",
+      "metric_percent": 0.0,
+      "name": "markdown-it-py",
+      "pinned_sha": "3b4ff6ddd368b679643d12debf09e10ef602d4db",
+      "primary_denominator": 124,
+      "url": "https://github.com/executablebooks/markdown-it-py"
+    }
+  ],
+  "runs_flat": [
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 45
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 8,
+      "rendered_sha256": "7b4548a32400f310",
+      "rendered_symbols": 45,
+      "repo": "itsdangerous",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 45,
+        "test": 9
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 12,
+      "rendered_sha256": null,
+      "rendered_symbols": 54,
+      "repo": "itsdangerous",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 73
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 8,
+      "rendered_sha256": "2a9fc6e465eb4f2d",
+      "rendered_symbols": 73,
+      "repo": "itsdangerous",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 73,
+        "test": 38
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 13,
+      "rendered_sha256": null,
+      "rendered_symbols": 111,
+      "repo": "itsdangerous",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 44
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 14,
+      "rendered_sha256": "94279d0094e850f6",
+      "rendered_symbols": 44,
+      "repo": "click",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 37,
+        "test": 3
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 15,
+      "rendered_sha256": null,
+      "rendered_symbols": 40,
+      "repo": "click",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 94
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 17,
+      "rendered_sha256": "138a2e5dc9d1d068",
+      "rendered_symbols": 94,
+      "repo": "click",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 70,
+        "test": 5
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 18,
+      "rendered_sha256": null,
+      "rendered_symbols": 75,
+      "repo": "click",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 48
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 16,
+      "rendered_sha256": "01166632db1b7a9d",
+      "rendered_symbols": 48,
+      "repo": "structlog",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 44,
+        "test": 6
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 19,
+      "rendered_sha256": null,
+      "rendered_symbols": 50,
+      "repo": "structlog",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 107
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 20,
+      "rendered_sha256": "484ffa88ce488b06",
+      "rendered_symbols": 107,
+      "repo": "structlog",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 108,
+        "test": 14
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 25,
+      "rendered_sha256": null,
+      "rendered_symbols": 122,
+      "repo": "structlog",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 59
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 9,
+      "rendered_sha256": "32c352a6b23b5458",
+      "rendered_symbols": 59,
+      "repo": "tenacity",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 47,
+        "test": 15
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 11,
+      "rendered_sha256": null,
+      "rendered_symbols": 62,
+      "repo": "tenacity",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 108
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 10,
+      "rendered_sha256": "80e233095876b8a2",
+      "rendered_symbols": 108,
+      "repo": "tenacity",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 71,
+        "test": 59
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 17,
+      "rendered_sha256": null,
+      "rendered_symbols": 130,
+      "repo": "tenacity",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 90
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 5,
+      "rendered_sha256": "8b7a0fcc4e880aaf",
+      "rendered_symbols": 90,
+      "repo": "python-slugify",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 92
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 5,
+      "rendered_sha256": null,
+      "rendered_symbols": 92,
+      "repo": "python-slugify",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 98
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 5,
+      "rendered_sha256": "6e53c0e0af4df5be",
+      "rendered_symbols": 98,
+      "repo": "python-slugify",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 98
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 5,
+      "rendered_sha256": null,
+      "rendered_symbols": 98,
+      "repo": "python-slugify",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 65
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 4,
+      "rendered_sha256": "89ef623a26bd025c",
+      "rendered_symbols": 65,
+      "repo": "freezegun",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 40,
+        "test": 28
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 13,
+      "rendered_sha256": null,
+      "rendered_symbols": 68,
+      "repo": "freezegun",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 96
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 4,
+      "rendered_sha256": "e3d25e204649b57e",
+      "rendered_symbols": 96,
+      "repo": "freezegun",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 93,
+        "test": 40
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 14,
+      "rendered_sha256": null,
+      "rendered_symbols": 133,
+      "repo": "freezegun",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 62
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 2,
+      "rendered_sha256": "e387c91b67dfccc2",
+      "rendered_symbols": 62,
+      "repo": "schedule",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 62,
+        "test": 40
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 3,
+      "rendered_sha256": null,
+      "rendered_symbols": 102,
+      "repo": "schedule",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 62
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 2,
+      "rendered_sha256": "e387c91b67dfccc2",
+      "rendered_symbols": 62,
+      "repo": "schedule",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 62,
+        "test": 65
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 3,
+      "rendered_sha256": null,
+      "rendered_symbols": 127,
+      "repo": "schedule",
+      "symbol_contamination_pct": 0.0,
+      "truncated": false
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 91
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 20,
+      "rendered_sha256": "8b6c439f467ece05",
+      "rendered_symbols": 91,
+      "repo": "pexpect",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 72,
+        "test": 8
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 20,
+      "rendered_sha256": null,
+      "rendered_symbols": 80,
+      "repo": "pexpect",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 191
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 27,
+      "rendered_sha256": "eb5ae65f5be9c3cc",
+      "rendered_symbols": 191,
+      "repo": "pexpect",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 139,
+        "test": 37
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 37,
+      "rendered_sha256": null,
+      "rendered_symbols": 176,
+      "repo": "pexpect",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 46
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 13,
+      "rendered_sha256": "4c8ba425762e2650",
+      "rendered_symbols": 46,
+      "repo": "requests",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 43,
+        "test": 4
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 12,
+      "rendered_sha256": null,
+      "rendered_symbols": 47,
+      "repo": "requests",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 103
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 13,
+      "rendered_sha256": "7d35a823af66e659",
+      "rendered_symbols": 103,
+      "repo": "requests",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 91,
+        "test": 6
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 16,
+      "rendered_sha256": null,
+      "rendered_symbols": 97,
+      "repo": "requests",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 69
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 10,
+      "rendered_sha256": "5b26236a1fa48c59",
+      "rendered_symbols": 69,
+      "repo": "jsonschema",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 49,
+        "test": 22
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 14,
+      "rendered_sha256": null,
+      "rendered_symbols": 71,
+      "repo": "jsonschema",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 145
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 10,
+      "rendered_sha256": "311bdc9b2f65d88f",
+      "rendered_symbols": 145,
+      "repo": "jsonschema",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "docs": 3,
+        "production": 116,
+        "test": 35
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 18,
+      "rendered_sha256": null,
+      "rendered_symbols": 154,
+      "repo": "jsonschema",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 58
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 19,
+      "rendered_sha256": "0c9f325fa4b25f10",
+      "rendered_symbols": 58,
+      "repo": "markdown-it-py",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 1024,
+      "category_breakdown_symbols": {
+        "production": 60
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 19,
+      "rendered_sha256": null,
+      "rendered_symbols": 60,
+      "repo": "markdown-it-py",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 124
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": false,
+      "rendered_files": 31,
+      "rendered_sha256": "916791fe2f2056a8",
+      "rendered_symbols": 124,
+      "repo": "markdown-it-py",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    },
+    {
+      "budget_tokens": 2048,
+      "category_breakdown_symbols": {
+        "production": 115
+      },
+      "contaminated_symbols": 0,
+      "control_all_categories": true,
+      "rendered_files": 28,
+      "rendered_sha256": null,
+      "rendered_symbols": 115,
+      "repo": "markdown-it-py",
+      "symbol_contamination_pct": 0.0,
+      "truncated": true
+    }
+  ],
+  "scope": "independent non-self corpus: all repos of the development-regression manifest benchmarks/holdout/manifest.json, each pinned to a full 40-hex SHA; automated contamination half only \u2014 NOT the self-repo pilot and NOT the human landmark gate",
+  "tool_provenance": {
+    "content_files_hashed": 40,
+    "digest_basis": "HEAD + porcelain-v1 -z status + per-file content sha256 (untracked-files=all; generated reports under benchmarks/exit_gates/ excluded)",
+    "digest_truncated": false,
+    "dirty_entries": 69,
+    "git_head": "8b45686a0ccfc1d02a3645d920366b20ad0f41bb",
+    "worktree_digest": "00fb2fa9498d138b"
+  }
+}

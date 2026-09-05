@@ -1,0 +1,118 @@
+src/requests/_internal_utils.py:
+  def to_native_string(string: str | bytes, encoding: str='ascii') -> str
+src/requests/_types.py:
+  def is_prepared(request: PreparedRequest) -> TypeIs[_ValidatedRequest]
+  class BaseRequestKwargs(TypedDict)
+src/requests/adapters.py:
+  def SOCKSProxyManager(*args: Any, **kwargs: Any) -> None
+  def _urllib3_request_context(request: PreparedRequest, verify: bool | str | None, client_cert: tuple[str, str] | str | None, poolmanager: PoolManager) -> tuple[dict[str, Any], dict[str, Any]]
+  class BaseAdapter
+  def init_poolmanager(self, connections: int, maxsize: int, block: bool=DEFAULT_POOLBLOCK, **pool_kwargs: Any) -> None
+  def proxy_manager_for(self, proxy: str, **proxy_kwargs: Any) -> Any
+  def proxy_headers(self, proxy: str) -> dict[str, str]
+src/requests/api.py:
+  def request(method: str, url: _t.UriType, **kwargs: Unpack[_t.RequestKwargs]) -> Response
+  def get(url: _t.UriType, params: _t.ParamsType=None, **kwargs: Unpack[_t.GetKwargs]) -> Response
+src/requests/auth.py:
+  def _basic_auth_str(username: bytes | str, password: bytes | str) -> str
+  class AuthBase
+  class HTTPBasicAuth(AuthBase)
+  def build_digest_header(self, method: str, url: str) -> str | None
+src/requests/cookies.py:
+  class MockRequest
+  def get_host(self) -> str
+  def get_origin_req_host(self) -> str
+  def is_unverifiable(self) -> bool
+  def get_new_headers(self) -> dict[str, str]
+  class MockResponse
+  def extract_cookies_to_jar(jar: CookieJar, request: PreparedRequest, response: Any) -> None
+  def get_cookie_header(jar: CookieJar, request: PreparedRequest) -> str | None
+  def remove_cookie_by_name(cookiejar: CookieJar, name: str, domain: str | None=None, path: str | None=None) -> None
+  class CookieConflictError(RuntimeError)
+  class RequestsCookieJar(CookieJar, MutableMapping[str, str | None])
+  def set(self, name: str, value: str | Morsel[dict[str, str]] | None, **kwargs: Any) -> Cookie | None
+  def iterkeys(self) -> Iterator[str]
+  def itervalues(self) -> Iterator[str | None]
+  def iteritems(self) -> Iterator[tuple[str, str | None]]
+  def set_cookie(self, cookie: Cookie, *args: Any, **kwargs: Any) -> None
+  def update(self, other: CookieJar | SupportsKeysAndGetItem[str, str]) -> None
+  def _find_no_duplicates(self, name: str, domain: str | None=None, path: str | None=None) -> str
+  def copy(self) -> RequestsCookieJar
+  def get_policy(self) -> CookiePolicy
+  def _copy_cookie_jar(jar: CookieJar | None) -> CookieJar | None
+  def create_cookie(name: str, value: str, **kwargs: Any) -> Cookie
+  def cookiejar_from_dict(cookie_dict: dict[str, str] | None, cookiejar: CookieJar | None=None, overwrite: bool=True) -> CookieJar
+src/requests/exceptions.py:
+  class RequestException(IOError)
+  class InvalidJSONError(RequestException)
+  class JSONDecodeError(InvalidJSONError, CompatJSONDecodeError)
+  class HTTPError(RequestException)
+  class ConnectionError(RequestException)
+  class Timeout(RequestException)
+  class InvalidSchema(RequestException, ValueError)
+  class InvalidURL(RequestException, ValueError)
+  class InvalidHeader(RequestException, ValueError)
+  class InvalidProxyURL(InvalidURL)
+  class StreamConsumedError(RequestException, TypeError)
+  class UnrewindableBodyError(RequestException)
+  class RequestsWarning(Warning)
+src/requests/help.py:
+  def _implementation()
+  def info() -> dict[str, Any]
+src/requests/hooks.py:
+  def default_hooks() -> dict[str, list[_t.HookType]]
+src/requests/models.py:
+  class RequestEncodingMixin
+  def _encode_params(data: _t.EncodableDataType) -> str | bytes | _t.SupportsRead[str | bytes]
+  class RequestHooksMixin
+  def register_hook(self, event: str, hook: Iterable[_t.HookType] | _t.HookType) -> None
+  class Request(RequestHooksMixin)
+  class PreparedRequest(RequestEncodingMixin, RequestHooksMixin)
+  def prepare_content_length(self, body: _t.BodyType) -> None
+  def prepare_auth(self, auth: _t.AuthType, url: _t.UriType='') -> None
+  def iter_content(self, chunk_size: int | None=1, decode_unicode: bool=False) -> Iterator[str | bytes]
+  def raise_for_status(self) -> None
+  def close(self) -> None
+src/requests/sessions.py:
+  def merge_setting(request_setting: Any, session_setting: Any, dict_class: type=OrderedDict) -> Any
+  class SessionRedirectMixin
+  class Session(SessionRedirectMixin)
+  def prepare_request(self, request: Request) -> PreparedRequest
+  def request(self, method: str, url: _t.UriType, params: _t.ParamsType=None, data: _t.DataType=None, headers: _t.HeadersType=None, cookies: RequestsCookieJar | CookieJar | dict[str, str] | None=None, files: _t.FilesType=None, auth: _t.AuthType=None, timeout: _t.TimeoutType=None, allow_redirects: bool=True, proxies: dict[str, str] | None=None, hooks: _t.HooksInputType | None=None, stream: bool | None=None, verify: _t.VerifyType | None=None, cert: _t.CertType=None, json: _t.JsonType=None) -> Response
+  def send(self, request: PreparedRequest, **kwargs: Any) -> Response
+  def merge_environment_settings(self, url: str, proxies: dict[str, str] | None, stream: bool | None, verify: _t.VerifyType | None, cert: _t.CertType) -> dict[str, Any]
+  def close(self) -> None
+src/requests/structures.py:
+  class CaseInsensitiveDict(MutableMapping[str, _VT], Generic[_VT])
+  def lower_items(self) -> Iterator[tuple[str, _VT]]
+  def get(self, key: str, default: _D | None=None) -> _VT | _D | None
+src/requests/utils.py:
+  def proxy_bypass_registry(host: str) -> bool
+  def proxy_bypass(host: str) -> bool
+  def super_len(o: Any) -> int
+  def get_netrc_auth(url: _t.UriType, raise_errors: bool=False) -> tuple[str, str] | None
+  def guess_filename(obj: Any) -> str | None
+  def to_key_val_list(value: _t.SupportsItems[_KT, _VT] | Iterable[tuple[_KT, _VT]] | None) -> list[tuple[_KT, _VT]] | None
+  def unquote_header_value(value: str, is_filename: bool=False) -> str
+  def _parse_content_type_header(header: str) -> tuple[str, dict[str, Any]]
+  def get_encoding_from_headers(headers: CaseInsensitiveDict[str]) -> str | None
+  def stream_decode_response_unicode(iterator: Iterable[bytes], r: Response) -> Generator[str | bytes, None, None]
+  def iter_slices(string: bytes | str, slice_length: int | None) -> Generator[bytes | str, None, None]
+  def unquote_unreserved(uri: str) -> str
+  def address_in_network(ip: str, net: str) -> bool
+  def dotted_netmask(mask: int) -> str
+  def is_ipv4_address(string_ip: str) -> bool
+  def is_valid_cidr(string_network: str) -> bool
+  def set_environ(env_name: str, value: str | None) -> Generator[None, None, None]
+  def should_bypass_proxies(url: str, no_proxy: str | None) -> bool
+  def get_environ_proxies(url: str, no_proxy: str | None=None) -> dict[str, str]
+  def select_proxy(url: str, proxies: dict[str, str] | None) -> str | None
+  def resolve_proxies(request: Request | PreparedRequest, proxies: dict[str, str] | None, trust_env: bool=True) -> dict[str, str]
+  def default_user_agent(name: str='python-requests') -> str
+  def parse_header_links(value: str) -> list[dict[str, str]]
+  def guess_json_utf(data: bytes) -> str | None
+  def prepend_scheme_if_needed(url: str, new_scheme: str) -> str
+  def get_auth_from_url(url: str) -> tuple[str, str]
+  def _validate_header_part(header: tuple[str | bytes, str | bytes], header_part: str | bytes, header_validator_index: int) -> None
+(map scope: production only — hid 471 of 770 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

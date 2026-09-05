@@ -1,0 +1,60 @@
+src/click/_compat.py:
+  def is_ascii_encoding(encoding: str) -> bool
+  def _is_binary_reader(stream: t.IO[t.Any], default: bool=False) -> bool
+  def _is_binary_writer(stream: t.IO[t.Any], default: bool=False) -> bool
+  def _find_binary_reader(stream: t.IO[t.Any]) -> t.BinaryIO | None
+  def _find_binary_writer(stream: t.IO[t.Any]) -> t.BinaryIO | None
+  def _force_correct_text_stream(text_stream: t.IO[t.Any], encoding: str | None, errors: str | None, is_binary: t.Callable[[t.IO[t.Any], bool], bool], find_binary: t.Callable[[t.IO[t.Any]], t.BinaryIO | None], force_readable: bool=False, force_writable: bool=False) -> t.TextIO
+  def strip_ansi(value: str) -> str
+  def _is_jupyter_kernel_output(stream: t.IO[t.Any]) -> bool
+  def should_strip_ansi(stream: t.IO[t.Any] | None=None, color: bool | None=None) -> bool
+  def term_len(x: str) -> int
+  def isatty(stream: t.IO[t.Any]) -> bool
+src/click/_termui_impl.py:
+  def render_progress(self) -> None
+src/click/_winconsole.py:
+  class _WindowsConsoleRawIOBase(io.RawIOBase)
+src/click/core.py:
+  def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, tb: TracebackType | None) -> bool | None
+  def _close_with_exception_info(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, tb: TracebackType | None) -> bool | None
+  class Command
+  def get_params(self, ctx: Context) -> list[Parameter]
+  def get_help_option_names(self, ctx: Context) -> list[str]
+  def get_help_option(self, ctx: Context) -> Option | None
+  class Group(Command)
+  def make_metavar(self, ctx: Context) -> str
+src/click/decorators.py:
+  def command(name: str | _AnyCallable | None=None, cls: type[CmdType] | None=None, **attrs: t.Any) -> Command | t.Callable[[_AnyCallable], Command | CmdType]
+  def argument(*param_decls: str, cls: type[Argument] | None=None, **attrs: t.Any) -> t.Callable[[FC], FC]
+  def option(*param_decls: str, cls: type[Option] | None=None, **attrs: t.Any) -> t.Callable[[FC], FC]
+  def help_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]
+src/click/exceptions.py:
+  class ClickException(Exception)
+  class UsageError(ClickException)
+  class BadParameter(UsageError)
+  class Abort(RuntimeError)
+src/click/formatting.py:
+  def write(self, string: str) -> None
+src/click/globals.py:
+  def get_current_context(silent: bool=False) -> Context | None
+  def resolve_color_default(color: bool | None=None) -> bool | None
+src/click/parser.py:
+  def _split_opt(opt: str) -> tuple[str, str]
+src/click/shell_completion.py:
+  class CompletionItem(t.Generic[_ValueT_co])
+  class ShellComplete
+  def split_arg_string(string: str) -> list[str]
+src/click/termui.py:
+  def _interpret_color(color: int | tuple[int, int, int] | str, offset: int=0) -> str
+src/click/testing.py:
+  def _echo(self, rv: bytes) -> bytes
+  def _pause_echo(stream: EchoingStdin | None) -> cabc.Generator[None]
+src/click/types.py:
+  class ParamTypeInfoDict(t.TypedDict)
+  def _normalized_mapping(self, ctx: Context | None=None) -> cabc.Mapping[_ValueT_co, str]
+  def normalize_choice(self, choice: object, ctx: Context | None) -> str
+src/click/utils.py:
+  def echo(message: object=None, file: t.IO[t.Any] | None=None, nl: bool=True, err: bool=False, color: bool | None=None) -> None
+  def format_filename(filename: str | bytes | os.PathLike[str] | os.PathLike[bytes], shorten: bool=False) -> str
+(map scope: production only — hid 1161 of 1871 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)

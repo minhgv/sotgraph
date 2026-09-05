@@ -1,0 +1,120 @@
+tenacity/__init__.py:
+  def _has_tornado() -> bool
+  class IterState
+  def reset(self) -> None
+  class TryAgain(Exception)
+  class DoAttempt
+  class DoSleep(float)
+  class BaseAction
+  def __repr__(self) -> str
+  def __str__(self) -> str
+  class RetryAction(BaseAction)
+  def __init__(self, sleep: t.SupportsFloat) -> None
+  def _first_set(first: t.Any | object, second: t.Any) -> t.Any
+  class RetryError(Exception)
+  def __init__(self, last_attempt: 'Future') -> None
+  def reraise(self) -> t.NoReturn
+  def __str__(self) -> str
+  class AttemptManager
+  def __init__(self, retry_state: 'RetryCallState') -> None
+  def __enter__(self) -> None
+  def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: 'types.TracebackType | None') -> bool | None
+  async def __aenter__(self) -> None
+  async def __aexit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: 'types.TracebackType | None') -> bool | None
+  class BaseRetrying(ABC)
+  def __init__(self, sleep: t.Callable[[int | float], None]=sleep, stop: 'StopBaseT'=stop_never, wait: 'WaitBaseT'=wait_none(), retry: 'RetryBaseT'=retry_if_exception_type(), before: t.Callable[['RetryCallState'], None]=before_nothing, after: t.Callable[['RetryCallState'], None]=after_nothing, before_sleep: t.Callable[['RetryCallState'], None] | None=None, reraise: bool=False, retry_error_cls: type[RetryError]=RetryError, retry_error_callback: t.Callable[['RetryCallState'], t.Any] | None=None, name: str | None=None, enabled: bool=True) -> None
+  def copy(self, sleep: t.Callable[[int | float], None] | object=_unset, stop: 'StopBaseT | object'=_unset, wait: 'WaitBaseT | object'=_unset, retry: retry_base | object=_unset, before: t.Callable[['RetryCallState'], None] | object=_unset, after: t.Callable[['RetryCallState'], None] | object=_unset, before_sleep: t.Callable[['RetryCallState'], None] | object | None=_unset, reraise: bool | object=_unset, retry_error_cls: type[RetryError] | object=_unset, retry_error_callback: t.Callable[['RetryCallState'], t.Any] | object | None=_unset, name: str | object | None=_unset, enabled: bool | object=_unset) -> 'Self'
+  def __getstate__(self) -> dict[str, t.Any]
+  def __setstate__(self, state: dict[str, t.Any]) -> None
+  def __str__(self) -> str
+  def __repr__(self) -> str
+  def statistics(self) -> dict[str, t.Any]
+  def iter_state(self) -> IterState
+  def wraps(self, f: t.Callable[P, R]) -> '_RetryDecorated[P, R]'
+  def wrapped_f(*args: t.Any, **kw: t.Any) -> t.Any
+  def retry_with(*args: t.Any, **kwargs: t.Any) -> '_RetryDecorated[P, R]'
+  def begin(self) -> None
+  def _add_action_func(self, fn: t.Callable[..., t.Any]) -> None
+  def _run_retry(self, retry_state: 'RetryCallState') -> None
+  def _run_wait(self, retry_state: 'RetryCallState') -> None
+  def _run_stop(self, retry_state: 'RetryCallState') -> None
+  def iter(self, retry_state: 'RetryCallState') -> DoAttempt | DoSleep | t.Any
+  def _begin_iter(self, retry_state: 'RetryCallState') -> None
+  def _post_retry_check_actions(self, retry_state: 'RetryCallState') -> None
+  def _post_stop_check_actions(self, retry_state: 'RetryCallState') -> None
+  def exc_check(rs: 'RetryCallState') -> None
+  def next_action(rs: 'RetryCallState') -> None
+  def __iter__(self) -> t.Generator[AttemptManager, None, None]
+  def __call__(self, fn: t.Callable[..., WrappedFnReturnT], *args: t.Any, **kwargs: t.Any) -> WrappedFnReturnT
+  class Retrying(BaseRetrying)
+  def __call__(self, fn: t.Callable[..., WrappedFnReturnT], *args: t.Any, **kwargs: t.Any) -> WrappedFnReturnT
+  class Future(futures.Future[t.Any])
+  def __init__(self, attempt_number: int) -> None
+  def failed(self) -> bool
+  def construct(cls, attempt_number: int, value: t.Any, has_exception: bool) -> 'Future'
+  class RetryCallState
+  def __init__(self, retry_object: BaseRetrying, fn: WrappedFn | None, args: t.Any, kwargs: t.Any) -> None
+  def get_fn_name(self) -> str
+  def seconds_since_start(self) -> float | None
+  def prepare_for_next_attempt(self) -> None
+  def set_result(self, val: t.Any) -> None
+  def set_exception(self, exc_info: tuple[type[BaseException], BaseException, 'types.TracebackType | None']) -> None
+  def __repr__(self) -> str
+  class _RetryDecorated(t.Protocol[P, R])
+  def retry_with(self, *args: t.Any, **kwargs: t.Any) -> '_RetryDecorated[P, R]'
+  def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R
+  def __get__(self, instance: object, owner: type | None=None) -> '_RetryDecorated[..., R]'
+  class _AsyncRetryDecorator(t.Protocol)
+  def __call__(self, fn: t.Callable[P, R]) -> '_RetryDecorated[P, t.Awaitable[R]]'
+  def retry(*dargs: t.Any, **dkw: t.Any) -> t.Any
+  def wrap(f: t.Callable[P, R]) -> _RetryDecorated[P, R]
+tenacity/_utils.py:
+  def override(method: _F) -> _F
+  class LoggerProtocol(typing.Protocol)
+  def log(self, level: int, msg: str, *args: typing.Any) -> typing.Any
+  def find_ordinal(pos_num: int) -> str
+  def to_ordinal(pos_num: int) -> str
+  def get_callback_name(cb: typing.Callable[..., typing.Any]) -> str
+  def to_seconds(time_unit: time_unit_type) -> float
+  def is_coroutine_callable(call: typing.Callable[..., typing.Any]) -> bool
+  def wrap_to_async_func(call: typing.Callable[..., typing.Any]) -> typing.Callable[..., typing.Awaitable[typing.Any]]
+  async def inner(*args: typing.Any, **kwargs: typing.Any) -> typing.Any
+tenacity/after.py:
+  def after_nothing(retry_state: 'RetryCallState') -> None
+  def after_log(logger: _utils.LoggerProtocol, log_level: int, sec_format: str='%.3g') -> typing.Callable[['RetryCallState'], None]
+  def log_it(retry_state: 'RetryCallState') -> None
+tenacity/asyncio/__init__.py:
+  class AsyncRetrying(BaseRetrying)
+  async def __call__(self, fn: WrappedFn, *args: t.Any, **kwargs: t.Any) -> WrappedFnReturnT
+  async def iter(self, retry_state: 'RetryCallState') -> DoAttempt | DoSleep | t.Any
+  def __aiter__(self) -> 'AsyncRetrying'
+  async def __anext__(self) -> AttemptManager
+tenacity/asyncio/retry.py:
+  class async_retry_base(retry_base)
+  class retry_any(async_retry_base)
+  class retry_all(async_retry_base)
+tenacity/nap.py:
+  def sleep(seconds: float) -> None
+tenacity/retry.py:
+  class retry_base(abc.ABC)
+  def __rand__(self, other: 'RetryBaseT') -> 'retry_all'
+  def __ror__(self, other: 'RetryBaseT') -> 'retry_any'
+  class retry_if_exception(retry_base)
+  class retry_if_exception_type(retry_if_exception)
+  class retry_if_exception_message(retry_if_exception)
+  class retry_any(retry_base)
+  class retry_all(retry_base)
+tenacity/stop.py:
+  class stop_base(abc.ABC)
+  class stop_any(stop_base)
+  class stop_all(stop_base)
+tenacity/tornadoweb.py:
+  class TornadoRetrying(BaseRetrying)
+tenacity/wait.py:
+  class wait_base(abc.ABC)
+  class wait_fixed(wait_base)
+  class wait_none(wait_fixed)
+  class wait_combine(wait_base)
+  class wait_exponential(wait_base)
+(map scope: production only — hid 414 of 645 indexed symbols (test,fixture,vendor,generated,docs,tooling excluded))
+(absence from this map does not imply absence from the index)
