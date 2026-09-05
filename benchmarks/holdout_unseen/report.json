@@ -1,0 +1,3304 @@
+{
+  "benchmark": "real-repo-holdout",
+  "schema_version": 2,
+  "manifest_digest": "407d99dee842",
+  "environment": {
+    "python": "3.14.6",
+    "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O"
+  },
+  "repos": [
+    {
+      "name": "attrs",
+      "license": "MIT",
+      "commit": "8f767776326faaed11e6c2974798787f6e19b343",
+      "diff_base": "f616f732c6c5f87a8f7a762176422baed250a6be",
+      "diff_head": "5aa76a4450c311d87eda43946ec0ecd743572649",
+      "diff_subject": "Add `ne` validator (#1571)",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "TestLtLeGeGt",
+            "TestLtLeGeGtNe",
+            "ne"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/test_validators.py"
+        ],
+        "engine_tests": [
+          "tests/test_setattr.py",
+          "tests/test_validators.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 1474,
+          "oracle_definitions": 1153,
+          "verified": 1474
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1474,
+            "measured": 1474,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1153,
+            "measured": 1153,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "C",
+            "line": 66,
+            "gt_lines": [
+              65
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "HashableC",
+            "line": 111,
+            "gt_lines": [
+              110
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "AtomicFields",
+            "line": 150,
+            "gt_lines": [
+              149
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "Slotted",
+            "line": 182,
+            "gt_lines": [
+              181
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "Slotted.cached",
+            "line": 186,
+            "gt_lines": [
+              185,
+              194
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "Unslotted",
+            "line": 191,
+            "gt_lines": [
+              190
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "Unslotted.cached",
+            "line": 195,
+            "gt_lines": [
+              185,
+              194
+            ]
+          },
+          {
+            "path": "bench/test_benchmarks.py",
+            "symbol": "LocalC.cached",
+            "line": 231,
+            "gt_lines": [
+              185,
+              194
+            ]
+          },
+          {
+            "path": "src/attr/_version_info.py",
+            "symbol": "VersionInfo",
+            "line": 12,
+            "gt_lines": [
+              10
+            ]
+          },
+          {
+            "path": "src/attr/_version_info.py",
+            "symbol": "VersionInfo._from_version_string",
+            "line": 39,
+            "gt_lines": [
+              38
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "Define",
+            "line": 8,
+            "gt_lines": [
+              7
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "DefineConverter",
+            "line": 17,
+            "gt_lines": [
+              16
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "Frozen",
+            "line": 27,
+            "gt_lines": [
+              26
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "FrozenDefine",
+            "line": 38,
+            "gt_lines": [
+              37
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "AliasedField",
+            "line": 50,
+            "gt_lines": [
+              49
+            ]
+          },
+          {
+            "path": "tests/dataclass_transform_example.py",
+            "symbol": "Hashable",
+            "line": 61,
+            "gt_lines": [
+              60
+            ]
+          },
+          {
+            "path": "tests/test_3rd_party.py",
+            "symbol": "TestCloudpickleCompat.test_repr",
+            "line": 23,
+            "gt_lines": [
+              22
+            ]
+          },
+          {
+            "path": "tests/test_annotations.py",
+            "symbol": "TestAnnotations.test_auto_attribs",
+            "line": 100,
+            "gt_lines": [
+              96
+            ]
+          },
+          {
+            "path": "tests/test_annotations.py",
+            "symbol": "TestAnnotations.test_annotations_strings",
+            "line": 394,
+            "gt_lines": [
+              390
+            ]
+          },
+          {
+            "path": "tests/test_annotations.py",
+            "symbol": "TestAnnotations.test_missing_classvar_import",
+            "line": 441,
+            "gt_lines": [
+              437
+            ]
+          },
+          {
+            "path": "tests/test_annotations.py",
+            "symbol": "TestAnnotations.test_extra_resolve",
+            "line": 544,
+            "gt_lines": [
+              540
+            ]
+          },
+          {
+            "path": "tests/test_annotations.py",
+            "symbol": "test_is_class_var",
+            "line": 714,
+            "gt_lines": [
+              704
+            ]
+          },
+          {
+            "path": "tests/test_cmp.py",
+            "symbol": "TestEqOrder.test_equal_same_type",
+            "line": 72,
+            "gt_lines": [
+              69
+            ]
+          },
+          {
+            "path": "tests/test_cmp.py",
+            "symbol": "TestEqOrder.test_unequal_same_type",
+            "line": 82,
+            "gt_lines": [
+              79
+            ]
+          },
+          {
+            "path": "tests/test_cmp.py",
+            "symbol": "TestEqOrder.test_equal_different_type",
+            "line": 92,
+            "gt_lines": [
+              89
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.6333,
+          "hit_at_5": 0.8,
+          "mrr": 0.7111,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "src/attr/_make.py::pipe",
+          "tests/test_functional.py::Base",
+          "tests/test_make.py::test_success",
+          "typing_tests/mypy.py::Hashable",
+          "typing_tests/pyrefly.py::D",
+          "typing_tests/pyrefly.py::test"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 0.96,
+          "unresolved_calls": 2213
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 100,
+            "measured": 25,
+            "excluded": 75,
+            "excluded_reasons": {
+              "sample_cap_25": 75
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 12
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": [
+          {
+            "target": "A",
+            "missing": [
+              "tests/test_slots.py::test_slots_cached_properties_work_independently",
+              "tests/test_slots.py::test_slots_cached_property_allows_call",
+              "tests/test_slots.py::test_slots_cached_property_called_independent_across_instances",
+              "tests/test_slots.py::test_slots_cached_property_is_not_called_at_construction",
+              "tests/test_slots.py::test_slots_cached_property_raising_attributeerror",
+              "tests/test_slots.py::test_slots_cached_property_repeat_call_only_once",
+              "tests/test_slots.py::test_slots_cached_property_with_empty_getattr_raises_attribute_error_of_requested",
+              "tests/test_slots.py::test_slots_cached_property_with_getattr_calls_getattr_for_missing_attributes",
+              "tests/test_slots.py::test_slots_cached_property_works_on_frozen_instances",
+              "tests/test_slots.py::test_slots_unpickle_after_attr_added",
+              "tests/test_slots.py::test_slots_unpickle_after_attr_removed",
+              "tests/test_slots.py::test_slots_unpickle_is_backward_compatible"
+            ]
+          }
+        ]
+      },
+      "duration_s": 9.0
+    },
+    {
+      "name": "filelock",
+      "license": "Unlicense",
+      "commit": "82f66d7b0aaa83755f8d71d0b0da88408b58ec4a",
+      "diff_base": "13b82a64adf51e768d65180abe05c4934cdca934",
+      "diff_head": "bb16d396622f9edf638455b24497a1ca6981c92e",
+      "diff_subject": "\ud83e\uddea test: deflake six scheduled-run failures (#704)",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "_collect_garbage",
+            "_reports_object_tracebacks",
+            "_tracemalloc_lookup_without_support",
+            "test_close_after_commit_ignores_closes_from_other_threads",
+            "test_close_after_commit_ignores_other_descriptors"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 4,
+            "measured": 4,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/soft_rw/test_soft_rw_sync.py",
+          "tests/test_async_filelock.py",
+          "tests/test_soft_stale.py",
+          "tests/test_strict_soft_races.py"
+        ],
+        "engine_tests": [
+          "tests/capability_marks.py",
+          "tests/conftest.py",
+          "tests/fork_helpers.py",
+          "tests/soft_rw/test_soft_rw_async.py",
+          "tests/soft_rw/test_soft_rw_sync.py",
+          "tests/test_async_filelock.py",
+          "tests/test_async_filelock_acquire_cancellation.py",
+          "tests/test_async_filelock_release_cancellation.py",
+          "tests/test_async_filelock_rollback_agnostic.py",
+          "tests/test_async_filelock_runner_shutdown.py",
+          "tests/test_async_filelock_transition_admission.py",
+          "tests/test_async_read_write.py",
+          "tests/test_async_read_write_cancellation.py",
+          "tests/test_async_transition_gate.py",
+          "tests/test_filelock.py",
+          "tests/test_fork_backends.py",
+          "tests/test_fork_coordination.py",
+          "tests/test_fork_ownership.py",
+          "tests/test_fork_registries.py",
+          "tests/test_read_write.py",
+          "tests/test_read_write_fork.py",
+          "tests/test_read_write_unit.py",
+          "tests/test_soft_lease.py",
+          "tests/test_soft_stale.py",
+          "tests/test_strict_soft.py",
+          "tests/test_strict_soft_compat.py",
+          "tests/test_strict_soft_failures.py",
+          "tests/test_strict_soft_paths.py",
+          "tests/test_strict_soft_races.py",
+          "tests/test_subclass_options.py",
+          "tests/test_unix_fallback.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 1758,
+          "oracle_definitions": 1472,
+          "verified": 1758
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1758,
+            "measured": 1758,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1472,
+            "measured": 1472,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "src/filelock/_async.py",
+            "symbol": "_BackendOutcome",
+            "line": 26,
+            "gt_lines": [
+              25
+            ]
+          },
+          {
+            "path": "src/filelock/_async.py",
+            "symbol": "_AsyncTransitionGate.hold",
+            "line": 37,
+            "gt_lines": [
+              36
+            ]
+          },
+          {
+            "path": "src/filelock/_async.py",
+            "symbol": "_AsyncTransitionGate.hold_for_acquire",
+            "line": 54,
+            "gt_lines": [
+              53
+            ]
+          },
+          {
+            "path": "src/filelock/_async.py",
+            "symbol": "_AsyncTransitionGate._wait_for_predecessor",
+            "line": 84,
+            "gt_lines": [
+              83
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.lock_file",
+            "line": 87,
+            "gt_lines": [
+              86
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.timeout",
+            "line": 92,
+            "gt_lines": [
+              91
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.blocking",
+            "line": 97,
+            "gt_lines": [
+              96
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.loop",
+            "line": 102,
+            "gt_lines": [
+              101
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.executor",
+            "line": 107,
+            "gt_lines": [
+              106
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.read_lock",
+            "line": 112,
+            "gt_lines": [
+              111
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock.write_lock",
+            "line": 137,
+            "gt_lines": [
+              136
+            ]
+          },
+          {
+            "path": "src/filelock/_async_read_write.py",
+            "symbol": "AsyncReadWriteLock._inherited",
+            "line": 295,
+            "gt_lines": [
+              294
+            ]
+          },
+          {
+            "path": "src/filelock/_error.py",
+            "symbol": "Timeout.lock_file",
+            "line": 22,
+            "gt_lines": [
+              21,
+              53
+            ]
+          },
+          {
+            "path": "src/filelock/_error.py",
+            "symbol": "SoftFileLockProtocolError.lock_file",
+            "line": 54,
+            "gt_lines": [
+              21,
+              53
+            ]
+          },
+          {
+            "path": "src/filelock/_error.py",
+            "symbol": "SoftFileLockProtocolError.claim_name",
+            "line": 59,
+            "gt_lines": [
+              58
+            ]
+          },
+          {
+            "path": "src/filelock/_error.py",
+            "symbol": "SoftFileLockProtocolError.reason",
+            "line": 64,
+            "gt_lines": [
+              63
+            ]
+          },
+          {
+            "path": "src/filelock/_marker.py",
+            "symbol": "MarkerSoftFileLock.owner",
+            "line": 42,
+            "gt_lines": [
+              41
+            ]
+          },
+          {
+            "path": "src/filelock/_marker.py",
+            "symbol": "MarkerSoftFileLock.pid",
+            "line": 52,
+            "gt_lines": [
+              51
+            ]
+          },
+          {
+            "path": "src/filelock/_marker.py",
+            "symbol": "MarkerSoftFileLock.is_lock_held_by_us",
+            "line": 62,
+            "gt_lines": [
+              61
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "_ForkedDatabaseRegistry.identity",
+            "line": 129,
+            "gt_lines": [
+              128
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "ReadWriteLock.get_lock",
+            "line": 283,
+            "gt_lines": [
+              282
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "ReadWriteLock.read_lock",
+            "line": 369,
+            "gt_lines": [
+              368
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "ReadWriteLock.write_lock",
+            "line": 390,
+            "gt_lines": [
+              389
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "ReadWriteLock._inherited",
+            "line": 488,
+            "gt_lines": [
+              487
+            ]
+          },
+          {
+            "path": "src/filelock/_read_write.py",
+            "symbol": "_sqlite_transition",
+            "line": 736,
+            "gt_lines": [
+              735
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.9333,
+          "hit_at_5": 0.9667,
+          "mrr": 0.95,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "tests/test_filelock.py::__init__"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 1.0,
+          "unresolved_calls": 5546
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 251,
+            "measured": 25,
+            "excluded": 226,
+            "excluded_reasons": {
+              "sample_cap_25": 226
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 7
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 9.9
+    },
+    {
+      "name": "iniconfig",
+      "license": "MIT",
+      "commit": "00e7d87c7353b1ffecc4cd55f19acfffedd5233e",
+      "diff_base": "57b7ed9c7a5950f9c57b2cfbe641ff4cc04baf1c",
+      "diff_head": "e2d89f5283cbeb4b4ca55fe88b1c353c343b4972",
+      "diff_subject": "Add IniConfig.parse() classmethod to fix inline comment handling",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "parse_ini_data",
+            "test_constructor_preserves_inline_comments_for_backward_compatibility",
+            "test_parse_preserves_inline_comments_when_disabled",
+            "test_parse_strips_inline_comments",
+            "test_parse_strips_inline_comments_from_continuations"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "testing/test_iniconfig.py"
+        ],
+        "engine_tests": [
+          "testing/test_iniconfig.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 60,
+          "oracle_definitions": 59,
+          "verified": 60
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 60,
+            "measured": 60,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 59,
+            "measured": 59,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "src/iniconfig/__init__.py",
+            "symbol": "SectionWrapper.__iter__.lineof",
+            "line": 79,
+            "gt_lines": [
+              32,
+              180
+            ]
+          },
+          {
+            "path": "src/iniconfig/__init__.py",
+            "symbol": "IniConfig.parse",
+            "line": 126,
+            "gt_lines": [
+              125
+            ]
+          },
+          {
+            "path": "testing/test_iniconfig.py",
+            "symbol": "input_expected",
+            "line": 48,
+            "gt_lines": [
+              47
+            ]
+          },
+          {
+            "path": "testing/test_iniconfig.py",
+            "symbol": "input",
+            "line": 53,
+            "gt_lines": [
+              52
+            ]
+          },
+          {
+            "path": "testing/test_iniconfig.py",
+            "symbol": "expected",
+            "line": 58,
+            "gt_lines": [
+              57
+            ]
+          },
+          {
+            "path": "testing/test_iniconfig.py",
+            "symbol": "test_error_on_weird_lines",
+            "line": 115,
+            "gt_lines": [
+              109
+            ]
+          },
+          {
+            "path": "testing/test_iniconfig.py",
+            "symbol": "test_iscommentline_true",
+            "line": 305,
+            "gt_lines": [
+              296
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.9667,
+          "hit_at_5": 0.9667,
+          "mrr": 0.9667,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "src/iniconfig/__init__.py::parse"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 7,
+          "impact_recall": 1.0,
+          "unresolved_calls": 65
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 7,
+            "measured": 7,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "ambiguous_callee_name": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 1.6
+    },
+    {
+      "name": "more-itertools",
+      "license": "MIT",
+      "commit": "3e87c08ac878f4bb79349d38ac69ba75c45dc5bf",
+      "diff_base": "0c48044a70bae53fed919526bb1229d459a3e496",
+      "diff_head": "842a2b17a8e3f78462fe20cd4a88abd32085c111",
+      "diff_subject": "Add subfactorial()",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "TestSubfactorial",
+            "subfactorial"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/test_more.py"
+        ],
+        "engine_tests": [
+          "tests/test_more.py",
+          "tests/test_recipes.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 1292,
+          "oracle_definitions": 1215,
+          "verified": 1292
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1292,
+            "measured": 1292,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1215,
+            "measured": 1215,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "more_itertools/more.py",
+            "symbol": "numeric_range._len",
+            "line": 2412,
+            "gt_lines": [
+              2411
+            ]
+          },
+          {
+            "path": "more_itertools/more.py",
+            "symbol": "run_length.encode",
+            "line": 3178,
+            "gt_lines": [
+              3177
+            ]
+          },
+          {
+            "path": "more_itertools/more.py",
+            "symbol": "run_length.decode",
+            "line": 3182,
+            "gt_lines": [
+              3181
+            ]
+          },
+          {
+            "path": "more_itertools/more.py",
+            "symbol": "callback_iter.done",
+            "line": 4150,
+            "gt_lines": [
+              4149
+            ]
+          },
+          {
+            "path": "more_itertools/more.py",
+            "symbol": "callback_iter.result",
+            "line": 4156,
+            "gt_lines": [
+              4155
+            ]
+          },
+          {
+            "path": "more_itertools/recipes.py",
+            "symbol": "_shift_to_odd",
+            "line": 1210,
+            "gt_lines": [
+              1209
+            ]
+          },
+          {
+            "path": "more_itertools/recipes.py",
+            "symbol": "Stats",
+            "line": 1570,
+            "gt_lines": [
+              1569
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "ReversedIsNone.__iter__",
+            "line": 198,
+            "gt_lines": [
+              156,
+              3380,
+              4175,
+              6363
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "SplitWhenTests._split_when_before",
+            "line": 1662,
+            "gt_lines": [
+              1661
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "SplitWhenTests._split_when_after",
+            "line": 1666,
+            "gt_lines": [
+              1665
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "IteratorWithWeakReferences.FROM_SIZE",
+            "line": 3373,
+            "gt_lines": [
+              3372
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "SetPartitionsTests._normalize_partition",
+            "line": 4205,
+            "gt_lines": [
+              4204
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "SetPartitionsTests._normalize_partitions",
+            "line": 4213,
+            "gt_lines": [
+              4212
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "NotIterable.__iter__",
+            "line": 5110,
+            "gt_lines": [
+              156,
+              3380,
+              4175,
+              6363
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "Str.__hash__",
+            "line": 6438,
+            "gt_lines": [
+              4196
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "LockCheckingGenerator.__init__",
+            "line": 6780,
+            "gt_lines": [
+              152,
+              3376,
+              4165,
+              4734,
+              6358
+            ]
+          },
+          {
+            "path": "tests/test_more.py",
+            "symbol": "LockCheckingGenerator.__iter__",
+            "line": 6783,
+            "gt_lines": [
+              156,
+              3380,
+              4175,
+              6363
+            ]
+          },
+          {
+            "path": "tests/test_recipes.py",
+            "symbol": "AllEqualTests.test_groupby_calls",
+            "line": 182,
+            "gt_lines": [
+              181
+            ]
+          },
+          {
+            "path": "tests/test_recipes.py",
+            "symbol": "BeforeAndAfterTests._group_events",
+            "line": 863,
+            "gt_lines": [
+              862
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.9333,
+          "hit_at_5": 1.0,
+          "mrr": 0.9611,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 1.0,
+          "unresolved_calls": 2652
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 61,
+            "measured": 25,
+            "excluded": 36,
+            "excluded_reasons": {
+              "sample_cap_25": 36
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 27.5
+    },
+    {
+      "name": "platformdirs",
+      "license": "MIT",
+      "commit": "e0847a69cafd0f2534270980a269c4e07f449e1e",
+      "diff_base": "f18ebafb3f8858c51bf27877c279f60e2abfe32e",
+      "diff_head": "c653668d63658a1f5c468a2f645deb21bedf5ecd",
+      "diff_subject": "fix: stop iter_*_dirs yielding the same directory twice (#524)",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "_as_non_root",
+            "_as_root",
+            "_example_android_folder",
+            "_homebrew_py_prefix",
+            "_no_xdg_runtime_dir",
+            "_unique",
+            "_writable_runtime_dir",
+            "home",
+            "test_android_iter_dirs_no_duplicates",
+            "test_iter_data_dirs_creates_only_the_consumed_dir",
+            "test_iter_dirs_as_root_with_multipath_skips_joined_user_dir",
+            "test_iter_runtime_dirs_no_duplicate_with_xdg_runtime_dir",
+            "test_macos_iter_runtime_dirs_no_duplicate",
+            "test_windows_iter_runtime_dirs_no_duplicate"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 4,
+            "measured": 4,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/test_android.py",
+          "tests/test_macos.py",
+          "tests/test_unix.py",
+          "tests/test_windows.py"
+        ],
+        "engine_tests": [
+          "tests/test_android.py",
+          "tests/test_api.py",
+          "tests/test_comp_with_appdirs.py",
+          "tests/test_macos.py",
+          "tests/test_main.py",
+          "tests/test_unix.py",
+          "tests/test_windows.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 467,
+          "oracle_definitions": 461,
+          "verified": 467
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 467,
+            "measured": 467,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 461,
+            "measured": 461,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_data_dir",
+            "line": 14,
+            "gt_lines": [
+              13
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin._site_data_dirs",
+            "line": 21,
+            "gt_lines": [
+              20
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.site_data_dir",
+            "line": 27,
+            "gt_lines": [
+              26
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_config_dir",
+            "line": 33,
+            "gt_lines": [
+              32
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin._site_config_dirs",
+            "line": 40,
+            "gt_lines": [
+              39
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.site_config_dir",
+            "line": 46,
+            "gt_lines": [
+              45
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_cache_dir",
+            "line": 52,
+            "gt_lines": [
+              51
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_state_dir",
+            "line": 59,
+            "gt_lines": [
+              58
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_runtime_dir",
+            "line": 66,
+            "gt_lines": [
+              65
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.site_runtime_dir",
+            "line": 73,
+            "gt_lines": [
+              72
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_documents_dir",
+            "line": 80,
+            "gt_lines": [
+              79
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_downloads_dir",
+            "line": 87,
+            "gt_lines": [
+              86
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_pictures_dir",
+            "line": 94,
+            "gt_lines": [
+              93
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_videos_dir",
+            "line": 101,
+            "gt_lines": [
+              100
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_music_dir",
+            "line": 108,
+            "gt_lines": [
+              107
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_desktop_dir",
+            "line": 115,
+            "gt_lines": [
+              114
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_projects_dir",
+            "line": 122,
+            "gt_lines": [
+              121
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_publicshare_dir",
+            "line": 129,
+            "gt_lines": [
+              128
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_templates_dir",
+            "line": 136,
+            "gt_lines": [
+              135
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_fonts_dir",
+            "line": 143,
+            "gt_lines": [
+              142
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.user_applications_dir",
+            "line": 150,
+            "gt_lines": [
+              149
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin._site_applications_dirs",
+            "line": 157,
+            "gt_lines": [
+              156
+            ]
+          },
+          {
+            "path": "src/platformdirs/_xdg.py",
+            "symbol": "XDGMixin.site_applications_dir",
+            "line": 163,
+            "gt_lines": [
+              162
+            ]
+          },
+          {
+            "path": "src/platformdirs/android.py",
+            "symbol": "Android.user_data_dir",
+            "line": 27,
+            "gt_lines": [
+              26
+            ]
+          },
+          {
+            "path": "src/platformdirs/android.py",
+            "symbol": "Android.site_data_dir",
+            "line": 32,
+            "gt_lines": [
+              31
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.4667,
+          "hit_at_5": 1.0,
+          "mrr": 0.6661,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 24,
+          "impact_recall": 1.0,
+          "unresolved_calls": 831
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 24,
+            "measured": 24,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 3.6
+    },
+    {
+      "name": "pluggy",
+      "license": "MIT",
+      "commit": "4821148db2f4c6daa62ad8bdcae2918ecf27a731",
+      "diff_base": "cba86adc815a68a09f2765e70ed0cca305cc6ce2",
+      "diff_head": "53eeddf56e09fede281ac5f3cd6a6b5a83e1799a",
+      "diff_subject": "Add list_plugin_distributions() for direct importlib.metadata access",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "DistFacade",
+            "test_dist_facade_identity_equality_and_hash",
+            "test_dist_facade_project_name_and_delegation"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 2,
+            "measured": 2,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "testing/test_details.py",
+          "testing/test_pluginmanager.py"
+        ],
+        "engine_tests": [
+          "testing/benchmark.py",
+          "testing/test_details.py",
+          "testing/test_hookcaller.py",
+          "testing/test_invocations.py",
+          "testing/test_pluginmanager.py",
+          "testing/test_warnings.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 530,
+          "oracle_definitions": 270,
+          "verified": 530
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 530,
+            "measured": 530,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 270,
+            "measured": 270,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "src/pluggy/_warnings.py",
+            "symbol": "PluggyTeardownRaisedWarning",
+            "line": 11,
+            "gt_lines": [
+              10
+            ]
+          },
+          {
+            "path": "testing/test_invocations.py",
+            "symbol": "test_wrappers_yield_twice_fails",
+            "line": 339,
+            "gt_lines": [
+              332
+            ]
+          },
+          {
+            "path": "testing/test_invocations.py",
+            "symbol": "test_wrappers_yield_never_fails",
+            "line": 360,
+            "gt_lines": [
+              353
+            ]
+          },
+          {
+            "path": "testing/test_tracer.py",
+            "symbol": "rootlogger",
+            "line": 7,
+            "gt_lines": [
+              6
+            ]
+          },
+          {
+            "path": "downstream/run_downstream.py",
+            "symbol": "EnvironmentUv.editables_non_empty_strings",
+            "line": 47,
+            "gt_lines": [
+              45
+            ]
+          },
+          {
+            "path": "downstream/run_downstream.py",
+            "symbol": "RecipeFile.script_has_no_test_steps",
+            "line": 84,
+            "gt_lines": [
+              83
+            ]
+          },
+          {
+            "path": "src/pluggy/_compat.py",
+            "symbol": "DistFacade.project_name",
+            "line": 29,
+            "gt_lines": [
+              28
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "HookspecMarker",
+            "line": 79,
+            "gt_lines": [
+              78
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "HookimplMarker",
+            "line": 166,
+            "gt_lines": [
+              165
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "HookRelay",
+            "line": 387,
+            "gt_lines": [
+              386
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "_SubsetHookCaller._hookimpls",
+            "line": 647,
+            "gt_lines": [
+              646
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "_SubsetHookCaller.spec",
+            "line": 655,
+            "gt_lines": [
+              654
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "_SubsetHookCaller._call_history",
+            "line": 659,
+            "gt_lines": [
+              658
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "HookImpl",
+            "line": 667,
+            "gt_lines": [
+              666
+            ]
+          },
+          {
+            "path": "src/pluggy/_hooks.py",
+            "symbol": "HookSpec",
+            "line": 725,
+            "gt_lines": [
+              724
+            ]
+          },
+          {
+            "path": "src/pluggy/_result.py",
+            "symbol": "Result",
+            "line": 25,
+            "gt_lines": [
+              24
+            ]
+          },
+          {
+            "path": "src/pluggy/_result.py",
+            "symbol": "Result.excinfo",
+            "line": 43,
+            "gt_lines": [
+              42
+            ]
+          },
+          {
+            "path": "src/pluggy/_result.py",
+            "symbol": "Result.exception",
+            "line": 52,
+            "gt_lines": [
+              51
+            ]
+          },
+          {
+            "path": "src/pluggy/_result.py",
+            "symbol": "Result.from_call",
+            "line": 57,
+            "gt_lines": [
+              56
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "hook",
+            "line": 85,
+            "gt_lines": [
+              84
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "wrapper",
+            "line": 90,
+            "gt_lines": [
+              89
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "hooks",
+            "line": 95,
+            "gt_lines": [
+              94
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "wrappers",
+            "line": 100,
+            "gt_lines": [
+              99
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "test_call_hook",
+            "line": 134,
+            "gt_lines": [
+              118
+            ]
+          },
+          {
+            "path": "testing/benchmark.py",
+            "symbol": "test_varnames",
+            "line": 193,
+            "gt_lines": [
+              192
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.8,
+          "hit_at_5": 0.9333,
+          "mrr": 0.8611,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "src/pluggy/_hooks.py::__init__",
+          "testing/benchmark.py::hook"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 0.96,
+          "unresolved_calls": 683
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 40,
+            "measured": 25,
+            "excluded": 15,
+            "excluded_reasons": {
+              "sample_cap_25": 15
+            },
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": [
+          {
+            "target": "addmeth",
+            "missing": [
+              "testing/test_hookcaller.py::test_adding_nonwrappers",
+              "testing/test_hookcaller.py::test_adding_nonwrappers_tryfirst",
+              "testing/test_hookcaller.py::test_adding_nonwrappers_trylast",
+              "testing/test_hookcaller.py::test_adding_nonwrappers_trylast2",
+              "testing/test_hookcaller.py::test_adding_nonwrappers_trylast3",
+              "testing/test_hookcaller.py::test_adding_wrappers_complex",
+              "testing/test_hookcaller.py::test_adding_wrappers_ordering",
+              "testing/test_hookcaller.py::test_adding_wrappers_ordering_tryfirst",
+              "testing/test_hookcaller.py::test_call_extra_hook_order"
+            ]
+          }
+        ]
+      },
+      "duration_s": 3.4
+    },
+    {
+      "name": "pyflakes",
+      "license": "MIT",
+      "commit": "52cb7296b4bb52c0a0e8b51c7729a55fa0d0a808",
+      "diff_base": "e1da468046fc6d6415ecf521426b705294884d47",
+      "diff_head": "d539458de5d7d4ee2c154cd6077db56de7935c2c",
+      "diff_subject": "add new errors for lazy imports (#864)",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "ComprehensionScope",
+            "EagerUseOfLazyImport",
+            "LazyImportNotAtModuleScope",
+            "LazyImportStarNotPermitted",
+            "Test"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 3,
+            "measured": 3,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "attribute_only_reference_not_modelable": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "pyflakes/test/test_imports.py",
+          "pyflakes/test/test_lazy_imports.py",
+          "pyflakes/test/test_other.py"
+        ],
+        "engine_tests": [
+          "pyflakes/test/harness.py",
+          "pyflakes/test/test_api.py",
+          "pyflakes/test/test_builtin.py",
+          "pyflakes/test/test_code_segment.py",
+          "pyflakes/test/test_dict.py",
+          "pyflakes/test/test_doctests.py",
+          "pyflakes/test/test_imports.py",
+          "pyflakes/test/test_is_literal.py",
+          "pyflakes/test/test_lazy_imports.py",
+          "pyflakes/test/test_match.py",
+          "pyflakes/test/test_other.py",
+          "pyflakes/test/test_type_annotations.py",
+          "pyflakes/test/test_undefined_names.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 863,
+          "oracle_definitions": 850,
+          "verified": 863
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 863,
+            "measured": 863,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 850,
+            "measured": 850,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "pyflakes/test/test_api.py",
+            "symbol": "CheckTests.makeTempFile",
+            "line": 315,
+            "gt_lines": [
+              314
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_api.py",
+            "symbol": "CheckTests.test_permissionDenied",
+            "line": 500,
+            "gt_lines": [
+              499
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_doctests.py",
+            "symbol": "Test.test_importBeforeAndInDoctest",
+            "line": 247,
+            "gt_lines": [
+              246
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_undefined_names.py",
+            "symbol": "Test.test_undefinedExceptionNameObscuringLocalVariable",
+            "line": 47,
+            "gt_lines": [
+              46
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_undefined_names.py",
+            "symbol": "Test.test_undefinedExceptionNameObscuringGlobalVariable",
+            "line": 121,
+            "gt_lines": [
+              120
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_undefined_names.py",
+            "symbol": "Test.test_undefinedExceptionNameObscuringGlobalVariable2",
+            "line": 139,
+            "gt_lines": [
+              138
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_undefined_names.py",
+            "symbol": "Test.test_unused_global",
+            "line": 333,
+            "gt_lines": [
+              332
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Importation._lazy_s",
+            "line": 300,
+            "gt_lines": [
+              299
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Importation._alias_s",
+            "line": 304,
+            "gt_lines": [
+              303
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Importation.source_statement",
+            "line": 308,
+            "gt_lines": [
+              307,
+              346,
+              367,
+              386
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "SubmoduleImportation.source_statement",
+            "line": 347,
+            "gt_lines": [
+              307,
+              346,
+              367,
+              386
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "ImportationFrom.source_statement",
+            "line": 368,
+            "gt_lines": [
+              307,
+              346,
+              367,
+              386
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "StarImportation.source_statement",
+            "line": 387,
+            "gt_lines": [
+              307,
+              346,
+              367,
+              386
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.futuresAllowed",
+            "line": 790,
+            "gt_lines": [
+              781,
+              789
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.annotationsFutureEnabled",
+            "line": 803,
+            "gt_lines": [
+              795,
+              802
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.scope",
+            "line": 809,
+            "gt_lines": [
+              808
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.in_scope",
+            "line": 813,
+            "gt_lines": [
+              812
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker._enter_annotation",
+            "line": 1209,
+            "gt_lines": [
+              1208
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker._in_postponed_annotation",
+            "line": 1217,
+            "gt_lines": [
+              1216
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.handleStringAnnotation",
+            "line": 1315,
+            "gt_lines": [
+              1314
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker.handleAnnotation",
+            "line": 1343,
+            "gt_lines": [
+              1342
+            ]
+          },
+          {
+            "path": "pyflakes/checker.py",
+            "symbol": "Checker._type_param_scope",
+            "line": 2289,
+            "gt_lines": [
+              2288
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_imports.py",
+            "symbol": "Test.test_importingForImportError",
+            "line": 947,
+            "gt_lines": [
+              946
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_imports.py",
+            "symbol": "Test.test_futureImportUndefined",
+            "line": 1008,
+            "gt_lines": [
+              1007
+            ]
+          },
+          {
+            "path": "pyflakes/test/test_imports.py",
+            "symbol": "Test.test_futureImportStar",
+            "line": 1015,
+            "gt_lines": [
+              1014
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.8667,
+          "hit_at_5": 0.9333,
+          "mrr": 0.89,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "pyflakes/test/test_api.py::__init__",
+          "pyflakes/test/test_dict.py::Test"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 1.0,
+          "unresolved_calls": 1460
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 48,
+            "measured": 25,
+            "excluded": 23,
+            "excluded_reasons": {
+              "sample_cap_25": 23
+            },
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 5.3
+    },
+    {
+      "name": "python-dateutil",
+      "license": "Apache-2.0",
+      "commit": "48bd1af97e71baf8e96fce5b663d589caac8f147",
+      "diff_base": "6b035517571e63b6a63a493740c5506ec1e5da44",
+      "diff_head": "e78c3c76d2f0aaf6180c786605857a6ebc0cd3f3",
+      "diff_subject": "Lazy-load submodules in Python 3.7+",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "__dir__",
+            "__getattr__",
+            "clean_import",
+            "test_lazy_import"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "dateutil/test/test_imports.py"
+        ],
+        "engine_tests": [
+          "dateutil/test/conftest.py",
+          "dateutil/test/property/test_isoparse_prop.py",
+          "dateutil/test/property/test_tz_prop.py",
+          "dateutil/test/test_import_star.py",
+          "dateutil/test/test_imports.py",
+          "dateutil/test/test_internals.py",
+          "dateutil/test/test_isoparser.py",
+          "dateutil/test/test_parser.py",
+          "dateutil/test/test_rrule.py",
+          "dateutil/test/test_tz.py",
+          "dateutil/test/test_utils.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 1534,
+          "oracle_definitions": 1489,
+          "verified": 1534
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 1534,
+            "measured": 1534,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 1489,
+            "measured": 1489,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_timelex.split",
+            "line": 200,
+            "gt_lines": [
+              199
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_timelex.isword",
+            "line": 204,
+            "gt_lines": [
+              203
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_timelex.isnum",
+            "line": 209,
+            "gt_lines": [
+              208
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_timelex.isspace",
+            "line": 214,
+            "gt_lines": [
+              213
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_ymd.has_year",
+            "line": 403,
+            "gt_lines": [
+              402
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_ymd.has_month",
+            "line": 407,
+            "gt_lines": [
+              406
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/_parser.py",
+            "symbol": "_ymd.has_day",
+            "line": 411,
+            "gt_lines": [
+              410
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/isoparser.py",
+            "symbol": "isoparser.isoparse",
+            "line": 60,
+            "gt_lines": [
+              59
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/isoparser.py",
+            "symbol": "isoparser.parse_isodate",
+            "line": 149,
+            "gt_lines": [
+              148
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/isoparser.py",
+            "symbol": "isoparser.parse_isotime",
+            "line": 166,
+            "gt_lines": [
+              165
+            ]
+          },
+          {
+            "path": "src/dateutil/parser/isoparser.py",
+            "symbol": "isoparser.parse_tzstr",
+            "line": 182,
+            "gt_lines": [
+              181
+            ]
+          },
+          {
+            "path": "src/dateutil/relativedelta.py",
+            "symbol": "relativedelta.weeks",
+            "line": 269,
+            "gt_lines": [
+              264,
+              268
+            ]
+          },
+          {
+            "path": "src/dateutil/rrule.py",
+            "symbol": "rruleset.rrule",
+            "line": 1357,
+            "gt_lines": [
+              305,
+              1356
+            ]
+          },
+          {
+            "path": "src/dateutil/rrule.py",
+            "symbol": "rruleset.rdate",
+            "line": 1363,
+            "gt_lines": [
+              1362
+            ]
+          },
+          {
+            "path": "src/dateutil/rrule.py",
+            "symbol": "rruleset.exrule",
+            "line": 1369,
+            "gt_lines": [
+              1368
+            ]
+          },
+          {
+            "path": "src/dateutil/rrule.py",
+            "symbol": "rruleset.exdate",
+            "line": 1377,
+            "gt_lines": [
+              1376
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/_common.py",
+            "symbol": "_validate_fromutc_inputs.fromutc",
+            "line": 138,
+            "gt_lines": [
+              244,
+              319
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/_common.py",
+            "symbol": "_tzinfo.fromutc",
+            "line": 245,
+            "gt_lines": [
+              244,
+              319
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/_common.py",
+            "symbol": "tzrangebase.tzname",
+            "line": 313,
+            "gt_lines": [
+              312
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/_common.py",
+            "symbol": "tzrangebase._dst_base_offset",
+            "line": 408,
+            "gt_lines": [
+              407
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/tz.py",
+            "symbol": "tzutc",
+            "line": 42,
+            "gt_lines": [
+              41
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/tz.py",
+            "symbol": "tzutc.tzname",
+            "line": 81,
+            "gt_lines": [
+              80,
+              160,
+              236,
+              846,
+              1243
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/tz.py",
+            "symbol": "tzutc.fromutc",
+            "line": 101,
+            "gt_lines": [
+              100,
+              164,
+              743
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/tz.py",
+            "symbol": "tzoffset",
+            "line": 133,
+            "gt_lines": [
+              132
+            ]
+          },
+          {
+            "path": "src/dateutil/tz/tz.py",
+            "symbol": "tzoffset.tzname",
+            "line": 161,
+            "gt_lines": [
+              80,
+              160,
+              236,
+              846,
+              1243
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.8667,
+          "hit_at_5": 0.9667,
+          "mrr": 0.9056,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "src/dateutil/zoneinfo/__init__.py::gettz"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 25,
+          "impact_recall": 1.0,
+          "unresolved_calls": 2981
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 34,
+            "measured": 25,
+            "excluded": 9,
+            "excluded_reasons": {
+              "sample_cap_25": 9
+            },
+            "out_of_scope": {
+              "ambiguous_callee_name": 4
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 11.5
+    },
+    {
+      "name": "soupsieve",
+      "license": "MIT",
+      "commit": "4caaf89344dc9a9baaedb7f0ab04d45526e61293",
+      "diff_base": "f36039304af521a3f0bf336b8284c4e340b743f9",
+      "diff_head": "c8165cd5e85fff67ddd5cd7f0480aa05de33367e",
+      "diff_subject": "Remove deprecations (#177)",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "CommentsMatch",
+            "TestDeprecated",
+            "comments",
+            "icomments"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/test_api.py"
+        ],
+        "engine_tests": [
+          "tests/test_api.py",
+          "tests/test_bs4_cases.py",
+          "tests/test_extra/test_custom.py",
+          "tests/test_level3/test_nth_child.py",
+          "tests/test_level3/test_root.py",
+          "tests/test_level4/test_dir.py",
+          "tests/test_level4/test_scope.py",
+          "tests/util.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 722,
+          "oracle_definitions": 716,
+          "verified": 722
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 722,
+            "measured": 722,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 716,
+            "measured": 716,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "tests/test_level4/test_defined.py",
+            "symbol": "TestDefined.test_defined_xhtml",
+            "line": 33,
+            "gt_lines": [
+              32
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.assert_valid_input",
+            "line": 83,
+            "gt_lines": [
+              82
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_doc",
+            "line": 91,
+            "gt_lines": [
+              90
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_tag",
+            "line": 96,
+            "gt_lines": [
+              95
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_declaration",
+            "line": 101,
+            "gt_lines": [
+              100
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_cdata",
+            "line": 106,
+            "gt_lines": [
+              105
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_processing_instruction",
+            "line": 111,
+            "gt_lines": [
+              110
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_navigable_string",
+            "line": 116,
+            "gt_lines": [
+              115
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_special_string",
+            "line": 121,
+            "gt_lines": [
+              120
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_content_string",
+            "line": 126,
+            "gt_lines": [
+              125
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.create_fake_parent",
+            "line": 132,
+            "gt_lines": [
+              131
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.is_xml_tree",
+            "line": 138,
+            "gt_lines": [
+              137
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_tag_name",
+            "line": 266,
+            "gt_lines": [
+              265
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_prefix_name",
+            "line": 272,
+            "gt_lines": [
+              271
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_uri",
+            "line": 278,
+            "gt_lines": [
+              277
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_next_tag",
+            "line": 284,
+            "gt_lines": [
+              283
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_next",
+            "line": 290,
+            "gt_lines": [
+              289
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_previous_tag",
+            "line": 303,
+            "gt_lines": [
+              302
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_previous",
+            "line": 309,
+            "gt_lines": [
+              308
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.has_html_ns",
+            "line": 322,
+            "gt_lines": [
+              321
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.split_namespace",
+            "line": 334,
+            "gt_lines": [
+              333
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.normalize_value",
+            "line": 343,
+            "gt_lines": [
+              342
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_attribute_by_name",
+            "line": 376,
+            "gt_lines": [
+              375
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.iter_attributes",
+            "line": 398,
+            "gt_lines": [
+              397
+            ]
+          },
+          {
+            "path": "soupsieve/css_match.py",
+            "symbol": "_DocumentNav.get_classes",
+            "line": 406,
+            "gt_lines": [
+              405
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.8667,
+          "hit_at_5": 1.0,
+          "mrr": 0.9178,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 14,
+          "impact_recall": 1.0,
+          "unresolved_calls": 1428
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 14,
+            "measured": 14,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {
+              "ambiguous_callee_name": 1
+            },
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": []
+      },
+      "duration_s": 4.5
+    },
+    {
+      "name": "sqlparse",
+      "license": "BSD-3-Clause",
+      "commit": "60cdc649726bf1bc4f1b336050560b336da715ec",
+      "diff_base": "a51df6d9e2d31b44be9adb6bc8732517db6bf96b",
+      "diff_head": "519e41698a172add8aa7b54ab4e94daad0af213e",
+      "diff_subject": "Pair comment/dollar-quote delimiters at the lexer position",
+      "test_selection": {
+        "metrics": {
+          "test_selection_recall": 1.0,
+          "changed_symbols": [
+            "DelimitedSpans",
+            "resolve_paired_delimiters",
+            "test_delimiters_in_strings_and_comments"
+          ]
+        },
+        "accounting": {
+          "test_selection_recall": {
+            "metric": "test_selection_recall",
+            "denominator": 1,
+            "measured": 1,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "gt_tests": [
+          "tests/test_tokenize.py"
+        ],
+        "engine_tests": [
+          "tests/test_keywords.py",
+          "tests/test_parse.py",
+          "tests/test_tokenize.py"
+        ],
+        "missing_tests": []
+      },
+      "presence": {
+        "metrics": {
+          "presence_precision": 1.0,
+          "false_absence": 0,
+          "indexed_symbols": 606,
+          "oracle_definitions": 561,
+          "verified": 606
+        },
+        "accounting": {
+          "presence_precision": {
+            "metric": "presence_precision",
+            "denominator": 606,
+            "measured": 606,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          },
+          "false_absence": {
+            "metric": "false_absence",
+            "denominator": 561,
+            "measured": 561,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "parse_failures": [],
+        "near_misses": [],
+        "line_drift_sample": [
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_identifier",
+            "line": 248,
+            "gt_lines": [
+              247
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_over",
+            "line": 258,
+            "gt_lines": [
+              257
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_comments",
+            "line": 332,
+            "gt_lines": [
+              331
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_where",
+            "line": 350,
+            "gt_lines": [
+              349
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_aliased",
+            "line": 367,
+            "gt_lines": [
+              366
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_functions",
+            "line": 380,
+            "gt_lines": [
+              379
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "group_order",
+            "line": 408,
+            "gt_lines": [
+              407
+            ]
+          },
+          {
+            "path": "sqlparse/engine/grouping.py",
+            "symbol": "align_comments",
+            "line": 420,
+            "gt_lines": [
+              419
+            ]
+          },
+          {
+            "path": "sqlparse/filters/others.py",
+            "symbol": "StripCommentsFilter._process",
+            "line": 18,
+            "gt_lines": [
+              17,
+              134
+            ]
+          },
+          {
+            "path": "sqlparse/filters/others.py",
+            "symbol": "StripWhitespaceFilter._stripws_default",
+            "line": 91,
+            "gt_lines": [
+              90
+            ]
+          },
+          {
+            "path": "sqlparse/filters/others.py",
+            "symbol": "SpacesAroundOperatorsFilter._process",
+            "line": 135,
+            "gt_lines": [
+              17,
+              134
+            ]
+          },
+          {
+            "path": "sqlparse/filters/others.py",
+            "symbol": "SerializerUnicode.process",
+            "line": 172,
+            "gt_lines": [
+              78,
+              125,
+              152,
+              160,
+              171
+            ]
+          },
+          {
+            "path": "sqlparse/filters/reindent.py",
+            "symbol": "ReindentFilter.leading_ws",
+            "line": 31,
+            "gt_lines": [
+              30
+            ]
+          },
+          {
+            "path": "sqlparse/sql.py",
+            "symbol": "TokenList._groupable_tokens",
+            "line": 232,
+            "gt_lines": [
+              231,
+              507,
+              517
+            ]
+          },
+          {
+            "path": "sqlparse/sql.py",
+            "symbol": "Parenthesis._groupable_tokens",
+            "line": 508,
+            "gt_lines": [
+              231,
+              507,
+              517
+            ]
+          },
+          {
+            "path": "sqlparse/sql.py",
+            "symbol": "SquareBrackets._groupable_tokens",
+            "line": 518,
+            "gt_lines": [
+              231,
+              507,
+              517
+            ]
+          },
+          {
+            "path": "sqlparse/sql.py",
+            "symbol": "Comparison.left",
+            "line": 542,
+            "gt_lines": [
+              541
+            ]
+          },
+          {
+            "path": "sqlparse/sql.py",
+            "symbol": "Comparison.right",
+            "line": 546,
+            "gt_lines": [
+              545
+            ]
+          },
+          {
+            "path": "tests/test_cli.py",
+            "symbol": "test_encoding_stdout",
+            "line": 80,
+            "gt_lines": [
+              76
+            ]
+          },
+          {
+            "path": "tests/test_cli.py",
+            "symbol": "test_encoding_output_file",
+            "line": 92,
+            "gt_lines": [
+              88
+            ]
+          },
+          {
+            "path": "tests/test_cli.py",
+            "symbol": "test_encoding_stdin",
+            "line": 105,
+            "gt_lines": [
+              101
+            ]
+          },
+          {
+            "path": "tests/test_format.py",
+            "symbol": "TestFormatReindentAligned.formatter",
+            "line": 180,
+            "gt_lines": [
+              179,
+              350
+            ]
+          },
+          {
+            "path": "tests/test_format.py",
+            "symbol": "TestSpacesAroundOperators.formatter",
+            "line": 351,
+            "gt_lines": [
+              179,
+              350
+            ]
+          },
+          {
+            "path": "tests/test_format.py",
+            "symbol": "TestOutputFormat.test_python_multiple_statements_with_formatting",
+            "line": 672,
+            "gt_lines": [
+              671
+            ]
+          },
+          {
+            "path": "tests/test_format.py",
+            "symbol": "test_truncate_strings_invalid_option2",
+            "line": 742,
+            "gt_lines": [
+              741
+            ]
+          }
+        ],
+        "false_absence_sample": []
+      },
+      "retrieval": {
+        "metrics": {
+          "queries": 30,
+          "hit_at_1": 0.9,
+          "hit_at_5": 0.9,
+          "mrr": 0.9,
+          "abstention_probes": 20,
+          "abstention_accuracy": 1.0
+        },
+        "accounting": {
+          "abstention_accuracy": {
+            "metric": "abstention_accuracy",
+            "denominator": 20,
+            "measured": 20,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "unfound_queries": [
+          "sqlparse/engine/filter_stack.py::__init__",
+          "sqlparse/filters/reindent.py::process",
+          "sqlparse/sql.py::Token"
+        ],
+        "false_presence_queries": []
+      },
+      "impact": {
+        "metrics": {
+          "targets": 22,
+          "impact_recall": 0.9894,
+          "unresolved_calls": 1370
+        },
+        "accounting": {
+          "impact_recall": {
+            "metric": "impact_recall",
+            "denominator": 22,
+            "measured": 22,
+            "excluded": 0,
+            "excluded_reasons": {},
+            "out_of_scope": {},
+            "score_basis": "measured_denominator_only"
+          }
+        },
+        "misses": [
+          {
+            "target": "_group",
+            "missing": [
+              "sqlparse/engine/grouping.py::_group"
+            ]
+          },
+          {
+            "target": "_group_matching",
+            "missing": [
+              "sqlparse/engine/grouping.py::_group_matching"
+            ]
+          }
+        ]
+      },
+      "duration_s": 3.8
+    }
+  ],
+  "aggregate": {
+    "metrics": {
+      "repos": 10,
+      "presence_precision_macro": 1.0,
+      "presence_precision_min": 1.0,
+      "false_absence_total": 0,
+      "impact_recall_macro": 0.9909,
+      "test_selection_recall_macro": 1.0,
+      "test_selection_measured_repos": 10,
+      "hit_at_1_macro": 0.8233,
+      "hit_at_5_macro": 0.9467,
+      "mrr_macro": 0.873,
+      "abstention_accuracy_macro": 1.0,
+      "presence_precision_macro_basis": "macro over 10/10 repos, 9306/9306 measured tasks (measured denominator only)",
+      "impact_recall_macro_basis": "macro over 10/10 repos, 217/601 measured tasks (measured denominator only)",
+      "test_selection_recall_macro_basis": "macro over 10/10 repos, 19/19 measured tasks (measured denominator only)",
+      "abstention_accuracy_macro_basis": "macro over 10/10 repos, 200/200 measured tasks (measured denominator only)"
+    },
+    "checks": {
+      "presence_precision": true,
+      "false_absence": true,
+      "impact_recall": true,
+      "test_selection_recall": true
+    },
+    "gates": {
+      "presence_precision": 0.995,
+      "false_absence": 0,
+      "impact_recall": 0.95,
+      "test_selection_recall": 0.98,
+      "passed": true
+    },
+    "denominators": {
+      "presence_precision": {
+        "denominator_total": 9306,
+        "measured_total": 9306,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {},
+        "repos_total": 10,
+        "repos_measured": 10,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "false_absence": {
+        "denominator_total": 8246,
+        "measured_total": 8246,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {},
+        "repos_total": 10,
+        "repos_measured": 10,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "impact_recall": {
+        "denominator_total": 601,
+        "measured_total": 217,
+        "excluded_total": 384,
+        "excluded_reasons": {
+          "sample_cap_25": 384
+        },
+        "out_of_scope": {
+          "ambiguous_callee_name": 26
+        },
+        "repos_total": 10,
+        "repos_measured": 10,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "test_selection_recall": {
+        "denominator_total": 19,
+        "measured_total": 19,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {
+          "attribute_only_reference_not_modelable": 2
+        },
+        "repos_total": 10,
+        "repos_measured": 10,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      },
+      "abstention_accuracy": {
+        "denominator_total": 200,
+        "measured_total": 200,
+        "excluded_total": 0,
+        "excluded_reasons": {},
+        "out_of_scope": {},
+        "repos_total": 10,
+        "repos_measured": 10,
+        "unmeasurable_repos": {},
+        "score_basis": "measured_denominator_only"
+      }
+    }
+  },
+  "markdown": "# SG-204 holdout benchmark report\n\n- repos measured: **10** (pinned, licenses declared)\n- presence precision (macro / min): **1.0** / 1.0\n- false absence total: **0**\n- impact recall (macro, supported static scope): **0.9909**\n- test-selection recall (macro, measured repos only: 10/10): **1.0**\n- retrieval Hit@1 / Hit@5 / MRR (reported, not gated): 0.8233 / 0.9467 / 0.873\n- abstention accuracy: 1.0\n\nAll macro scores are computed over the MEASURED denominator only; unmeasurable and excluded tasks are published below, never folded into a score.\n\n| repo | presence | false-abs | impact | test-sel |\n|---|---|---|---|---|\n| attrs | 1.0 | 0 | 0.96 | 1.0 |\n| filelock | 1.0 | 0 | 1.0 | 1.0 |\n| iniconfig | 1.0 | 0 | 1.0 | 1.0 |\n| more-itertools | 1.0 | 0 | 1.0 | 1.0 |\n| platformdirs | 1.0 | 0 | 1.0 | 1.0 |\n| pluggy | 1.0 | 0 | 0.96 | 1.0 |\n| pyflakes | 1.0 | 0 | 1.0 | 1.0 |\n| python-dateutil | 1.0 | 0 | 1.0 | 1.0 |\n| soupsieve | 1.0 | 0 | 1.0 | 1.0 |\n| sqlparse | 1.0 | 0 | 0.9894 | 1.0 |\n\nDenominators (universe / measured / excluded \u2014 scores cover the measured slice only):\n\n| metric | universe | measured | excluded | out-of-scope | unmeasurable repos |\n|---|---|---|---|---|---|\n| presence_precision | 9306 | 9306 | \u2013 | \u2013 | \u2013 |\n| false_absence | 8246 | 8246 | \u2013 | \u2013 | \u2013 |\n| impact_recall | 601 | 217 | sample_cap_25: 384 | ambiguous_callee_name: 26 | \u2013 |\n| test_selection_recall | 19 | 19 | \u2013 | attribute_only_reference_not_modelable: 2 | \u2013 |\n| abstention_accuracy | 200 | 200 | \u2013 | \u2013 | \u2013 |\n\ngates: **ALL PASS**\n"
+}

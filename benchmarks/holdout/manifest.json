@@ -2,6 +2,11 @@
   "benchmark": "real-repo-holdout",
   "description": "SG-204 holdout corpus: public repos pinned at full SHAs; diff tasks are the most recent non-merge commit touching 1-4 source .py files plus tests (selection documented in scripts/bench_holdout.py --regenerate-notes).",
   "notes": [
+    "SPLIT ROLE: development/regression — this corpus drives day-to-day",
+    "development, regression gates, and extractor/ranking tuning; its",
+    "scores MUST NOT be reported as untouched-holdout results. The",
+    "untouched holdout split (repos disjoint from this one, frozen before",
+    "evaluation, tuning-excluded) lives in benchmarks/holdout_unseen.",
     "graph head (`commit`) pins the repo state for presence/retrieval/impact;",
     "diff_task.base..head pins an independent real PR for test-selection;",
     "diff commits were selected so top_level_delta is non-empty and at least",
@@ -16,6 +21,9 @@
       "test_selection",
       "abstention"
     ]
+  },
+  "policy": {
+    "tuning_eligible": true
   },
   "repos": [
     {
@@ -344,5 +352,6 @@
       "url": "https://github.com/executablebooks/markdown-it-py"
     }
   ],
+  "role": "development-regression",
   "schema_version": 1
 }

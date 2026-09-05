@@ -1,0 +1,11 @@
+{
+  "freeze_policy": "manifest frozen BEFORE first evaluation; tuning_exclusion holds: no extractor, ranking, gate, or threshold change may be authored from this split's scores; the dev/regression split (benchmarks/holdout) is the only tuning-eligible corpus",
+  "frozen_at": "2026-09-05T11:18:35Z",
+  "manifest_path": "benchmarks/holdout_unseen/manifest.json",
+  "manifest_sha256": "db0e8324de2a6355b8aba52b0937996795fac098237740369ded0d0870a73919",
+  "selection": {
+    "procedure": "scripts/bench_holdout_select.py (deterministic, oracle-only; no production engine consulted)",
+    "roster_seeds": "205001-205010 (disjoint from dev corpus seeds)",
+    "rule": "most recent non-merge commit touching 1-4 source .py files plus tests, non-empty top_level_delta, >=1 GT test"
+  }
+}

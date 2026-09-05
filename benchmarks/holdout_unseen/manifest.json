@@ -1,0 +1,305 @@
+{
+  "benchmark": "real-repo-holdout-unseen",
+  "description": "SG-204 UNSEEN holdout split: 10 public repos disjoint from the development/regression corpus (benchmarks/holdout), pinned at full SHAs; diff tasks selected mechanically from git history + stdlib-ast oracle only (scripts/bench_holdout_select.py), then frozen in FREEZE.json BEFORE any evaluation. Never used for extractor, ranking, or gate tuning.",
+  "notes": [
+    "split role: holdout \u2014 evaluated once after freeze; results are",
+    "published as-is and must NOT feed any production tuning loop;",
+    "the development/regression corpus lives in benchmarks/holdout",
+    "and is the only split allowed to drive code changes;",
+    "selection rule (identical to the dev corpus rule): most recent",
+    "non-merge commit touching 1-4 source .py files plus tests, with",
+    "non-empty top_level_delta and >=1 ground-truth test reference."
+  ],
+  "oracle": {
+    "independence": "evaluator uses stdlib ast only; it must not import sot_graph extraction internals (enforced by test)",
+    "suites": [
+      "presence",
+      "retrieval",
+      "impact",
+      "test_selection",
+      "abstention"
+    ]
+  },
+  "policy": {
+    "evaluation": "one frozen baseline per manifest generation; any re-run publishes deltas, never silently replaces the baseline",
+    "tuning_exclusion": true
+  },
+  "repos": [
+    {
+      "commit": "8f767776326faaed11e6c2974798787f6e19b343",
+      "diff_task": {
+        "base": "f616f732c6c5f87a8f7a762176422baed250a6be",
+        "changed_files": [
+          "changelog.d/1571.change.md",
+          "docs/api.rst",
+          "src/attr/validators.py",
+          "src/attr/validators.pyi",
+          "tests/test_validators.py"
+        ],
+        "date": "2026-08-01",
+        "head": "5aa76a4450c311d87eda43946ec0ecd743572649",
+        "subject": "Add `ne` validator (#1571)"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "attrs",
+      "seed": 205007,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/python-attrs/attrs"
+    },
+    {
+      "commit": "82f66d7b0aaa83755f8d71d0b0da88408b58ec4a",
+      "diff_task": {
+        "base": "13b82a64adf51e768d65180abe05c4934cdca934",
+        "changed_files": [
+          "tasks/capabilities.py",
+          "tests/conftest.py",
+          "tests/soft_rw/test_soft_rw_sync.py",
+          "tests/test_async_filelock.py",
+          "tests/test_soft_stale.py",
+          "tests/test_strict_soft_races.py"
+        ],
+        "date": "2026-08-15",
+        "head": "bb16d396622f9edf638455b24497a1ca6981c92e",
+        "subject": "\ud83e\uddea test: deflake six scheduled-run failures (#704)"
+      },
+      "language": "python",
+      "license": "Unlicense",
+      "name": "filelock",
+      "seed": 205008,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/tox-dev/py-filelock"
+    },
+    {
+      "commit": "00e7d87c7353b1ffecc4cd55f19acfffedd5233e",
+      "diff_task": {
+        "base": "57b7ed9c7a5950f9c57b2cfbe641ff4cc04baf1c",
+        "changed_files": [
+          "CHANGELOG",
+          "src/iniconfig/__init__.py",
+          "src/iniconfig/_parse.py",
+          "testing/test_iniconfig.py"
+        ],
+        "date": "2025-10-18",
+        "head": "e2d89f5283cbeb4b4ca55fe88b1c353c343b4972",
+        "subject": "Add IniConfig.parse() classmethod to fix inline comment handling"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "iniconfig",
+      "seed": 205009,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/pytest-dev/iniconfig"
+    },
+    {
+      "commit": "3e87c08ac878f4bb79349d38ac69ba75c45dc5bf",
+      "diff_task": {
+        "base": "0c48044a70bae53fed919526bb1229d459a3e496",
+        "changed_files": [
+          "README.rst",
+          "docs/api.rst",
+          "more_itertools/more.py",
+          "more_itertools/more.pyi",
+          "tests/test_more.py"
+        ],
+        "date": "2026-06-09",
+        "head": "842a2b17a8e3f78462fe20cd4a88abd32085c111",
+        "subject": "Add subfactorial()"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "more-itertools",
+      "seed": 205004,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/more-itertools/more-itertools"
+    },
+    {
+      "commit": "e0847a69cafd0f2534270980a269c4e07f449e1e",
+      "diff_task": {
+        "base": "f18ebafb3f8858c51bf27877c279f60e2abfe32e",
+        "changed_files": [
+          "docs/api.rst",
+          "docs/changelog/524.bugfix.rst",
+          "src/platformdirs/api.py",
+          "src/platformdirs/macos.py",
+          "src/platformdirs/unix.py",
+          "tests/test_android.py",
+          "tests/test_macos.py",
+          "tests/test_unix.py",
+          "tests/test_windows.py"
+        ],
+        "date": "2026-08-24",
+        "head": "c653668d63658a1f5c468a2f645deb21bedf5ecd",
+        "subject": "fix: stop iter_*_dirs yielding the same directory twice (#524)"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "platformdirs",
+      "seed": 205010,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/platformdirs/platformdirs"
+    },
+    {
+      "commit": "4821148db2f4c6daa62ad8bdcae2918ecf27a731",
+      "diff_task": {
+        "base": "cba86adc815a68a09f2765e70ed0cca305cc6ce2",
+        "changed_files": [
+          "docs/conf.py",
+          "src/pluggy/_compat.py",
+          "src/pluggy/_manager.py",
+          "testing/test_details.py",
+          "testing/test_pluginmanager.py"
+        ],
+        "date": "2026-07-21",
+        "head": "53eeddf56e09fede281ac5f3cd6a6b5a83e1799a",
+        "subject": "Add list_plugin_distributions() for direct importlib.metadata access"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "pluggy",
+      "seed": 205002,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/pytest-dev/pluggy"
+    },
+    {
+      "commit": "52cb7296b4bb52c0a0e8b51c7729a55fa0d0a808",
+      "diff_task": {
+        "base": "e1da468046fc6d6415ecf521426b705294884d47",
+        "changed_files": [
+          "pyflakes/checker.py",
+          "pyflakes/messages.py",
+          "pyflakes/test/test_imports.py",
+          "pyflakes/test/test_lazy_imports.py",
+          "pyflakes/test/test_other.py"
+        ],
+        "date": "2026-09-01",
+        "head": "d539458de5d7d4ee2c154cd6077db56de7935c2c",
+        "subject": "add new errors for lazy imports (#864)"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "pyflakes",
+      "seed": 205001,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/PyCQA/pyflakes"
+    },
+    {
+      "commit": "48bd1af97e71baf8e96fce5b663d589caac8f147",
+      "diff_task": {
+        "base": "6b035517571e63b6a63a493740c5506ec1e5da44",
+        "changed_files": [
+          "changelog.d/1007.feature.rst",
+          "dateutil/__init__.py",
+          "dateutil/test/test_imports.py"
+        ],
+        "date": "2021-07-16",
+        "head": "e78c3c76d2f0aaf6180c786605857a6ebc0cd3f3",
+        "subject": "Lazy-load submodules in Python 3.7+"
+      },
+      "language": "python",
+      "license": "Apache-2.0",
+      "name": "python-dateutil",
+      "seed": 205006,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/dateutil/dateutil"
+    },
+    {
+      "commit": "4caaf89344dc9a9baaedb7f0ab04d45526e61293",
+      "diff_task": {
+        "base": "f36039304af521a3f0bf336b8284c4e340b743f9",
+        "changed_files": [
+          ".travis.yml",
+          "appveyor.yml",
+          "docs/src/markdown/about/changelog.md",
+          "docs/src/markdown/api.md",
+          "soupsieve/__init__.py",
+          "soupsieve/css_match.py",
+          "tests/test_api.py"
+        ],
+        "date": "2020-01-27",
+        "head": "c8165cd5e85fff67ddd5cd7f0480aa05de33367e",
+        "subject": "Remove deprecations (#177)"
+      },
+      "language": "python",
+      "license": "MIT",
+      "name": "soupsieve",
+      "seed": 205003,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/facelessuser/soupsieve"
+    },
+    {
+      "commit": "60cdc649726bf1bc4f1b336050560b336da715ec",
+      "diff_task": {
+        "base": "a51df6d9e2d31b44be9adb6bc8732517db6bf96b",
+        "changed_files": [
+          "sqlparse/keywords.py",
+          "sqlparse/lexer.py",
+          "sqlparse/utils.py",
+          "tests/test_tokenize.py"
+        ],
+        "date": "2026-08-13",
+        "head": "519e41698a172add8aa7b54ab4e94daad0af213e",
+        "subject": "Pair comment/dollar-quote delimiters at the lexer position"
+      },
+      "language": "python",
+      "license": "BSD-3-Clause",
+      "name": "sqlparse",
+      "seed": 205005,
+      "tasks": [
+        "presence",
+        "retrieval",
+        "impact",
+        "test_selection"
+      ],
+      "url": "https://github.com/andialbrecht/sqlparse"
+    }
+  ],
+  "role": "holdout-untouched",
+  "schema_version": 1,
+  "split": "holdout"
+}

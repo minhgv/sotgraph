@@ -159,6 +159,57 @@ def git(repo_dir: Path, *args: str, check: bool = True) -> str:
     return result.stdout.strip()
 
 
+def require_split_governance(manifest: Dict[str, Any], manifest_path: Path) -> None:
+    """Untouched-holdout governance gate (SG-204 follow-up) — runs
+    BEFORE ``--selfcheck`` and before any evaluation.
+
+    A manifest that DECLARES itself a holdout split (``split == "holdout"``,
+    a ``role`` starting with ``"holdout"``, or ``policy.tuning_exclusion``)
+    must pass provenance + role + split-disjointness + FREEZE validation,
+    or the runner refuses to proceed (exit 1; nothing evaluated, cloned,
+    or written). Every manifest — dev included — must pass provenance
+    validation.
+
+    Honest scope: the freeze check verifies the BINDING (sha-256 of the
+    exact manifest bytes recorded in FREEZE.json). It detects any
+    post-freeze byte change; it cannot cryptographically prove the
+    historical ORDER freeze-before-evaluation — that chronology is
+    recorded (FREEZE.json timestamp, report digest, BASELINE.md),
+    not proven.
+    """
+    from sot_graph.holdout import splits
+
+    policy = manifest.get("policy") or {}
+    declared_holdout = (
+        manifest.get("split") == "holdout"
+        or str(manifest.get("role") or "").startswith("holdout")
+        or policy.get("tuning_exclusion") is True
+    )
+    errors: List[str] = [
+        f"provenance/{e}" for e in splits.validate_provenance(manifest)
+    ]
+    if declared_holdout:
+        if manifest_path.resolve() != splits.DEV_MANIFEST.resolve():
+            dev = splits.load_json(splits.DEV_MANIFEST)
+            errors += [
+                f"roles/{e}" for e in splits.validate_roles(dev, manifest)
+            ]
+            for kind, shared in splits.split_overlap(dev, manifest).items():
+                errors.append(f"overlap on {kind}: {sorted(shared)}")
+        errors += splits.validate_freeze(
+            manifest_path, manifest_path.parent / "FREEZE.json"
+        )
+    if errors:
+        print(
+            "SPLIT GOVERNANCE FAIL (fail-closed; nothing was evaluated, "
+            "cloned, or written):",
+            file=sys.stderr,
+        )
+        for err in errors:
+            print(f"  - {err}", file=sys.stderr)
+        raise SystemExit(1)
+
+
 def ensure_commit(repo_dir: Path, url: str, sha: str) -> None:
     """Materialize a pinned commit locally (clone once, fetch the SHA)."""
     if not repo_dir.exists():
@@ -922,6 +973,9 @@ def main(argv: List[str]) -> int:
     args = parser.parse_args(argv)
 
     manifest = load_manifest(Path(args.manifest))
+    # Untouched-holdout governance: fail-closed BEFORE --selfcheck or any
+    # evaluation/clone.
+    require_split_governance(manifest, Path(args.manifest))
 
     if args.selfcheck:
         print(f"manifest OK: {len(manifest['repos'])} pinned repos, gates={GATES}")

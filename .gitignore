@@ -33,6 +33,12 @@ graphify-out/
 !benchmarks/oracle/*.json
 !benchmarks/*.json
 !benchmarks/holdout/*.json
+!benchmarks/holdout_unseen/*.json
+!benchmarks/exit_gates/*.json
+!benchmarks/exit_gates/landmark/manifest.json
+!benchmarks/exit_gates/external/*.json
+!benchmarks/exit_gates/external/per_repo/*.json
+!evaluation/exit_gates/fixtures/*.json
 sot_knowledge_graph.html
 sot_architecture_report.md
 GRAPH_REPORT.md
@@ -46,3 +52,4 @@ sot_obsidian_vault/
 
 # SG-204 holdout benchmark — cloned repos and their .sot indexes
 .holdout-cache/
+.holdout-cache-unseen/
