@@ -1,0 +1,6 @@
+total: 1
+search_mode: bm25
+results: 1  (cols: qn label file lines rank)
+  private-tmp-sot-p0-scratch-p2-Dyk1ROQZ-repo.src.proc.run_command Function src/proc.py 262-376 -19.96
+has_more: false
+
