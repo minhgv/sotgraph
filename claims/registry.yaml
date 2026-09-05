@@ -36,13 +36,13 @@ claims:
     ceiling: "advisory: measured on synthetic corpus, top-k=10"
 
   - id: search-semantic-row
-    claim: "semantic-mode search: Hit@1 75%, Hit@5/10 100%, MRR 0.875"
+    claim: "semantic-mode search: Hit@1 100%, Hit@5/10 100%, MRR 1.00"
     files: [docs/BENCHMARKS.md]
-    pattern: "**semantic** (natural-language → body) | 75% | 100% | 100% | 0.875"
+    pattern: "**semantic** (natural-language → body) | 100% | 100% | 100% | 1.00"
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.by_class.semantic.hit_at_1
-    artifact_value: 0.75
-    commit: 85fd9ddbb05a1a5b87949ade1c6a5bc8dbf02833
+    artifact_value: 1.0
+    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
     capability: search
     language: multi
     provider: builtin-ast
@@ -78,13 +78,13 @@ claims:
     ceiling: "advisory: measured on synthetic corpus, top-k=10"
 
   - id: search-overall-row
-    claim: "overall search: Hit@1 93.8%, Hit@5/10 100%, MRR 0.969"
+    claim: "overall search: Hit@1 100%, Hit@5/10 100%, MRR 1.00"
     files: [docs/BENCHMARKS.md]
-    pattern: "**overall** | 93.8% | 100% | 100% | 0.969"
+    pattern: "**overall** | 100% | 100% | 100% | 1.00"
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.overall.hit_at_1
-    artifact_value: 0.9375
-    commit: 85fd9ddbb05a1a5b87949ade1c6a5bc8dbf02833
+    artifact_value: 1.0
+    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
     capability: search
     language: multi
     provider: builtin-ast
@@ -92,13 +92,13 @@ claims:
     ceiling: "advisory: measured on synthetic corpus, top-k=10"
 
   - id: capability-hit-rates
-    claim: "search top-k precision: Hit@1 93.8%, Hit@5 100%, Hit@10 100%"
+    claim: "search top-k precision: Hit@1 100%, Hit@5 100%, Hit@10 100%"
     files: [docs/CAPABILITY_MATRIX.md]
-    pattern: "Hit@1: 93.8%, Hit@5: 100%, Hit@10: 100%"
+    pattern: "Hit@1: 100%, Hit@5: 100%, Hit@10: 100%"
     artifact: benchmarks/search-quality.json
     artifact_field: metrics.overall.hit_at_1
-    artifact_value: 0.9375
-    commit: 85fd9ddbb05a1a5b87949ade1c6a5bc8dbf02833
+    artifact_value: 1.0
+    commit: 9127367e2c5ab216b803762e46c8b6217d995b86
     capability: search
     language: multi
     provider: builtin-ast

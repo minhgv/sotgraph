@@ -22,7 +22,12 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, cast
 from urllib.parse import quote
 
 from sot_graph.analytics.graph import OperationCancelledError
-from sot_graph.db import Database
+from sot_graph.db import (
+    Database,
+    exact_bare_name_flags,
+    fts_query_terms,
+    fts_rank_tier,
+)
 from sot_graph.verifier import TrustVerifier, tokenize
 from sot_graph.assurance import assured_query_context
 
@@ -723,23 +728,10 @@ class McpService:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1") from exc
         if not 0 <= threshold <= 1:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1")
-        raw_tokens = [t.strip("\"'") for t in query.split() if t.strip("\"'")]
-        tokens: Set[str] = set()
-        tokens_l: List[str] = []
-        for raw in raw_tokens:
-            cleaned = re.sub(r'[\*\^\"(){}:]', '', raw)
-            if not cleaned:
-                continue
-            if len(cleaned) >= 2:
-                tokens.add(f'"{cleaned}"*')
-            for part in re.split(r'[_\.\-:\$@\s]+', cleaned):
-                if len(part) >= 2:
-                    tokens.add(f'"{part}"*')
-                    tokens_l.append(part.lower())
-                part_strip = part.strip('_')
-                if len(part_strip) >= 2:
-                    tokens.add(f'"{part_strip}"*')
-                    tokens_l.append(part_strip.lower())
+        # Shared query interpretation with Database.search_fts (one ranker
+        # semantics for CLI and MCP): FTS prefix terms plus the lowercase
+        # identifier parts feeding the exact-bare-name ordering tier.
+        tokens, parts_l = fts_query_terms(query)
         if not tokens:
             def empty_op(conn: sqlite3.Connection) -> Dict[str, Any]:
                 resp = {
@@ -771,18 +763,26 @@ class McpService:
             sql += " ORDER BY rank_score ASC LIMIT ?"
             params.append(limit * 3)
             rows = conn.execute(sql, params).fetchall()
-            def _bucket(row: Any):
+            # Exact-bare-name ordering tier (bounded, ambiguity-dampened —
+            # see db.exact_bare_name_flags): within one bm25 tier a candidate
+            # whose symbol's bare name equals a query part outranks
+            # prefix-only / body-coincidental matches.
+            flags = exact_bare_name_flags(
+                [row["symbol"] for row in rows], parts_l)
+
+            def _bucket(pair: Any) -> Tuple[int, int, int, float]:
+                row, flag = pair
                 # bm25 is negative-better; keep the raw value for ordering.
                 try:
                     score = float(row["rank_score"])
                 except (TypeError, ValueError):
                     score = 0.0
                 text = f"{row['symbol'] or ''} {row['label'] or ''}".lower()
-                if row["kind"] != "file" and any(t in text for t in tokens_l):
-                    return (0, score)
-                return (1, score)
+                tier, file_demote = fts_rank_tier(
+                    row["kind"], text, parts_l)
+                return (tier, file_demote, -flag, score)
 
-            buckets = [_bucket(row) for row in rows]
+            buckets = [_bucket(pair) for pair in zip(rows, flags)]
             out: List[Dict[str, Any]] = []
             for row, bucket in zip(rows, buckets):
                 candidate = dict(row)

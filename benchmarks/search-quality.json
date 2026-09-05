@@ -29,7 +29,7 @@
     "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
     "processor": "arm",
     "python": "3.14.6",
-    "python_executable": ".venv/bin/python",
+    "python_executable": "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python3",
     "sqlite": "3.53.3",
     "top_k": 10
   },
@@ -48,7 +48,7 @@
         "threshold": 0.85
       },
       "overall_mrr": {
-        "measured": 0.9688,
+        "measured": 1.0,
         "passed": true,
         "threshold": 0.85
       },
@@ -95,18 +95,18 @@
         "probes": 12
       },
       "semantic": {
-        "hit_at_1": 0.75,
+        "hit_at_1": 1.0,
         "hit_at_10": 1.0,
         "hit_at_5": 1.0,
-        "mrr": 0.875,
+        "mrr": 1.0,
         "probes": 12
       }
     },
     "overall": {
-      "hit_at_1": 0.9375,
+      "hit_at_1": 1.0,
       "hit_at_10": 1.0,
       "hit_at_5": 1.0,
-      "mrr": 0.9688,
+      "mrr": 1.0,
       "probes": 48
     },
     "probes": 48,
@@ -129,11 +129,11 @@
           "path": "app/pricing.py"
         },
         {
-          "fqn": "app.pricing",
+          "fqn": "app.pricing.apply_seasonal_discount",
           "path": "app/pricing.py"
         },
         {
-          "fqn": "app.pricing.apply_seasonal_discount",
+          "fqn": "app.pricing",
           "path": "app/pricing.py"
         }
       ]
@@ -158,8 +158,8 @@
           "path": "app/auth.py"
         },
         {
-          "fqn": "app.session_store.reap_idle_logins",
-          "path": "app/session_store.py"
+          "fqn": "app.licensing.validate",
+          "path": "app/licensing.py"
         }
       ]
     },
@@ -271,11 +271,11 @@
           "path": "app/pricing.py"
         },
         {
-          "fqn": "app.pricing",
+          "fqn": "app.pricing.calc_order_total",
           "path": "app/pricing.py"
         },
         {
-          "fqn": "app.pricing.calc_order_total",
+          "fqn": "app.pricing",
           "path": "app/pricing.py"
         }
       ]
@@ -529,20 +529,20 @@
     {
       "class": "semantic",
       "expected_fqn": "app.ingest.drop_duplicate_fingerprints",
-      "hit_at_1": false,
+      "hit_at_1": true,
       "hit_at_10": true,
       "hit_at_5": true,
       "in_fts_candidates": true,
       "query": "dedupe incoming events",
-      "rank": 2,
-      "reciprocal_rank": 0.5,
+      "rank": 1,
+      "reciprocal_rank": 1.0,
       "top3": [
         {
-          "fqn": "app.ingest",
+          "fqn": "app.ingest.drop_duplicate_fingerprints",
           "path": "app/ingest.py"
         },
         {
-          "fqn": "app.ingest.drop_duplicate_fingerprints",
+          "fqn": "app.ingest",
           "path": "app/ingest.py"
         },
         {
@@ -554,20 +554,20 @@
     {
       "class": "semantic",
       "expected_fqn": "app.paging.bump_severity_rotation",
-      "hit_at_1": false,
+      "hit_at_1": true,
       "hit_at_10": true,
       "hit_at_5": true,
       "in_fts_candidates": true,
       "query": "escalate oncall page",
-      "rank": 2,
-      "reciprocal_rank": 0.5,
+      "rank": 1,
+      "reciprocal_rank": 1.0,
       "top3": [
         {
-          "fqn": "app.paging",
+          "fqn": "app.paging.bump_severity_rotation",
           "path": "app/paging.py"
         },
         {
-          "fqn": "app.paging.bump_severity_rotation",
+          "fqn": "app.paging",
           "path": "app/paging.py"
         }
       ]
@@ -642,25 +642,25 @@
     {
       "class": "semantic",
       "expected_fqn": "app.oauth.rotate_oauth_grant",
-      "hit_at_1": false,
+      "hit_at_1": true,
       "hit_at_10": true,
       "hit_at_5": true,
       "in_fts_candidates": true,
       "query": "refresh access token",
-      "rank": 2,
-      "reciprocal_rank": 0.5,
+      "rank": 1,
+      "reciprocal_rank": 1.0,
       "top3": [
-        {
-          "fqn": "app.oauth",
-          "path": "app/oauth.py"
-        },
         {
           "fqn": "app.oauth.rotate_oauth_grant",
           "path": "app/oauth.py"
         },
         {
-          "fqn": "app.auth.tokenizer.tokenize",
-          "path": "app/auth/tokenizer.py"
+          "fqn": "app.oauth",
+          "path": "app/oauth.py"
+        },
+        {
+          "fqn": "app.auth.validate_session_token",
+          "path": "app/auth.py"
         }
       ]
     },
@@ -709,8 +709,8 @@
           "path": "app/cache.py"
         },
         {
-          "fqn": "app.cache_maintenance.sweep_eviction_hourly",
-          "path": "app/cache_maintenance.py"
+          "fqn": "app.dns.resolve",
+          "path": "app/dns.py"
         }
       ]
     },
@@ -730,12 +730,12 @@
           "path": "app/dns.py"
         },
         {
-          "fqn": "app.graphql.resolvers.field_resolver",
-          "path": "app/graphql/resolvers.py"
-        },
-        {
           "fqn": "app.config.resolve",
           "path": "app/config.py"
+        },
+        {
+          "fqn": "app.cache.resolve",
+          "path": "app/cache.py"
         }
       ]
     },
@@ -959,8 +959,8 @@
           "path": "app/licensing.py"
         },
         {
-          "fqn": "app.auth.validate_session_token",
-          "path": "app/auth.py"
+          "fqn": "app.addressbook.validate",
+          "path": "app/addressbook.py"
         }
       ]
     },
@@ -1130,12 +1130,12 @@
           "path": "app/notifications/templates.py"
         },
         {
-          "fqn": "app.notifications.templates",
-          "path": "app/notifications/templates.py"
-        },
-        {
           "fqn": "app.forms.strip_control_chars",
           "path": "app/forms.py"
+        },
+        {
+          "fqn": "app.notifications.templates",
+          "path": "app/notifications/templates.py"
         }
       ]
     },

@@ -107,10 +107,10 @@ per-hit TrustVerifier → P4 ranking) at top-k=10 over a 194-file corpus
 | Class | Hit@1 | Hit@5 | Hit@10 | MRR |
 | :--- | :---: | :---: | :---: | :---: |
 | **exact** (bare symbol) | 100% | 100% | 100% | 1.00 |
-| **semantic** (natural-language → body) | 75% | 100% | 100% | 0.875 |
+| **semantic** (natural-language → body) | 100% | 100% | 100% | 1.00 |
 | **ambiguous** (same bare name, 3 modules) | 100% | 100% | 100% | 1.00 |
 | **path_qualified** (path fragment + symbol) | 100% | 100% | 100% | 1.00 |
-| **overall** | 93.8% | 100% | 100% | 0.969 |
+| **overall** | 100% | 100% | 100% | 1.00 |
 
 CI gates (set once, a step below measured; rationale in the JSON `gates`
 block): exact Hit@1 ≥ 0.85, semantic Hit@5 ≥ 0.90, ambiguous Hit@5 ≥ 0.75,

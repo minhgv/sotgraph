@@ -29,6 +29,36 @@ SCHEMA_VERSION = 8
 #: regardless of build flags (R5).
 _EXPLORE_CHUNK = 250
 
+# FTS index DDL, defined once so schema creation and the tokenizer migration
+# (_ensure_fts_tokenizer) can never disagree on the active tokenization.
+#
+# Identifier-component tokenization: NO ``tokenchars`` — ``.``, ``_``, ``-``,
+# ``:`` are separators, so symbols stored/analyzed as qualified names tokenize
+# into components (``Class.method`` -> class, method; ``render_trace`` ->
+# render, trace). With the old ``tokenchars '_-.:$@'`` the whole qualified
+# name was ONE index token, so a bare-name query (``render``) — a prefix
+# match, which only hits token starts — could never reach ``viewer.render``.
+_FTS_DDL = """
+CREATE VIRTUAL TABLE IF NOT EXISTS graph_fts USING fts5(
+    label, fqn, body, keywords, content='graph_nodes', content_rowid='rowid',
+    tokenize="unicode61 remove_diacritics 0"
+);
+CREATE TRIGGER IF NOT EXISTS trg_nodes_ai AFTER INSERT ON graph_nodes BEGIN
+    INSERT INTO graph_fts(rowid, label, fqn, body, keywords)
+    VALUES (new.rowid, new.label, new.fqn, new.body, new.keywords);
+END;
+CREATE TRIGGER IF NOT EXISTS trg_nodes_ad AFTER DELETE ON graph_nodes BEGIN
+    INSERT INTO graph_fts(graph_fts, rowid, label, fqn, body, keywords)
+    VALUES ('delete', old.rowid, old.label, old.fqn, old.body, old.keywords);
+END;
+CREATE TRIGGER IF NOT EXISTS trg_nodes_au AFTER UPDATE ON graph_nodes BEGIN
+    INSERT INTO graph_fts(graph_fts, rowid, label, fqn, body, keywords)
+    VALUES ('delete', old.rowid, old.label, old.fqn, old.body, old.keywords);
+    INSERT INTO graph_fts(rowid, label, fqn, body, keywords)
+    VALUES (new.rowid, new.label, new.fqn, new.body, new.keywords);
+END;
+"""
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS file_journal (
     path TEXT PRIMARY KEY, sha256 TEXT NOT NULL, size INTEGER NOT NULL,
@@ -64,24 +94,7 @@ CREATE TABLE IF NOT EXISTS pending_edges (
 );
 CREATE INDEX IF NOT EXISTS idx_pending_dst ON pending_edges(dst_symbol);
 CREATE INDEX IF NOT EXISTS idx_pending_src ON pending_edges(src);
-CREATE VIRTUAL TABLE IF NOT EXISTS graph_fts USING fts5(
-    label, fqn, body, keywords, content='graph_nodes', content_rowid='rowid',
-    tokenize="unicode61 remove_diacritics 0 tokenchars '_-.:$@'"
-);
-CREATE TRIGGER IF NOT EXISTS trg_nodes_ai AFTER INSERT ON graph_nodes BEGIN
-    INSERT INTO graph_fts(rowid, label, fqn, body, keywords)
-    VALUES (new.rowid, new.label, new.fqn, new.body, new.keywords);
-END;
-CREATE TRIGGER IF NOT EXISTS trg_nodes_ad AFTER DELETE ON graph_nodes BEGIN
-    INSERT INTO graph_fts(graph_fts, rowid, label, fqn, body, keywords)
-    VALUES ('delete', old.rowid, old.label, old.fqn, old.body, old.keywords);
-END;
-CREATE TRIGGER IF NOT EXISTS trg_nodes_au AFTER UPDATE ON graph_nodes BEGIN
-    INSERT INTO graph_fts(graph_fts, rowid, label, fqn, body, keywords)
-    VALUES ('delete', old.rowid, old.label, old.fqn, old.body, old.keywords);
-    INSERT INTO graph_fts(rowid, label, fqn, body, keywords)
-    VALUES (new.rowid, new.label, new.fqn, new.body, new.keywords);
-END;
+""" + _FTS_DDL + """
 CREATE TABLE IF NOT EXISTS graph_communities (
     community_id INTEGER PRIMARY KEY,
     label TEXT NOT NULL,
@@ -247,6 +260,140 @@ _DROP_ON_RESET = (
     "DROP TABLE IF EXISTS graph_nodes",
     "DROP TABLE IF EXISTS file_journal",
 )
+
+# ---------------------------------------------------------------------------
+# Shared search-ranker helpers (single interpretation for CLI + MCP).
+#
+# Both retrieval surfaces — Database.search_fts and the MCP search ranker —
+# MUST build FTS terms and apply the exact-bare-name signal identically, so
+# the logic lives here once instead of being duplicated per adapter.
+# ---------------------------------------------------------------------------
+
+#: Ambiguity dampening for the exact-bare-name ordering tier: when MORE than
+#: this many candidates share the queried bare name, no single exact match is
+#: distinguishable from the others, so the tier is withdrawn for the whole
+#: candidate set and plain BM25 decides. This is the guard against blindly
+#: boosting a popular name so an irrelevant same-named symbol buries a
+#: genuinely better prefix/body match.
+EXACT_BARE_NAME_CAP = 8
+
+_IDENT_SEP = re.compile(r"[_\.\-:\$@\s]+")
+_CAMEL_TOK = re.compile(r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z0-9])|[0-9]+")
+
+
+def identifier_components(name: str) -> List[str]:
+    """Split an identifier into lowercase components (identifier-component
+    analysis): ``Class.method`` -> ['class', 'method'],
+    ``render_trace_markdown`` -> ['render', 'trace', 'markdown'],
+    ``parseArgs`` -> ['parse', 'args']."""
+    out: List[str] = []
+    for chunk in _IDENT_SEP.split(name or ""):
+        for tok in _CAMEL_TOK.findall(chunk):
+            tok = tok.lower()
+            if tok:
+                out.append(tok)
+    return out
+
+
+def bare_name(symbol: Optional[str]) -> str:
+    """A symbol's bare name: its last separator-delimited segment,
+    lowercased (``Class.method`` -> 'method'; ``validateCard`` ->
+    'validatecard' — case-folded, NOT camel-split, so the whole final
+    segment stays the unit that a bare-name query compares against)."""
+    segments = [s for s in _IDENT_SEP.split(symbol or "") if s]
+    return segments[-1].lower() if segments else ""
+
+
+def fts_query_terms(query: str) -> Tuple[Set[str], Set[str]]:
+    """Build FTS5 MATCH prefix terms for ``query`` plus the set of lowercase
+    identifier parts used by ranking tie-breaks.
+
+    Shared by :meth:`Database.search_fts` and the MCP search ranker so both
+    interpret a query identically (previously two divergent copies). Terms:
+    the whole cleaned token as a prefix term; each separator part
+    (``Class.method`` -> class, method) as a prefix term; and — identifier-
+    component analysis — the LAST camel/snake component of a multi-component
+    part (``renderTrace`` -> trace) so a camelCase query term reaches
+    snake_case index components and vice versa. The last-component term is
+    the controlled bare-name query channel: one extra bounded term per
+    query part, never a score inflation.
+    """
+    raw_tokens = [t.strip("\"'") for t in query.split() if t.strip("\"'")]
+    tokens: Set[str] = set()
+    parts: Set[str] = set()
+    for raw in raw_tokens:
+        cleaned = re.sub(r'[\*\^\"(){}:]', '', raw)
+        if not cleaned:
+            continue
+        if len(cleaned) >= 2:
+            tokens.add(f'"{cleaned}"*')
+            # The whole compound token also counts as a name-level part so
+            # an exact compound name (``authenticate_user``) keeps name-hit
+            # precedence over a shorter prefix symbol (``authenticate``)
+            # once tokenization has split it into components.
+            parts.add(cleaned.lower())
+        for part in re.split(r'[_\.\-:\$@\s]+', cleaned):
+            if len(part) >= 2:
+                tokens.add(f'"{part}"*')
+                parts.add(part.lower())
+            part_strip = part.strip('_')
+            if len(part_strip) >= 2:
+                tokens.add(f'"{part_strip}"*')
+                parts.add(part_strip.lower())
+            comps = identifier_components(part)
+            if len(comps) > 1 and len(comps[-1]) >= 2:
+                tokens.add(f'"{comps[-1]}"*')
+    return tokens, parts
+
+
+def exact_bare_name_flags(symbols: Sequence[Optional[str]],
+                          query_parts: Set[str]) -> List[int]:
+    """Per-candidate identity grade vs the query parts, mirroring the P4
+    identity semantics (exact short-name > qualified-name match):
+    2 = the whole symbol equals a query part (``render`` for query
+    ``render``); 1 = the symbol's bare name — its last separator segment —
+    equals a query part (``viewer.render`` for query ``render``); 0 = no
+    exact-name identity.
+
+    Consumers use the grade as an ordering dimension INSIDE one bm25 tier —
+    a bounded constant offset, never added to the score — so it cannot push
+    a match past a stronger verdict/coverage tier. When the name is
+    ambiguous (more than EXACT_BARE_NAME_CAP candidates carrying any
+    non-zero grade in the candidate set) every grade is withdrawn: a
+    popular name must not shove one arbitrary same-named symbol above
+    better-scoring prefix matches.
+    """
+    flags: List[int] = []
+    for s in symbols:
+        s_cf = (s or "").lower()
+        if s_cf and s_cf in query_parts:
+            flags.append(2)
+        elif (b := bare_name(s)) and b in query_parts:
+            flags.append(1)
+        else:
+            flags.append(0)
+    if sum(1 for g in flags if g) > EXACT_BARE_NAME_CAP:
+        return [0] * len(flags)
+    return flags
+
+
+def fts_rank_tier(kind: str, text: str, query_parts: Set[str]) -> Tuple[int, int]:
+    """Coarse relevance tier shared by Database.search_fts and the MCP
+    search ranker: ``(name_hit_tier, file_demote)``.
+
+    ``name_hit_tier`` 0 = a non-file candidate whose symbol/label text
+    contains a query part (name-level hit); 1 = body-only match.
+    ``file_demote`` = 1 for file-kind candidates. A file node is a
+    navigation stub whose body PREVIEWS its children's code, so its body
+    accumulates term frequency for every word its functions mention; left
+    to pure bm25 it can outscore the defining symbol for that very content
+    (file bodies rank after non-file bodies, and files never reach the
+    name-hit tier — file names still win when the query targets them,
+    because competing non-file name hits do not exist then).
+    """
+    if kind != "file" and any(t in text for t in query_parts):
+        return (0, 0)
+    return (1, 1 if kind == "file" else 0)
 @dataclass(frozen=True)
 class CleanPlan:
     mode: str
@@ -648,6 +795,44 @@ class Database:
             )
         except Exception:
             pass  # read-only connections degrade to no marking, not failure
+        self._ensure_fts_tokenizer()
+
+    def _ensure_fts_tokenizer(self) -> None:
+        """Rebuild ``graph_fts`` when it predates the current tokenization.
+
+        The tokenizer is part of the retrieval contract: the query builder
+        emits identifier-component prefix terms (see fts_query_terms), which
+        only match when the index tokenizes qualified names into components
+        too. A table created with the superseded ``tokenchars`` DDL would
+        silently keep missing bare-name matches, so on writer open a stale
+        table is dropped, recreated from _FTS_DDL and repopulated — the
+        external-content ``rebuild`` re-extracts every column from
+        ``graph_nodes``, no reconcile needed. Best-effort: read-only
+        connections and write failures degrade to the previous tokenization
+        until a writer reopens.
+        """
+        if self.read_only:
+            return
+        try:
+            row = self.conn.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name='graph_fts'"
+            ).fetchone()
+            stale = row is not None and row[0] is not None and "tokenchars" in str(row[0])
+            missing = row is None
+            if not stale and not missing:
+                return
+            if stale:
+                self.conn.executescript(
+                    "DROP TRIGGER IF EXISTS trg_nodes_ai;"
+                    "DROP TRIGGER IF EXISTS trg_nodes_ad;"
+                    "DROP TRIGGER IF EXISTS trg_nodes_au;"
+                    "DROP TABLE IF EXISTS graph_fts;"
+                )
+            self.conn.executescript(_FTS_DDL)
+            self.conn.execute("INSERT INTO graph_fts(graph_fts) VALUES('rebuild')")
+            self.conn.commit()
+        except Exception as exc:  # pragma: no cover - locked/ro degrade
+            print(f"sot: graph_fts tokenizer rebuild skipped ({exc})", file=sys.stderr)
 
     def _schema_objects_present(self) -> bool:
         row = self.conn.execute(
@@ -2113,23 +2298,9 @@ class Database:
                             int((time.monotonic() - started) * 1000), bool(optimize), False)
 
     def search_fts(self, query: str, limit: int = 10, scope: Optional[str] = None) -> List[Dict[str, Any]]:
-        raw_tokens = [t.strip("\"'") for t in query.split() if t.strip("\"'")]
-        tokens: Set[str] = set()
-        tokens_l: List[str] = []
-        for raw in raw_tokens:
-            cleaned = re.sub(r'[\*\^\"(){}:]', '', raw)
-            if not cleaned:
-                continue
-            if len(cleaned) >= 2:
-                tokens.add(f'"{cleaned}"*')
-            for part in re.split(r'[_\.\-:\$@\s]+', cleaned):
-                if len(part) >= 2:
-                    tokens.add(f'"{part}"*')
-                    tokens_l.append(part.lower())
-                part_strip = part.strip('_')
-                if len(part_strip) >= 2:
-                    tokens.add(f'"{part_strip}"*')
-                    tokens_l.append(part_strip.lower())
+        # Shared query interpretation (fts_query_terms) so this path and the
+        # MCP search ranker emit identical FTS terms for the same query.
+        tokens, parts_l = fts_query_terms(query)
         if not tokens or limit <= 0:
             return []
         sql = "SELECT k.id,k.path,k.kind,k.symbol,k.fqn,k.label,k.body,k.keywords,k.line_start,bm25(graph_fts) " \
@@ -2144,15 +2315,22 @@ class Database:
         sql += " ORDER BY bm25(graph_fts) ASC LIMIT ?"
         params.append(limit * 3)
         rows = self.conn.execute(sql, params).fetchall()
-        def _rank(r: Any) -> Tuple[int, float]:
+        # Exact-bare-name ordering tier (bounded, ambiguity-dampened — see
+        # exact_bare_name_flags): within one bm25 tier, a candidate whose
+        # symbol's bare name EQUALS a query part ranks above prefix-only or
+        # body-coincidental matches. Withdrawn entirely when the bare name
+        # matches too many candidates to disambiguate.
+        flags = exact_bare_name_flags([r[3] for r in rows], parts_l)
+
+        def _rank(pair: Tuple[Any, int]) -> Tuple[int, int, int, float]:
+            r, flag = pair
             # bm25 is negative-better; keep the raw value for ordering.
             score = r[9]
             text = f"{r[3] or ''} {r[5] or ''}".lower()
-            if r[2] != "file" and any(t in text for t in tokens_l):
-                return (0, score)
-            return (1, score)
+            tier, file_demote = fts_rank_tier(r[2], text, parts_l)
+            return (tier, file_demote, -flag, score)
 
-        rows = sorted(rows, key=_rank)
+        rows = [r for r, _ in sorted(zip(rows, flags), key=_rank)]
         return [{"id": r[0], "path": r[1], "kind": r[2], "symbol": r[3], "fqn": r[4],
                  "label": r[5], "body": r[6], "keywords": r[7], "line_start": r[8], "score": abs(r[9])}
                 for r in rows]
