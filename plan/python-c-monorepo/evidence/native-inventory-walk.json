@@ -1,0 +1,156 @@
+{
+ "date": "2026-09-06",
+ "repo": "/tmp/sot-p0-scratch/codebase-memory-mcp",
+ "commit": "3c7427efb740934bf66653413b484118652ce649",
+ "worktree_clean": true,
+ "tracked_files": 2120,
+ "tree_archive_sha256": "728dd980205f77f05acb572db6322495b2f8fa4815130136fe8724f9a1dc2569",
+ "script": "plan/python-c-monorepo/evidence/native_inventory_walk.py (canonical, current rev). Original run used a pre-fix rev (os.popen-based); numbers verified unchanged by the fix-delta equivalence test \u2014 see fix_delta.",
+ "worktree_total_bytes": 1373533436,
+ "git_dir_bytes": 201621707,
+ "git_objects_bytes": 201348274,
+ "categories": {
+  "generated_grammar_artifacts": {
+   "bytes": 1291016001,
+   "files": 345
+  },
+  "vendored_thirdparty_source_non_generated": {
+   "bytes": 53490549,
+   "files": 754
+  },
+  "handwritten_c_source_non_generated": {
+   "bytes": 23686134,
+   "files": 658
+  },
+  "other_misc": {
+   "bytes": 2533614,
+   "files": 162
+  },
+  "docs_text": {
+   "bytes": 1374179,
+   "files": 41
+  },
+  "config_build_meta": {
+   "bytes": 524098,
+   "files": 54
+  },
+  "python_source": {
+   "bytes": 496233,
+   "files": 35
+  },
+  "ui_web_source": {
+   "bytes": 412628,
+   "files": 70
+  },
+  "build_outputs": {
+   "bytes": 0,
+   "files": 0
+  }
+ },
+ "handwritten_c_breakdown": {
+  "internal_cbm_firstparty": {
+   "bytes": 6401592,
+   "files": 247
+  },
+  "src": {
+   "bytes": 6564126,
+   "files": null
+  },
+  "tests": {
+   "bytes": 10653714,
+   "files": null
+  },
+  "tools_tree_sitter_clones": {
+   "bytes": 66702,
+   "files": 10
+  }
+ },
+ "grammars": {
+  "count": 162,
+  "dir_total_bytes": 1285192368,
+  "dir_total_files": 927,
+  "grammar_js_sources_present": 0,
+  "manifest": "143 vendored-from-upstream (pinned commits), 14 first-party, 5 registry-disagreement",
+  "top3": {
+   "lean": 104437134,
+   "systemverilog": 62155935,
+   "verilog": 46042887
+  },
+  "smallest6_sum_bytes": 173960,
+  "common_12_grammar_parser_c_sum_bytes": 43390072
+ },
+ "top10_worktree_bytes": [
+  [
+   "internal/cbm/vendored/grammars/lean/parser.c",
+   104437134
+  ],
+  [
+   "internal/cbm/vendored/grammars/systemverilog/parser.c",
+   62155935
+  ],
+  [
+   "internal/cbm/vendored/grammars/verilog/parser.c",
+   46042887
+  ],
+  [
+   "internal/cbm/vendored/grammars/crystal/parser.c",
+   45156077
+  ],
+  [
+   "internal/cbm/vendored/grammars/sql/parser.c",
+   41602005
+  ],
+  [
+   "internal/cbm/vendored/grammars/objectscript_udl/parser.c",
+   38605206
+  ],
+  [
+   "internal/cbm/vendored/grammars/objectscript_routine/parser.c",
+   37982320
+  ],
+  [
+   "internal/cbm/vendored/grammars/tlaplus/parser.c",
+   37038679
+  ],
+  [
+   "internal/cbm/vendored/grammars/fortran/parser.c",
+   36355864
+  ],
+  [
+   "internal/cbm/vendored/grammars/ocaml/parser.c",
+   36101908
+  ]
+ ],
+ "candidate_HEAD": "3c7427efb740934bf66653413b484118652ce649",
+ "note": "inventory measured on candidate HEAD tree; release tag v0.10.8 = 46ae198fc11cda80e817acbc5f5908d7c2de7032 is a DIFFERENT tree",
+ "curation_note": "This JSON is an explicitly CURATED composite, NOT the raw complete stdout of native_inventory_walk.py. Script-generated fields: commit, n_files_incl_git, worktree_total_bytes, git_dir_bytes, git_objects_bytes, categories, top10_worktree, tree_archive_sha256. No guarantee the script outputs this same object; supplemental fields below were measured separately and carry their own method strings.",
+ "script_raw_fields": [
+  "commit",
+  "n_files_incl_git",
+  "worktree_total_bytes",
+  "git_dir_bytes",
+  "git_objects_bytes",
+  "categories",
+  "top10_worktree",
+  "tree_archive_sha256"
+ ],
+ "supplemental_fields_methods": {
+  "handwritten_c_breakdown": "REPRODUCIBLE (one-off inline python in session): walk all .c/.h not matching GEN_NAMES and not under any /vendored/ path, bucket by path prefix (internal/cbm non-vendored, src, tests, tools/tree-sitter-*).",
+  "grammars.count / dir_total_bytes / dir_total_files / top3 / smallest6_sum_bytes / common_12_grammar_parser_c_sum_bytes": "REPRODUCIBLE (one-off shell): stat -f%z internal/cbm/vendored/grammars/*/parser.c | sort; sum over named subsets recorded in native-source-inventory.md section 3.",
+  "grammars.grammar_js_sources_present": "REPRODUCIBLE: find internal/cbm/vendored/grammars -name grammar.js | wc -l  ->  0",
+  "grammars.manifest": "MANUALLY read from internal/cbm/vendored/grammars/MANIFEST.md (summary section) at commit 3c7427e; quote, not computed."
+ },
+ "fix_delta": {
+  "round2_changes": [
+   "os.popen -> subprocess.check_output argv, no shell (git rev-parse; git archive hashed via hashlib) \u2014 2 sites",
+   "removed no-op line dirnames[:] = [d for d in dirnames]",
+   "git objects counted by strict prefix .git/objects/ (was substring /objects/)",
+   "docstring usage name corrected to native_inventory_walk.py"
+  ],
+  "space_path_test": {
+   "path": "/tmp/sot-p0-scratch/space dir test/repo link (symlink to repo)",
+   "exit_code": 0,
+   "result": "all script fields equivalent to baseline; TREE_ARCHIVE_SHA256 728dd980205f77f05acb572db6322495b2f8fa4815130136fe8724f9a1dc2569 unchanged"
+  }
+ }
+}

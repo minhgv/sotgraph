@@ -1,0 +1,87 @@
+{
+ "kind": "sigstore-verification-transcript (sanitized; no secrets involved \u2014 keyless public-chain verification)",
+ "captured": "2026-09-06",
+ "verifier": {
+  "name": "sigstore-python CLI",
+  "version": "sigstore 4.5.0",
+  "python": "CPython 3.14 venv (isolated /tmp/sot-p0-scratch/sigstore-venv, pip install sigstore)",
+  "cosign_binary": "absent on host; python sigstore used instead"
+ },
+ "verify_policy": {
+  "distribution_repo": "DeusData/codebase-memory-mcp",
+  "release_tag": "v0.10.8",
+  "release_tag_commit_verified": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+  "certificate_oidc_issuer_required": "https://token.actions.githubusercontent.com",
+  "certificate_identity_required": "https://github.com/DeusData/codebase-memory-mcp/.github/workflows/release.yml@refs/heads/main",
+  "policy_rules": [
+   "workflow source of truth read via git show at pinned release tag commit, NOT floating main",
+   "SAN must equal pinned identity string exactly (no regexp widening)",
+   "OIDC issuer must equal pinned issuer string exactly (https://token.actions.githubusercontent.com)",
+   "cert OIDC ext 1.3.6.1.4.1.57264.1.3 (sha claim) must equal release tag commit 46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "Fulcio chain must verify against embedded production trust root (digests below)",
+   "Rekor inclusion must verify (online); bundle tlog logId must match a trusted tlog key",
+   "signature must verify over exact local artifact bytes; artifact sha256 must equal its checksums.txt line",
+   "each future release: re-read workflow at new tag commit and re-pin before verify"
+  ]
+ },
+ "trust_anchors": {
+  "trusted_root_source": "embedded in sigstore 4.5.0 wheel: sigstore/_store/https%3A%2F%2Ftuf-repo-cdn.sigstore.dev/trusted_root.json (production, fetched via TUF at pip install)",
+  "trusted_root_json_sha256": "6494e21ea73fa7ee769f85f57d5a3e6a08725eae1e38c755fc3517c9e6bc0b66",
+  "fulcio_intermediate_sha256": "15d795348226b4649f750f5802592c393bee7cc53c3b86982175b7ad087efe47",
+  "fulcio_root_sha256": "3ba7b6cc4e95469d4d334b49cb257ad8537076fa84b0ca87ff4ecfe6a54680c1",
+  "fulcio_alt_single_cert_chain_root_sha256": "03a38ffb1f450100c2596d1d10b900ac4d504058006dda58199576bbeb9c73d0",
+  "rekor_prod_key_logId_b64": "wNI9atQGlz+VWfO6LRygH4QUfY/8W4RFwiT5i5WRgB0=",
+  "rekor_prod_key_sha256": "45c9dc6491850ac490faa5a28259ff9f9a02d6af2a0d6b23a32df32c449b023c",
+  "bundle_tlog_logId_matches_trusted_key": true
+ },
+ "artifacts": {
+  "checksums_txt": {
+   "path": "/tmp/sot-p0-scratch/checksums-v0.10.8.txt",
+   "sha256": "9d2e33bdf9c9dc8662079d5b9a1bbf716aa2e62e2ed6cc51cf4ae06d42498787",
+   "bytes": 2658
+  },
+  "checksums_bundle": {
+   "path": "/tmp/sot-p0-scratch/checksums-v0.10.8.txt.bundle",
+   "sha256": "b92dc7e429a5662063469bddf8449a0f73a19a3eea0dca0438593c0be50a5b5d",
+   "bytes": 10619
+  },
+  "darwin_arm64_targz": {
+   "path": "/tmp/sot-p0-scratch/cbm-darwin-arm64-v0.10.8.tar.gz",
+   "sha256": "9bd840dfb3ec7eaef4f310382057adaa5b0e904df883104d03ffcf39836afd07",
+   "bytes": 40416962
+  },
+  "darwin_arm64_bundle": {
+   "path": "/tmp/sot-p0-scratch/cbm-darwin-arm64-v0.10.8.tar.gz.bundle",
+   "sha256": "4c0715a7979e5e19cd434a0bd6312f3fb00b094cbf640341f1a521061284f1a6"
+  }
+ },
+ "transcript": [
+  {
+   "cmd": "/tmp/sot-p0-scratch/sigstore-venv/bin/sigstore verify identity --bundle checksums-v0.10.8.txt.bundle --cert-identity 'https://github.com/DeusData/codebase-memory-mcp/.github/workflows/release.yml@refs/heads/main' --cert-oidc-issuer 'https://token.actions.githubusercontent.com' checksums-v0.10.8.txt",
+   "cwd": "/tmp/sot-p0-scratch",
+   "exit_code": 0,
+   "stdout": "",
+   "stderr": "OK: checksums-v0.10.8.txt"
+  },
+  {
+   "cmd": "/tmp/sot-p0-scratch/sigstore-venv/bin/sigstore verify identity --bundle cbm-darwin-arm64-v0.10.8.tar.gz.bundle --cert-identity 'https://github.com/DeusData/codebase-memory-mcp/.github/workflows/release.yml@refs/heads/main' --cert-oidc-issuer 'https://token.actions.githubusercontent.com' cbm-darwin-arm64-v0.10.8.tar.gz",
+   "cwd": "/tmp/sot-p0-scratch",
+   "exit_code": 0,
+   "stdout": "",
+   "stderr": "OK: cbm-darwin-arm64-v0.10.8.tar.gz"
+  },
+  {
+   "cmd": "gh attestation verify cbm-darwin-arm64-v0.10.8.tar.gz --repo DeusData/codebase-memory-mcp --format json",
+   "cwd": "/tmp/sot-p0-scratch",
+   "exit_code": 0,
+   "stdout": "(JSON array, 1 verified attestation entry, 19,139 bytes; file /tmp/sot-p0-scratch/gh-attest.json sha256 c60cf8c8e8dc7950e94d8297\u2026)",
+   "stderr": "",
+   "note": "gh 2.87.3; this is the receipt-capture exact rerun with real exit code; predicateType https://slsa.dev/provenance/v1; workflow .github/workflows/release.yml@refs/heads/main; repository DeusData/codebase-memory-mcp. An earlier plain (no --format json) invocation also exited 0 with no text output; JSON-derived fields come from the --format json run recorded here."
+  }
+ ],
+ "notes": [
+  "sigstore CLI prints result lines to stderr, stdout empty by design",
+  "initial run 2026-09-06 same commands/verdict; this transcript is the receipt-capture re-run with explicit exit codes",
+  "space-path test: script run via symlink '/tmp/sot-p0-scratch/space dir test/repo link' -> repo, exit 0, all aggregate fields equivalent to baseline (subprocess argv, no shell)"
+ ]
+}
