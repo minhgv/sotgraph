@@ -36,6 +36,7 @@ graphify-out/
 !benchmarks/holdout_unseen/*.json
 !benchmarks/exit_gates/*.json
 !benchmarks/exit_gates/landmark/manifest.json
+!benchmarks/exit_gates/sg202_followup/*.json
 !benchmarks/exit_gates/external/*.json
 !benchmarks/exit_gates/external/per_repo/*.json
 !evaluation/exit_gates/fixtures/*.json

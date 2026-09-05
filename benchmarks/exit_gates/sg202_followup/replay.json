@@ -1,0 +1,1930 @@
+{
+ "provenance": {
+  "command": "python replay_sg202.py --root /Users/giapminh79/code/GitHub/sot-graph --output-dir /private/tmp/sg202-final-independent",
+  "git_head": "8b45686a0ccfc1d02a3645d920366b20ad0f41bb",
+  "repo_provenance": {
+   "git_head": "8b45686a0ccfc1d02a3645d920366b20ad0f41bb",
+   "worktree_digest": "7fb059223fa4b6fe",
+   "dirty_entries": 88,
+   "content_files_hashed": 45,
+   "digest_truncated": false,
+   "digest_basis": "HEAD + porcelain-v1 -z status + per-file content sha256 (untracked-files=all; generated reports under benchmarks/exit_gates/ excluded)"
+  },
+  "baseline_report_sha256": "147cdce8bd3a2c467b97301b79149df7ae42fa42107e9684569d6179f3793661",
+  "baseline_report_path": "/Users/giapminh79/code/GitHub/sot-graph/benchmarks/exit_gates/sg202_task_sufficiency.json",
+  "pack_source_sha256": "540f1ba590c8aabe9da89acd8eeb1b0c0ee52fc02b590ee8f0b97358a06e6304",
+  "oracle_fixture_sha256": "d1f1613da3aa49499b8206bff0178c7528f2409ccc088a6b21bc438079441fb5",
+  "params": {
+   "budget_tokens": 1500,
+   "contracts_cap": 8,
+   "max_nodes": 50,
+   "max_bytes": 65536,
+   "max_hops": 2,
+   "workers": 4,
+   "gate_floor": 0.95,
+   "min_measurable": 30
+  },
+  "roster_source": "frozen baseline report task_roster (exact keys, no re-sampling)"
+ },
+ "summary": {
+  "roster": 90,
+  "attempted": 90,
+  "measurable": 43,
+  "full_success": 35,
+  "remaining_failures": 8,
+  "sufficiency_measurable": 0.814,
+  "sufficiency_all": 0.3889,
+  "gate": {
+   "gate": "sg202_task_sufficiency>=0.95",
+   "metric": 0.814,
+   "denominator": 43,
+   "min_denominator": 30,
+   "floor": 0.95,
+   "direction": "metric>=floor",
+   "passed": false,
+   "verdict": "FAIL"
+  },
+  "outcome_counts": {
+   "FULL_SUCCESS": 35,
+   "ORACLE_UNMEASURABLE": 47,
+   "MISSING_TEST": 5,
+   "PACK_ERROR": 3
+  },
+  "corpus_drift": 0,
+  "over_budget": 0,
+  "tiktoken_gt_estimate": 0,
+  "max_tokens_recomputed": 1500,
+  "heuristic_full_success_thin_source_lt400chars": 15,
+  "full_success_src_truncated_flagged": 17,
+  "heuristic_full_success_truncated_and_lt200chars": 8,
+  "ambiguous_resolved": 3,
+  "extra_unverified_contracts": 32,
+  "cohorts": {
+   "baseline_measurable_cohort": {
+    "n": 42,
+    "full_success": 34,
+    "sufficiency": 0.8095,
+    "note": "exact baseline-measurable cohort, scored with CURRENT pack+oracle on the current tree"
+   },
+   "current_measurable_cohort": {
+    "n": 43,
+    "full_success": 35,
+    "sufficiency": 0.814
+   }
+  },
+  "measurability_changes": [
+   {
+    "task": "src/sot_graph/assurance/accounting.py::_LimitVisitor",
+    "direction": "became_measurable",
+    "current_relevant_test_files": 1,
+    "attribution": "new test-file references in working tree"
+   }
+  ],
+  "outcome_changes_vs_baseline": 35
+ },
+ "results": [
+  {
+   "task": "src/sot_graph/adapters/antigravity.py::setup_antigravity",
+   "contracts_expected": 2,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 2083,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 2,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_adapters.py"
+   ],
+   "tokens_reported": 1298,
+   "tokens_recomputed": 1298,
+   "render_bytes": 4725,
+   "tokens_tiktoken_raw": 1298,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/analytics/architecture.py::aggregate_functional_modules",
+   "contracts_expected": 2,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/bundle.py::_render_conformance_markdown",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/bundle.py::_generate_dependencies_and_violations",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/bundle.py::_generate_system_metrics_json",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/graph.py::AnalyticsGraph",
+   "contracts_expected": 0,
+   "relevant_test_files": 9,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 678,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_adversarial_edge_cases.py",
+    "tests/test_bundle_conformance.py",
+    "tests/test_export.py",
+    "tests/test_hardening_fixes.py",
+    "tests/test_optimizations.py",
+    "tests/test_report_conformance.py"
+   ],
+   "tokens_reported": 1461,
+   "tokens_recomputed": 1461,
+   "render_bytes": 5197,
+   "tokens_tiktoken_raw": 1461,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/analytics/graph.py::calculate_blast_radius",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/graph.py::_repo_path_prefix",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/analytics/graph.py::_generate_community_label",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/assurance/accounting.py::_LimitVisitor",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1866,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_accounting_visitor_typing.py"
+   ],
+   "tokens_reported": 1156,
+   "tokens_recomputed": 1156,
+   "render_bytes": 4399,
+   "tokens_tiktoken_raw": 1156,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::CoverageState",
+   "contracts_expected": 0,
+   "relevant_test_files": 2,
+   "corpus_drift": false,
+   "full_success": false,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 634,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": false,
+   "test_receipt_files": [],
+   "tokens_reported": 648,
+   "tokens_recomputed": 648,
+   "render_bytes": 2169,
+   "tokens_tiktoken_raw": 648,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "MISSING_TEST"
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::CoverageReport",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1143,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_p5_coverage_verification.py"
+   ],
+   "tokens_reported": 987,
+   "tokens_recomputed": 987,
+   "render_bytes": 3521,
+   "tokens_tiktoken_raw": 987,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::_language_of",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::build_scope_manifest",
+   "contracts_expected": 4,
+   "relevant_test_files": 3,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 184,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 4,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 2,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/benchmark/test_dynamic_gap_corpus.py"
+   ],
+   "tokens_reported": 1492,
+   "tokens_recomputed": 1492,
+   "render_bytes": 4932,
+   "tokens_tiktoken_raw": 1492,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/assurance/identity.py::identity_hash",
+   "contracts_expected": 1,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 306,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 1,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_p4_identity.py"
+   ],
+   "tokens_reported": 755,
+   "tokens_recomputed": 755,
+   "render_bytes": 2515,
+   "tokens_tiktoken_raw": 755,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/assurance/impact_pipeline.py::as_dict",
+   "contracts_expected": 0,
+   "relevant_test_files": 6,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "PACK_ERROR",
+   "reasons": [
+    "AMBIGUOUS_TARGET: target 'as_dict' matches 5 nodes; qualify with a FQN"
+   ]
+  },
+  {
+   "task": "src/sot_graph/assurance/orchestrator.py::search_rows_from_payload",
+   "contracts_expected": 1,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 172,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 1,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_p3_adapters.py"
+   ],
+   "tokens_reported": 1469,
+   "tokens_recomputed": 1469,
+   "render_bytes": 4917,
+   "tokens_tiktoken_raw": 1469,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/assurance/orchestrator.py::resolve_federated_spec",
+   "contracts_expected": 2,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/assurance/receipts.py::_node_row",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/claims.py::Claim",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": false,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 387,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": false,
+   "test_receipt_files": [],
+   "tokens_reported": 690,
+   "tokens_recomputed": 690,
+   "render_bytes": 2238,
+   "tokens_tiktoken_raw": 690,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "MISSING_TEST"
+  },
+  {
+   "task": "src/sot_graph/claims.py::_norm_rel",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/claims.py::lint_claims",
+   "contracts_expected": 8,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 171,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 8,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_sg110_claims.py"
+   ],
+   "tokens_reported": 1494,
+   "tokens_recomputed": 1494,
+   "render_bytes": 4591,
+   "tokens_tiktoken_raw": 1494,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/cli.py::_rank_reasons",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_watch",
+   "contracts_expected": 8,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_providers",
+   "contracts_expected": 12,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "contracts_overflow",
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_export",
+   "contracts_expected": 4,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1259,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 4,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 1,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_export.py"
+   ],
+   "tokens_reported": 1451,
+   "tokens_recomputed": 1451,
+   "render_bytes": 5087,
+   "tokens_tiktoken_raw": 1451,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_import_scip",
+   "contracts_expected": 2,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1592,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 2,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 1,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_phase1_scip_and_schema_v5.py"
+   ],
+   "tokens_reported": 1492,
+   "tokens_recomputed": 1492,
+   "render_bytes": 5274,
+   "tokens_tiktoken_raw": 1492,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/config.py::_coerce_enum",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::_init_schema",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::get_node_by_id",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::update_node_path",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::save_communities",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::_insert_run_row",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::get_provider_binding",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/db.py::record_provider_evidence",
+   "contracts_expected": 0,
+   "relevant_test_files": 3,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 327,
+   "ambiguous": true,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 2,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_trust_chain_hardening.py"
+   ],
+   "tokens_reported": 937,
+   "tokens_recomputed": 937,
+   "render_bytes": 3261,
+   "tokens_tiktoken_raw": 937,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/db.py::purge_provider_run",
+   "contracts_expected": 0,
+   "relevant_test_files": 2,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 515,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/benchmark/test_benchmark_sot.py"
+   ],
+   "tokens_reported": 748,
+   "tokens_recomputed": 748,
+   "render_bytes": 2556,
+   "tokens_tiktoken_raw": 748,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::to_dict",
+   "contracts_expected": 0,
+   "relevant_test_files": 5,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 568,
+   "ambiguous": true,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_diff_impact.py"
+   ],
+   "tokens_reported": 1040,
+   "tokens_recomputed": 1040,
+   "render_bytes": 3560,
+   "tokens_tiktoken_raw": 1040,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::DiffImpactEngine",
+   "contracts_expected": 0,
+   "relevant_test_files": 2,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1561,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/benchmark/test_diff_impact_oracle.py"
+   ],
+   "tokens_reported": 1472,
+   "tokens_recomputed": 1472,
+   "render_bytes": 5158,
+   "tokens_tiktoken_raw": 1472,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::format_diff_impact_json",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 212,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 1,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_diff_impact.py"
+   ],
+   "tokens_reported": 755,
+   "tokens_recomputed": 755,
+   "render_bytes": 2447,
+   "tokens_tiktoken_raw": 755,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::format_diff_impact_github",
+   "contracts_expected": 3,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 141,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 3,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_diff_impact_github.py"
+   ],
+   "tokens_reported": 1461,
+   "tokens_recomputed": 1461,
+   "render_bytes": 4785,
+   "tokens_tiktoken_raw": 1461,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/evidence.py::FreshnessStatus",
+   "contracts_expected": 0,
+   "relevant_test_files": 6,
+   "corpus_drift": false,
+   "full_success": false,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 190,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": false,
+   "test_receipt_files": [],
+   "tokens_reported": 545,
+   "tokens_recomputed": 545,
+   "render_bytes": 1702,
+   "tokens_tiktoken_raw": 545,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "MISSING_TEST"
+  },
+  {
+   "task": "src/sot_graph/export/scip.py::_tag",
+   "contracts_expected": 1,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "PACK_ERROR",
+   "reasons": [
+    "AMBIGUOUS_TARGET: target '_tag' matches 2 nodes; qualify with a FQN"
+   ]
+  },
+  {
+   "task": "src/sot_graph/export/scip.py::_message",
+   "contracts_expected": 2,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/export/scip.py::_tool_version",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/holdout/evaluator.py::CallEdge",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/holdout/evaluator.py::referenced_names",
+   "contracts_expected": 0,
+   "relevant_test_files": 2,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 823,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_holdout_denominators.py",
+    "tests/test_holdout_oracle.py"
+   ],
+   "tokens_reported": 1111,
+   "tokens_recomputed": 1111,
+   "render_bytes": 3828,
+   "tokens_tiktoken_raw": 1111,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/ignore.py::add_pattern",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/importer/scip.py::parse_scip_symbol",
+   "contracts_expected": 3,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 448,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 3,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_phase1_scip_and_schema_v5.py"
+   ],
+   "tokens_reported": 1500,
+   "tokens_recomputed": 1500,
+   "render_bytes": 4939,
+   "tokens_tiktoken_raw": 1500,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/locking.py::LockBusy",
+   "contracts_expected": 0,
+   "relevant_test_files": 4,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 107,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_hardening_fixes.py",
+    "tests/test_watcher_daemon.py"
+   ],
+   "tokens_reported": 967,
+   "tokens_recomputed": 967,
+   "render_bytes": 3130,
+   "tokens_tiktoken_raw": 967,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/locking.py::_fd_guards_live_path",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/locking.py::__exit__",
+   "contracts_expected": 0,
+   "relevant_test_files": 5,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "PACK_ERROR",
+   "reasons": [
+    "AMBIGUOUS_TARGET: target '__exit__' matches 5 nodes; qualify with a FQN"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_server.py::_sdk",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_server.py::_error",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::McpServiceError",
+   "contracts_expected": 0,
+   "relevant_test_files": 8,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 188,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_mcp.py"
+   ],
+   "tokens_reported": 1499,
+   "tokens_recomputed": 1499,
+   "render_bytes": 4826,
+   "tokens_tiktoken_raw": 1499,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::_ConnView",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": false,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 207,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": false,
+   "test_receipt_files": [],
+   "tokens_reported": 1442,
+   "tokens_recomputed": 1442,
+   "render_bytes": 4594,
+   "tokens_tiktoken_raw": 1442,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "MISSING_TEST"
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::McpService",
+   "contracts_expected": 0,
+   "relevant_test_files": 27,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 195,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_jit_reconcile.py",
+    "tests/test_mcp.py",
+    "tests/test_mcp_modern.py",
+    "tests/test_mcp_prompts.py",
+    "tests/test_mcp_receipt_tools.py",
+    "tests/test_search_bare_name_ranking.py"
+   ],
+   "tokens_reported": 1426,
+   "tokens_recomputed": 1426,
+   "render_bytes": 4593,
+   "tokens_tiktoken_raw": 1426,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::_reconcile_before_analysis",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::_degrade_assurance_after_trim",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::_resolve_target_row",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::repo_map",
+   "contracts_expected": 0,
+   "relevant_test_files": 3,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1236,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 4,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_sg201_repo_map_filters.py"
+   ],
+   "tokens_reported": 1432,
+   "tokens_recomputed": 1432,
+   "render_bytes": 5184,
+   "tokens_tiktoken_raw": 1432,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::diff_impact",
+   "contracts_expected": 0,
+   "relevant_test_files": 7,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1346,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 2,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_collection_accounting.py",
+    "tests/test_impact_pipeline.py",
+    "tests/test_p2_orchestrator.py"
+   ],
+   "tokens_reported": 1441,
+   "tokens_recomputed": 1441,
+   "render_bytes": 5218,
+   "tokens_tiktoken_raw": 1441,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/modutil.py::module_candidates",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/provider_contract.py::ProviderIdentity",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 153,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_provider_contract.py"
+   ],
+   "tokens_reported": 704,
+   "tokens_recomputed": 704,
+   "render_bytes": 2401,
+   "tokens_tiktoken_raw": 704,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/provider_contract.py::Assertion",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 218,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_provider_contract.py"
+   ],
+   "tokens_reported": 716,
+   "tokens_recomputed": 716,
+   "render_bytes": 2404,
+   "tokens_tiktoken_raw": 716,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/providers/base.py::IndexRequest",
+   "contracts_expected": 0,
+   "relevant_test_files": 3,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 202,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_cbm_adapter.py",
+    "tests/test_cli_provider_wiring.py"
+   ],
+   "tokens_reported": 1134,
+   "tokens_recomputed": 1134,
+   "render_bytes": 3874,
+   "tokens_tiktoken_raw": 1134,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/providers/base.py::ImpactRequest",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 596,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_p3_adapters.py"
+   ],
+   "tokens_reported": 965,
+   "tokens_recomputed": 965,
+   "render_bytes": 3240,
+   "tokens_tiktoken_raw": 965,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/providers/codebase_memory.py::_index_binding",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": false,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1905,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 2,
+   "test_received": false,
+   "test_receipt_files": [],
+   "tokens_reported": 1227,
+   "tokens_recomputed": 1227,
+   "render_bytes": 4790,
+   "tokens_tiktoken_raw": 1227,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "MISSING_TEST"
+  },
+  {
+   "task": "src/sot_graph/providers/codebase_memory.py::index",
+   "contracts_expected": 0,
+   "relevant_test_files": 20,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 765,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 5,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_cbm_adapter.py"
+   ],
+   "tokens_reported": 1453,
+   "tokens_recomputed": 1453,
+   "render_bytes": 5227,
+   "tokens_tiktoken_raw": 1453,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/providers/cross_check.py::_external_relation_for",
+   "contracts_expected": 1,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/providers/normalization.py::RelationMapping",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/providers/normalization.py::normalize_subject",
+   "contracts_expected": 2,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1059,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 2,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_cbm_normalization.py"
+   ],
+   "tokens_reported": 1456,
+   "tokens_recomputed": 1456,
+   "render_bytes": 5375,
+   "tokens_tiktoken_raw": 1456,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/providers/normalization.py::_sm_field",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/providers_registry.py::_rank_names",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/receipt_explorer.py::_pick",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/receipt_explorer.py::_render_downgrade",
+   "contracts_expected": 5,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::_lexical_path",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::_known_abs_paths",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::_deletion_scope",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::reconcile",
+   "contracts_expected": 0,
+   "relevant_test_files": 59,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 63,
+   "ambiguous": true,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 12,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_jit_reconcile.py"
+   ],
+   "tokens_reported": 1482,
+   "tokens_recomputed": 1482,
+   "render_bytes": 5047,
+   "tokens_tiktoken_raw": 1482,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::scan_and_reconcile",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/repo_map.py::_display_path",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/solution.py::_detect_role_from_path_or_name",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/tokenizer.py::fit_lines_to_token_budget",
+   "contracts_expected": 1,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 635,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 1,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_sprint4_compass_and_pack.py"
+   ],
+   "tokens_reported": 904,
+   "tokens_recomputed": 904,
+   "render_bytes": 3061,
+   "tokens_tiktoken_raw": 904,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/trace.py::render_trace_markdown",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/vector.py::HashEmbedder",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1242,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_vector.py"
+   ],
+   "tokens_reported": 1462,
+   "tokens_recomputed": 1462,
+   "render_bytes": 5096,
+   "tokens_tiktoken_raw": 1462,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/vector.py::_tokens",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/watcher.py::_process_identity",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 2361,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_watcher_daemon.py"
+   ],
+   "tokens_reported": 1443,
+   "tokens_recomputed": 1443,
+   "render_bytes": 5576,
+   "tokens_tiktoken_raw": 1443,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/watcher.py::_read_pid_metadata",
+   "contracts_expected": 0,
+   "relevant_test_files": 1,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 1364,
+   "ambiguous": false,
+   "src_truncated": false,
+   "contracts_returned": 0,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_core_safety_fixes.py"
+   ],
+   "tokens_reported": 1343,
+   "tokens_recomputed": 1343,
+   "render_bytes": 4804,
+   "tokens_tiktoken_raw": 1343,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  },
+  {
+   "task": "src/sot_graph/watcher.py::_remove_pid_file",
+   "contracts_expected": 0,
+   "relevant_test_files": 0,
+   "corpus_drift": false,
+   "full_success": false,
+   "outcome": "ORACLE_UNMEASURABLE",
+   "reasons": [
+    "no_relevant_test_in_corpus"
+   ]
+  },
+  {
+   "task": "src/sot_graph/watcher.py::start_daemon",
+   "contracts_expected": 7,
+   "relevant_test_files": 2,
+   "corpus_drift": false,
+   "full_success": true,
+   "target_ok": true,
+   "identity_ok": true,
+   "src_chars": 139,
+   "ambiguous": false,
+   "src_truncated": true,
+   "contracts_returned": 7,
+   "contracts_missing": [],
+   "contracts_extra_unverified": 0,
+   "test_received": true,
+   "test_receipt_files": [
+    "tests/test_watcher_daemon.py"
+   ],
+   "tokens_reported": 1421,
+   "tokens_recomputed": 1421,
+   "render_bytes": 4644,
+   "tokens_tiktoken_raw": 1421,
+   "budget_gap_raw": 0,
+   "over_budget": false,
+   "outcome": "FULL_SUCCESS"
+  }
+ ],
+ "outcome_diff_vs_baseline": [
+  {
+   "task": "src/sot_graph/adapters/antigravity.py::setup_antigravity",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 2083,
+   "tokens_recomputed": 1298
+  },
+  {
+   "task": "src/sot_graph/analytics/graph.py::AnalyticsGraph",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 678,
+   "tokens_recomputed": 1461
+  },
+  {
+   "task": "src/sot_graph/assurance/accounting.py::_LimitVisitor",
+   "baseline": "ORACLE_UNMEASURABLE",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1866,
+   "tokens_recomputed": 1156
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::CoverageReport",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1143,
+   "tokens_recomputed": 987
+  },
+  {
+   "task": "src/sot_graph/assurance/coverage.py::build_scope_manifest",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 184,
+   "tokens_recomputed": 1492
+  },
+  {
+   "task": "src/sot_graph/assurance/identity.py::identity_hash",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 306,
+   "tokens_recomputed": 755
+  },
+  {
+   "task": "src/sot_graph/assurance/orchestrator.py::search_rows_from_payload",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 172,
+   "tokens_recomputed": 1469
+  },
+  {
+   "task": "src/sot_graph/claims.py::lint_claims",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 171,
+   "tokens_recomputed": 1494
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_export",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1259,
+   "tokens_recomputed": 1451
+  },
+  {
+   "task": "src/sot_graph/cli.py::cmd_import_scip",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1592,
+   "tokens_recomputed": 1492
+  },
+  {
+   "task": "src/sot_graph/db.py::record_provider_evidence",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 327,
+   "tokens_recomputed": 937
+  },
+  {
+   "task": "src/sot_graph/db.py::purge_provider_run",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 515,
+   "tokens_recomputed": 748
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::to_dict",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 568,
+   "tokens_recomputed": 1040
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::DiffImpactEngine",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1561,
+   "tokens_recomputed": 1472
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::format_diff_impact_json",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 212,
+   "tokens_recomputed": 755
+  },
+  {
+   "task": "src/sot_graph/diff_impact.py::format_diff_impact_github",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 141,
+   "tokens_recomputed": 1461
+  },
+  {
+   "task": "src/sot_graph/holdout/evaluator.py::referenced_names",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 823,
+   "tokens_recomputed": 1111
+  },
+  {
+   "task": "src/sot_graph/importer/scip.py::parse_scip_symbol",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 448,
+   "tokens_recomputed": 1500
+  },
+  {
+   "task": "src/sot_graph/locking.py::LockBusy",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 107,
+   "tokens_recomputed": 967
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::McpServiceError",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 188,
+   "tokens_recomputed": 1499
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::McpService",
+   "baseline": "PACK_ERROR",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 195,
+   "tokens_recomputed": 1426
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::repo_map",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1236,
+   "tokens_recomputed": 1432
+  },
+  {
+   "task": "src/sot_graph/mcp_service.py::diff_impact",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1346,
+   "tokens_recomputed": 1441
+  },
+  {
+   "task": "src/sot_graph/provider_contract.py::ProviderIdentity",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 153,
+   "tokens_recomputed": 704
+  },
+  {
+   "task": "src/sot_graph/provider_contract.py::Assertion",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 218,
+   "tokens_recomputed": 716
+  },
+  {
+   "task": "src/sot_graph/providers/base.py::IndexRequest",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 202,
+   "tokens_recomputed": 1134
+  },
+  {
+   "task": "src/sot_graph/providers/base.py::ImpactRequest",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 596,
+   "tokens_recomputed": 965
+  },
+  {
+   "task": "src/sot_graph/providers/codebase_memory.py::index",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 765,
+   "tokens_recomputed": 1453
+  },
+  {
+   "task": "src/sot_graph/providers/normalization.py::normalize_subject",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1059,
+   "tokens_recomputed": 1456
+  },
+  {
+   "task": "src/sot_graph/reconciler.py::reconcile",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 63,
+   "tokens_recomputed": 1482
+  },
+  {
+   "task": "src/sot_graph/tokenizer.py::fit_lines_to_token_budget",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 635,
+   "tokens_recomputed": 904
+  },
+  {
+   "task": "src/sot_graph/vector.py::HashEmbedder",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1242,
+   "tokens_recomputed": 1462
+  },
+  {
+   "task": "src/sot_graph/watcher.py::_process_identity",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 2361,
+   "tokens_recomputed": 1443
+  },
+  {
+   "task": "src/sot_graph/watcher.py::_read_pid_metadata",
+   "baseline": "MISSING_TEST",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 1364,
+   "tokens_recomputed": 1343
+  },
+  {
+   "task": "src/sot_graph/watcher.py::start_daemon",
+   "baseline": "MISSING_CONTRACTS",
+   "replay": "FULL_SUCCESS",
+   "src_chars": 139,
+   "tokens_recomputed": 1421
+  }
+ ]
+}

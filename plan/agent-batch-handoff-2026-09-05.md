@@ -1,8 +1,16 @@
 # Agent batch handoff — 2026-09-05
 
-> Trạng thái sau hai lô giao sub-agent (issues #8–#13 + 4 nhóm P1 accuracy).
+> **TRẠNG THÁI HIỆN TẠI:** Đã tích hợp bằng các commit theo nhóm trên
+> `work/holdout-honesty-gates`, chưa push. Handoff hiện hành:
+> **`plan/remaining-work-handoff-2026-09-05.md`**.
+> Full suite 1578 pass / 2 skipped; quality gates PASS. SG-202 còn FAIL
+> (34/42 cohort gốc, 35/43 cohort hiện đủ điều kiện); SG-201 external 11 repo
+> đã nghiệm thu nhưng human study vẫn chờ ít nhất 3 người thật.
+> Toàn bộ phần dưới là bản ghi LỊCH SỬ — đừng dùng làm chỉ dẫn hiện tại.
+
+> (LỊCH SỬ) Trạng thái sau hai lô giao sub-agent (issues #8–#13 + 4 nhóm P1 accuracy).
 > Working tree sạch; mọi việc đã xong nằm trong 8 commit local trên `main` (chưa push).
-> Lệnh tiếp theo khi mở lại máy: **làm tiếp Nhóm 4** (spec ở cuối file).
+> Lệnh tiếp theo khi mở lại máy: làm tiếp Nhóm 4 (spec ở cuối file).
 
 ## Đã xong và đã commit
 
@@ -58,3 +66,11 @@ Root cause thật: tokenizer FTS dùng `tokenchars '_-.:$@'` khiến `Class.meth
 1. Mở lại session, đọc file này.
 2. Ra lệnh: "làm tiếp Nhóm 4 theo handoff" — spec đầy đủ ở trên, quy trình: sub-agent thực hiện → main agent review độc lập (diff + tự chạy test + claims lint) → commit conventional kèm `(advisor P1-6)`.
 3. Chưa push bất cứ gì; 8 commit local trên `main` chờ review của bạn trước khi push.
+
+## Ledger tiếp diễn (2026-09-05)
+
+Cập nhật: audit `claims/registry.yaml` đã xong — 3 claim cite sai provenance đã được
+repoint về `c745b47` (xác minh git-show trước khi sửa; lint clean). Trạng thái live:
+nhóm 1/2/3 ACCEPTED, nhóm 4 PUBLISHED chờ acceptance; exit gates SG-201/SG-202 chi tiết
+trong **`plan/honesty-exit-gates-2026-09-05.md`**. Directive "làm tiếp Nhóm 4" ở trên
+đã xong (`c745b47`). File này giữ nguyên làm lịch sử.
