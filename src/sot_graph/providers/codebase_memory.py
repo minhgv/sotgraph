@@ -20,6 +20,10 @@ P1 boundaries (honest abstention):
   an SOT-only allowlist; public errors and record details carry only the
   generic operation + classification — raw native text is withheld
   everywhere (no admin/debug echo path exists).
+- Exact-compatibility context (opt-in, admin/programmatic only): every
+  dispatch is assessed against the trusted registry BEFORE spawn; the
+  executable sha256 is re-verified per dispatch. Only COMPATIBLE may run;
+  legacy construction stays version-only and is never promoted.
 """
 from __future__ import annotations
 
@@ -29,12 +33,14 @@ import logging
 import os
 import re
 import tempfile
+import threading
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Mapping
 
 from sot_graph.proc import RunResult, run_command
+from sot_graph.provider_contract import ProviderIdentity, normalize_sha256_digest
 from sot_graph.snapshot import dirty_state, get_head_sha
 
 from .base import (
@@ -47,6 +53,13 @@ from .base import (
     QueryOutcome,
     SymbolRequest,
     TraceRequest,
+)
+from .compatibility import (
+    CompatibilityAssessment,
+    CompatibilityRecordError,
+    CompatibilityRegistry,
+    CompatibilityVerdict,
+    normalize_protocol_id,
 )
 from .normalization import (
     TESTED_CBM_VERSION,
@@ -65,6 +78,8 @@ __all__ = [
     "NEXT_ACTION_ADAPTER_UPDATE",
     "NEXT_ACTION_ALLOWLIST",
     "allowlisted_next_action",
+    "PROBE_OPERATION",
+    "ExactCompatibilityContext",
     "SnapshotBinding",
     "SnapshotMatch",
     "snapshot_flags",
@@ -101,6 +116,11 @@ NEXT_ACTION_ADAPTER_UPDATE = (
     "rerun after a sot provider adapter update; no sot command fixes "
     "provider schema drift"
 )
+
+#: Registry operation modeling the ``--version``/status probe. Kept distinct
+#: from actual tool operations so a registry author explicitly decides
+#: whether a verified binary may even be probed.
+PROBE_OPERATION = "--version"
 
 #: Public remediation allowlist. ``next_action`` on public outcomes may ONLY
 #: carry one of these values (or None): sot commands verified against the
@@ -155,6 +175,78 @@ class _InvokeOutcome:
     error: str | None = None
     run: ProviderRunRecord | None = None
     match: "SnapshotMatch | None" = None
+    assessment: "CompatibilityAssessment | None" = None
+
+
+#: Chunk size for bounded-memory artifact hashing (1 MiB).
+_HASH_CHUNK_BYTES = 1 << 20
+
+
+def _file_sha256(path: str) -> str | None:
+    """sha256 of file contents read in bounded chunks; None when unreadable.
+
+    Callers re-invoke this per dispatch: no digest is ever cached, so an
+    executable swapped between invocations is detected on the next one
+    (TOCTOU between hash and spawn remains a documented P2 limitation).
+    """
+    digest = hashlib.sha256()
+    try:
+        with open(path, "rb") as handle:
+            for chunk in iter(lambda: handle.read(_HASH_CHUNK_BYTES), b""):
+                digest.update(chunk)
+    except OSError:
+        return None
+    return digest.hexdigest()
+
+
+@dataclass(frozen=True)
+class ExactCompatibilityContext:
+    """Opt-in exact-compatibility context (P1) — admin/programmatic only.
+
+    Never derived from repository ``config``: every field is supplied by a
+    trusted administrator in code, so an unvalidated repo override cannot
+    grant binary trust. Supplying ANY component enables strict mode: every
+    dispatch is assessed before spawn and fails closed on UNKNOWN or
+    INCOMPATIBLE — partial context never silently downgrades to legacy.
+
+    ``operation_fixture_digests`` maps a tool operation name (or
+    ``PROBE_OPERATION``) to the sha256 digest of the fixture suite the
+    artifact was tested against for that operation.
+    """
+
+    registry: CompatibilityRegistry | None = None
+    runtime_identity: ProviderIdentity | None = None
+    operation_fixture_digests: Mapping[str, str] | None = None
+    protocol_compatibility_id: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.registry is not None and not isinstance(
+            self.registry, CompatibilityRegistry
+        ):
+            raise TypeError(
+                "registry must be a CompatibilityRegistry, got "
+                f"{type(self.registry).__name__}"
+            )
+        if self.runtime_identity is not None and not isinstance(
+            self.runtime_identity, ProviderIdentity
+        ):
+            raise TypeError(
+                "runtime_identity must be a ProviderIdentity, got "
+                f"{type(self.runtime_identity).__name__}"
+            )
+        digests = self.operation_fixture_digests
+        if digests is not None:
+            if not isinstance(digests, Mapping):
+                raise TypeError("operation_fixture_digests must be a Mapping")
+            for operation, value in digests.items():
+                try:
+                    normalize_sha256_digest(value)
+                except ValueError as exc:
+                    raise CompatibilityRecordError(
+                        f"operation_fixture_digests[{operation!r}]: {exc}"
+                    ) from exc
+        if self.protocol_compatibility_id is not None:
+            normalize_protocol_id(self.protocol_compatibility_id)
 
 @dataclass(frozen=True)
 class SnapshotBinding:
@@ -337,6 +429,7 @@ class CodebaseMemoryProvider:
         index_timeout_seconds: float | None = None,
         max_output_bytes: int = DEFAULT_MAX_OUTPUT_BYTES,
         provider_version: str | None = None,
+        exact_context: ExactCompatibilityContext | None = None,
     ) -> None:
         cfg_command: list[str] | None = getattr(config, "command", None)
         cfg_caps = tuple(getattr(config, "capabilities", ()) or ())
@@ -371,6 +464,179 @@ class CodebaseMemoryProvider:
         #: avoids one ``list_projects`` round-trip per query on the same root.
         self._project_cache: dict[str, tuple[str | None, str | None, str | None]] = {}
         self._version: str | None = provider_version
+        # Guards _version and _project_cache against concurrent probe/query
+        # races; reentrant so nested adapter calls stay safe. Critical
+        # sections never span a process spawn.
+        self._lock = threading.RLock()
+        # Strict mode is enabled by ANY supplied context; it is never
+        # derivable from repository config (admin/programmatic only).
+        if exact_context is not None:
+            if not isinstance(exact_context, ExactCompatibilityContext):
+                raise TypeError(
+                    "exact_context must be an ExactCompatibilityContext, got "
+                    f"{type(exact_context).__name__}"
+                )
+            if command is None:
+                raise ValueError(
+                    "strict exact-compatibility requires an explicit command= "
+                    "(single absolute executable); repository-config command "
+                    "is not accepted"
+                )
+            if len(self.command) != 1:
+                raise ValueError(
+                    "strict exact-compatibility requires a single-element "
+                    "command: interpreter+script argv would bypass artifact "
+                    "hashing"
+                )
+            if not os.path.isabs(self.command[0]):
+                raise ValueError(
+                    "strict exact-compatibility requires an absolute "
+                    "executable path; PATH discovery is refused"
+                )
+        self._exact = exact_context
+
+    @property
+    def _strict_compat(self) -> bool:
+        """True when any exact-compatibility context component was supplied."""
+        return self._exact is not None
+
+    def _locked_version(self) -> str | None:
+        """Race-free snapshot of the descriptive provider version string."""
+        with self._lock:
+            return self._version
+
+    def _identity_basis(
+        self, assessment: CompatibilityAssessment | None = None
+    ) -> str:
+        """Metadata marker derived from THIS dispatch's assessment.
+
+        ``artifact_verified`` — strict gate verdict COMPATIBLE now;
+        ``unverified`` — strict but refused/no assessment this dispatch;
+        ``version_only`` — legacy; descriptive string, never a binary
+        identity claim and never promoted.
+        """
+        if not self._strict_compat:
+            return "version_only"
+        if (
+            assessment is not None
+            and assessment.verdict is CompatibilityVerdict.COMPATIBLE
+        ):
+            return "artifact_verified"
+        return "unverified"
+
+    # ------------------------------------------------- exact-compat gating
+
+    def _compat_gate(self, operation: str) -> CompatibilityAssessment:
+        """Assess ``operation`` against the trusted registry; never spawns.
+
+        Order matters: the on-disk executable is hashed fresh (per dispatch,
+        bounded chunks) and must match the claimed identity digest BEFORE the
+        registry is consulted, so a caller cannot claim a tested artifact it
+        does not run. Only the physically verified digest is passed to the
+        registry. Any failure is an explicit UNKNOWN/INCOMPATIBLE assessment,
+        never an exception and never a legacy fallback.
+        """
+        ctx = self._exact
+        assert ctx is not None
+        unknown = CompatibilityVerdict.UNKNOWN
+
+        def _unk(*reasons: str) -> CompatibilityAssessment:
+            return CompatibilityAssessment(
+                verdict=unknown, reasons=reasons, operation=operation,
+            )
+
+        # Re-checked EVERY dispatch: provider.command is public and may be
+        # reassigned after construction; ctor validation alone is not a gate.
+        if len(self.command) != 1:
+            return _unk(
+                "strict compatibility context requires a single-element "
+                "command; interpreter+script argv would bypass artifact "
+                "hashing",
+            )
+        exe = self.command[0]
+        if not os.path.isabs(exe):
+            return _unk(
+                "strict compatibility context requires an explicit absolute "
+                "executable path; PATH discovery is refused",
+            )
+        resolved = os.path.realpath(exe)
+        on_disk = _file_sha256(resolved)
+        if on_disk is None:
+            return _unk(f"executable not readable at {resolved}")
+        identity = ctx.runtime_identity
+        if identity is None:
+            return _unk("no runtime ProviderIdentity supplied")
+        claimed = identity.artifact_sha256
+        if claimed is None:
+            return _unk(
+                "claimed identity carries no artifact_sha256; a version "
+                f"string ({identity.version!r}) never identifies a binary",
+            )
+        try:
+            claimed_digest = normalize_sha256_digest(claimed)
+        except ValueError as exc:
+            return _unk(f"claimed identity artifact_sha256: {exc}")
+        if claimed_digest != on_disk:
+            return CompatibilityAssessment(
+                verdict=CompatibilityVerdict.INCOMPATIBLE,
+                reasons=(
+                    f"claimed artifact digest {claimed_digest} does not match "
+                    f"the executable on disk ({on_disk}); refusing to execute "
+                    "an unverified binary",
+                ),
+                operation=operation,
+                artifact_sha256=on_disk,
+            )
+        registry = ctx.registry
+        if registry is None:
+            return _unk("no compatibility registry supplied")
+        fixture = (
+            ctx.operation_fixture_digests.get(operation)
+            if ctx.operation_fixture_digests is not None
+            else None
+        )
+        try:
+            return registry.assess(
+                replace(identity, artifact_sha256=on_disk),
+                operation,
+                fixture_digest=fixture,
+                protocol_compatibility_id=ctx.protocol_compatibility_id,
+            )
+        except CompatibilityRecordError as exc:
+            return _unk(f"invalid compatibility context: {exc}")
+
+    def _gate_outcome(
+        self, tool: str, assessment: CompatibilityAssessment
+    ) -> _InvokeOutcome:
+        """No-spawn fail-closed outcome for a refused dispatch."""
+        verdict = assessment.verdict
+        status = (
+            "compatibility_incompatible"
+            if verdict is CompatibilityVerdict.INCOMPATIBLE
+            else "compatibility_unknown"
+        )
+        detail = (
+            f"{tool} refused before dispatch: exact-compatibility "
+            f"{verdict.value}; native diagnostic withheld"
+        )
+        record = ProviderRunRecord(
+            run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
+            provider_name=PROVIDER_NAME,
+            provider_version=self._locked_version(),
+            capability=tool,
+            status=status,
+            exit_code=None,
+            duration_ms=0,
+            arguments_redacted=(tool,),
+            # Reviewed remediation surface stays frozen: compatibility
+            # fail-close reuses the allowlisted "unavailable via sot" pin.
+            next_action=NEXT_ACTION_VERSION_PIN,
+            detail=detail,
+        )
+        return _InvokeOutcome(
+            ok=False, status=status, error=detail, run=record,
+            assessment=assessment,
+        )
 
     def version_compatibility(self) -> str:
         """Classify the probed binary release against the golden-tested one.
@@ -380,17 +646,45 @@ class CodebaseMemoryProvider:
                        but downstream verdicts cap at UNVERIFIABLE.
         INCOMPATIBLE — different major.minor; queries fail closed.
         UNKNOWN      — probe has not produced a parsable version yet.
+
+        Strict mode always reports UNKNOWN here: a version string alone
+        never claims compatibility when artifact identity is enforced —
+        the per-dispatch gate verdict drives outcome metadata instead.
         """
-        if self._version is None:
+        if self._strict_compat:
             return VERSION_UNKNOWN
-        if self._version == TESTED_CBM_VERSION:
+        with self._lock:
+            version = self._version
+        if version is None:
+            return VERSION_UNKNOWN
+        if version == TESTED_CBM_VERSION:
             return VERSION_COMPATIBLE
-        if self._version.split(".")[:2] == TESTED_CBM_VERSION.split(".")[:2]:
+        if version.split(".")[:2] == TESTED_CBM_VERSION.split(".")[:2]:
             return VERSION_UNTESTED
         return VERSION_INCOMPATIBLE
 
     def probe(self, repo_root: str) -> ProviderStatus:
-        """Probe ``<command> --version``; never raises."""
+        """Probe ``<command> --version``; never raises.
+
+        Strict mode: the executable digest is verified (and the probe
+        operation registry-assessed) BEFORE the spawn; an unknown version
+        string does not block the probe — the verified digest is the
+        identity, ``--version`` merely fills descriptive metadata.
+        """
+        gate: CompatibilityAssessment | None = None
+        if self._strict_compat:
+            gate = self._compat_gate(PROBE_OPERATION)
+            if gate.verdict is not CompatibilityVerdict.COMPATIBLE:
+                refused = self._gate_outcome(PROBE_OPERATION, gate)
+                installed = _file_sha256(os.path.realpath(self.command[0])) is not None
+                return ProviderStatus(
+                    name=PROVIDER_NAME,
+                    installed=installed,
+                    healthy=False,
+                    version=None,
+                    detail=refused.error,
+                    capabilities=self.capabilities,
+                )
         started = time.monotonic()
         result = run_command(
             [*self.command, "--version"],
@@ -427,13 +721,21 @@ class CodebaseMemoryProvider:
                 detail=detail,
                 capabilities=self.capabilities,
             )
-        self._version = match.group(1)
+        with self._lock:
+            self._version = match.group(1)
+            version = self._version
+        if gate is not None:
+            # Strict mode: report the actual gate verdict, never the
+            # deliberately-UNKNOWN version-only classification.
+            detail = f"ok; exact-compat={gate.verdict.value}"
+        else:
+            detail = f"ok; wire-compat={self.version_compatibility()}"
         return ProviderStatus(
             name=PROVIDER_NAME,
             installed=True,
             healthy=True,
-            version=self._version,
-            detail=f"ok; wire-compat={self.version_compatibility()}",
+            version=version,
+            detail=detail,
             capabilities=self.capabilities,
         )
 
@@ -465,15 +767,24 @@ class CodebaseMemoryProvider:
         ``snapshot_bind=True`` a successful call additionally fetches
         ``index_status`` (P2) and records the snapshot match with the run.
         """
-        if self.version_compatibility() == VERSION_INCOMPATIBLE:
+        # Strict mode: assess BEFORE any spawn; re-hashes the executable
+        # fresh on every dispatch so a swapped binary is caught next call.
+        # The legacy version veto applies only to the legacy path — a
+        # digest-exact COMPATIBLE gate verdict outranks version strings.
+        gate: CompatibilityAssessment | None = None
+        if self._strict_compat:
+            gate = self._compat_gate(tool)
+            if gate.verdict is not CompatibilityVerdict.COMPATIBLE:
+                return self._gate_outcome(tool, gate)
+        elif self.version_compatibility() == VERSION_INCOMPATIBLE:
             detail = (
-                f"probed version {self._version!r} is wire-incompatible "
+                f"probed version {self._locked_version()!r} is wire-incompatible "
                 f"with golden-tested {TESTED_CBM_VERSION!r}; refusing to query"
             )
             record = ProviderRunRecord(
                 run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
                 provider_name=PROVIDER_NAME,
-                provider_version=self._version,
+                provider_version=self._locked_version(),
                 capability=tool,
                 status="version_incompatible",
                 exit_code=None,
@@ -534,7 +845,7 @@ class CodebaseMemoryProvider:
         )
         return _InvokeOutcome(
             ok=outcome.ok, status=outcome.status, payload=outcome.payload,
-            error=outcome.error, run=run, match=match,
+            error=outcome.error, run=run, match=match, assessment=gate,
         )
 
     def _evidence_items(self, tool, outcome, match) -> list[dict]:
@@ -683,10 +994,12 @@ class CodebaseMemoryProvider:
         failures are swallowed (logged) — a broken ledger must never
         corrupt or abort an otherwise successful query.
         """
+        with self._lock:
+            version = self._version
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
-            provider_version=self._version,
+            provider_version=version,
             capability=capability,
             status=status,
             exit_code=result.returncode,
@@ -701,7 +1014,7 @@ class CodebaseMemoryProvider:
             )
             run_kwargs: dict = dict(
                 provider_name=PROVIDER_NAME,
-                provider_version=self._version,
+                provider_version=version,
                 capability=capability,
                 snapshot_hash=snapshot_hash,
                 project_root=repo_root,
@@ -785,14 +1098,37 @@ class CodebaseMemoryProvider:
         index_related = outcome.status in (
             "provider_error", "jsonrpc_error", "spawn_failed", "bad_arguments",
         )
-        metadata = {
+        if self._strict_compat:
+            # Exact mode: COMPATIBLE here is backed by THIS dispatch's
+            # digest-verified gate (identity_basis below), never by the
+            # version string; everything else stays UNKNOWN (fail-closed
+            # for trust normalization).
+            version_compat = (
+                VERSION_COMPATIBLE
+                if outcome.assessment is not None
+                and outcome.assessment.verdict is CompatibilityVerdict.COMPATIBLE
+                else VERSION_UNKNOWN
+            )
+        else:
+            version_compat = self.version_compatibility()
+        metadata: dict[str, Any] = {
             "wire_status": outcome.status,
-            "version_compatibility": self.version_compatibility(),
+            "version_compatibility": version_compat,
+            "identity_basis": self._identity_basis(outcome.assessment),
         }
+        # Exact-compatibility assessment travels serialized in outcome
+        # metadata: CLI and MCP consume this same QueryOutcome, so there is
+        # exactly one serialization and one parser.
+        if outcome.assessment is not None:
+            metadata["exact_compatibility"] = outcome.assessment.to_dict()
         # Fail-closed: every outcome carries an explicit freshness marker;
         # unbound/unknown defaults cap downstream trust at UNVERIFIABLE.
         metadata.update(self._match_metadata(outcome.match))
-        if outcome.status == "version_incompatible":
+        if outcome.status in (
+            "compatibility_unknown", "compatibility_incompatible",
+        ):
+            next_action = NEXT_ACTION_VERSION_PIN
+        elif outcome.status == "version_incompatible":
             next_action = NEXT_ACTION_VERSION_PIN
         elif index_related:
             next_action = NEXT_ACTION_SYNC
@@ -826,7 +1162,7 @@ class CodebaseMemoryProvider:
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
-            provider_version=self._version,
+            provider_version=self._locked_version(),
             capability=capability,
             status="abstained",
             exit_code=None,
@@ -838,7 +1174,9 @@ class CodebaseMemoryProvider:
         return QueryOutcome(
             ok=False, run=record, payload=None, error=detail,
             next_action=next_action,
-            metadata={"wire_status": "abstained", "freshness": "UNBOUND",
+            metadata={"wire_status": "abstained",
+                      "identity_basis": self._identity_basis(),
+                      "freshness": "UNBOUND",
                       "snapshot_bound": False},
         )
 
@@ -854,7 +1192,8 @@ class CodebaseMemoryProvider:
         are cached per repo root for the lifetime of this instance.
         """
         target = os.path.realpath(repo_root)
-        cached = self._project_cache.get(target)
+        with self._lock:
+            cached = self._project_cache.get(target)
         if cached is not None:
             return cached
         all_projects: list[Any] = []
@@ -877,12 +1216,22 @@ class CodebaseMemoryProvider:
                 timeout_seconds=self._query_timeout,
             )
             if not outcome.ok or not isinstance(outcome.payload, Mapping):
+                if outcome.status.startswith("compatibility_"):
+                    # Never cached: the refusal is repairable (registry/
+                    # binary fix) and must keep its own remediation, not
+                    # degrade to the sync command. Next dispatch re-gates.
+                    return (
+                        None,
+                        f"list_projects refused: {outcome.error}",
+                        NEXT_ACTION_VERSION_PIN,
+                    )
                 resolved: tuple[str | None, str | None, str | None] = (
                     None,
                     f"list_projects failed: {outcome.error}",
                     NEXT_ACTION_SYNC,
                 )
-                self._project_cache[target] = resolved
+                with self._lock:
+                    self._project_cache[target] = resolved
                 return resolved
             projects = outcome.payload.get("projects")
             if isinstance(projects, list) and projects:
@@ -940,7 +1289,8 @@ class CodebaseMemoryProvider:
                 % (len(matches), target),
                 NEXT_ACTION_EXPLICIT_PROJECT,
             )
-        self._project_cache[target] = resolved
+        with self._lock:
+            self._project_cache[target] = resolved
         return resolved
 
     def _project_for(
@@ -1096,7 +1446,7 @@ class CodebaseMemoryProvider:
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
-            provider_version=self._version,
+            provider_version=self._locked_version(),
             capability="ensure_index",
             status="abstained",
             exit_code=None,
@@ -1118,7 +1468,22 @@ class CodebaseMemoryProvider:
         travel via --args-file, and the run is persisted whatever the exit
         status so the ledger keeps the receipt. ``--progress`` forwards the
         provider's own progress stream for interactive syncs.
+
+        Strict mode: the explicit index operation is gated like every tool —
+        without a tested record for ``index_repository`` the mutation is
+        explicitly unavailable and never attempted (no mutating fallback).
         """
+        gate: CompatibilityAssessment | None = None
+        if self._strict_compat:
+            gate = self._compat_gate("index_repository")
+            if gate.verdict is not CompatibilityVerdict.COMPATIBLE:
+                refused = self._gate_outcome("index_repository", gate)
+                return self._index_record(
+                    request, result=None, status=refused.status,
+                    duration_ms=0, detail=refused.error,
+                    redacted=("index_repository",),
+                    next_action=NEXT_ACTION_VERSION_PIN,
+                )
         timeout = (
             request.timeout_seconds
             if request.timeout_seconds is not None
@@ -1193,17 +1558,22 @@ class CodebaseMemoryProvider:
         self, request: IndexRequest, *, result, status: str,
         duration_ms: int, detail: str, redacted: tuple,
         pre_head: str | None = None, pre_dirty: bool | None = None,
+        next_action: str | None = None,
     ) -> ProviderRunRecord:
+        version = self._locked_version()
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
-            provider_version=self._version,
+            provider_version=version,
             capability="index_repository",
             status=status,
             exit_code=(result.returncode if result is not None else None),
             duration_ms=duration_ms,
             arguments_redacted=redacted,
-            next_action=None if status == "ok" else NEXT_ACTION_SYNC,
+            next_action=(
+                next_action if next_action is not None
+                else (None if status == "ok" else NEXT_ACTION_SYNC)
+            ),
             detail=detail,
         )
         if result is not None and self._db is not None:
@@ -1233,7 +1603,7 @@ class CodebaseMemoryProvider:
                             }
                 run_dict = {
                     "provider_name": PROVIDER_NAME,
-                    "provider_version": self._version,
+                    "provider_version": version,
                     "capability": "index_repository",
                     "snapshot_hash": snap_hash,
                     "project_root": os.path.realpath(request.repo_root),
@@ -1296,7 +1666,7 @@ class CodebaseMemoryProvider:
         record = ProviderRunRecord(
             run_id=f"run_{int(time.time())}_{uuid.uuid4().hex[:8]}",
             provider_name=PROVIDER_NAME,
-            provider_version=self._version,
+            provider_version=self._locked_version(),
             capability=tool,
             status="schema_drift",
             exit_code=None,
@@ -1311,6 +1681,7 @@ class CodebaseMemoryProvider:
             next_action=None,
             metadata={"wire_status": "schema_drift",
                       "version_compatibility": self.version_compatibility(),
+                      "identity_basis": self._identity_basis(),
                       "freshness": "UNBOUND", "snapshot_bound": False},
         )
 
@@ -1505,6 +1876,9 @@ class CodebaseMemoryProvider:
         if not shaped.ok:
             return QueryOutcome(
                 ok=False, run=shaped.run, payload=None, error=shaped.error,
-                next_action=NEXT_ACTION_SYNC, metadata=shaped.metadata,
+                # A compatibility gate refusal keeps its own remediation
+                # (sync cannot fix missing test evidence).
+                next_action=shaped.next_action or NEXT_ACTION_SYNC,
+                metadata=shaped.metadata,
             )
         return self._refine_coverage_freshness(shaped)
