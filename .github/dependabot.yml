@@ -1,0 +1,20 @@
+# SG-302 OSS governance baseline.
+#
+# Ecosystem choice: Dependabot has native `uv` support (version updates since
+# 2025; security updates since December 2025) and this repo's lockfile is
+# `uv.lock` at the root, so the `uv` ecosystem is used instead of the older
+# `pip` ecosystem (which reads pyproject.toml but not uv.lock). If uv-specific
+# quirks appear, fall back to `package-ecosystem: "pip"`, directory "/".
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
