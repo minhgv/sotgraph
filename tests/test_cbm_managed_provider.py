@@ -25,6 +25,7 @@ from typing import Any
 
 import pytest
 
+from sot_graph.db import Database
 from sot_graph.proc import RunResult
 from sot_graph.provider_contract import (
     Capability,
@@ -44,6 +45,7 @@ from sot_graph.providers.codebase_memory import (
     PROBE_OPERATION,
     CodebaseMemoryProvider,
     ExactCompatibilityContext,
+    allowlisted_next_action,
 )
 from sot_graph.providers.compatibility import (
     CompatibilityRegistry,
@@ -532,7 +534,7 @@ class ManagedFixture:
                  index_status_head: Any = _UNSET) -> None:
         self.repo, self.head = make_git_repo(tmp_path)
         self.exe = make_exe(tmp_path)
-        context = make_context(self.exe)  # ONE trusted context object
+        self.context = context = make_context(self.exe)
         self.profile = ManagedRuntimeProfile(
             runtime_root(), self.repo, artifact_digest=_sha256_file(self.exe))
         self.runtime = ManagedNativeRuntime(
@@ -745,3 +747,175 @@ class TestManagedProbeAdvertisement:
         assert not status.healthy
         assert "index_status exact-compatibility" in status.detail
         assert runtime.calls == []
+
+
+class TestPriorBindingHeadRegression:
+    """STRONG same-head regression: a prior SOT binding whose head_sha
+    matches the current repo HEAD must NOT promote freshness when the
+    native index_status stops reporting a head. The SOT-ledger head is
+    never native proof (managed mode), no matter how well it agrees."""
+
+    def test_matching_prior_head_without_native_head_not_fresh(
+            self, real_env):
+        fx = real_env
+        assert fx.provider.index(IndexRequest(repo_root=fx.repo)).status == "ok"
+        _run, binding, _ev = fx.ledger.outcomes[0]
+        assert binding is not None and binding["head_sha"] == fx.head
+        # The native now reports NO head_sha at all; the SOT binding and
+        # the repo HEAD still agree perfectly — and must stay UNBOUND.
+        fx.runner.index_status_head = None
+        out = fx.provider.search_symbols(
+            SymbolRequest(repo_root=fx.repo, query="foo"))
+        assert out.ok
+        assert out.metadata["snapshot_bound"] is False
+        assert out.metadata["freshness"] == "UNBOUND"  # never FRESH
+        assert out.metadata["identity_basis"] == "artifact_verified"
+
+
+class _FailingConn:
+    """Proxy connection raising on a matching statement (crash simulator);
+    mirrors the ExplodingConn fault seam of tests/test_cbm_snapshot_p2.py."""
+
+    def __init__(self, real, needle: str) -> None:
+        self._real = real
+        self._needle = needle
+
+    def execute(self, sql, *args, **kwargs):
+        if self._needle in sql:
+            raise sqlite3.OperationalError("simulated crash before commit")
+        return self._real.execute(sql, *args, **kwargs)
+
+    def __enter__(self):
+        return self._real.__enter__()
+
+    def __exit__(self, *exc_info):
+        return self._real.__exit__(*exc_info)
+
+    def __getattr__(self, name):
+        return getattr(self._real, name)
+
+
+class TestLedgerFailurePublication:
+    """A real DB transaction failure during the publication of a SUCCESSFUL
+    managed native completion. MANAGED-ONLY strict boundary (legacy paths
+    keep their swallow-and-keep-dispatch-status contract): the provider MUST
+    return a non-ok outcome — never ok/indexed/success — with a safe
+    allowlisted remediation and no raw exception text, the atomic
+    transaction must roll back the staged run+binding so the ledger keeps
+    only prior state, and the runtime stays READY (runtime preparation is
+    not publication success)."""
+
+    def test_transaction_failure_preserves_prior_ledger(self, real_env,
+                                                        tmp_path):
+        fx = real_env
+        db = Database(str(tmp_path / "ledger.db"))
+        try:
+            # Seed PRIOR ledger state: one old run + evidence, one old
+            # binding, one note.
+            db.record_provider_run(
+                PROVIDER, provider_version="0.9.0",
+                capability="search_graph", snapshot_hash="a" * 40,
+                project_root=fx.repo, status="ok", exit_code=0,
+                duration_ms=5, command_digest="d" * 64, run_id="run_old",
+            )
+            db.record_provider_evidence("run_old", [
+                {"path": "old.py", "symbol": "old_sym", "relation": "define",
+                 "line_start": 1, "line_end": 2, "syntax_kind": "function",
+                 "snapshot_hash": "a" * 40},
+            ])
+            db.record_provider_binding(fx.repo, PROVIDER, "old-proj",
+                                       head_sha="b" * 40)
+            db.conn.execute(
+                "INSERT INTO graph_nodes (id, path, kind, label, body, "
+                "updated_at) VALUES ('note:old', 'notes.md', 'note', "
+                "'Old note', 'keep me', 1)")
+            db.conn.commit()
+
+            # A SECOND provider over the SAME bound runtime publishes to
+            # the real DB. The crash is injected MID-TRANSACTION at the
+            # binding upsert: after the run INSERT has staged and before
+            # transaction close (index receipts carry an EMPTY evidence
+            # batch, so the binding upsert is the publication's final
+            # statement) — proving the rollback covers everything staged,
+            # not just the first statement.
+            publication = CodebaseMemoryProvider(
+                command=(fx.exe,), exact_context=fx.context,
+                managed_runtime=fx.runtime, db=db)
+            raw_conn = db.conn
+            db.conn = _FailingConn(raw_conn, "provider_project_bindings")
+            try:
+                record = publication.index(IndexRequest(repo_root=fx.repo))
+            finally:
+                db.conn = raw_conn
+            # Strict managed publication outcome: NEVER ok/indexed/success.
+            assert record.status == "publication_failed"
+            assert record.status not in ("ok", "indexed", "success")
+            # Safe allowlisted remediation, no raw exception leak.
+            assert record.next_action == NEXT_ACTION_SYNC
+            assert allowlisted_next_action(record.next_action) == \
+                record.next_action
+            detail = record.detail or ""
+            assert "ledger publication" in detail
+            assert "simulated crash" not in detail
+            assert "OperationalError" not in detail
+
+            # NO partial successful run: the transaction rolled back the
+            # staged run AND the staged binding; the ledger shows only the
+            # pre-seeded old state.
+            runs = db.conn.execute(
+                "SELECT id FROM provider_runs").fetchall()
+            assert [r[0] for r in runs] == ["run_old"]
+            # Old binding preserved (the staged managed binding upsert was
+            # rolled back with the transaction).
+            row = db.get_provider_binding(fx.repo, PROVIDER)
+            assert row["provider_project_id"] == "old-proj"
+            assert row["head_sha"] == "b" * 40
+            # Old evidence preserved, nothing partial added.
+            assert db.conn.execute(
+                "SELECT COUNT(*) FROM provider_evidence "
+                "WHERE run_id='run_old'").fetchone()[0] == 1
+            # Old note preserved.
+            assert db.conn.execute(
+                "SELECT label FROM graph_nodes WHERE id='note:old'"
+            ).fetchone() == ("Old note",)
+            # READY is runtime preparation, NOT publication success: a
+            # ledger failure must never quarantine the prepared runtime.
+            assert fx.profile.status()["state"] == "READY"
+        finally:
+            db.close()
+
+    def test_legacy_publication_failure_keeps_dispatch_status(self,
+                                                              tmp_path):
+        # Legacy contract unchanged: with strict_publication OFF (every
+        # non-managed caller), the SAME ledger failure is swallowed and the
+        # record KEEPS its dispatch status. Spawn-free: _index_record is
+        # exercised directly with a plain RunResult.
+        repo = str(tmp_path)
+        exe = make_exe(tmp_path)
+        context = make_context(exe)
+        real_db = Database(str(tmp_path / "legacy.db"))
+        try:
+            real_db.record_provider_run(
+                PROVIDER, run_id="run_old", capability="search_graph",
+                project_root=repo, status="ok")
+            provider = CodebaseMemoryProvider(
+                command=(exe,), exact_context=context, db=real_db)
+            shell = RunResult(argv=("legacy",), returncode=0, stdout="",
+                              stderr="", timed_out=False, truncated=False,
+                              error=None)
+            raw_conn = real_db.conn
+            real_db.conn = _FailingConn(raw_conn, "INTO provider_runs")
+            try:
+                record = provider._index_record(
+                    IndexRequest(repo_root=repo), result=shell, status="ok",
+                    duration_ms=1, detail="legacy dispatch ok",
+                    redacted=("legacy",))
+            finally:
+                real_db.conn = raw_conn
+            assert record.status == "ok"  # dispatch status kept, swallowed
+            assert record.status != "publication_failed"
+            runs = real_db.conn.execute(
+                "SELECT id FROM provider_runs").fetchall()
+            assert [r[0] for r in runs] == ["run_old"]
+        finally:
+            real_db.close()

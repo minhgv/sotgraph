@@ -1180,7 +1180,7 @@ class CodebaseMemoryProvider:
             duration_ms=int((time.monotonic() - started) * 1000),
             detail=detail, redacted=("index_repository", "managed"),
             pre_head=pre_head, pre_dirty=pre_dirty,
-            require_native_head=True,
+            require_native_head=True, strict_publication=True,
         )
 
     # ----------------------------------------------------------------- invoke
@@ -2013,6 +2013,7 @@ class CodebaseMemoryProvider:
         pre_head: str | None = None, pre_dirty: bool | None = None,
         next_action: str | None = None,
         require_native_head: bool = False,
+        strict_publication: bool = False,
     ) -> ProviderRunRecord:
         version = self._locked_version()
         record = ProviderRunRecord(
@@ -2094,6 +2095,30 @@ class CodebaseMemoryProvider:
                     self._db.record_provider_run(**run_dict)
             except Exception as exc:  # noqa: BLE001 - sidecar isolation
                 logger.warning("cbm index run ledger write failed: %s", exc)
+                # Managed-only strict boundary: a publication failure is
+                # NEVER returned as ok/success. The native completion stays
+                # a separate diagnostic, no persisted receipt is invented
+                # (the atomic transaction already rolled back), and the
+                # READY runtime is not quarantined for a ledger fault.
+                # Legacy behavior (swallow, keep dispatch status) is
+                # unchanged: strict_publication defaults to False.
+                if strict_publication and record.status == "ok":
+                    record = ProviderRunRecord(
+                        run_id=record.run_id,
+                        provider_name=record.provider_name,
+                        provider_version=record.provider_version,
+                        capability=record.capability,
+                        status="publication_failed",
+                        exit_code=record.exit_code,
+                        duration_ms=record.duration_ms,
+                        arguments_redacted=record.arguments_redacted,
+                        next_action=NEXT_ACTION_SYNC,
+                        detail=(
+                            "native sync completed; ledger publication "
+                            "failed and no receipt was persisted; "
+                            f"{NEXT_ACTION_SYNC}"
+                        ),
+                    )
         else:
             logger.info("cbm index_repository %s: %s", status, detail)
         return record
