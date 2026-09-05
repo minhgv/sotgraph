@@ -63,12 +63,14 @@ class RepoMapTests(unittest.TestCase):
         self.assertGreater(ranks_focus["leaf"], ranks_plain["leaf"])
 
     def test_token_budget_is_respected(self):
-        result = build_repo_map(self.db.conn, max_tokens=24)
-        self.assertLessEqual(result["tokens_estimate"], 24)
+        # Budget covers the full returned text: tree + mandatory scope
+        # footer (SG-201), so it must exceed the footer's own token cost.
+        result = build_repo_map(self.db.conn, max_tokens=256)
+        self.assertLessEqual(result["tokens_estimate"], 256)
         self.assertGreaterEqual(result["symbols"], 1)
 
     def test_cmd_map_prints_tree_and_footer(self):
-        args = argparse.Namespace(tokens=512, focus=None)
+        args = argparse.Namespace(tokens=512, focus=None, include=None)
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             self.assertEqual(cmd_map(args, self.db, self.test_dir), 0)

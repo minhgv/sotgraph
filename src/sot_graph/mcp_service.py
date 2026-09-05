@@ -1026,20 +1026,35 @@ class McpService:
             })
         return self._run(op)
 
-    def repo_map(self, focus: Optional[str] = None, *, max_tokens: int = 1024) -> Dict[str, Any]:
+    def repo_map(self, focus: Optional[str] = None, *, max_tokens: int = 1024,
+                 include_categories: Optional[str] = None) -> Dict[str, Any]:
         """Token-budgeted repo map ranked by personalized PageRank."""
-        from sot_graph.repo_map import build_repo_map
+        from sot_graph.repo_map import build_repo_map, parse_include_categories
 
         if focus is not None and not isinstance(focus, str):
             raise McpServiceError("invalid_argument", "focus must be a string")
         if focus is not None and len(focus) > 2048:
             raise McpServiceError("invalid_argument", "focus exceeds 2048 characters")
         max_tokens = self._bounded(max_tokens, 8192)
+        if include_categories is not None:
+            if not isinstance(include_categories, str):
+                raise McpServiceError("invalid_argument",
+                                      "include_categories must be a string")
+            if len(include_categories) > 256:
+                raise McpServiceError("invalid_argument",
+                                      "include_categories exceeds 256 characters")
+            try:
+                categories = parse_include_categories(include_categories)
+            except ValueError as exc:
+                raise McpServiceError("invalid_argument", str(exc))
+        else:
+            categories = None
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
             focus_list = [f for f in (focus or "").split(",") if f.strip()]
             result = build_repo_map(conn, focus=focus_list, max_tokens=max_tokens,
-                                    root=self.project_root)
+                                    root=self.project_root,
+                                    include_categories=categories)
             return self._fits_response({
                 "ok": True,
                 "map": result["rendered"],
@@ -1048,6 +1063,7 @@ class McpService:
                 "files": len(result["files"]),
                 "focus": result["focus"],
                 "truncated": result["truncated"],
+                "filters": result["filters"],
                 "providers": self._providers(conn),
             })
         return self._run(op)

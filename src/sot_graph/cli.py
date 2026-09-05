@@ -663,16 +663,25 @@ def cmd_map(args: argparse.Namespace, db: Database, root: str) -> int:
     from sot_graph.repo_map import build_repo_map
 
     focus = [f for f in (args.focus or "").split(",") if f.strip()]
-    result = build_repo_map(db.conn, focus=focus, max_tokens=args.tokens, root=root)
+    try:
+        result = build_repo_map(db.conn, focus=focus, max_tokens=args.tokens, root=root,
+                                include_categories=args.include)
+    except ValueError as exc:
+        print(f"❌ {exc}", file=sys.stderr)
+        return 2
     if not result["rendered"]:
         print("❌ No code symbols indexed yet — run `sot reconcile` first.")
         return 1
     print(result["rendered"])
+    filters = result["filters"]
+    scope = (",".join(filters["categories_included"]) if filters["categories_excluded"]
+             else "all categories")
     footer = f"  (~{result['tokens_estimate']} tokens, {result['symbols']} symbols"
     if result["files"]:
         footer += f", {len(result['files'])} files"
     if result["truncated"]:
         footer += ", truncated by budget"
+    footer += f", scope: {scope}"
     print(f"\n🗺️  Repo map{footer})")
     return 0
 
@@ -2021,6 +2030,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_map = subparsers.add_parser("map", help="Token-budgeted repo map ranked by personalized PageRank")
     p_map.add_argument("--tokens", type=int, default=1024, help="Approximate token budget (default: 1024)")
     p_map.add_argument("--focus", default=None, help="Comma-separated symbols to personalize the ranking")
+    p_map.add_argument("--include", default=None, help="Comma-separated path categories to include "
+                        "beyond production source (default: production only). Categories: "
+                        "production, test, fixture, vendor, generated, docs, tooling, or 'all'")
 
     # insert
     p_ins = subparsers.add_parser("insert", help="Insert a reusable piece of knowledge or decision")
