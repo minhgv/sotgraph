@@ -1,0 +1,24 @@
+{
+  "fixture": "Explicit synthetic preservation evidence via production DB API, NOT native correctness evidence",
+  "run_id": "run_1788669392_5c34f7ae",
+  "database_sha256_before": "d58074bb5cd88dfb56bfa3d9d9c3f16c1e9f67330eb8bd2e8e51983b49159ec0",
+  "database_sha256_after": "d58074bb5cd88dfb56bfa3d9d9c3f16c1e9f67330eb8bd2e8e51983b49159ec0",
+  "operations": [
+    {
+      "command": [
+        "uninstall",
+        "--digest",
+        "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "rollback",
+        "--digest",
+        "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

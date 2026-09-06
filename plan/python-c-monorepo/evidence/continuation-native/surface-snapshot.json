@@ -1,0 +1,50 @@
+{
+  "cli_help": {
+    "--help": {
+      "exit_code": 0,
+      "stdout": "usage: sot [-h] [-V] [--root ROOT] [--db DB]\n           {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits} ...\n\nsot-graph: Verified, self-healing knowledge graph for AI coding agents.\n\npositional arguments:\n  {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits}\n    engine              Explicit local engine artifact administration\n                        (experimental)\n    search              Ranked search with Trust Verdicts\n    embed               Build/refresh the optional vector index ([vector]\n                        extra)\n    explore             Explore AST relations and cross-file edges\n    usages              List every reference site of a symbol, grouped by\n                        caller\n    implementations     Show extends/implements relationships of a symbol\n    rename              Report-only impact plan for renaming a symbol\n    map                 Token-budgeted repo map ranked by personalized\n                        PageRank\n    insert              Insert a reusable piece of knowledge or decision\n    reconcile           Idempotently sync graph with filesystem\n    batch-reconcile     Batch reconcile multiple repositories concurrently\n    verify              Check for drift between graph and filesystem (CI-safe)\n    doctor              Check database and graph health statistics\n    clean               Remove stale or reset graph data safely\n    vacuum              Compact the SQLite database\n    mcp                 Run the optional MCP stdio server\n    report              Generate comprehensive architectural markdown report\n    cluster             Detect and inspect architectural communities/clusters\n    viz                 Generate standalone interactive HTML graph visualizer\n    export              Export knowledge graph to GraphRAG JSON, Obsidian,\n                        GraphML, or SCIP\n    bundle              Extract 5 high-density fact bundle markdown files for\n                        LLM architecture reports\n    setup               Configure AI coding harnesses (OMP / Pi, OpenCode,\n                        Antigravity, Claude, ZCode)\n    pack                Package a k-hop ContextBundle (YAML) for AI agent\n                        prompt registers\n    watch               Watch filesystem and reconcile in real time (daemon &\n                        multi-project support)\n    trace               Extract Full-Stack execution path, UI decisions, API\n                        binding, and Mermaid diagrams\n    import-scip         Import compiler-backed SCIP index into Multi-Provider\n                        Evidence Storage\n    ui-tree             Extract local Frontend UI decision tree, validation\n                        rules, and modals\n    be-flow             Extract Backend processing steps, multi-datasources,\n                        and exception branches\n    solution            Automated Solution Architecture and Manpower\n                        Estimation Engine\n    scope-receipt       PRE-change bounded evidence receipt for one edit\n                        target\n    receipt             Human-readable view of serialized assurance receipts\n                        (read-only, SG-205)\n    providers           Detect, list, and diagnose evidence providers (read-\n                        only)\n    diff-impact         Git diff blast radius, upstream caller traversal, and\n                        API impact analysis\n    claims              Lint public trust claims in docs against the claim\n                        registry (SG-110)\n    log (commits)       Inspect git commit history with automated risk scoring\n                        and impacted symbols\n\noptions:\n  -h, --help            show this help message and exit\n  -V, --version         show program's version number and exit\n  --root ROOT           Project root directory (default: current dir)\n  --db DB               Custom SQLite DB path (default: .sot/sot.db)\n"
+    },
+    "engine --help": {
+      "exit_code": 0,
+      "stdout": "usage: sot engine [-h] --store STORE [--name NAME]\n                  {import,promote,rollback,status,doctor,prepare,probe,sync,search,runtime-status} ...\n\npositional arguments:\n  {import,promote,rollback,status,doctor,prepare,probe,sync,search,runtime-status}\n    import              Verify and stage an explicit local artifact; never\n                        activate automatically\n    promote             Select an already verified digest; preserve all data\n    rollback            Select an already verified digest; preserve all data\n    status              Verify selected artifact without spawning an engine\n    doctor              Report artifact identity and experimental limitations\n    prepare             Explicit managed SOT operation (experimental)\n    probe               Explicit managed SOT operation (experimental)\n    sync                Explicit managed SOT operation (experimental)\n    search              Explicit managed SOT operation (experimental)\n    runtime-status      Explicit managed SOT operation (experimental)\n\noptions:\n  -h, --help            show this help message and exit\n  --store STORE         Private absolute store outside the repository\n  --name NAME\n"
+    },
+    "engine --store /private/tmp/unused-sot-store search --help": {
+      "exit_code": 0,
+      "stdout": "usage: sot engine search [-h] --runtime-root RUNTIME_ROOT --registry REGISTRY\n                         --protocol PROTOCOL [--generation GENERATION]\n                         [--limit LIMIT]\n                         query\n\npositional arguments:\n  query\n\noptions:\n  -h, --help            show this help message and exit\n  --runtime-root RUNTIME_ROOT\n  --registry REGISTRY   Trusted administrator operation evidence JSON outside\n                        repository\n  --protocol PROTOCOL\n  --generation GENERATION\n  --limit LIMIT\n"
+    }
+  },
+  "mcp_ast_declared_names": [
+    "sot node",
+    "sot notes",
+    "sot stats",
+    "sot_architecture_report",
+    "sot_backend_flow",
+    "sot_bundle",
+    "sot_communities",
+    "sot_cross_check",
+    "sot_deep_dive",
+    "sot_diff_impact",
+    "sot_diff_impact_receipt",
+    "sot_explore",
+    "sot_git_history",
+    "sot_implementations",
+    "sot_map",
+    "sot_notes",
+    "sot_pack",
+    "sot_providers_sync",
+    "sot_refactor_checklist",
+    "sot_scope_receipt",
+    "sot_search",
+    "sot_solution_bundle",
+    "sot_solution_inventory",
+    "sot_solution_steps",
+    "sot_trace",
+    "sot_ui_tree",
+    "sot_usages",
+    "sot_verify_drift",
+    "target"
+  ],
+  "scope": "Actual CLI help; static MCP declaration inventory only, not behavioral discovery/harness acceptance",
+  "public_console_entry": "sot only",
+  "native_exec_passthrough": false
+}

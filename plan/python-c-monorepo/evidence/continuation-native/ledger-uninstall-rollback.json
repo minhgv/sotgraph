@@ -1,0 +1,57 @@
+{
+  "counts": {
+    "provider_runs": 1,
+    "provider_evidence": 0,
+    "graph_nodes": 5
+  },
+  "database_preserved": true,
+  "operations": [
+    {
+      "command": [
+        "sync",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        " P4-RELEASE-2412E017-MEASURED-V1 "
+      ],
+      "exit_code": 0,
+      "stdout": "{\"operation\": \"sync\", \"platform_support\": \"experimental\", \"result\": {\"arguments_redacted\": [\"index_repository\", \"managed\"], \"capability\": \"index_repository\", \"detail\": \"managed sync completed; receipt verified (status=indexed, project binding verified)\", \"duration_ms\": 20625, \"exit_code\": null, \"next_action\": null, \"provider_name\": \"codebase-memory\", \"provider_version\": null, \"run_id\": \"run_1788669212_9801cae7\", \"status\": \"ok\"}, \"schema_version\": 1}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "search",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        " P4-RELEASE-2412E017-MEASURED-V1 ",
+        "greet"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"operation\": \"search\", \"platform_support\": \"experimental\", \"result\": {\"freshness\": \"unknown\", \"gap\": null, \"limitations\": [\"Existing SOT orchestrator normalization and trust ceilings apply.\"], \"results\": [{\"detail\": \"'greet' uniquely defined at alpha.py:1-2\", \"problems\": [], \"provider\": \"codebase-memory\", \"rank\": -13.84070950907853, \"relation\": \"DEFINES\", \"resolution\": \"EXACT\", \"subject\": {\"end_line\": 2, \"kind\": \"Function\", \"path\": \"alpha.py\", \"qualified_name\": \"private-tmp-a-u8mldiy1-repo.alpha.greet\", \"start_line\": 1}, \"targets\": [\"private-tmp-a-u8mldiy1-repo.alpha.greet\"], \"verdict\": \"UNVERIFIABLE\", \"verified\": \"VERIFIED\"}], \"scope_completeness\": \"bounded\", \"snapshot_bound\": false, \"status\": \"ok\", \"truncated\": false}, \"schema_version\": 1}\n",
+      "stderr": ""
+    },
+    {
+      "action": "uninstall",
+      "exit_code": 0,
+      "stdout": "{\"artifact\": {\"digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"engine_commit\": \"46ae198fc11cda80e817acbc5f5908d7c2de7032\", \"executable\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\", \"manifest_path\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json\", \"name\": \"codebase-memory\", \"platform\": \"darwin-arm64\", \"protocol\": \"artifacts-v1\"}, \"compatibility\": \"not_assessed_by_artifact_administration\", \"lifecycle\": \"not_started\", \"limitations\": [\"Artifact selection does not enable query dispatch.\", \"Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.\"], \"next_action\": null, \"platform_support\": \"experimental\", \"schema_version\": 1, \"snapshot\": \"not_assessed\", \"status\": \"ok\"}\n",
+      "stderr": ""
+    },
+    {
+      "action": "promote",
+      "exit_code": 0,
+      "stdout": "{\"artifact\": {\"digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"engine_commit\": \"46ae198fc11cda80e817acbc5f5908d7c2de7032\", \"executable\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\", \"manifest_path\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json\", \"name\": \"codebase-memory\", \"platform\": \"darwin-arm64\", \"protocol\": \"artifacts-v1\"}, \"compatibility\": \"not_assessed_by_artifact_administration\", \"lifecycle\": \"not_started\", \"limitations\": [\"Artifact selection does not enable query dispatch.\", \"Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.\"], \"next_action\": null, \"platform_support\": \"experimental\", \"schema_version\": 1, \"snapshot\": \"not_assessed\", \"status\": \"ok\"}\n",
+      "stderr": ""
+    },
+    {
+      "action": "rollback",
+      "exit_code": 0,
+      "stdout": "{\"artifact\": {\"digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"engine_commit\": \"46ae198fc11cda80e817acbc5f5908d7c2de7032\", \"executable\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\", \"manifest_path\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json\", \"name\": \"codebase-memory\", \"platform\": \"darwin-arm64\", \"protocol\": \"artifacts-v1\"}, \"compatibility\": \"not_assessed_by_artifact_administration\", \"lifecycle\": \"not_started\", \"limitations\": [\"Artifact selection does not enable query dispatch.\", \"Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.\"], \"next_action\": null, \"platform_support\": \"experimental\", \"schema_version\": 1, \"snapshot\": \"not_assessed\", \"status\": \"ok\"}\n",
+      "stderr": ""
+    }
+  ]
+}

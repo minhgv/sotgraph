@@ -1,0 +1,17 @@
+{
+  "exit_code": 0,
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_mcp.py",
+    "tests/test_mcp_modern.py",
+    "tests/test_mcp_prompts.py",
+    "tests/test_mcp_receipt_tools.py",
+    "tests/test_engine_admin.py",
+    "tests/test_managed_artifacts.py",
+    "-q",
+    "-p",
+    "no:cacheprovider"
+  ]
+}
