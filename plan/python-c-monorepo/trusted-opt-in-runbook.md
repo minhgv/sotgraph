@@ -1,10 +1,10 @@
-# Trusted managed-engine opt-in — M3a runbook
+# Trusted managed-engine opt-in — M3a/M3b runbook
 
 ## Scope and current limit
 
-M3a provides persisted trusted configuration and explicit administrator operations only. It does **not** wire normal CLI queries or MCP tools to the managed engine. That integration belongs to M3b; operational status/recovery integration belongs to M3c. A stored registration is not proof of native execution, a prepared runtime, an indexed project, CLI/MCP parity, or a supported native release platform.
+M3a provides persisted trusted configuration and explicit administrator operations. M3b now implements shared managed-search dispatch for normal CLI and MCP search; its checkpoint remains pending the final full-suite run. Integrated operational status/recovery remains pending M3c. A stored registration is not proof of native execution, a prepared runtime, an indexed project or a supported native release platform.
 
-Default Python-only behavior remains unchanged. See [the existing operations runbook](operations-runbook.md) for the experimental explicit `sot engine` administration path and its known release/evidence limits.
+Builtin remains the default. No actual user project has been registered as part of this work; testing used scratch projects only. There is no performance claim. See [the existing operations runbook](operations-runbook.md) for explicit `sot engine` administration and known release/evidence limits.
 
 ## Security boundary
 
@@ -60,21 +60,38 @@ The persisted JSON contract is:
 
 This is a descriptive schema, not a copy-and-run configuration. Administrator registration writes the validated binding. Missing configuration means default-off. Malformed configuration, a file larger than 262144 bytes, symlinks, unsafe ownership/write permissions, prohibited path overlap and binding mismatches fail closed; do not treat these as permission to execute a native engine.
 
-Registration and enabled configuration loading fully validate the selected artifact and exact compatibility, with its digest pinned in the registration. Promoting a different artifact requires explicit re-registration; selection changes must not silently expand the existing authority. Persisted configuration survives process restarts, but does not itself enable ordinary CLI/MCP dispatch in M3a.
+Registration and enabled configuration loading fully validate the selected artifact and exact compatibility, with its digest pinned in the registration. Promoting a different artifact requires explicit re-registration; selection changes must not silently expand the existing authority. Persisted configuration survives process restarts. Registration authorizes the configured binding; M3b dispatch still requires an explicit external provider policy on the query.
+
+## M3b query policies and result interpretation
+
+```sh
+sot --root /absolute/project search 'QUERY' --provider-policy prefer_external --json
+sot --root /absolute/project search 'QUERY' --provider-policy require_external --json
+sot --root /absolute/project usages TARGET --provider-policy prefer_external --json
+sot --root /absolute/project usages TARGET --provider-policy require_external --json
+```
+
+`--json` is optional. CLI and MCP search use shared managed dispatch. Builtin is the default, and explicit `builtin_only` bypasses trusted configuration. `prefer_external` permits builtin fallback with a reason; `require_external` refuses when the managed operation is unavailable rather than silently falling back.
+
+Managed `usages` is unsupported: `prefer_external` falls back and `require_external` refuses. The native allowlist does not include trace; do not infer managed reference or trace support from managed search. CLI usages retains its legacy `--provider` behavior when the new policy is absent; do not combine that legacy option with an external provider policy. Search has never supported legacy `--provider` and rejects it through argument parsing.
+
+Managed search candidates appear in the separate `managed` field, not as builtin trusted results. Native retrieval is capped at 20 candidates, with scope filtering performed locally. Managed evidence is unbound and remains subject to existing trust limits; a returned candidate does not gain builtin trust merely by appearing in the response. `policy.builtin_only` describes requested policy semantics, not observed execution: inspect `managed.status` and `managed.reason` for the actual outcome.
 
 ## Migration and indexing
 
-Existing explicit engine administration does not itself create a trusted registration or enable ordinary CLI/MCP managed dispatch. Preserve the existing store, registry and runtime namespaces while reviewing the administrator binding.
+Existing explicit runtime/artifact administration does not itself create a trusted registration. Use `register` for authorization and an explicit external query policy for managed dispatch. Preserve the existing store, registry and runtime namespaces while reviewing the administrator binding.
 
 Artifact import and selection remain separate explicit operations. The existing runbook documents `import`, `promote`, `doctor` and `status`; none should be treated as proof that the project index is current. Runtime operations require the explicit runtime-root, registry, protocol and generation contract documented there.
 
-Only explicit `sync` requests indexing. Configuration loading and query paths must not create global configuration/directories, prepare a runtime, index the repository or write an evidence ledger. M3a registration is configuration administration, not index preparation. M3b must establish these guarantees for ordinary CLI/MCP dispatch; this document does not claim that wiring already exists.
+Only explicit `sync` requests native indexing. Registration is configuration administration, not index preparation; `prepare`, `probe` and `sync` remain explicit SOT administrator operations. Configuration loading and query paths do not create global configuration/directories, prepare a runtime, index the repository or write an evidence ledger. Queries do not automatically reconcile the graph, index it or perform just-in-time external setup.
+
+An existing compatible builtin database is required; a missing or incompatible database produces an error rather than query-time creation. Read-only SQLite access means no logical database writes, not an immutable filesystem: SQLite `mode=ro` can still create WAL/SHM sidecar files.
 
 ## Disable, preservation and recovery
 
 Run `sot --root /absolute/project engine disable` to mark the project's registration `enabled: false`. This works without opening or resolving a missing artifact or runtime, but paths and the configuration schema are still validated. Disable means withdraw the project's managed opt-in, not uninstall the artifact or delete data.
 
-Corrupted configuration, including an invalid unrelated project entry, causes both loading and disabling to refuse without native execution. This deliberately avoids overwriting malformed authority; `disable` does not repair malformed JSON. An administrator must restore a known-good private configuration copy before retrying SOT `disable`. Restoration is an explicit administrator action, not an automatic recovery operation or a raw native command. Preserve repository files, SOT notes and evidence, installation bytes and all runtime/index namespaces. In M3a, ordinary CLI/MCP behavior is already unchanged; do not present disabling as an integrated dispatch transition that has been tested. The intended M3b behavior is return to builtin/default-off dispatch.
+Corrupted configuration, including an invalid unrelated project entry, causes both loading and disabling to refuse without native execution. This deliberately avoids overwriting malformed authority; `disable` does not repair malformed JSON. An administrator must restore a known-good private configuration copy before retrying SOT `disable`. Restoration is an explicit administrator action, not an automatic recovery operation or a raw native command. Preserve repository files, SOT notes and evidence, installation bytes and all runtime/index namespaces. After disabling, default queries remain builtin and explicit `builtin_only` bypasses configuration. An explicit `prefer_external` request falls back with a reason when managed authorization is unavailable; `require_external` refuses rather than silently falling back. M3b's final full-suite checkpoint is still pending; integrated operational recovery remains M3c work.
 
 Do not delete `.sot`, reset indexes, or clear runtime namespaces as a disable procedure. Retained native indexes do not imply permission to execute them or compatibility with a different artifact.
 

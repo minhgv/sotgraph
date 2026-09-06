@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "is_healthy": true,
+  "quick_check": "ok",
+  "schema_version": 8,
+  "expected_schema_version": 8,
+  "journal_mode": "WAL",
+  "page_size": 4096,
+  "page_count": 13681,
+  "db_size_bytes": 56037376,
+  "stats": {
+    "paths": 515,
+    "nodes": 6179,
+    "edges": 15584,
+    "pending": 9074,
+    "pending_ambiguous": 462,
+    "pending_unresolved": 8612,
+    "orphaned_nodes": 0,
+    "fts_count": 6179
+  },
+  "pending_breakdown": {
+    "by_state": {
+      "AMBIGUOUS": 462,
+      "UNRESOLVED": 8612
+    },
+    "by_relation": {
+      "calls": 8895,
+      "extends": 178,
+      "imports": 1
+    }
+  },
+  "warnings": [],
+  "errors": []
+}

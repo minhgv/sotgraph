@@ -1,0 +1,7 @@
+{
+  "src/sot_graph/assurance/orchestrator.py": "ae019f63725ff3d904600d16795727e0050e3bcc5bdad6b25a6b5c7101fd8062",
+  "src/sot_graph/cli.py": "2f457a51d61332c52b5f35b068cbe6c1132cd8a5ea95b39841fb1287b36ab562",
+  "src/sot_graph/mcp_service.py": "b5035765856ce8cbf68f8af8d59f17efff439767412544451bed52a34505aa96",
+  "tests/test_managed_read_dispatch.py": "8624d6488bdc6015216e42c61e8f8b9837a055d3e0d228fbc790aee31f3b021f",
+  "tests/test_managed_policy_parity.py": "bea500694c508234620df2df511440df59f3d2f678f2f481491ea5c8ee172798"
+}

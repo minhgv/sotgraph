@@ -1,0 +1,237 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/giapminh79/code/GitHub/sot-graph
+configfile: pyproject.toml
+plugins: cov-7.1.0, asyncio-1.4.0, anyio-4.14.2, hypothesis-6.165.10
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 2112 items
+
+tests/benchmark/test_benchmark_sot.py ....                               [  0%]
+tests/benchmark/test_diff_impact_oracle.py ..                            [  0%]
+tests/benchmark/test_dynamic_gap_corpus.py .......                       [  0%]
+tests/benchmark/test_provider_accuracy.py ....                           [  0%]
+tests/benchmark/test_provider_identity_oracle.py ...                     [  0%]
+tests/fault/test_fault_injection.py .........                            [  1%]
+tests/property/test_invariants.py .                                      [  1%]
+tests/test_accounting_contract.py .....................................  [  3%]
+tests/test_accounting_visitor_typing.py ....                             [  3%]
+tests/test_adapter_docs_consistency.py ..                                [  3%]
+tests/test_adapters.py ............                                      [  4%]
+tests/test_adversarial_edge_cases.py ..........                          [  4%]
+tests/test_analytics.py ...........                                      [  5%]
+tests/test_assurance_state.py ...........                                [  5%]
+tests/test_bundle.py ....                                                [  5%]
+tests/test_bundle_conformance.py ............                            [  6%]
+tests/test_c_cpp_extractor.py ....                                       [  6%]
+tests/test_cbm_adapter.py .............................................  [  8%]
+tests/test_cbm_contract_parity.py ...F.                                  [  8%]
+tests/test_cbm_exact_compatibility.py .............................      [ 10%]
+tests/test_cbm_golden.py .................                               [ 11%]
+tests/test_cbm_managed_provider.py ....................................  [ 12%]
+tests/test_cbm_normalization.py .............................            [ 14%]
+tests/test_cbm_remediation_surface.py .................................. [ 15%]
+.                                                                        [ 15%]
+tests/test_cbm_snapshot_p2.py .....................                      [ 16%]
+tests/test_cbm_verification.py ......................................... [ 18%]
+.                                                                        [ 18%]
+tests/test_ci_workflows_yaml.py ...                                      [ 18%]
+tests/test_cli_provider_wiring.py ..............                         [ 19%]
+tests/test_cli_smoke.py ...                                              [ 19%]
+tests/test_collection_accounting.py ............                         [ 20%]
+tests/test_config_loader.py .........................                    [ 21%]
+tests/test_core_safety_fixes.py ..........                               [ 21%]
+tests/test_coverage_manifest.py ...........                              [ 22%]
+tests/test_dart_extractor.py .......                                     [ 22%]
+tests/test_diagnose_native_latency.py .................................. [ 24%]
+                                                                         [ 24%]
+tests/test_diff_impact.py ..........................................     [ 26%]
+tests/test_diff_impact_github.py ...........                             [ 26%]
+tests/test_edge_lifecycle.py ....                                        [ 27%]
+tests/test_engine_admin.py ..............                                [ 27%]
+tests/test_engine_trusted_config.py ....                                 [ 27%]
+tests/test_export.py .......                                             [ 28%]
+tests/test_force_reindex.py .....                                        [ 28%]
+tests/test_group1_extractors.py ......                                   [ 28%]
+tests/test_group2_extractors.py ......                                   [ 29%]
+tests/test_group3_extractors.py ......                                   [ 29%]
+tests/test_gs_surface_catalog.py ................                        [ 30%]
+tests/test_gs_surface_lifecycle.py .                                     [ 30%]
+tests/test_hardening_fixes.py ...........                                [ 30%]
+tests/test_history_retention.py ....                                     [ 30%]
+tests/test_holdout_denominators.py ........                              [ 31%]
+tests/test_holdout_oracle.py .........                                   [ 31%]
+tests/test_holdout_splits.py ...................                         [ 32%]
+tests/test_identity_join.py .........................                    [ 33%]
+tests/test_ignore.py .........                                           [ 34%]
+tests/test_impact_pipeline.py ......................................     [ 35%]
+tests/test_import_resolution.py ...............                          [ 36%]
+tests/test_java_extractor.py ...                                         [ 36%]
+tests/test_jit_reconcile.py ...                                          [ 36%]
+tests/test_lambda_comprehension_coverage.py .............                [ 37%]
+tests/test_maintenance.py .....                                          [ 37%]
+tests/test_managed_artifacts.py ............s.......................     [ 39%]
+tests/test_managed_execution.py ...................................      [ 41%]
+tests/test_managed_installation.py ...............................s.     [ 42%]
+tests/test_managed_orphan_writer.py ..                                   [ 42%]
+tests/test_managed_policy_parity.py .................................... [ 44%]
+                                                                         [ 44%]
+tests/test_managed_read_dispatch.py .................................... [ 46%]
+.........                                                                [ 46%]
+tests/test_managed_runtime.py ...........................                [ 47%]
+tests/test_managed_snapshot_boundaries.py ..                             [ 48%]
+tests/test_mcp.py ..............                                         [ 48%]
+tests/test_mcp_modern.py ......                                          [ 49%]
+tests/test_mcp_prompts.py .....                                          [ 49%]
+tests/test_mcp_receipt_tools.py ......                                   [ 49%]
+tests/test_monorepo_ledger_concurrency.py ...                            [ 49%]
+tests/test_monorepo_snapshot_adversarial.py .......                      [ 50%]
+tests/test_multilang.py ...                                              [ 50%]
+tests/test_native_source_verifier.py .................................   [ 51%]
+tests/test_navigation.py ...........                                     [ 52%]
+tests/test_omp_integration.py ...........                                [ 52%]
+tests/test_optimizations.py .....                                        [ 52%]
+tests/test_oracle_gate.py .................                              [ 53%]
+tests/test_oracle_selfcheck.py .............                             [ 54%]
+tests/test_p0_freshness_semantics.py ......                              [ 54%]
+tests/test_p1_snapshot_trust.py ............                             [ 55%]
+tests/test_p2_orchestrator.py ................................           [ 56%]
+tests/test_p3_adapters.py ...................                            [ 57%]
+tests/test_p3_builtin_recall.py ............                             [ 58%]
+tests/test_p3_plugin_contract.py ........                                [ 58%]
+tests/test_p3_scip_binding.py .......                                    [ 58%]
+tests/test_p4_identity.py ..............                                 [ 59%]
+tests/test_p4_quality_gate.py ....                                       [ 59%]
+tests/test_p4_ranking.py ........                                        [ 60%]
+tests/test_p4_search_safety.py ....................                      [ 61%]
+tests/test_p5_coverage_verification.py ...............                   [ 61%]
+tests/test_p6_ledger.py ............                                     [ 62%]
+tests/test_p7_receipts.py ...................                            [ 63%]
+tests/test_p8_omp_integration.py ....F.                                  [ 63%]
+tests/test_p9_chaos_migration.py .........                               [ 64%]
+tests/test_pack_sg202_priority.py .....................                  [ 65%]
+tests/test_parallel_reconciler.py ....                                   [ 65%]
+tests/test_phase1_scip_and_schema_v5.py ............                     [ 65%]
+tests/test_phase6.py ......                                              [ 66%]
+tests/test_php_extractor.py ...........                                  [ 66%]
+tests/test_precision_and_metamorphic.py ....                             [ 66%]
+tests/test_proc_environment.py .........                                 [ 67%]
+tests/test_proc_process_group.py ...                                     [ 67%]
+tests/test_proc_runner.py .......                                        [ 67%]
+tests/test_proc_streaming_cap.py .....                                   [ 67%]
+tests/test_proc_windows_job.py .ss                                       [ 68%]
+tests/test_provider_compatibility.py ................................... [ 69%]
+..........                                                               [ 70%]
+tests/test_provider_contract.py ......                                   [ 70%]
+tests/test_providers_cross_check.py .................                    [ 71%]
+tests/test_providers_registry.py .................                       [ 72%]
+tests/test_python_resolver.py .....                                      [ 72%]
+tests/test_python_scope_extended.py .                                    [ 72%]
+tests/test_python_semantic_resolver.py ....                              [ 72%]
+tests/test_query_plan_regression.py ..                                   [ 72%]
+tests/test_reconcile_audit_receipts.py ......                            [ 72%]
+tests/test_repo_map.py .........                                         [ 73%]
+tests/test_report_conformance.py ..............                          [ 74%]
+tests/test_scip_provider.py ......                                       [ 74%]
+tests/test_scip_truncation.py ......                                     [ 74%]
+tests/test_search_bare_name_ranking.py ..............                    [ 75%]
+tests/test_sg107_stress.py .................                             [ 76%]
+tests/test_sg108_scope_universe.py ..................................... [ 77%]
+....                                                                     [ 77%]
+tests/test_sg109_generation_invalidation.py ............                 [ 78%]
+tests/test_sg110_claims.py ...............................               [ 80%]
+tests/test_sg201_external_corpus.py ...................................  [ 81%]
+tests/test_sg201_repo_map_filters.py ........................            [ 82%]
+tests/test_sg201_sg202_exit_gates.py ................................    [ 84%]
+tests/test_sg202_pack_completeness.py ..............                     [ 84%]
+tests/test_sg205_receipt_explorer.py ......................              [ 86%]
+tests/test_snapshot_binding.py .....                                     [ 86%]
+tests/test_snapshot_content_binding.py ...............                   [ 86%]
+tests/test_solution_trace.py ..........                                  [ 87%]
+tests/test_sot_graph.py ....                                             [ 87%]
+tests/test_sprint4_compass_and_pack.py ..............                    [ 88%]
+tests/test_storage_integrity.py ....                                     [ 88%]
+tests/test_treesitter.py ............                                    [ 89%]
+tests/test_trust_axes.py ............................................... [ 91%]
+........                                                                 [ 91%]
+tests/test_trust_chain_hardening.py .................................... [ 93%]
+.......                                                                  [ 93%]
+tests/test_trust_v2_evidence.py ......                                   [ 93%]
+tests/test_trusted_managed_config.py ................................... [ 95%]
+..........                                                               [ 96%]
+tests/test_truthfulness.py ..........                                    [ 96%]
+tests/test_type_checking_universe.py .........                           [ 97%]
+tests/test_v2_upgrade.py .............................                   [ 98%]
+tests/test_vector.py .............                                       [ 99%]
+tests/test_verifier.py .........                                         [ 99%]
+tests/test_watcher_daemon.py ............                                [100%]
+
+=================================== FAILURES ===================================
+_ TestVersionPolicyParity.test_unknown_version_degrades_explicitly_never_silently _
+
+self = <test_cbm_contract_parity.TestVersionPolicyParity object at 0x107baca50>
+repo = PosixPath('/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1371/test_unknown_version_degrades_0/proj')
+tmp_path = PosixPath('/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1371/test_unknown_version_degrades_0')
+clean_provider_env = None
+
+    def test_unknown_version_degrades_explicitly_never_silently(
+        self, repo, tmp_path, clean_provider_env
+    ):
+        marker = tmp_path / "spawn-marker"
+        exe = _broken_version_exe(tmp_path, marker)
+        _write_config(repo, allow_external=True, command=exe)
+        plan = federation_plan(f"prefer:{PROVIDER}", str(repo), "usages")
+        assert plan["provider"] is None, "unhealthy provider must not be used"
+        assert plan["statuses"][0]["healthy"] is False
+        assert plan["statuses"][0]["version"] is None
+        assert any(
+            "unavailable" in w and "unparseable version" in w
+            for w in plan["warnings"]
+        ), "degrade must be explicit"
+        res = _mcp(repo).usages("target", provider_policy="prefer_external")
+>       assert res["policy"]["builtin_only"] is False
+E       assert True is False
+
+tests/test_cbm_contract_parity.py:157: AssertionError
+_________ TestMcpAssuranceInputs.test_search_policy_and_budget_params __________
+
+self = <test_p8_omp_integration.TestMcpAssuranceInputs object at 0x1085f9090>
+e2e_repo = PosixPath('/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1371/test_search_policy_and_budget_0/e2e')
+
+    def test_search_policy_and_budget_params(self, e2e_repo: Path):
+        from sot_graph.mcp_service import McpService, McpServiceError
+    
+        service = McpService(str(e2e_repo / ".sot" / "sot.db"), str(e2e_repo))
+        try:
+            res = service.search("run", assurance=True,
+                                 provider_policy="prefer_external", budget=5)
+            assert res["policy"]["provider_policy"] == "prefer_external"
+>           assert res["policy"]["builtin_only"] is False
+E           assert True is False
+
+tests/test_p8_omp_integration.py:163: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/_hypothesis_pytestplugin.py:487
+  /Users/giapminh79/code/GitHub/sot-graph/.venv/lib/python3.14/site-packages/_hypothesis_pytestplugin.py:487: UserWarning: Skipping collection of '.hypothesis' directory - this usually means you've explicitly set the `norecursedirs` pytest config option, replacing rather than extending the default ignores.
+    warnings.warn(
+
+src/sot_graph/diff_impact.py:120
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/diff_impact.py:120: PytestCollectionWarning: cannot collect test class 'TestImpact' because it has a __init__ constructor (from: tests/test_diff_impact.py)
+    @dataclass
+
+src/sot_graph/diff_impact.py:120
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/diff_impact.py:120: PytestCollectionWarning: cannot collect test class 'TestImpact' because it has a __init__ constructor (from: tests/test_diff_impact_github.py)
+    @dataclass
+
+tests/test_oracle_selfcheck.py::TestRealCorpusBaseline::test_json_contract
+  /Users/giapminh79/code/GitHub/sot-graph/.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1313: PytestRemovedIn10Warning: Class-scoped fixture defined as instance method is deprecated.
+  Instance attributes set in this fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use @classmethod decorator and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_cbm_contract_parity.py::TestVersionPolicyParity::test_unknown_version_degrades_explicitly_never_silently
+FAILED tests/test_p8_omp_integration.py::TestMcpAssuranceInputs::test_search_policy_and_budget_params
+====== 2 failed, 2106 passed, 4 skipped, 4 warnings in 177.93s (0:02:57) =======

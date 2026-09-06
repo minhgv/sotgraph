@@ -1,0 +1,45 @@
+[
+  {
+    "label": "final-full-pytest",
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/",
+      "-q"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:33:54.959601+00:00"
+  },
+  {
+    "label": "final-types",
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "src/sot_graph/assurance/orchestrator.py",
+      "src/sot_graph/cli.py",
+      "src/sot_graph/mcp_service.py",
+      "tests/test_managed_read_dispatch.py",
+      "tests/test_managed_policy_parity.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:33:56.860282+00:00"
+  },
+  {
+    "label": "final-lint",
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "src/sot_graph/assurance/orchestrator.py",
+      "src/sot_graph/cli.py",
+      "src/sot_graph/mcp_service.py",
+      "tests/test_managed_read_dispatch.py",
+      "tests/test_managed_policy_parity.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:33:56.896472+00:00"
+  }
+]
