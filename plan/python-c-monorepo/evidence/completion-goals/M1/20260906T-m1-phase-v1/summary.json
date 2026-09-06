@@ -1,0 +1,201 @@
+{
+  "goal": "M1",
+  "freeze_commit": "53a8c123d4369ebc5cb5f5ea1182977fd18662d1",
+  "measurement_sha256": "531856d58ed6055dae1d27da46c094bf3b43fd59cd7016948e8c8c02c023f611",
+  "manifest_sha256": "3b6f86c6f65c06382652178d8ba8a4359f2281648d766fad9d9f8824aced4a10",
+  "runner_sha256": "a6316fd65de01b7e12841b799418d5d17b8fa53fd77c964d08ae368509d598ea",
+  "native_pin": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+  "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+  "measurement_status": "complete",
+  "paired_samples": [
+    {
+      "sample": 0,
+      "managed_query_s": 8.818214291939512,
+      "managed_native_envelope_s": 8.672337249852717,
+      "managed_outside_native_envelope_s": 0.14587704208679497,
+      "native_fraction_of_managed": 0.9834573035699373,
+      "direct_s": 8.67832366679795,
+      "factory_s": 0.14314566692337394,
+      "admin_preresolve_s": 0.14458812517113984,
+      "timeline": [
+        {
+          "name": "admin_preresolve",
+          "start_utc": "2026-09-06T07:38:08.877551+00:00",
+          "end_utc": "2026-09-06T07:38:09.022132+00:00",
+          "start_monotonic_s": 1146778.436108125,
+          "end_monotonic_s": 1146778.58069625,
+          "wall_s": 0.14458812517113984
+        },
+        {
+          "name": "factory",
+          "start_utc": "2026-09-06T07:38:09.022159+00:00",
+          "end_utc": "2026-09-06T07:38:09.165305+00:00",
+          "start_monotonic_s": 1146778.580723083,
+          "end_monotonic_s": 1146778.72386875,
+          "wall_s": 0.14314566692337394
+        },
+        {
+          "name": "managed_query",
+          "start_utc": "2026-09-06T07:38:09.165569+00:00",
+          "end_utc": "2026-09-06T07:38:17.983824+00:00",
+          "start_monotonic_s": 1146778.724132833,
+          "end_monotonic_s": 1146787.542347125,
+          "wall_s": 8.818214291939512
+        },
+        {
+          "name": "direct_native_same_transport",
+          "start_utc": "2026-09-06T07:38:18.130444+00:00",
+          "end_utc": "2026-09-06T07:38:26.808807+00:00",
+          "start_monotonic_s": 1146787.688965666,
+          "end_monotonic_s": 1146796.367289333,
+          "wall_s": 8.67832366679795
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "managed_query_s": 8.84037108416669,
+      "managed_native_envelope_s": 8.692769791930914,
+      "managed_outside_native_envelope_s": 0.14760129223577678,
+      "native_fraction_of_managed": 0.9833037221140938,
+      "direct_s": 8.681153333047405,
+      "factory_s": 0.14575199992395937,
+      "admin_preresolve_s": 0.1469087910372764,
+      "timeline": [
+        {
+          "name": "admin_preresolve",
+          "start_utc": "2026-09-06T07:38:27.335932+00:00",
+          "end_utc": "2026-09-06T07:38:27.482831+00:00",
+          "start_monotonic_s": 1146796.894402125,
+          "end_monotonic_s": 1146797.041310916,
+          "wall_s": 0.1469087910372764
+        },
+        {
+          "name": "factory",
+          "start_utc": "2026-09-06T07:38:27.482872+00:00",
+          "end_utc": "2026-09-06T07:38:27.628624+00:00",
+          "start_monotonic_s": 1146797.041351125,
+          "end_monotonic_s": 1146797.187103125,
+          "wall_s": 0.14575199992395937
+        },
+        {
+          "name": "managed_query",
+          "start_utc": "2026-09-06T07:38:27.628925+00:00",
+          "end_utc": "2026-09-06T07:38:36.469337+00:00",
+          "start_monotonic_s": 1146797.187403916,
+          "end_monotonic_s": 1146806.027775,
+          "wall_s": 8.84037108416669
+        },
+        {
+          "name": "direct_native_same_transport",
+          "start_utc": "2026-09-06T07:38:36.616906+00:00",
+          "end_utc": "2026-09-06T07:38:45.298098+00:00",
+          "start_monotonic_s": 1146806.17534225,
+          "end_monotonic_s": 1146814.856495583,
+          "wall_s": 8.681153333047405
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "managed_query_s": 8.802995250094682,
+      "managed_native_envelope_s": 8.653395916102454,
+      "managed_outside_native_envelope_s": 0.1495993339922279,
+      "native_fraction_of_managed": 0.9830058599667404,
+      "direct_s": 8.925298833986744,
+      "factory_s": 0.14811654202640057,
+      "admin_preresolve_s": 0.14645554218441248,
+      "timeline": [
+        {
+          "name": "admin_preresolve",
+          "start_utc": "2026-09-06T07:38:45.828152+00:00",
+          "end_utc": "2026-09-06T07:38:45.974598+00:00",
+          "start_monotonic_s": 1146815.386536833,
+          "end_monotonic_s": 1146815.532992375,
+          "wall_s": 0.14645554218441248
+        },
+        {
+          "name": "factory",
+          "start_utc": "2026-09-06T07:38:45.974621+00:00",
+          "end_utc": "2026-09-06T07:38:46.122738+00:00",
+          "start_monotonic_s": 1146815.533014958,
+          "end_monotonic_s": 1146815.6811315,
+          "wall_s": 0.14811654202640057
+        },
+        {
+          "name": "managed_query",
+          "start_utc": "2026-09-06T07:38:46.122990+00:00",
+          "end_utc": "2026-09-06T07:38:54.926025+00:00",
+          "start_monotonic_s": 1146815.681383666,
+          "end_monotonic_s": 1146824.484378916,
+          "wall_s": 8.802995250094682
+        },
+        {
+          "name": "direct_native_same_transport",
+          "start_utc": "2026-09-06T07:38:55.075814+00:00",
+          "end_utc": "2026-09-06T07:39:04.001153+00:00",
+          "start_monotonic_s": 1146824.634166541,
+          "end_monotonic_s": 1146833.559465375,
+          "wall_s": 8.925298833986744
+        }
+      ]
+    }
+  ],
+  "medians": {
+    "managed_query_s": 8.818214291939512,
+    "managed_native_envelope_s": 8.672337249852717,
+    "managed_outside_native_envelope_s": 0.14760129223577678,
+    "native_fraction_of_managed": 0.9833037221140938,
+    "direct_s": 8.681153333047405,
+    "factory_s": 0.14575199992395937,
+    "admin_preresolve_s": 0.14645554218441248
+  },
+  "native_log": {
+    "source": "/private/tmp/dl-byuuq4mt/rt/m-b8fbdbf816f2d4ef6a8d2972/cache/logs/cbm-daemon.log",
+    "durable_path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/native-logs/cbm-daemon.log",
+    "sha256": "cf5a588d8f532ddbca80a350c352eb707ade8818be7dc0cc86f5392963ffbcf3",
+    "lines": 65,
+    "daemon_starts": 8,
+    "daemon_stops": 8,
+    "disconnect_stops": 8,
+    "timestamped_lines": 0
+  },
+  "cache_changed_paths": [
+    "cache/logs/cbm-daemon.log"
+  ],
+  "inventory": {
+    "count": 7,
+    "lsof_exit_codes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "interpretation": "All seven point-in-time scratch lsof snapshots returned exit 1; not proof of no transient/escaped processes or listeners."
+  },
+  "verdict": "INCONCLUSIVE",
+  "m2": "BLOCKED_PENDING_REVIEW",
+  "acceptance": {
+    "repeatability": "PASS: three successful same-protocol pairs, timestamps preserved",
+    "bottleneck_location": "Native process envelope dominates managed query; spawn/poll/pipe-drain/native lifetime not separated.",
+    "specific_safe_fix": "NOT_ESTABLISHED",
+    "review": "PENDING independent measurement review",
+    "g6": "NOT_EVALUATED: microdiagnostic, not representative benchmark"
+  },
+  "historical_comparison": "No controlled historical 26.7426s environment; no causal explanation of historical discrepancy. Pair 3 direct slower retained, not discarded.",
+  "code_gate": {
+    "full_suite_reported_by_main": "1978 passed / 4 skipped",
+    "new_files_scoped": "Pyright and Ruff pass per acceptance",
+    "full_quality": "FAIL: 10 pre-existing core type errors, untouched; not whole-gate PASS"
+  },
+  "gaps": [
+    "Native log has no phase timestamps; startup/request/close duration unknown.",
+    "RUSAGE_CHILDREN excludes detached/unreaped descendants; no idle or resource completeness claim.",
+    "OS cache UNKNOWN; fixed managed/direct order; tiny corpus only.",
+    "Scratch remains ephemeral; copied log and inventories are durable, scratch itself is not."
+  ],
+  "next_prerequisite": "Independently reviewed native phase attribution; if needed propose separately pinned instrumented build before M2; do not silently alter release binary."
+}

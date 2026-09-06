@@ -1,0 +1,27 @@
+{
+  "commit": "53a8c123d4369ebc5cb5f5ea1182977fd18662d1",
+  "exclusive_slot": "MAIN_GRANTED_M1_20260906T-m1-phase-v1",
+  "start_utc": "2026-09-06T07:37:38.580984+00:00",
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+    "--exclusive-slot",
+    "MAIN_GRANTED_M1_20260906T-m1-phase-v1",
+    "--binary",
+    "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+    "--sha256",
+    "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+    "--native-commit",
+    "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+    "--registry",
+    "/private/tmp/a-u8mldiy1/registry.json",
+    "--protocol",
+    "p4-release-2412e017-measured-v1",
+    "--output-dir",
+    "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement",
+    "--samples",
+    "3"
+  ],
+  "exit": 0,
+  "end_utc": "2026-09-06T07:39:04.475708+00:00"
+}
