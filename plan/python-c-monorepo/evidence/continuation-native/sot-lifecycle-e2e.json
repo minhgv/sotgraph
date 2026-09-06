@@ -1,0 +1,90 @@
+{
+  "scratch": "/private/tmp/a-u8mldiy1",
+  "results": [
+    {
+      "command": [
+        "import",
+        "--source",
+        "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+        "--manifest",
+        "/private/tmp/a-u8mldiy1/artifact.json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.34266866696998477,
+      "stdout": "{\"artifact\": {\"digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"engine_commit\": \"46ae198fc11cda80e817acbc5f5908d7c2de7032\", \"executable\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\", \"manifest_path\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json\", \"name\": \"codebase-memory\", \"platform\": \"darwin-arm64\", \"protocol\": \"artifacts-v1\"}, \"compatibility\": \"not_assessed_by_artifact_administration\", \"lifecycle\": \"not_started\", \"limitations\": [\"Artifact selection does not enable query dispatch.\", \"Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.\"], \"next_action\": null, \"platform_support\": \"experimental\", \"schema_version\": 1, \"snapshot\": \"not_assessed\", \"status\": \"ok\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "promote",
+        "--digest",
+        "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.25224866601638496,
+      "stdout": "{\"artifact\": {\"digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"engine_commit\": \"46ae198fc11cda80e817acbc5f5908d7c2de7032\", \"executable\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\", \"manifest_path\": \"/private/tmp/a-u8mldiy1/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json\", \"name\": \"codebase-memory\", \"platform\": \"darwin-arm64\", \"protocol\": \"artifacts-v1\"}, \"compatibility\": \"not_assessed_by_artifact_administration\", \"lifecycle\": \"not_started\", \"limitations\": [\"Artifact selection does not enable query dispatch.\", \"Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.\"], \"next_action\": null, \"platform_support\": \"experimental\", \"schema_version\": 1, \"snapshot\": \"not_assessed\", \"status\": \"ok\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "prepare",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 8.784716624999419,
+      "stdout": "{\"operation\": \"prepare\", \"platform_support\": \"experimental\", \"result\": {\"cancellation_state\": null, \"error\": null, \"payload\": null, \"runtime_state\": \"READY\", \"status\": \"ok\"}, \"schema_version\": 1}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "sync",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.2563418331556022,
+      "stdout": "{\"operation\": \"sync\", \"platform_support\": \"experimental\", \"result\": {\"arguments_redacted\": [\"ensure_index\", \"/private/tmp/a-u8mldiy1/repo\", \"force=False\"], \"capability\": \"ensure_index\", \"detail\": \"implicit indexing refused; run 'sot providers sync codebase-memory' for the explicit index path\", \"duration_ms\": 0, \"exit_code\": null, \"next_action\": \"run sot providers sync codebase-memory\", \"provider_name\": \"codebase-memory\", \"provider_version\": null, \"run_id\": \"run_1788666669_7806864d\", \"status\": \"abstained\"}, \"schema_version\": 1}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "search",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1",
+        "greet"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.4002213750500232,
+      "stdout": "{\"operation\": \"search\", \"platform_support\": \"experimental\", \"result\": {\"error\": \"list_projects failed: no verified project binding; run sync() first\", \"metadata\": {\"freshness\": \"UNBOUND\", \"identity_basis\": \"unverified\", \"snapshot_bound\": false, \"wire_status\": \"abstained\"}, \"next_action\": \"run sot providers sync codebase-memory\", \"ok\": false, \"payload\": null, \"run\": {\"arguments_redacted\": [\"search_graph\", \"/private/tmp/a-u8mldiy1/repo\"], \"capability\": \"search_graph\", \"detail\": \"list_projects failed: no verified project binding; run sync() first\", \"duration_ms\": 0, \"exit_code\": null, \"next_action\": \"run sot providers sync codebase-memory\", \"provider_name\": \"codebase-memory\", \"provider_version\": null, \"run_id\": \"run_1788666669_906989e9\", \"status\": \"abstained\"}}, \"schema_version\": 1}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "runtime-status",
+        "--runtime-root",
+        "/private/tmp/a-u8mldiy1/rt",
+        "--registry",
+        "/private/tmp/a-u8mldiy1/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.25027487496845424,
+      "stdout": "{\"operation\": \"runtime-status\", \"platform_support\": \"experimental\", \"result\": {\"identity\": {\"artifact_digest\": \"2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf\", \"generation\": \"initial\", \"protocol_version\": \"p2-v1\", \"repo_hash\": \"d9620397e2b09bb6f5082d75791a7c77d705db344a517600c284e9e2129cb787\"}, \"initialized\": true, \"namespace\": \"/private/tmp/a-u8mldiy1/rt/m-c6bff01acd87b375148812e6\", \"reason\": null, \"state\": \"READY\", \"ui_seed_ok\": true}, \"schema_version\": 1}\n",
+      "stderr": ""
+    }
+  ]
+}

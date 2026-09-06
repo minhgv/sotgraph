@@ -1,0 +1,71 @@
+{
+ "version_native": "codebase-memory-mcp 0.10.8",
+ "fixtures": {
+  "config_set_auto_watch": {
+   "raw_sha256": "9f876e3f30b0c2cc4bea5ec2d9dd605ba8594060f1fd5c8d5da34ca898f12b5c",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "9f876e3f30b0c2cc4bea5ec2d9dd605ba8594060f1fd5c8d5da34ca898f12b5c",
+   "capture_assert": "rc0_nonempty:ok"
+  },
+  "config_get_auto_watch": {
+   "raw_sha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+   "capture_assert": "false:ok"
+  },
+  "index_repository": {
+   "raw_sha256": "b1edf7ebce44ca5fe3aecc0f25d365e2a21e45eafa3441ac14dc6680909f1bb8",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "{\"adr_hint\": \"Project indexed. Consider creating an Architecture Decision Record: explore the codebase with get_architecture(aspects=['all']), then use manage_adr(mode='update') to persist architectural insights across sessions.\", \"adr_present\": false, \"artifact_present\": false, \"edges\": 34, \"expected_edges\": 34, \"expected_nodes\": 21, \"nodes\": 21, \"not_indexed_files_count\": 0, \"parse_partial_count\": 0, \"project\": \"private-tmp-s-z83j8l2g-repo\", \"skipped_count\": 0, \"status\": \"indexed\"}",
+   "capture_assert": "indexed:ok"
+  },
+  "list_projects": {
+   "raw_sha256": "802479fd29ba7f38344382fa0a5daa51fa2d72c564ef717ccb68d032c7da6e28",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "{\"has_more\": false, \"limit\": 50, \"offset\": 0, \"projects\": [{\"name\": \"private-tmp-s-z83j8l2g-repo\", \"root_path\": \"<SCRATCH>/repo\"}], \"returned\": 1, \"total\": 1}",
+   "capture_assert": "bound:ok"
+  },
+  "search_graph": {
+   "raw_sha256": "ffbd58213a65b754b9805907c5d2c79b15b0e0a260e25356eeaab78a9d79a377",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "{\"cols\": [\"qn\", \"label\", \"file\", \"lines\", \"rank\"], \"has_more\": false, \"rows\": [[\"private-tmp-s-z83j8l2g-repo.alpha.greet\", \"Function\", \"alpha.py\", \"1-3\", -13.944960445123183]], \"search_mode\": \"bm25\", \"total\": 1}",
+   "capture_assert": "json:ok"
+  },
+  "index_status": {
+   "raw_sha256": "fa8315a52b583b39a387dc5bf4d8e5db42ed2f7d0a87404221081bf649147e49",
+   "binding": "digest is sha256 over the EXACT raw stdout text as delivered by proc.run_command (UTF-8), computed BEFORE sanitization; the stored fixture below is the SANITIZED copy (scratch/home redacted) and does NOT hash to raw_sha256 \u2014 raw and sanitized bytes are intentionally different, and raw bytes live only in the run scratch",
+   "redaction_map": {
+    "/private/tmp/s-z83j8l2g": "<SCRATCH>",
+    "/Users/giapminh79": "<HOME>"
+   },
+   "raw_capture_source": "direct run_command dispatch through the profile-served 7-key replacement env on fresh namespace 'capture' \u2014 the one explicit lab capture step (executor withholds raw stdout)",
+   "sanitized_fixture": "{\"edges\": 34, \"nodes\": 21, \"not_indexed\": {\"dirs\": [], \"dirs_count\": 0, \"files\": [], \"files_count\": 0, \"truncated\": false}, \"parse_partial\": {\"count\": 0, \"files\": [], \"truncated\": false}, \"project\": \"private-tmp-s-z83j8l2g-repo\", \"root_path\": \"<SCRATCH>/repo\", \"skipped\": {\"count\": 0, \"files\": [], \"truncated\": false}, \"status\": \"ready\"}",
+   "capture_assert": "json:ok"
+  }
+ }
+}

@@ -1,0 +1,5 @@
+{
+  "exit_code": 2,
+  "binary": "explicit signed release archive payload; incompatible with historical harness digest",
+  "harness": "unchanged P2 harness, redirected evidence output"
+}

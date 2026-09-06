@@ -1,0 +1,1 @@
+FATAL: binary sha256 2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf != pinned release artifact 996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435; this acceptance is bound to the pinned artifact

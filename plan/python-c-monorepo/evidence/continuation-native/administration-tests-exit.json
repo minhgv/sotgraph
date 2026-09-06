@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_engine_admin.py",
+    "tests/test_managed_installation.py",
+    "tests/test_managed_artifacts.py",
+    "tests/test_managed_runtime.py",
+    "tests/test_managed_execution.py",
+    "tests/test_cbm_managed_provider.py",
+    "-q",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "exit_code": 0
+}

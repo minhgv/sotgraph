@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "stdout": "{\"operation\": \"search\", \"platform_support\": \"experimental\", \"result\": {\"freshness\": \"unknown\", \"limitations\": [\"Source anchors reverified; native index HEAD binding unavailable.\"], \"results\": [{\"freshness\": \"unknown\", \"normalization_gaps\": [], \"subject\": {\"content_hash\": null, \"end_column\": null, \"end_line\": 2, \"kind\": \"function\", \"language\": \"unknown\", \"path\": \"alpha.py\", \"qualified_name\": \"private-tmp-a-u8mldiy1-repo.alpha.greet\", \"repo_id\": \"/private/tmp/a-u8mldiy1/repo\", \"start_column\": null, \"start_line\": 1}, \"verification\": {\"detail\": \"'greet' uniquely defined at alpha.py:1-2\", \"known_gaps\": [], \"status\": \"VERIFIED\"}}], \"scope_completeness\": \"bounded\", \"snapshot_bound\": false, \"status\": \"ok\"}, \"schema_version\": 1}\n",
+  "stderr": ""
+}
