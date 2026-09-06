@@ -1,0 +1,11 @@
+{
+  "baseline": "0428c1b",
+  "committed": false,
+  "local_implementation": "Implemented and tested source import/build, SOT administration and shared orchestration/ledger, safe logical uninstall, behavioral MCP surface tests, license text inventory, controlled four-cell benchmark, distinct-artifact and nonempty-evidence rollback drills, runbook and handoffs",
+  "tests": {"passed": 1894, "skipped": 4, "warnings": 4, "exit_code": 0, "seconds": 189.21},
+  "independent_review": "CLEAN agent_27db4726-74a7-4719-b013-c2959a829aeb",
+  "checks_exit_zero": ["offline Python package", "scoped Ruff", "reconcile", "doctor", "diff-impact", "git diff --check"],
+  "benchmark": {"completed_records": 292, "completed_command_failures": 0, "cells": 4, "index_calls_each_arm_cell": 5, "measured_queries_each_arm_cell": 30, "performance": "FAIL all measured cells", "interruption": "Tool killed after275 records; remaining17 resumed; interrupted call excluded"},
+  "gates": {"G0": "historical scoped PASS", "G1": "historical scoped PASS", "G2": "historical scoped PASS plus fresh bounded acceptance", "G3": "historical scoped PASS", "G4": "BLOCKED release certification: remote native CI/full platform-harness acceptance not established", "G5": "BLOCKED by G4 and complete GS-SURFACE certification; local operational tests pass", "G6": "FAIL measured performance; predecessor promotion remains BLOCKED", "G7": "BLOCKED predecessor release gates; local rollback/hygiene deliverables pass"},
+  "limitations": ["Darwin arm64 experimental, no remote CI claim", "Logical uninstall preserves artifacts/data, no destructive reclamation", "Synthetic corpus and test evidence not native quality certification", "No native cross-schema downgrade claim", "CPU/RSS may omit detached workers", "Native HEAD binding unavailable: no invented freshness/evidence"]
+}

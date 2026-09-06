@@ -1,0 +1,65 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/giapminh79/code/GitHub/sot-graph
+configfile: pyproject.toml
+plugins: cov-7.1.0, asyncio-1.4.0, anyio-4.14.2, hypothesis-6.165.10
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 9 items
+
+tests/test_engine_admin.py ......F..                                     [100%]
+
+=================================== FAILURES ===================================
+__________ test_operational_exit_and_multi_artifact_registry[search] ___________
+
+lab = (['--root', '/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operationa...r/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c0a4050>
+action = 'search'
+
+    @pytest.mark.parametrize('action', ['prepare', 'probe', 'sync', 'search', 'runtime-status'])
+    def test_operational_exit_and_multi_artifact_registry(lab, monkeypatch, action):
+        from types import SimpleNamespace
+        from sot_graph.providers import installation
+        from sot_graph.providers.base import ProviderStatus
+        from sot_graph.providers.compatibility import TestedCompatibilityRecord as Record
+        prefix, source, manifest, digest, repo, store = lab
+        assert main(prefix + ['import', '--source', str(source), '--manifest', str(manifest)]) == 0
+        assert main(prefix + ['promote', '--digest', digest]) == 0
+        registry = repo.parent / 'registry.json'
+        def record(sha, fixture):
+            return Record(provider_name='codebase-memory', operation='search_graph',
+                artifact_sha256=sha, fixture_digest=fixture, protocol_compatibility_id='test-v1',
+                engine_commit='46ae198fc11cda80e817acbc5f5908d7c2de7032',
+                version='test', tested_by='unit-test', tested_at='2026-09-06T00:00:00Z').to_dict()
+        selected = record(digest, 'a' * 64)
+        registry.write_text(json.dumps([record('b' * 64, 'c' * 64), selected]))
+        def factory(*args, **kwargs):
+            assert kwargs['operation_fixture_digests'] == {'search_graph': 'a' * 64}
+            assert len(kwargs['registry'].records()) == 1
+            return SimpleNamespace(runtime=SimpleNamespace(prepare=lambda: {'status': 'ok'}),
+                profile=SimpleNamespace(status=lambda: {'state': 'READY'}),
+                provider=SimpleNamespace(probe=lambda root: ProviderStatus('test', True, True, None, ''),
+                    index=lambda request: {'status': 'ok'},
+                    search_symbols=lambda request: SimpleNamespace(ok=True, payload={'cols': ['qn', 'label', 'file', 'lines', 'rank'], 'rows': []})))
+        monkeypatch.setattr(installation, 'create_managed_installation', factory)
+        args = prefix + [action, '--runtime-root', str(repo.parent / 'runtime'),
+                         '--registry', str(registry), '--protocol', 'test-v1']
+        if action == 'search':
+            args.append('greet')
+>       assert main(args) == 0
+E       AssertionError: assert 2 == 0
+E        +  where 2 = main(['--root', '/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational...lv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store', 'search', ...])
+
+tests/test_engine_admin.py:100: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"artifact": {"digest": "747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21", "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032", "executable": "/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store/store/codebase-memory/747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21/artifact", "manifest_path": "/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store/store/codebase-memory/747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21/manifest.json", "name": "codebase-memory", "platform": "darwin-arm64", "protocol": "artifacts-v1"}, "compatibility": "not_assessed_by_artifact_administration", "lifecycle": "not_started", "limitations": ["Artifact selection does not enable query dispatch.", "Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index."], "next_action": null, "platform_support": "experimental", "schema_version": 1, "snapshot": "not_assessed", "status": "ok"}
+{"artifact": {"digest": "747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21", "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032", "executable": "/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store/store/codebase-memory/747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21/artifact", "manifest_path": "/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/pytest-of-giapminh79/pytest-1322/test_operational_exit_and_mult3/store/store/codebase-memory/747829218e801bb952ce6605360b7f7743f04e9477bf18dfe9968c5028883d21/manifest.json", "name": "codebase-memory", "platform": "darwin-arm64", "protocol": "artifacts-v1"}, "compatibility": "not_assessed_by_artifact_administration", "lifecycle": "not_started", "limitations": ["Artifact selection does not enable query dispatch.", "Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index."], "next_action": null, "platform_support": "experimental", "schema_version": 1, "snapshot": "not_assessed", "status": "ok"}
+{"schema_version": 1, "status": "refused", "next_action": "Use sot engine doctor with a trusted private store; verify local manifest and digest."}
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/_hypothesis_pytestplugin.py:487
+  /Users/giapminh79/code/GitHub/sot-graph/.venv/lib/python3.14/site-packages/_hypothesis_pytestplugin.py:487: UserWarning: Skipping collection of '.hypothesis' directory - this usually means you've explicitly set the `norecursedirs` pytest config option, replacing rather than extending the default ignores.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_engine_admin.py::test_operational_exit_and_multi_artifact_registry[search]
+==================== 1 failed, 8 passed, 1 warning in 0.54s ====================

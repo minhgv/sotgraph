@@ -1,0 +1,576 @@
+receipt stored: .sot/receipts/bc13d1202d0bca277b643b166e08d0698901ea0d19be3ea5a6adb97a38b770ad.json
+⚠️  measured closure covers 200 of 2112 changed files; closure evidence is partial
+_Snapshot: pre sha256:fda8e058d73c (dirty=True) → post sha256:30f016a0578e (dirty=True)_
+# SOT-Graph Diff Impact Analysis Report
+
+**Target:** `HEAD` | **Risk Level:** 🔴 **HIGH** (Score: 80/100) | **Execution Time:** 6371.38ms
+
+## 📊 Summary Metrics
+
+| Metric | Count |
+| :--- | :--- |
+| Changed Files | **2112** |
+| Diff Hunks | **2113** |
+| Directly Modified Symbols | **57** |
+| Blast Radius Callers (In-Degree) | **72** |
+| Impacted API Endpoints | **0** |
+| Tests to Re-Run | **410** |
+
+## 🎯 1. Directly Modified AST Symbols
+
+| Symbol | Kind | File | Lines | Change Type |
+| :--- | :--- | :--- | :--- | :--- |
+| `native-experimental.yml` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/.github/workflows/native-experimental.yml` | L1-L33 | **modified** |
+| `continuation-2026-09-06.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/continuation-2026-09-06.md` | L1-L35 | **modified** |
+| `continuation-binary-identity.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-binary-identity.json` | L1-L11 | **modified** |
+| `continuation-doctor.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-doctor.json` | L1-L35 | **modified** |
+| `administration-tests-exit.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/administration-tests-exit.json` | L1-L18 | **modified** |
+| `distinct-artifact-rollback.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/distinct-artifact-rollback.json` | L1-L154 | **modified** |
+| `exit.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/exit.json` | L1-L6 | **modified** |
+| `final-suite-exit.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/final-suite-exit.json` | L1-L15 | **modified** |
+| `matched-benchmark-protocol.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/matched-benchmark-protocol.json` | L1-L27 | **modified** |
+| `matched-benchmark-raw.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/matched-benchmark-raw.json` | L1-L39 | **modified** |
+| `matched-v2-protocol.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/matched-v2-protocol.json` | L1-L43 | **modified** |
+| `matched-v2-raw.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/matched-v2-raw.json` | L1-L560 | **modified** |
+| `matched-v2-summary.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/matched-v2-summary.json` | L1-L14 | **modified** |
+| `p2-managed-acceptance-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/p2-managed-acceptance-receipt.json` | L1-L201 | **modified** |
+| `p2-managed-fixture-digests.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/p2-managed-fixture-digests.json` | L1-L71 | **modified** |
+| `p2-managed-registry-records.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/p2-managed-registry-records.json` | L1-L85 | **modified** |
+| `release-acceptance-exit.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/release-acceptance-exit.json` | L1-L5 | **modified** |
+| `release-acceptance.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/release-acceptance.py` | L1-L36 | **modified** |
+| `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/release-acceptance.py` | L19-L31 | **modified** |
+| `rollback-drill.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/rollback-drill.json` | L1-L59 | **modified** |
+| `run-matched.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/run-matched.py` | L1-L45 | **modified** |
+| `sot-lifecycle-e2e.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/sot-lifecycle-e2e.json` | L1-L91 | **modified** |
+| `sot-lifecycle-explicit-index.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/sot-lifecycle-explicit-index.json` | L1-L34 | **modified** |
+| `sot-verified-search.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/sot-verified-search.json` | L1-L6 | **modified** |
+| `surface-snapshot.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/surface-snapshot.json` | L1-L51 | **modified** |
+| `continuation-tests-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-tests-receipt.json` | L1-L16 | **modified** |
+| `native-build-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/native-build-receipt.json` | L1-L17 | **modified** |
+| `python-package-initial-failure.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/python-package-initial-failure.json` | L1-L13 | **modified** |
+| `python-package-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/python-package-receipt.json` | L1-L25 | **modified** |
+| `source-budget-license-inventory.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/source-budget-license-inventory.json` | L1-L1321 | **modified** |
+| `source-import-manifest.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/source-import-manifest.json` | L1-L14359 | **modified** |
+| `operations-runbook.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/operations-runbook.md` | L1-L38 | **modified** |
+| `p5-handoff.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/p5-handoff.md` | L1-L12 | **modified** |
+| `p6-handoff.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/p6-handoff.md` | L1-L13 | **modified** |
+| `p7-handoff.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/p7-handoff.md` | L1-L12 | **modified** |
+| `status.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/status.md` | L1-L118 | **modified** |
+| `remaining-work-phased-plan-2026-09-05.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md` | L1-L149 | **modified** |
+| `pyproject.toml` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/pyproject.toml` | L1-L164 | **modified** |
+| `verify_native_source.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/verify_native_source.py` | L1-L49 | **modified** |
+| `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/verify_native_source.py` | L14-L44 | **modified** |
+| `cli.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/cli.py` | L1-L2574 | **modified** |
+| `build_parser` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/cli.py` | L2085-L2419 | **modified** |
+| `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/cli.py` | L2422-L2569 | **modified** |
+| `admin.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/admin.py` | L1-L148 | **modified** |
+| `add_parser` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/admin.py` | L11-L32 | **modified** |
+| `verified_search` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/admin.py` | L35-L64 | **modified** |
+| `run` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/admin.py` | L67-L147 | **modified** |
+| `test_engine_admin.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L1-L109 | **modified** |
+| `lab` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L12-L29 | **modified** |
+| `lab.forbidden` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L24-L25 | **modified** |
+| `test_install_promote_rollback_and_status` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L32-L44 | **modified** |
+| `test_wrong_digest_refused_and_unknown_data_preserved` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L47-L52 | **modified** |
+| `test_search_normalizes_and_verifies_without_raw_payload` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L55-L67 | **modified** |
+| `test_operational_exit_and_multi_artifact_registry` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L71-L102 | **modified** |
+| `test_operational_exit_and_multi_artifact_registry.record` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L80-L84 | **modified** |
+| `test_operational_exit_and_multi_artifact_registry.factory` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L87-L94 | **modified** |
+| `test_no_raw_execution_surface` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | L105-L108 | **modified** |
+
+## 💥 2. Blast Radius: Upstream Inward Callers
+
+| Depth | Caller Symbol | Kind | File : Line | Relation | Target Symbol |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Hop 1 | `adapter_docs_check.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/adapter_docs_check.py:1` | `imports` | `build_parser` |
+| Hop 1 | `CliTruth.__init__` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/adapter_docs_check.py:146` | `calls` | `build_parser` |
+| Hop 1 | `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/bench_sg201_sg202_exit_gates.py:237` | `calls` | `add_parser` |
+| Hop 1 | `module_eval.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/module_eval.py:1` | `imports` | `build_parser` |
+| Hop 1 | `_probe_cli_hybrid_scope_ignored` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/module_eval.py:271` | `calls` | `build_parser` |
+| Hop 1 | `run_stdio` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_server.py:751` | `calls` | `run` |
+| Hop 1 | `test_adapters.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestHarnessAdapters.test_cli_setup_pi_alias` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py:178` | `calls` | `build_parser` |
+| Hop 1 | `TestHarnessAdapters.test_cli_setup_command` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py:187` | `calls` | `build_parser` |
+| Hop 1 | `test_analytics.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py:1` | `imports` | `build_parser` |
+| Hop 1 | `AnalyticsTests.test_cli_report_and_cluster_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py:204` | `calls` | `build_parser` |
+| Hop 1 | `test_bundle.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestArchitectureBundler.test_cli_cmd_bundle` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py:98` | `calls` | `build_parser` |
+| Hop 1 | `test_cli_provider_wiring.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:1` | `imports` | `main` |
+| Hop 1 | `TestBuiltinDefault.test_default_builtin_never_spawns` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:158` | `calls` | `main` |
+| Hop 1 | `TestBuiltinDefault.test_explicit_builtin_flag_identical` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:168` | `calls` | `main` |
+| Hop 1 | `TestAllowExternalGate.test_blocked_prefer_warns_and_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:178` | `calls` | `main` |
+| Hop 1 | `TestAllowExternalGate.test_blocked_require_fails_closed` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:193` | `calls` | `main` |
+| Hop 1 | `TestAllowExternalGate.test_invalid_spec_rejected` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:204` | `calls` | `main` |
+| Hop 1 | `TestRequireFailsClosedUnhealthy.test_unhealthy_binary_require_exits_nonzero` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:213` | `calls` | `main` |
+| Hop 1 | `TestRequireFailsClosedUnhealthy.test_missing_binary_prefer_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:227` | `calls` | `main` |
+| Hop 1 | `TestMergeOrderAndVerdict.test_candidates_after_builtin_with_ceiling_and_provider_tag` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:256` | `calls` | `main` |
+| Hop 1 | `TestMergeOrderAndVerdict.test_target_mismatch_recorded_as_conflict` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:282` | `calls` | `main` |
+| Hop 1 | `TestTruncationPropagation.test_has_more_sets_truncated_true` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:323` | `calls` | `main` |
+| Hop 1 | `TestProvidersSync.test_sync_invokes_index_and_emits_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:346` | `calls` | `main` |
+| Hop 1 | `TestProvidersSync.test_sync_unknown_provider_fails_cleanly` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py:373` | `calls` | `main` |
+| Hop 1 | `test_collection_accounting.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestReconcileProvenance.test_cli_records_pipeline_provenance` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py:311` | `calls` | `build_parser` |
+| Hop 1 | `test_diff_impact.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestDiffImpactGate._run` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1128` | `calls` | `build_parser` |
+| Hop 1 | `TestDiffImpactGate.test_gate_flag_registered` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1152` | `calls` | `build_parser` |
+| Hop 1 | `test_diff_impact_github.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py:1` | `imports` | `build_parser` |
+| Hop 1 | `GithubRendererTests.test_cli_format_flag_choices_and_default_unchanged` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py:104` | `calls` | `build_parser` |
+| Hop 1 | `GithubRendererTests.test_cmd_diff_impact_github_end_to_end` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py:114` | `calls` | `build_parser` |
+| Hop 1 | `test_export.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py:1` | `imports` | `build_parser` |
+| Hop 1 | `ExportTests.test_cli_viz_and_export_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py:169` | `calls` | `build_parser` |
+| Hop 1 | `test_hardening_fixes.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py:1` | `imports` | `main` |
+| Hop 1 | `HardeningFixesTests.test_cli_handles_lock_busy_and_runtime_error` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py:248` | `calls` | `main` |
+| Hop 1 | `test_impact_pipeline.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestSurfaceWiring._cli_json` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:424` | `calls` | `build_parser` |
+| Hop 1 | `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:553` | `calls` | `build_parser` |
+| Hop 1 | `test_optimizations.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestOptimizations.test_batch_reconcile_and_repo_discovery` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py:183` | `calls` | `build_parser` |
+| Hop 1 | `test_p2_orchestrator.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py:1` | `imports` | `cli.py` |
+| Hop 1 | `TestDeadProviderDegrades.test_require_blocked_by_config_exit_code_is_stable` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py:145` | `calls` | `main` |
+| Hop 1 | `test_providers_cross_check.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py:1` | `imports` | `build_parser` |
+| Hop 1 | `CrossCheckTests.test_cli_subcommand_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py:326` | `calls` | `build_parser` |
+| Hop 1 | `CrossCheckReceiptTests.test_cli_receipt_flag_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py:432` | `calls` | `build_parser` |
+| Hop 1 | `test_providers_registry.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:1` | `imports` | `main` |
+| Hop 1 | `TestCliProviders.test_detect_json_smoke` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:164` | `calls` | `main` |
+| Hop 1 | `TestCliProviders.test_doctor_exit_code_zero_when_optional_missing` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:175` | `calls` | `main` |
+| Hop 1 | `TestCliProviders.test_doctor_exit_code_one_when_required_unhealthy` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:198` | `calls` | `main` |
+| Hop 1 | `TestCliProviders.test_resolve_json_returns_ranked_list` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:211` | `calls` | `main` |
+| Hop 1 | `TestCliProviders.test_list_json_lists_all_configured` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py:219` | `calls` | `main` |
+| Hop 1 | `test_report_conformance.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py:1` | `imports` | `build_parser` |
+| Hop 1 | `TestShippedPathIntegration.test_cli_report_receives_real_denominators` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py:418` | `calls` | `build_parser` |
+| Hop 1 | `test_sg107_stress.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py:1` | `imports` | `build_parser` |
+| Hop 1 | `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py:354` | `calls` | `build_parser` |
+| Hop 1 | `test_storage_integrity.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py:1` | `imports` | `main` |
+| Hop 1 | `test_doctor_cli_text_and_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py:52` | `calls` | `main` |
+| Hop 2 | `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_server.py:762` | `calls` | `run_stdio` |
+| Hop 2 | `TestDiffImpactGate.test_gate_fails_on_partial_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1143` | `calls` | `TestDiffImpactGate._run` |
+| Hop 2 | `TestDiffImpactGate.test_gate_passes_on_assured_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1146` | `calls` | `TestDiffImpactGate._run` |
+| Hop 2 | `TestDiffImpactGate.test_default_advisory_exits_zero_even_on_partial` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py:1149` | `calls` | `TestDiffImpactGate._run` |
+| Hop 2 | `TestSurfaceWiring.test_parity_same_digest_pipeline_mcp_cli` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:438` | `calls` | `TestSurfaceWiring._cli_json` |
+| Hop 2 | `TestSurfaceWiring.test_cli_gate_semantics_unchanged` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:512` | `calls` | `TestSurfaceWiring._cli_json` |
+| Hop 2 | `TestSurfaceWiring.test_cli_request_block_reflects_auto_reconcile_flag` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:523` | `calls` | `TestSurfaceWiring._cli_json` |
+| Hop 2 | `TestParityMatrix.test_digest_parity_executor_mcp_cli` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:671` | `calls` | `_cli_diff_json` |
+| Hop 2 | `TestSurfaceFaultInjection.test_cli_diff_impact_degrades_on_collection_fault` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py:782` | `calls` | `_cli_diff_json` |
+| Hop 2 | `TestStressMatrix.test_201_changed_files_accounting_and_surface_parity` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py:452` | `calls` | `_cli_diff_json` |
+| Hop 2 | `TestNoFalseAssureSweep.test_executor_cli_mcp_never_assure_truncated` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py:641` | `calls` | `_cli_diff_json` |
+| Hop 2 | `TestCharacterizationResidualRisks.test_mcp_vs_cli_payload_normalization_field_parity` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py:841` | `calls` | `_cli_diff_json` |
+
+## 🌐 3. Affected Cross-Stack API Endpoints
+
+_No direct or indirect API contract bindings affected._
+
+## 🧪 4. Recommended Test Coverage Verification
+
+| Test Target | Kind | File | Reason |
+| :--- | :--- | :--- | :--- |
+| `engines/codebase-memory-mcp/.github/workflows/_test.yml` | `file` | `engines/codebase-memory-mcp/.github/workflows/_test.yml` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphScene.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphScene.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.deadcode.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.deadcode.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.filters.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.filters.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/NodeDetailPanel.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/NodeDetailPanel.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/StatsTab.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/StatsTab.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/hooks/useGraphData.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/hooks/useGraphData.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/lib/density.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/lib/density.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/lib/i18n.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/lib/i18n.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/main_test.go` | `file` | `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/main_test.go` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/runtime_lock_windows_test.go` | `file` | `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/runtime_lock_windows_test.go` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/install-failure.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/install-failure.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/package-publication.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/package-publication.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/windows-launcher.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/windows-launcher.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/pypi/tests/test_cli.py` | `file` | `engines/codebase-memory-mcp/pkg/pypi/tests/test_cli.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/scripts/test_mcp_interactive.py` | `file` | `engines/codebase-memory-mcp/scripts/test_mcp_interactive.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/scripts/test_mcp_rapid_init.py` | `file` | `engines/codebase-memory-mcp/scripts/test_mcp_rapid_init.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/src/pipeline/pass_tests.c` | `file` | `engines/codebase-memory-mcp/src/pipeline/pass_tests.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.h` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.h` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/main.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/main.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/ui-readiness/index.html` | `file` | `engines/codebase-memory-mcp/tests/fixtures/ui-readiness/index.html` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/grammar_cases.h` | `file` | `engines/codebase-memory-mcp/tests/grammar_cases.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/issue832_rss.py` | `file` | `engines/codebase-memory-mcp/tests/repro/issue832_rss.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_a.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_a.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_b.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_b.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_usages.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_usages.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_node_behaviors.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_node_behaviors.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_node_manifest.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_node_manifest.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_scope_usages.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_scope_usages.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_extraction.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_extraction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_build.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_build.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_config.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_config.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_core.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_core.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_functional.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_functional.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_markup.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_markup.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_misc.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_misc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_scientific.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_scientific.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_scripting.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_scripting.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_shells.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_shells.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_systems.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_systems.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_web.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_web.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_harness.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_harness.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_harness_cleanup.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_harness_cleanup.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_breadth.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_breadth.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_calls.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_calls.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_discovery_fqn.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_discovery_fqn.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_enclosing_parity.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_enclosing_parity.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_graph.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_graph.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_lib.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_lib.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_lsp_rescue.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_lsp_rescue.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue221.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue221.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue333.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue333.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue363.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue363.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue382.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue382.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue403.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue403.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue408.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue408.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue409.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue409.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue431.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue431.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue434.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue434.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue471.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue471.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue480.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue480.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue495.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue495.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue510.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue510.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue514.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue514.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue520.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue520.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue521.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue521.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue523.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue523.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue546.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue546.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue548.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue548.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue557.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue557.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue56.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue56.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue570.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue570.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue571.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue571.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue581.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue581.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue607.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue607.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue627.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue627.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue787.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue787.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue842.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue842.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue964.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue964.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_language_registry.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_language_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lexical_binding_precision.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lexical_binding_precision.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_c_cpp.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_c_cpp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_go_py.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_go_py.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_java_cs.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_java_cs.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_kt_php_rust.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_kt_php_rust.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_local.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_local.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_signatures.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_signatures.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ts.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ts.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_main.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_main.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_make_tracks_headers.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_make_tracks_headers.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_cypher_limit_zero.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_cypher_limit_zero.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_py_tuple_unpack.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_py_tuple_unpack.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_ts_class_field_arrow.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_ts_class_field_arrow.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_parallel_determinism.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_parallel_determinism.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_reference_precision.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_reference_precision.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_filter.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_filter.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_passing_semantics.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_passing_semantics.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_zero_selection.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_zero_selection.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_missing_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_missing_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_no_workspace_artifact.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_no_workspace_artifact.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_skipped_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_skipped_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_stderr_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_stderr_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_zero_selection.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_zero_selection.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_ts_inherited_method.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_ts_inherited_method.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_ts_overload_return_chains.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_ts_overload_return_chains.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/scale_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/scale_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/smoke_guard.sh` | `file` | `engines/codebase-memory-mcp/tests/smoke_guard.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ac.c` | `file` | `engines/codebase-memory-mcp/tests/test_ac.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_activation_transaction.c` | `file` | `engines/codebase-memory-mcp/tests/test_activation_transaction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_agent_clients.c` | `file` | `engines/codebase-memory-mcp/tests/test_agent_clients.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_agent_profiles.c` | `file` | `engines/codebase-memory-mcp/tests/test_agent_profiles.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_arena.c` | `file` | `engines/codebase-memory-mcp/tests/test_arena.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_artifact.c` | `file` | `engines/codebase-memory-mcp/tests/test_artifact.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ast_profile.c` | `file` | `engines/codebase-memory-mcp/tests/test_ast_profile.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_build_dir_safety.sh` | `file` | `engines/codebase-memory-mcp/tests/test_build_dir_safety.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_c_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_c_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_call_reference_contract.c` | `file` | `engines/codebase-memory-mcp/tests/test_call_reference_contract.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cli.c` | `file` | `engines/codebase-memory-mcp/tests/test_cli.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_complexity.c` | `file` | `engines/codebase-memory-mcp/tests/test_complexity.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_json_like.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_json_like.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_text_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_text_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_toml_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_toml_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_yaml_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_yaml_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_configlink.c` | `file` | `engines/codebase-memory-mcp/tests/test_configlink.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_convergence_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_convergence_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cpp_index_hang.sh` | `file` | `engines/codebase-memory-mcp/tests/test_cpp_index_hang.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cross_repo.c` | `file` | `engines/codebase-memory-mcp/tests/test_cross_repo.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cs_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_cs_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cs_lsp_bench.c` | `file` | `engines/codebase-memory-mcp/tests/test_cs_lsp_bench.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cypher.c` | `file` | `engines/codebase-memory-mcp/tests/test_cypher.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_application.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_application.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_bootstrap.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_bootstrap.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_frontend.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_frontend.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_ipc.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_ipc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_open_readiness.py` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_open_readiness.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_runtime.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_runtime.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_runtime_contract.h` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_runtime_contract.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_smoke.py` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_smoke.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_version.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_version.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_destructive_ordering_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_destructive_ordering_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_diagnostics.c` | `file` | `engines/codebase-memory-mcp/tests/test_diagnostics.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_discover.c` | `file` | `engines/codebase-memory-mcp/tests/test_discover.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dump_verify.c` | `file` | `engines/codebase-memory-mcp/tests/test_dump_verify.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dump_verify_io.c` | `file` | `engines/codebase-memory-mcp/tests/test_dump_verify_io.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dyn_array.c` | `file` | `engines/codebase-memory-mcp/tests/test_dyn_array.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_structural.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_structural.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_types_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_types_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction_inheritance.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction_inheritance.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_fqn.c` | `file` | `engines/codebase-memory-mcp/tests/test_fqn.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_framework.h` | `file` | `engines/codebase-memory-mcp/tests/test_framework.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_git_context.c` | `file` | `engines/codebase-memory-mcp/tests/test_git_context.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_gitignore.c` | `file` | `engines/codebase-memory-mcp/tests/test_gitignore.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_go_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_go_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_labels.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_labels.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_a.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_a.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_b.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_b.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_c.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_c.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_d.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_d.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_e.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_e.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_f.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_f.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_g.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_g.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_regression.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_regression.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_graph_buffer.c` | `file` | `engines/codebase-memory-mcp/tests/test_graph_buffer.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_hash_table.c` | `file` | `engines/codebase-memory-mcp/tests/test_hash_table.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_helpers.h` | `file` | `engines/codebase-memory-mcp/tests/test_helpers.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_hook_conflict_notice.sh` | `file` | `engines/codebase-memory-mcp/tests/test_hook_conflict_notice.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_httpd.c` | `file` | `engines/codebase-memory-mcp/tests/test_httpd.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_incremental.c` | `file` | `engines/codebase-memory-mcp/tests/test_incremental.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_index_resilience.c` | `file` | `engines/codebase-memory-mcp/tests/test_index_resilience.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_index_supervisor.c` | `file` | `engines/codebase-memory-mcp/tests/test_index_supervisor.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_infrascan.c` | `file` | `engines/codebase-memory-mcp/tests/test_infrascan.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_integration.c` | `file` | `engines/codebase-memory-mcp/tests/test_integration.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_java_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_java_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_java_lsp_coverage.c` | `file` | `engines/codebase-memory-mcp/tests/test_java_lsp_coverage.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_kotlin_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_kotlin_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lang_contract.c` | `file` | `engines/codebase-memory-mcp/tests/test_lang_contract.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_language.c` | `file` | `engines/codebase-memory-mcp/tests/test_language.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lock_registry.c` | `file` | `engines/codebase-memory-mcp/tests/test_lock_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_log.c` | `file` | `engines/codebase-memory-mcp/tests/test_log.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lsp_resolution_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_lsp_resolution_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lz4.c` | `file` | `engines/codebase-memory-mcp/tests/test_lz4.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_main.c` | `file` | `engines/codebase-memory-mcp/tests/test_main.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_makefile_ts_runtime_dependencies.sh` | `file` | `engines/codebase-memory-mcp/tests/test_makefile_ts_runtime_dependencies.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_matrix_known_classes.c` | `file` | `engines/codebase-memory-mcp/tests/test_matrix_known_classes.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_matrix_new_constructs.c` | `file` | `engines/codebase-memory-mcp/tests/test_matrix_new_constructs.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcp.c` | `file` | `engines/codebase-memory-mcp/tests/test_mcp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcpb_bundle_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_mcpb_bundle_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcpb_registry_entries_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_mcpb_registry_entries_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mem.c` | `file` | `engines/codebase-memory-mcp/tests/test_mem.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_node_creation_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_node_creation_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parallel.c` | `file` | `engines/codebase-memory-mcp/tests/test_parallel.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parallel_harness_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_parallel_harness_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parent_watchdog.sh` | `file` | `engines/codebase-memory-mcp/tests/test_parent_watchdog.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parse_coverage.c` | `file` | `engines/codebase-memory-mcp/tests/test_parse_coverage.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_path_alias.c` | `file` | `engines/codebase-memory-mcp/tests/test_path_alias.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_perl_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_perl_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_php_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_php_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_pipeline.c` | `file` | `engines/codebase-memory-mcp/tests/test_pipeline.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_platform.c` | `file` | `engines/codebase-memory-mcp/tests/test_platform.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_private_file_lock.c` | `file` | `engines/codebase-memory-mcp/tests/test_private_file_lock.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_project_lock.c` | `file` | `engines/codebase-memory-mcp/tests/test_project_lock.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_bench.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_bench.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_scale.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_scale.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_stress.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_stress.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_registry.c` | `file` | `engines/codebase-memory-mcp/tests/test_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_archive_extractor_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_archive_extractor_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_candidate_derivation_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_candidate_derivation_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_gate_chain_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_gate_chain_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_route_canon.c` | `file` | `engines/codebase-memory-mcp/tests/test_route_canon.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_runtime_isolation_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_runtime_isolation_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_rust_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_rust_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_scope.c` | `file` | `engines/codebase-memory-mcp/tests/test_scope.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_script_exec_bit_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_script_exec_bit_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security.c` | `file` | `engines/codebase-memory-mcp/tests/test_security.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security_fuzz_harness.sh` | `file` | `engines/codebase-memory-mcp/tests/test_security_fuzz_harness.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security_strings_allowlist.sh` | `file` | `engines/codebase-memory-mcp/tests/test_security_strings_allowlist.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_semantic.c` | `file` | `engines/codebase-memory-mcp/tests/test_semantic.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_shell_line_endings.sh` | `file` | `engines/codebase-memory-mcp/tests/test_shell_line_endings.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_simhash.c` | `file` | `engines/codebase-memory-mcp/tests/test_simhash.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_slab_alloc.c` | `file` | `engines/codebase-memory-mcp/tests/test_slab_alloc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_smoke_fixture_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_smoke_fixture_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_soak_daemon_recovery_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_soak_daemon_recovery_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_spawn_no_window_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_spawn_no_window_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_sqlite_writer.c` | `file` | `engines/codebase-memory-mcp/tests/test_sqlite_writer.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_stack_overflow.c` | `file` | `engines/codebase-memory-mcp/tests/test_stack_overflow.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_arch.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_arch.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_bulk.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_bulk.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_checkpoint.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_checkpoint.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_edges.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_edges.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_nodes.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_nodes.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_pragmas.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_pragmas.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_search.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_search.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_str_intern.c` | `file` | `engines/codebase-memory-mcp/tests/test_str_intern.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_str_util.c` | `file` | `engines/codebase-memory-mcp/tests/test_str_util.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_subprocess.c` | `file` | `engines/codebase-memory-mcp/tests/test_subprocess.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_traces.c` | `file` | `engines/codebase-memory-mcp/tests/test_traces.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ts_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_ts_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_type_rep.c` | `file` | `engines/codebase-memory-mcp/tests/test_type_rep.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ui.c` | `file` | `engines/codebase-memory-mcp/tests/test_ui.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ui_dev_proxy_security.sh` | `file` | `engines/codebase-memory-mcp/tests/test_ui_dev_proxy_security.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_userconfig.c` | `file` | `engines/codebase-memory-mcp/tests/test_userconfig.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vendored_integrity_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vendored_integrity_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_venue_parity_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_venue_parity_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_version_cohort.c` | `file` | `engines/codebase-memory-mcp/tests/test_version_cohort.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vm_worktree_manifest.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vm_worktree_manifest.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vmem.c` | `file` | `engines/codebase-memory-mcp/tests/test_vmem.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_candidate_selection_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_candidate_selection_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_gate_policy_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_gate_policy_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_release_notes_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_release_notes_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_watcher.c` | `file` | `engines/codebase-memory-mcp/tests/test_watcher.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_windows_bundle_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_windows_bundle_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_error_response.sh` | `file` | `engines/codebase-memory-mcp/tests/test_worker_error_response.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_pool.c` | `file` | `engines/codebase-memory-mcp/tests/test_worker_pool.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_watchdog.sh` | `file` | `engines/codebase-memory-mcp/tests/test_worker_watchdog.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_workspace.c` | `file` | `engines/codebase-memory-mcp/tests/test_workspace.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_yaml.c` | `file` | `engines/codebase-memory-mcp/tests/test_yaml.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_zstd.c` | `file` | `engines/codebase-memory-mcp/tests/test_zstd.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/mcp_stdio.py` | `file` | `engines/codebase-memory-mcp/tests/windows/mcp_stdio.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_cli_non_ascii_arg.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_cli_non_ascii_arg.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_daemon_lifecycle.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_daemon_lifecycle.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_daemon_stability.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_daemon_stability.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_hook_augment.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_hook_augment.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_non_ascii_cache_dump.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_non_ascii_cache_dump.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_non_ascii_path.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_non_ascii_path.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_ui_drive_listing.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_ui_drive_listing.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_windows_update_handoff.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_windows_update_handoff.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/control_flow.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/control_flow.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/declarations.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/declarations.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/procedures.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/procedures.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/control_flow.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/control_flow.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/functions.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/functions.txt` | `direct_test_file` |
+| `tests/test_engine_admin.py` | `file` | `tests/test_engine_admin.py` | `direct_test_file` |
+| `test_adapters.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `TestHarnessAdapters.test_cli_setup_pi_alias` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `TestHarnessAdapters.test_cli_setup_command` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `test_analytics.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py` | `calls_modified_node` -> `build_parser` |
+| `AnalyticsTests.test_cli_report_and_cluster_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py` | `calls_modified_node` -> `build_parser` |
+| `test_bundle.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py` | `calls_modified_node` -> `build_parser` |
+| `TestArchitectureBundler.test_cli_cmd_bundle` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py` | `calls_modified_node` -> `build_parser` |
+| `test_cli_provider_wiring.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestBuiltinDefault.test_default_builtin_never_spawns` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestBuiltinDefault.test_explicit_builtin_flag_identical` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_blocked_prefer_warns_and_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_blocked_require_fails_closed` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_invalid_spec_rejected` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestRequireFailsClosedUnhealthy.test_unhealthy_binary_require_exits_nonzero` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestRequireFailsClosedUnhealthy.test_missing_binary_prefer_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestMergeOrderAndVerdict.test_candidates_after_builtin_with_ceiling_and_provider_tag` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestMergeOrderAndVerdict.test_target_mismatch_recorded_as_conflict` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestTruncationPropagation.test_has_more_sets_truncated_true` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestProvidersSync.test_sync_invokes_index_and_emits_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestProvidersSync.test_sync_unknown_provider_fails_cleanly` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `test_collection_accounting.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py` | `calls_modified_node` -> `build_parser` |
+| `TestReconcileProvenance.test_cli_records_pipeline_provenance` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py` | `calls_modified_node` -> `build_parser` |
+| `test_diff_impact.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `TestDiffImpactGate._run` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `TestDiffImpactGate.test_gate_flag_registered` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `test_diff_impact_github.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `GithubRendererTests.test_cli_format_flag_choices_and_default_unchanged` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `GithubRendererTests.test_cmd_diff_impact_github_end_to_end` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `test_export.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py` | `calls_modified_node` -> `build_parser` |
+| `ExportTests.test_cli_viz_and_export_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py` | `calls_modified_node` -> `build_parser` |
+| `test_hardening_fixes.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py` | `calls_modified_node` -> `main` |
+| `HardeningFixesTests.test_cli_handles_lock_busy_and_runtime_error` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py` | `calls_modified_node` -> `main` |
+| `test_impact_pipeline.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `TestSurfaceWiring._cli_json` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `test_optimizations.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py` | `calls_modified_node` -> `build_parser` |
+| `TestOptimizations.test_batch_reconcile_and_repo_discovery` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py` | `calls_modified_node` -> `build_parser` |
+| `test_p2_orchestrator.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py` | `calls_modified_node` -> `cli.py` |
+| `TestDeadProviderDegrades.test_require_blocked_by_config_exit_code_is_stable` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py` | `calls_modified_node` -> `main` |
+| `test_providers_cross_check.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `CrossCheckTests.test_cli_subcommand_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `CrossCheckReceiptTests.test_cli_receipt_flag_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `test_providers_registry.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_detect_json_smoke` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_doctor_exit_code_zero_when_optional_missing` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_doctor_exit_code_one_when_required_unhealthy` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_resolve_json_returns_ranked_list` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_list_json_lists_all_configured` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `test_report_conformance.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py` | `calls_modified_node` -> `build_parser` |
+| `TestShippedPathIntegration.test_cli_report_receives_real_denominators` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py` | `calls_modified_node` -> `build_parser` |
+| `test_sg107_stress.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `build_parser` |
+| `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `build_parser` |
+| `test_storage_integrity.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py` | `calls_modified_node` -> `main` |
+| `test_doctor_cli_text_and_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py` | `calls_modified_node` -> `main` |
+| `TestDiffImpactGate.test_gate_fails_on_partial_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `TestDiffImpactGate._run` |
+| `TestDiffImpactGate.test_gate_passes_on_assured_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `TestDiffImpactGate._run` |
+| `TestDiffImpactGate.test_default_advisory_exits_zero_even_on_partial` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `TestDiffImpactGate._run` |
+| `TestSurfaceWiring.test_parity_same_digest_pipeline_mcp_cli` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `TestSurfaceWiring._cli_json` |
+| `TestSurfaceWiring.test_cli_gate_semantics_unchanged` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `TestSurfaceWiring._cli_json` |
+| `TestSurfaceWiring.test_cli_request_block_reflects_auto_reconcile_flag` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `TestSurfaceWiring._cli_json` |
+| `TestParityMatrix.test_digest_parity_executor_mcp_cli` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `_cli_diff_json` |
+| `TestSurfaceFaultInjection.test_cli_diff_impact_degrades_on_collection_fault` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `_cli_diff_json` |
+| `TestStressMatrix.test_201_changed_files_accounting_and_surface_parity` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `_cli_diff_json` |
+| `TestNoFalseAssureSweep.test_executor_cli_mcp_never_assure_truncated` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `_cli_diff_json` |
+| `TestCharacterizationResidualRisks.test_mcp_vs_cli_payload_normalization_field_parity` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `_cli_diff_json` |
+| `test_p2_orchestrator.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py` | `calls_modified_node` -> `cli.py` |
+| `test_adapters.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `TestHarnessAdapters.test_cli_setup_pi_alias` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `TestHarnessAdapters.test_cli_setup_command` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py` | `calls_modified_node` -> `build_parser` |
+| `test_analytics.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py` | `calls_modified_node` -> `build_parser` |
+| `AnalyticsTests.test_cli_report_and_cluster_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_analytics.py` | `calls_modified_node` -> `build_parser` |
+| `test_bundle.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py` | `calls_modified_node` -> `build_parser` |
+| `TestArchitectureBundler.test_cli_cmd_bundle` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_bundle.py` | `calls_modified_node` -> `build_parser` |
+| `test_optimizations.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py` | `calls_modified_node` -> `build_parser` |
+| `TestOptimizations.test_batch_reconcile_and_repo_discovery` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_optimizations.py` | `calls_modified_node` -> `build_parser` |
+| `test_export.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py` | `calls_modified_node` -> `build_parser` |
+| `ExportTests.test_cli_viz_and_export_commands` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_export.py` | `calls_modified_node` -> `build_parser` |
+| `TestDiffImpactGate._run` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `TestDiffImpactGate.test_gate_flag_registered` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `test_diff_impact.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact.py` | `calls_modified_node` -> `build_parser` |
+| `GithubRendererTests.test_cli_format_flag_choices_and_default_unchanged` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `GithubRendererTests.test_cmd_diff_impact_github_end_to_end` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `test_diff_impact_github.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_diff_impact_github.py` | `calls_modified_node` -> `build_parser` |
+| `TestReconcileProvenance.test_cli_records_pipeline_provenance` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py` | `calls_modified_node` -> `build_parser` |
+| `test_collection_accounting.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_collection_accounting.py` | `calls_modified_node` -> `build_parser` |
+| `TestSurfaceWiring._cli_json` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `test_impact_pipeline.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_impact_pipeline.py` | `calls_modified_node` -> `build_parser` |
+| `CrossCheckTests.test_cli_subcommand_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `CrossCheckReceiptTests.test_cli_receipt_flag_wiring` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `test_providers_cross_check.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_cross_check.py` | `calls_modified_node` -> `build_parser` |
+| `_cli_diff_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `build_parser` |
+| `test_sg107_stress.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg107_stress.py` | `calls_modified_node` -> `build_parser` |
+| `test_report_conformance.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py` | `calls_modified_node` -> `build_parser` |
+| `TestShippedPathIntegration.test_cli_report_receives_real_denominators` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_report_conformance.py` | `calls_modified_node` -> `build_parser` |
+| `TestDeadProviderDegrades.test_require_blocked_by_config_exit_code_is_stable` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_p2_orchestrator.py` | `calls_modified_node` -> `main` |
+| `test_providers_registry.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_detect_json_smoke` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_doctor_exit_code_zero_when_optional_missing` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_doctor_exit_code_one_when_required_unhealthy` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_resolve_json_returns_ranked_list` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `TestCliProviders.test_list_json_lists_all_configured` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_providers_registry.py` | `calls_modified_node` -> `main` |
+| `test_storage_integrity.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py` | `calls_modified_node` -> `main` |
+| `test_doctor_cli_text_and_json` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_storage_integrity.py` | `calls_modified_node` -> `main` |
+| `test_cli_provider_wiring.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestBuiltinDefault.test_default_builtin_never_spawns` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestBuiltinDefault.test_explicit_builtin_flag_identical` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_blocked_prefer_warns_and_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_blocked_require_fails_closed` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestAllowExternalGate.test_invalid_spec_rejected` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestRequireFailsClosedUnhealthy.test_unhealthy_binary_require_exits_nonzero` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestRequireFailsClosedUnhealthy.test_missing_binary_prefer_falls_back` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestMergeOrderAndVerdict.test_candidates_after_builtin_with_ceiling_and_provider_tag` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestMergeOrderAndVerdict.test_target_mismatch_recorded_as_conflict` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestTruncationPropagation.test_has_more_sets_truncated_true` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestProvidersSync.test_sync_invokes_index_and_emits_receipt` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `TestProvidersSync.test_sync_unknown_provider_fails_cleanly` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_cli_provider_wiring.py` | `calls_modified_node` -> `main` |
+| `HardeningFixesTests.test_cli_handles_lock_busy_and_runtime_error` | `method` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py` | `calls_modified_node` -> `main` |
+| `test_hardening_fixes.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py` | `calls_modified_node` -> `main` |
+| `test_engine_admin.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `main` |
+| `test_install_promote_rollback_and_status` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `main` |
+| `test_wrong_digest_refused_and_unknown_data_preserved` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `main` |
+| `test_operational_exit_and_multi_artifact_registry` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `main` |
+| `test_no_raw_execution_surface` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `main` |
+| `test_search_normalizes_and_verifies_without_raw_payload` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `verified_search` |
+| `lab` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/tests/test_engine_admin.py` | `calls_modified_node` -> `lab.forbidden` |
+

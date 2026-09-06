@@ -1,0 +1,13 @@
+{
+  "exit_code": 0,
+  "seconds": 189.80816024984233,
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/",
+    "-q",
+    "-p",
+    "no:cacheprovider"
+  ]
+}

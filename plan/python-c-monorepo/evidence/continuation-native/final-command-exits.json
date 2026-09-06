@@ -1,0 +1,20 @@
+{
+  "full_suite": 0,
+  "reviewer_regressions": 0,
+  "ruff_scoped": 0,
+  "reconcile": 0,
+  "doctor": 0,
+  "diff_impact": 0,
+  "package_build": 0,
+  "git_diff_check": 0,
+  "matched_v2": 0,
+  "distinct_artifact_rollback": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "historical_pin_refusal": 2,
+  "first_package_missing_setuptools": 1,
+  "first_benchmark": "aborted; builtin argument errors retained"
+}

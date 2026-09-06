@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "wall_seconds": 200.86368195782416,
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-native/final-suite.xml"
+  ]
+}
