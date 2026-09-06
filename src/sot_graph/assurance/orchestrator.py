@@ -21,6 +21,7 @@ from .routing import (
 
 __all__ = [
     "federation_plan",
+    "managed_read_dispatch",
     "run_federated_query",
     "federated_extras",
     "cbm_candidates_from_outcome",
@@ -30,6 +31,189 @@ __all__ = [
     "search_rows_from_payload",
     "trace_edges_from_payload",
 ]
+
+
+def managed_read_dispatch(
+    root: str, command_kind: str, symbol: str, *,
+    provider_policy: str = "builtin_only", limit: int = 20,
+    scope: str = "", builtin_target=None,
+) -> dict:
+    """Data-only persisted-admin read path, separate from explicit legacy CLI.
+
+    Search is currently the only managed evidence operation. Usages is an
+    accepted surface operation but abstains until the runtime allowlists it.
+    No discovery, preparation, indexing, database construction or ledger I/O.
+    Native diagnostics are never copied into public remediation. The returned
+    candidates are supplemental evidence, not replacements for builtin hits.
+    """
+    result: dict = {
+        "policy": provider_policy, "operation": command_kind,
+        "status": "builtin_only", "reason": None, "warnings": [],
+        "fail_message": None, "candidates": [], "conflicts": [],
+        "providers_extra": [], "coverage": {}, "known_gaps": [],
+        "truncated": False,
+    }
+
+    def refuse(reason: str, *, invalid: bool = False) -> dict:
+        message = (
+            f"Managed external read unavailable ({reason}). "
+            "Ask a trusted administrator to inspect provider status and configuration."
+        )
+        required = invalid or provider_policy == "require_external"
+        fallback_message = "builtin served by fallback when the builtin query succeeds: "
+        if reason == "managed_not_configured":
+            fallback_message += (
+                "no external provider is wired into this managed request because "
+                "managed opt-in is absent or disabled. "
+            )
+        fallback_message += message
+        result.update(status="error" if required else "fallback", reason=reason,
+                      fail_message=message if required else None,
+                      warnings=[] if required else [fallback_message], known_gaps=[message])
+        return result
+
+    if provider_policy not in ("builtin_only", "prefer_external", "require_external"):
+        return refuse("invalid_policy", invalid=True)
+    # Strong isolation: even policy/config validation and imports below are
+    # bypassed for builtin reads. Repository defaults cannot enable execution.
+    if provider_policy == "builtin_only":
+        return result
+    if command_kind != "search":
+        return refuse("unsupported_operation")
+    if (not isinstance(limit, int) or isinstance(limit, bool) or limit < 1
+            or not isinstance(scope, str) or not isinstance(symbol, str)
+            or not symbol.strip() or "\x00" in symbol or len(symbol) > 1000):
+        return refuse("invalid_request", invalid=True)
+    limit = min(limit, 20)  # managed search wire is deliberately fixed at 20
+    try:
+        root = os.path.realpath(root)
+        scope_path = os.path.realpath(os.path.join(root, scope))
+        if os.path.commonpath((root, scope_path)) != root:
+            return refuse("invalid_scope", invalid=True)
+    except (TypeError, ValueError, OSError):
+        return refuse("invalid_scope", invalid=True)
+
+    try:
+        import stat
+
+        from sot_graph.config import _FALSY, _TRUTHY, _coerce_bool, tomllib
+        from sot_graph.providers.trusted_config import load_managed_installation
+
+        # Read untrusted repository policy once, with a hard size bound and
+        # no symlink/FIFO traversal. Directory-relative open pins .sot against
+        # replacement between checking its type and opening config.toml.
+        document: dict = {}
+        try:
+            directory = os.open(os.path.join(root, ".sot"),
+                                os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        except FileNotFoundError:
+            directory = None
+        if directory is not None:
+            try:
+                try:
+                    fd = os.open("config.toml", os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                                 dir_fd=directory)
+                except FileNotFoundError:
+                    fd = None
+                if fd is not None:
+                    with os.fdopen(fd, "rb") as stream:
+                        info = os.fstat(stream.fileno())
+                        if not stat.S_ISREG(info.st_mode) or info.st_size > 262144:
+                            return refuse("repository_config_invalid")
+                        raw = stream.read(262145)
+                        if len(raw) > 262144:
+                            return refuse("repository_config_invalid")
+                    document = tomllib.loads(raw.decode("utf-8"))
+            finally:
+                os.close(directory)
+        # Default false is not a deny. Only explicit restriction fields are
+        # authoritative; executable, registry and grants are never consumed.
+        providers = document.get("providers", {})
+        if not isinstance(providers, dict):
+            return refuse("repository_config_invalid")
+        repo_provider = providers.get("codebase-memory", {})
+        if not isinstance(repo_provider, dict):
+            return refuse("repository_config_invalid")
+        denied = False
+        for policy, key in ((document, "allow_external"), (repo_provider, "enabled")):
+            if key in policy:
+                denied |= not _coerce_bool("repository policy", key, policy[key])
+        env_allow = os.environ.get("SOT_PROVIDERS_ALLOW_EXTERNAL")
+        if env_allow is not None:
+            normalized = env_allow.strip().lower()
+            if normalized not in _TRUTHY | _FALSY:
+                return refuse("repository_config_invalid")
+            denied |= normalized in _FALSY
+        if denied:
+            return refuse("repository_denied")
+    except Exception:
+        return refuse("repository_config_invalid")
+    try:
+        installation = load_managed_installation(root)
+    except Exception:
+        return refuse("trusted_config_invalid")
+    if installation is None:
+        return refuse("managed_not_configured")
+
+    try:
+        # Use the installation's adapter directly: it owns the exact registry,
+        # runtime locks, binding validation and managed-only invocation path.
+        # Do not probe or construct a second adapter/lineage trust path here.
+        from sot_graph.providers.base import SymbolRequest
+
+        # Managed capabilities use wire names (search_graph), not the generic
+        # legacy routing name search_symbols. This typed method maps exactly
+        # to the allowed wire operation and retains every adapter/runtime gate.
+        outcome = installation.provider.search_symbols(SymbolRequest(
+            repo_root=root, query=symbol, limit=20, timeout_seconds=30.0,
+        ))
+        method = "search_symbols"
+        if outcome is None or not outcome.ok:
+            return refuse("managed_query_failed")
+    except Exception:
+        return refuse("managed_query_failed")
+
+    try:
+        candidates, truncated, gap = cbm_candidates_from_outcome(
+            outcome, method, "codebase-memory", repo_root=root,
+        )
+        if gap:
+            return refuse("invalid_provider_payload")
+        scoped = []
+        for candidate in candidates:
+            path = candidate.get("subject", {}).get("path")
+            if not isinstance(path, str) or not path:
+                continue
+            candidate_path = os.path.realpath(os.path.join(root, path))
+            if os.path.commonpath((root, candidate_path)) != root:
+                continue
+            if os.path.commonpath((scope_path, candidate_path)) != scope_path:
+                continue
+            scoped.append(candidate)
+        bounded = scoped[:limit]
+        conflicts = target_conflicts(builtin_target, bounded, repo_root=root)
+        # Materialize plain JSON values; a malformed native value fails closed
+        # instead of escaping via repr/exception diagnostics in an adapter.
+        import json
+
+        result.update(
+            status="ok", candidates=bounded, conflicts=conflicts,
+            providers_extra=[{"name": "codebase-memory", "role": "candidate-evidence"}],
+            coverage={"codebase-memory": {
+                "queried": True, "method": method, "scope": scope,
+                "limit": limit, "scope_completeness": "bounded",
+            }},
+            known_gaps=[
+                "Managed search is bounded to one 20-row native page; scope filtering is local.",
+                "External candidates retain source, snapshot and exact-compatibility trust ceilings.",
+            ],
+            truncated=bool(truncated or len(scoped) > limit),
+        )
+        return json.loads(json.dumps(result, allow_nan=False))
+    except Exception:
+        # Also drop any partially assembled evidence on normalization failure.
+        result.update(candidates=[], conflicts=[], providers_extra=[], coverage={}, truncated=False)
+        return refuse("invalid_provider_payload")
 
 
 def federation_plan(provider_spec: Optional[str], root: str, command_kind: str, db=None) -> dict:
