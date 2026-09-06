@@ -14,7 +14,7 @@ from sot_graph.locking import LockBusy
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('engine', help='Explicit local engine artifact administration (experimental)')
-    parser.add_argument('--store', required=True, help='Private absolute store outside the repository')
+    parser.add_argument('--store', help='Private absolute store outside the repository (required except disable/config-status)')
     parser.add_argument('--name', default='codebase-memory')
     operations = parser.add_subparsers(dest='engine_action', required=True)
     install = operations.add_parser('import', help='Verify and stage an explicit local artifact; never activate automatically')
@@ -25,7 +25,9 @@ def add_parser(subparsers):
         operation.add_argument('--digest', required=True)
     operations.add_parser('status', help='Verify selected artifact without spawning an engine')
     operations.add_parser('doctor', help='Report artifact identity and experimental limitations')
-    for action in ('prepare', 'probe', 'sync', 'search', 'runtime-status'):
+    operations.add_parser('disable', help='Disable trusted project opt-in; preserve all stored data')
+    operations.add_parser('config-status', help='Read trusted project opt-in without starting the engine')
+    for action in ('register', 'prepare', 'probe', 'sync', 'search', 'runtime-status'):
         operation = operations.add_parser(action, help='Explicit managed SOT operation (experimental)')
         operation.add_argument('--runtime-root', required=True)
         operation.add_argument('--registry', required=True, help='Trusted administrator operation evidence JSON outside repository')
@@ -65,8 +67,33 @@ def verified_search(outcome, root, limit):
 
 def run(args, root):
     try:
-        store = ArtifactStore(args.store, repo_path=root)
         action = args.engine_action
+        if action in ('register', 'disable', 'config-status'):
+            from .trusted_config import (
+                disable_managed_installation, managed_config_status,
+                register_managed_installation,
+            )
+            if action == 'register':
+                if not args.store:
+                    raise ValueError('register requires --store')
+                installation = register_managed_installation(
+                    root, store_path=args.store, artifact_name=args.name,
+                    runtime_root=args.runtime_root, registry_path=args.registry,
+                    native_protocol_id=args.protocol, generation=args.generation)
+                response = {'schema_version': 1, 'status': 'enabled', 'enabled': True,
+                            'artifact_digest': installation.artifact.digest,
+                            'lifecycle': 'not_started'}
+            elif action == 'disable':
+                changed = disable_managed_installation(root)
+                response = {'schema_version': 1, 'status': 'disabled',
+                            'enabled': False, 'changed': changed, 'lifecycle': 'not_started'}
+            else:
+                response = managed_config_status(root)
+            print(json.dumps(response, sort_keys=True))
+            return 0
+        if not args.store:
+            raise ValueError('engine operation requires --store')
+        store = ArtifactStore(args.store, repo_path=root)
         if action in ('prepare', 'probe', 'sync', 'search', 'runtime-status'):
             from .base import IndexRequest, SymbolRequest
             from .compatibility import CompatibilityRegistry, TestedCompatibilityRecord, normalize_protocol_id
