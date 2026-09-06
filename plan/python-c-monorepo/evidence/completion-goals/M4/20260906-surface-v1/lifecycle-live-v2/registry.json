@@ -1,0 +1,85 @@
+{
+ "per_op_verdict": {
+  "config_set_auto_watch": "compatible",
+  "config_get_auto_watch": "compatible",
+  "index_repository": "compatible",
+  "list_projects": "compatible",
+  "search_graph": "compatible",
+  "index_status": "compatible"
+ },
+ "version": "codebase-memory-mcp 0.10.8",
+ "records": [
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "config_set_auto_watch",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "9f876e3f30b0c2cc4bea5ec2d9dd605ba8594060f1fd5c8d5da34ca898f12b5c",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  },
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "config_get_auto_watch",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  },
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "index_repository",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "b1edf7ebce44ca5fe3aecc0f25d365e2a21e45eafa3441ac14dc6680909f1bb8",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  },
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "list_projects",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "802479fd29ba7f38344382fa0a5daa51fa2d72c564ef717ccb68d032c7da6e28",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  },
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "search_graph",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "ffbd58213a65b754b9805907c5d2c79b15b0e0a260e25356eeaab78a9d79a377",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  },
+  {
+   "schema_version": 1,
+   "provider_name": "codebase-memory",
+   "operation": "index_status",
+   "artifact_sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+   "fixture_digest": "fa8315a52b583b39a387dc5bf4d8e5db42ed2f7d0a87404221081bf649147e49",
+   "protocol_compatibility_id": "p4-release-2412e017-measured-v1",
+   "version": "codebase-memory-mcp 0.10.8",
+   "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+   "tested_by": "measured managed-acceptance capture: fixture digest = sha256 of THIS artifact's raw stdout for this op, measured this run; self-binding (upstream fixture-suite provenance is future work)",
+   "tested_at": "2026-09-06T03:43:48+00:00"
+  }
+ ]
+}

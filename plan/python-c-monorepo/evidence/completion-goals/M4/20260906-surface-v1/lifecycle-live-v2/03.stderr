@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+    register_managed_installation(repo,store_path=store,artifact_name='codebase-memory',runtime_root=runtime,registry_path=registry,native_protocol_id=protocol,generation=generation,config_path=config)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 271, in register_managed_installation
+    installation = _installation(entry, config, pin=False)
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 177, in _installation
+    raise TrustedConfigError('invalid registry envelope')
+sot_graph.providers.trusted_config.TrustedConfigError: invalid registry envelope
