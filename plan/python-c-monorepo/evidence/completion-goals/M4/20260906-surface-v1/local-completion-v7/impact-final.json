@@ -1,0 +1,422 @@
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:1948ffb2b7e9d0b9a04b7fd9bedbf6cafa00c03707440eee841399e235c9ac28",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "schema_version": "1.7",
+    "kind": "diff_impact",
+    "proof_scope": "post_change",
+    "diff_identity": {
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true
+    },
+    "changed_files": [
+      "plan/remaining-work-phased-plan-2026-09-05.md"
+    ],
+    "changed_files_total": 1,
+    "changed_files_truncated": false,
+    "direct_nodes": [
+      {
+        "id": "file:7b2e2b978702",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+        "kind": "file",
+        "symbol": "remaining-work-phased-plan-2026-09-05.md",
+        "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+        "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+        "line_start": 1,
+        "line_end": 149,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            148
+          ]
+        ]
+      }
+    ],
+    "caller_impacts": [],
+    "test_impacts": [],
+    "api_impacts": [],
+    "tests_to_run": [],
+    "invalidated_evidence": [],
+    "invalidated_evidence_dead_count": 0,
+    "collection_stats": {
+      "changed_files": {
+        "enumerated_count": 1,
+        "returned_count": 1,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "invalidated_evidence": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 50,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_runs": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_union": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 5000,
+        "truncated": false,
+        "cursor_exhausted": true
+      }
+    },
+    "post_change_snapshot": {
+      "snapshot_id": null,
+      "descriptor_digest": "sha256:685613e3c3758237c824272556ffd8ce96e3c20871772973d1ca2e6ff3cd0eb4",
+      "role": "post_change",
+      "commit_sha": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:f441ce72e56d7ccb02a2449319b6e0f2618e75a7c0bb674c47f8b7b2475402ac",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "captured_at": 1788695646,
+      "content_digests": {
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+      },
+      "scope_digest": "sha256:e4be6640bfb2d971a4d64bf72c3fe7b2260e7504dfd9c8b3a72ef1afef744ec5"
+    },
+    "reconcile": {
+      "required": true,
+      "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+    },
+    "summary": {
+      "total_changed_files": 1,
+      "total_hunks": 1,
+      "total_direct_nodes": 1,
+      "total_callers": 0,
+      "total_apis": 0,
+      "total_tests": 0,
+      "risk_score": 13,
+      "risk_level": "LOW",
+      "execution_time_ms": 50.34
+    },
+    "pre_receipt_digest": null,
+    "pre_change_snapshot": {
+      "descriptor_digest": "sha256:e39b88c9a706cb3ca46fdf3c239f09b5c59d3f8b76a80cd10bb148c6a8b11226",
+      "role": "pre_change",
+      "commit_sha": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:f441ce72e56d7ccb02a2449319b6e0f2618e75a7c0bb674c47f8b7b2475402ac",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "content_digests": {
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+      },
+      "scope_digest": "sha256:e4be6640bfb2d971a4d64bf72c3fe7b2260e7504dfd9c8b3a72ef1afef744ec5"
+    },
+    "remaining_gaps": [],
+    "warnings": [],
+    "closure_decision": "closed",
+    "omp_confirmations_remaining": [],
+    "assurance_facts": {
+      "identity_status": "UNIQUE",
+      "snapshot_bound": true,
+      "collection_error": false,
+      "stale_files": [],
+      "coverage_measured": false,
+      "coverage_fraction": null,
+      "coverage_floor": 0.9,
+      "parser_failures": 0,
+      "unresolved_count": 0,
+      "unresolved_budget": 0,
+      "open_conflicts": 0,
+      "truncated": false,
+      "truncation_sources": [],
+      "enumeration_complete": null,
+      "parser_capability_complete": null,
+      "partial_ast_present": false,
+      "provider_capability_ok": true,
+      "absence_claim": false,
+      "gate_blocked": false,
+      "dynamic_dispatch_unresolved": false,
+      "claim_profile": "scoped"
+    },
+    "assurance": {
+      "status": "ASSURED_WITHIN_SCOPE",
+      "reason_codes": [],
+      "decision": {
+        "status": "ASSURED_WITHIN_SCOPE",
+        "reason_codes": []
+      }
+    },
+    "digest": "b4413135a48f94c82f884dbd16a0b0ea505e1eadfddf99f6396d4e788368a1b7",
+    "request": {
+      "schema_version": "impact-request/1",
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true,
+      "depth": 2,
+      "auto_reconcile": false,
+      "reconcile_provenance": "pipeline"
+    },
+    "projection": {
+      "collections": [
+        {
+          "key": "changed_files",
+          "enumerated_count": 1,
+          "returned_count": 1,
+          "truncated": false,
+          "cap": 200,
+          "cursor_exhausted": true
+        },
+        {
+          "key": "direct_nodes",
+          "enumerated_count": 1,
+          "returned_count": 1,
+          "truncated": false
+        },
+        {
+          "key": "caller_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "test_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "api_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "tests_to_run",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        }
+      ],
+      "next_cursor": null
+    },
+    "stale_files": []
+  },
+  "kind": "diff_impact",
+  "proof_scope": "post_change",
+  "diff_identity": {
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true
+  },
+  "changed_files": [
+    "plan/remaining-work-phased-plan-2026-09-05.md"
+  ],
+  "changed_files_total": 1,
+  "changed_files_truncated": false,
+  "direct_nodes": [
+    {
+      "id": "file:7b2e2b978702",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+      "kind": "file",
+      "symbol": "remaining-work-phased-plan-2026-09-05.md",
+      "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+      "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+      "line_start": 1,
+      "line_end": 149,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          148
+        ]
+      ]
+    }
+  ],
+  "caller_impacts": [],
+  "test_impacts": [],
+  "api_impacts": [],
+  "tests_to_run": [],
+  "invalidated_evidence": [],
+  "invalidated_evidence_dead_count": 0,
+  "collection_stats": {
+    "changed_files": {
+      "enumerated_count": 1,
+      "returned_count": 1,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "invalidated_evidence": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 50,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_runs": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_union": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 5000,
+      "truncated": false,
+      "cursor_exhausted": true
+    }
+  },
+  "post_change_snapshot": {
+    "snapshot_id": null,
+    "descriptor_digest": "sha256:685613e3c3758237c824272556ffd8ce96e3c20871772973d1ca2e6ff3cd0eb4",
+    "role": "post_change",
+    "commit_sha": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:f441ce72e56d7ccb02a2449319b6e0f2618e75a7c0bb674c47f8b7b2475402ac",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "captured_at": 1788695646,
+    "content_digests": {
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+    },
+    "scope_digest": "sha256:e4be6640bfb2d971a4d64bf72c3fe7b2260e7504dfd9c8b3a72ef1afef744ec5"
+  },
+  "reconcile": {
+    "required": true,
+    "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+  },
+  "summary": {
+    "total_changed_files": 1,
+    "total_hunks": 1,
+    "total_direct_nodes": 1,
+    "total_callers": 0,
+    "total_apis": 0,
+    "total_tests": 0,
+    "risk_score": 13,
+    "risk_level": "LOW",
+    "execution_time_ms": 50.34
+  },
+  "pre_receipt_digest": null,
+  "pre_change_snapshot": {
+    "descriptor_digest": "sha256:e39b88c9a706cb3ca46fdf3c239f09b5c59d3f8b76a80cd10bb148c6a8b11226",
+    "role": "pre_change",
+    "commit_sha": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:f441ce72e56d7ccb02a2449319b6e0f2618e75a7c0bb674c47f8b7b2475402ac",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "content_digests": {
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+    },
+    "scope_digest": "sha256:e4be6640bfb2d971a4d64bf72c3fe7b2260e7504dfd9c8b3a72ef1afef744ec5"
+  },
+  "remaining_gaps": [],
+  "warnings": [],
+  "closure_decision": "closed",
+  "omp_confirmations_remaining": [],
+  "assurance_facts": {
+    "identity_status": "UNIQUE",
+    "snapshot_bound": true,
+    "collection_error": false,
+    "stale_files": [],
+    "coverage_measured": false,
+    "coverage_fraction": null,
+    "coverage_floor": 0.9,
+    "parser_failures": 0,
+    "unresolved_count": 0,
+    "unresolved_budget": 0,
+    "open_conflicts": 0,
+    "truncated": false,
+    "truncation_sources": [],
+    "enumeration_complete": null,
+    "parser_capability_complete": null,
+    "partial_ast_present": false,
+    "provider_capability_ok": true,
+    "absence_claim": false,
+    "gate_blocked": false,
+    "dynamic_dispatch_unresolved": false,
+    "claim_profile": "scoped"
+  },
+  "assurance": {
+    "status": "ASSURED_WITHIN_SCOPE",
+    "reason_codes": [],
+    "decision": {
+      "status": "ASSURED_WITHIN_SCOPE",
+      "reason_codes": []
+    }
+  },
+  "digest": "b4413135a48f94c82f884dbd16a0b0ea505e1eadfddf99f6396d4e788368a1b7",
+  "request": {
+    "schema_version": "impact-request/1",
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true,
+    "depth": 2,
+    "auto_reconcile": false,
+    "reconcile_provenance": "pipeline"
+  },
+  "projection": {
+    "collections": [
+      {
+        "key": "changed_files",
+        "enumerated_count": 1,
+        "returned_count": 1,
+        "truncated": false,
+        "cap": 200,
+        "cursor_exhausted": true
+      },
+      {
+        "key": "direct_nodes",
+        "enumerated_count": 1,
+        "returned_count": 1,
+        "truncated": false
+      },
+      {
+        "key": "caller_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "test_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "api_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "tests_to_run",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      }
+    ],
+    "next_cursor": null
+  },
+  "stale_files": []
+}

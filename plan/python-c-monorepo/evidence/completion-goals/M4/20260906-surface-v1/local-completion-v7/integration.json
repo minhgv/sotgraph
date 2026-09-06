@@ -1,0 +1,9 @@
+{
+  "path": "/tmp/sot-completion-integration-yalc57xy/worktree",
+  "returncode": 0,
+  "head": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+  "head_tree": "d4bc7c713914c4224b0d30e21806bde36d941c41",
+  "merge_tree": "d4bc7c713914c4224b0d30e21806bde36d941c41",
+  "main_ancestor": true,
+  "tests_returncode": 0
+}

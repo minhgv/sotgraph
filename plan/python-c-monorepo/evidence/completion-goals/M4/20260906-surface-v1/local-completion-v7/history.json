@@ -1,0 +1,179 @@
+{
+  "commits": [
+    {
+      "commit_hash": "0a85ee3c3b378d3e9b5a345098bdb74b9a5093e6",
+      "short_hash": "0a85ee3",
+      "author": "minhgv",
+      "date": "2026-09-06 18:39:29 +0700",
+      "message": "fix lifecycle harness to use verified native search limit; freeze v6",
+      "files_changed": [
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/00.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/00.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/01.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/01.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/02.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/02.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/03.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/03.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/04.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/04.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/05.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/05.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/06.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/06.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/07.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/07.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/manifest-0.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/receipt.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/registry.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v6.json",
+        "scripts/check_surface_lifecycle.py"
+      ],
+      "insertions": 1219,
+      "deletions": 1,
+      "touched_symbols": [
+        "parser",
+        "validate",
+        "private_write",
+        "snapshot_files",
+        "Runner"
+      ],
+      "risk_level": "HIGH",
+      "risk_reasons": [
+        "High file blast radius (21 files changed)",
+        "Massive code churn (1220 lines modified)",
+        "Touches high-in-degree core symbol 'validate' (9 incoming callers)"
+      ]
+    },
+    {
+      "commit_hash": "210ccddb151cb4fbd384bf323b523cb504ab7942",
+      "short_hash": "210ccdd",
+      "author": "minhgv",
+      "date": "2026-09-06 18:37:48 +0700",
+      "message": "freeze v5 native diagnostic manifest before execution",
+      "files_changed": [
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v5.json"
+      ],
+      "insertions": 53,
+      "deletions": 0,
+      "touched_symbols": [],
+      "risk_level": "LOW",
+      "risk_reasons": [
+        "Small localized change with low churn"
+      ]
+    },
+    {
+      "commit_hash": "d99298fe828aebbf6d913bee0d83910a0857e151",
+      "short_hash": "d99298f",
+      "author": "minhgv",
+      "date": "2026-09-06 18:37:38 +0700",
+      "message": "fix provider type invariants and freeze private native search diagnostic",
+      "files_changed": [
+        "scripts/check_surface_lifecycle.py",
+        "src/sot_graph/providers/codebase_memory.py",
+        "src/sot_graph/providers/installation.py",
+        "src/sot_graph/providers/managed.py"
+      ],
+      "insertions": 40,
+      "deletions": 12,
+      "touched_symbols": [
+        "parser",
+        "validate",
+        "private_write",
+        "snapshot_files",
+        "Runner",
+        "allowlisted_next_action",
+        "_InvokeOutcome",
+        "ManagedQueryRuntime",
+        "ManagedQueryRuntime.prepare",
+        "ManagedQueryRuntime.query",
+        "ManagedInstallation",
+        "_require_disjoint",
+        "create_managed_installation",
+        "ManagedResult",
+        "ManagedNativeRuntime",
+        "ManagedNativeRuntime.__init__",
+        "ManagedNativeRuntime.prepare",
+        "ManagedNativeRuntime.query"
+      ],
+      "risk_level": "MEDIUM",
+      "risk_reasons": [
+        "Touches high-in-degree core symbol 'validate' (9 incoming callers)"
+      ]
+    },
+    {
+      "commit_hash": "af394b44bafc7caf4e027c9ee75fcb994e6f00dd",
+      "short_hash": "af394b4",
+      "author": "minhgv",
+      "date": "2026-09-06 16:49:26 +0700",
+      "message": "docs(completion): close bounded local work with explicit live blockers",
+      "files_changed": [
+        "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-claims.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-doctor.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-history.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-impact.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-lint.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-local-receipt.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-note.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-reconcile.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests-offline.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-types.log",
+        "plan/python-c-monorepo/trusted-opt-in-runbook.md"
+      ],
+      "insertions": 3169,
+      "deletions": 4,
+      "touched_symbols": [],
+      "risk_level": "HIGH",
+      "risk_reasons": [
+        "Multi-file modification (13 files changed)",
+        "Massive code churn (3173 lines modified)"
+      ]
+    },
+    {
+      "commit_hash": "dddc903da93633c9bfcf4255a525aed34c83d483",
+      "short_hash": "dddc903",
+      "author": "minhgv",
+      "date": "2026-09-06 16:45:34 +0700",
+      "message": "test(surface): retain v4 native sync and fail-closed search receipt",
+      "files_changed": [
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/00.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/00.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/01.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/01.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/02.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/02.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/03.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/03.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/04.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/04.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/05.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/05.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/06.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/06.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/07.stderr",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/07.stdout",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/manifest-0.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/receipt.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/registry.json",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-v4-driver.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-v4-exit.json"
+      ],
+      "insertions": 1168,
+      "deletions": 0,
+      "touched_symbols": [],
+      "risk_level": "HIGH",
+      "risk_reasons": [
+        "High file blast radius (21 files changed)",
+        "Massive code churn (1168 lines modified)"
+      ]
+    }
+  ],
+  "total_commits": 5,
+  "risk_breakdown": {
+    "LOW": 1,
+    "MEDIUM": 1,
+    "HIGH": 3
+  }
+}

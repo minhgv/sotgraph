@@ -1,0 +1,63 @@
+{
+  "base": "main",
+  "head": "0a4e54435560e1c34c52214ffeba9c55cb7dda2d",
+  "groups_files_added_deleted": {
+    ".github": [
+      1,
+      32,
+      0
+    ],
+    ".gitignore": [
+      1,
+      14,
+      0
+    ],
+    ".sotignore": [
+      1,
+      3,
+      0
+    ],
+    "MANIFEST.in": [
+      1,
+      3,
+      0
+    ],
+    "engines": [
+      2050,
+      38485099,
+      0
+    ],
+    "plan": [
+      381,
+      125002,
+      0
+    ],
+    "pyproject.toml": [
+      1,
+      1,
+      1
+    ],
+    "scripts": [
+      4,
+      945,
+      0
+    ],
+    "src": [
+      16,
+      4255,
+      106
+    ],
+    "tests": [
+      30,
+      9167,
+      4
+    ]
+  },
+  "native_source_verified_entries": 2050,
+  "native_source_bytes": 1332757092,
+  "license_hashes_verified": 183,
+  "license_mismatches": 0,
+  "wheel_entries": 96,
+  "wheel_native_or_evidence_leaks": 0,
+  "review_limit": "mechanical source provenance/package checks and tests, not legal/manual generated-code review"
+}

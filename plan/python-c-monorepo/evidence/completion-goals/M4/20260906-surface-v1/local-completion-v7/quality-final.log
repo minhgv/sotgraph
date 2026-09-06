@@ -1,0 +1,48 @@
+== ruff (core modules)
+All checks passed!
+== pyright (core modules)
+0 errors, 0 warnings, 0 informations
+== coverage floor (core >= 85%, receipts >= 90%)
+Name                                         Stmts   Miss  Cover
+----------------------------------------------------------------
+src/sot_graph/assurance/__init__.py              7      0   100%
+src/sot_graph/assurance/accounting.py          100      0   100%
+src/sot_graph/assurance/coverage.py            484     53    89%
+src/sot_graph/assurance/engine.py               37      7    81%
+src/sot_graph/assurance/identity.py             79      2    97%
+src/sot_graph/assurance/impact_pipeline.py     157      6    96%
+src/sot_graph/assurance/ledger.py              125     18    86%
+src/sot_graph/assurance/orchestrator.py        503     75    85%
+src/sot_graph/assurance/receipts.py            447     27    94%
+src/sot_graph/assurance/routing.py              30      0   100%
+src/sot_graph/assurance/state.py                98      0   100%
+src/sot_graph/db.py                           1320    178    87%
+src/sot_graph/diff_impact.py                   803     55    93%
+src/sot_graph/mcp_server.py                    338    162    52%
+src/sot_graph/mcp_service.py                   901    121    87%
+src/sot_graph/providers/__init__.py              2      0   100%
+src/sot_graph/providers/admin.py               143      8    94%
+src/sot_graph/providers/artifacts.py           348     45    87%
+src/sot_graph/providers/base.py                 85      0   100%
+src/sot_graph/providers/codebase_memory.py     874     77    91%
+src/sot_graph/providers/compatibility.py       184      5    97%
+src/sot_graph/providers/contract.py             69     14    80%
+src/sot_graph/providers/cross_check.py         194     12    94%
+src/sot_graph/providers/identity_join.py       145     21    86%
+src/sot_graph/providers/installation.py         81      5    94%
+src/sot_graph/providers/lifecycle.py            13      0   100%
+src/sot_graph/providers/managed.py             345     39    89%
+src/sot_graph/providers/normalization.py       140      3    98%
+src/sot_graph/providers/runtime.py             283     29    90%
+src/sot_graph/providers/scip.py                214     42    80%
+src/sot_graph/providers/trusted_config.py      271     24    91%
+src/sot_graph/providers/verification.py        167     25    85%
+src/sot_graph/providers_registry.py            177     18    90%
+src/sot_graph/snapshot.py                      164     10    94%
+----------------------------------------------------------------
+TOTAL                                         9328   1081    88%
+core=88% receipts=94%
+== bandit (reviewed config: bandit.yaml)
+== pip-audit
+No known vulnerabilities found
+✅ all quality gates passed

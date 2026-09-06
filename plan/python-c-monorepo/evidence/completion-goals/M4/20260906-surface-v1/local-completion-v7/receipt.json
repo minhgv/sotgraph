@@ -1,0 +1,25 @@
+{
+  "status": "LOCAL_FIXES_VERIFIED_RELEASE_PREREQUISITES_REMAIN",
+  "full_tests": "2199 passed4 skipped",
+  "isolated_integration": "2199 passed4 skipped",
+  "quality": "PASS core88 receipts94; lint/types/bandit/audit pass",
+  "native_lifecycle": "v6 SUPPLEMENTAL_PASS17commands",
+  "working_tree_impact": "closed ASSURED_WITHIN_SCOPE",
+  "full_branch_impact": "UNVERIFIABLE explicit200filecap/excludedvendor/dynamicdispatch",
+  "preserved_user_plan_sha256": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+  "hashes": {
+    "reconcile-final.log": "084bd093762e2530acb61acf6602b3c1549d6d3db006440dbe547bc3277f9ed8",
+    "quality-final.log": "cd38edcecc52abbab928ef304abdf861a5eb294a38b98819ddc51225bc25d836",
+    "scope.json": "f6de927eaabcaa7b2c2441949da045e6f76b7aa694e879844bb048f1d765529d",
+    "history.json": "c4303e72700a1abd9d46147a9a8f444d7d870d0d276675033057a16db368b592",
+    "fullscope-impact.json": "13a7244449dd8db51ec211b21deda90b3a6c613d6e66bd434c7a5d0ec2b478e1",
+    "claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+    "impact-final.json": "e5f841f9158abb2036e941d4d63d39b00c48925ddeb46e74daf78ab94c999dea",
+    "doctor.json": "8f97197c425e62ebffdaa630067ed74dc46d9e782a89dce863b6493132bc4f8b",
+    "integration-tests.log": "74544767622ed900fc1392440d726d37d2d064763e68e2f028f95b38f095aac8",
+    "full-tests.log": "cf7f6449de0e97d6a9915802cfc2bd358606c6a904a51e1c6deb73b57d1533e4",
+    "full-offline.log": "2eefa4d82a1c2bfdec64cda3e6da61e4dbc1e6c451726ceb9ecd5d3a6c532932",
+    "integration.json": "44b5afb167a426f71c3c1f67580a3ef43b65d0d0d597c93c97eee4724c0e7f1f",
+    "scoped-types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332"
+  }
+}
