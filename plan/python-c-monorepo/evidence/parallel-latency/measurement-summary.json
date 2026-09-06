@@ -1,0 +1,113 @@
+{
+  "status": "3/3 complete; exclusive slot released",
+  "metrics": {
+    "admin_preresolve": {
+      "n": 3,
+      "median_wall_s": 0.1480105419177562,
+      "min_wall_s": 0.14800933306105435,
+      "max_wall_s": 0.1522117080166936,
+      "median_python_process_cpu_s": 0.14753300000000014
+    },
+    "artifact_full_sha": {
+      "n": 6,
+      "median_wall_s": 0.14766493800561875,
+      "min_wall_s": 0.1461952079553157,
+      "max_wall_s": 0.1518037081696093,
+      "median_python_process_cpu_s": 0.1464455
+    },
+    "compatibility_gate": {
+      "n": 6,
+      "median_wall_s": 0.14720756199676543,
+      "min_wall_s": 0.14591341698542237,
+      "max_wall_s": 0.14749733312055469,
+      "median_python_process_cpu_s": 0.14663850000000023
+    },
+    "config_content_fingerprint": {
+      "n": 9,
+      "median_wall_s": 7.487484253942966e-05,
+      "min_wall_s": 4.712492227554321e-05,
+      "max_wall_s": 0.00013237493112683296,
+      "median_python_process_cpu_s": 7.500000000004725e-05
+    },
+    "direct_native_same_transport": {
+      "n": 3,
+      "median_wall_s": 8.665275541134179,
+      "min_wall_s": 8.645427000010386,
+      "max_wall_s": 8.684931917116046,
+      "median_python_process_cpu_s": 0.017828999999999873
+    },
+    "dispatch_full_sha": {
+      "n": 6,
+      "median_wall_s": 0.14709256240166724,
+      "min_wall_s": 0.1458057500422001,
+      "max_wall_s": 0.1473404581192881,
+      "median_python_process_cpu_s": 0.14650150000000017
+    },
+    "explicit_profile_status": {
+      "n": 3,
+      "median_wall_s": 0.00021533295512199402,
+      "min_wall_s": 0.0001907499972730875,
+      "max_wall_s": 0.00038049998693168163,
+      "median_python_process_cpu_s": 0.00021500000000029829
+    },
+    "factory": {
+      "n": 3,
+      "median_wall_s": 0.14752400014549494,
+      "min_wall_s": 0.14702229108661413,
+      "max_wall_s": 0.15006975014694035,
+      "median_python_process_cpu_s": 0.14652500000000002
+    },
+    "guard": {
+      "n": 9,
+      "median_wall_s": 0.00022600009106099606,
+      "min_wall_s": 0.00017075007781386375,
+      "max_wall_s": 0.00029741600155830383,
+      "median_python_process_cpu_s": 0.0002249999999999197
+    },
+    "managed_query": {
+      "n": 3,
+      "median_wall_s": 8.8226327910088,
+      "min_wall_s": 8.789514957927167,
+      "max_wall_s": 8.835253749974072,
+      "median_python_process_cpu_s": 0.16619800000000007
+    },
+    "profile_environment": {
+      "n": 3,
+      "median_wall_s": 0.00011370819993317127,
+      "min_wall_s": 0.00010249996557831764,
+      "max_wall_s": 0.00011608283966779709,
+      "median_python_process_cpu_s": 0.00011399999999994748
+    },
+    "profile_status": {
+      "n": 15,
+      "median_wall_s": 0.00011783395893871784,
+      "min_wall_s": 9.19171143323183e-05,
+      "max_wall_s": 0.00037379213608801365,
+      "median_python_process_cpu_s": 0.00011799999999961841
+    },
+    "run_command_native_envelope": {
+      "n": 6,
+      "median_wall_s": 8.66910933284089,
+      "min_wall_s": 8.641727833077312,
+      "max_wall_s": 8.686405332991853,
+      "median_python_process_cpu_s": 0.017496500000000026
+    }
+  },
+  "cache_changes": [
+    "cache/logs/cbm-daemon.log"
+  ],
+  "interpretation": [
+    "Current scratch managed query median 8.823s, native subprocess envelope median 8.669s. Three full executable hashes along admin/factory/query route cost approximately .443s total; not sufficient to explain historical 26.743s.",
+    "Current no-tracer/no-profile Python process; historical inherited environment was not recorded. Historical tracing cannot be established or ruled out.",
+    "Only cache/logs/cbm-daemon.log changed; database cache bytes and content hashes stable. Profile remained READY.",
+    "Scratch log records temporary daemon startup and last_committed_client_disconnected shutdown; repeated lifecycle is observed, but phase durations and descendant CPU attribution remain unknown.",
+    "RUSAGE_CHILDREN CPU around 3.15s is not a complete daemon/descendant census; wall-minus-CPU does not establish native idle root cause.",
+    "No timeout changes, digest caching, production/vendor/shared DB edits, global daemon/config operations, or frozen benchmark modifications."
+  ],
+  "source_attribution": "Current vendored main.c daemon branch verified on disk, but independently pinned release source correspondence still belongs to source verifier.",
+  "limits": [
+    "Three samples, warm OS cache, synthetic one-file repo; not a replacement benchmark or p95 claim.",
+    "Same-process nested wrappers introduce small overhead; nested spans inclusive and not additive.",
+    "Raw native envelope uses real run_command after independent real guard and digest gate; not native function-level profiling."
+  ]
+}

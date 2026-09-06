@@ -1,0 +1,1014 @@
+{
+  "slot": "coordinator-2026-09-06-granted",
+  "scratch": "/private/tmp/dl-9ilc_e4q",
+  "n": 3,
+  "python": "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+  "python_version": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "gettrace": "None",
+  "getprofile": "None",
+  "instrumentation_env": {},
+  "binary": "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+  "binary_bytes": 297185328,
+  "events": [
+    {
+      "name": "signed_release_full_hash",
+      "phase": "setup",
+      "parent": null,
+      "wall_s": 0.17272716597653925,
+      "python_process_cpu_s": 0.15788400000000002
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "setup",
+      "parent": null,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14654404111206532,
+      "python_process_cpu_s": 0.146075
+    },
+    {
+      "name": "factory",
+      "phase": "setup",
+      "parent": null,
+      "wall_s": 0.14629874983802438,
+      "python_process_cpu_s": 0.14575100000000007
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "setup",
+      "parent": 2,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14543516584672034,
+      "python_process_cpu_s": 0.144941
+    },
+    {
+      "name": "setup_prepare",
+      "phase": "setup",
+      "parent": null,
+      "wall_s": 8.852467874996364,
+      "python_process_cpu_s": 0.32197
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.14716525003314018,
+      "python_process_cpu_s": 0.14669500000000002
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "setup",
+      "parent": 5,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14706254098564386,
+      "python_process_cpu_s": 0.14659299999999997
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.15020391694270074,
+      "python_process_cpu_s": 0.14942999999999995
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "setup",
+      "parent": 7,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.15005824994295835,
+      "python_process_cpu_s": 0.14928600000000003
+    },
+    {
+      "name": "profile_environment",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.00018608290702104568,
+      "python_process_cpu_s": 0.0001849999999998797
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "setup",
+      "parent": 4,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "config",
+        "set",
+        "auto_watch",
+        "false"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 19,
+      "stderr_bytes": 116,
+      "reaped_children_cpu_s": 2.868033,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 5.667869625147432,
+      "python_process_cpu_s": 0.013827000000000034
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.0003226669505238533,
+      "python_process_cpu_s": 0.0003220000000001555
+    },
+    {
+      "name": "profile_environment",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 9.112502448260784e-05,
+      "python_process_cpu_s": 9.100000000006325e-05
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "setup",
+      "parent": 4,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "config",
+        "get",
+        "auto_watch"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 6,
+      "stderr_bytes": 116,
+      "reaped_children_cpu_s": 2.8521450000000006,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 2.881956582888961,
+      "python_process_cpu_s": 0.007103999999999999
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.00031187478452920914,
+      "python_process_cpu_s": 0.00031200000000009
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.00010616611689329147,
+      "python_process_cpu_s": 0.00010599999999993948
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 4,
+      "wall_s": 0.00012579094618558884,
+      "python_process_cpu_s": 0.00012499999999993072
+    },
+    {
+      "name": "setup_sync",
+      "phase": "setup",
+      "parent": null,
+      "wall_s": 20.489752332912758,
+      "python_process_cpu_s": 0.19134399999999996
+    },
+    {
+      "name": "guard",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.0001952501479536295,
+      "python_process_cpu_s": 0.00019499999999994522
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 18,
+      "wall_s": 0.00010166596621274948,
+      "python_process_cpu_s": 0.00010099999999990672
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "setup",
+      "parent": 18,
+      "wall_s": 5.229213275015354e-05,
+      "python_process_cpu_s": 5.199999999994098e-05
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.14704445796087384,
+      "python_process_cpu_s": 0.14651800000000015
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "setup",
+      "parent": 21,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14688320900313556,
+      "python_process_cpu_s": 0.14636199999999988
+    },
+    {
+      "name": "profile_environment",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.0001942911185324192,
+      "python_process_cpu_s": 0.00013700000000005375
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "setup",
+      "parent": 17,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "index_repository",
+        "--repo-path",
+        "/private/tmp/dl-9ilc_e4q/repo"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 467,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.189893,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 11.669371167197824,
+      "python_process_cpu_s": 0.0226900000000001
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.0003167500253766775,
+      "python_process_cpu_s": 0.0003169999999999007
+    },
+    {
+      "name": "profile_environment",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 9.32919792830944e-05,
+      "python_process_cpu_s": 9.40000000000385e-05
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "setup",
+      "parent": 17,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "list_projects",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/managed-args-xuydnwl_.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 161,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1594639999999994,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.668615125119686,
+      "python_process_cpu_s": 0.01749299999999998
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.00035233283415436745,
+      "python_process_cpu_s": 0.00035199999999990794
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.00012879190035164356,
+      "python_process_cpu_s": 0.00012900000000004574
+    },
+    {
+      "name": "profile_status",
+      "phase": "setup",
+      "parent": 17,
+      "wall_s": 0.00011404207907617092,
+      "python_process_cpu_s": 0.00011500000000008725
+    },
+    {
+      "name": "diagnostic_cache_content_snapshot",
+      "phase": "setup",
+      "parent": null,
+      "wall_s": 0.0015656249597668648,
+      "python_process_cpu_s": 0.0015650000000000386
+    },
+    {
+      "name": "admin_preresolve",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 0.1480105419177562,
+      "python_process_cpu_s": 0.147138
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_0",
+      "parent": 32,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14771545911207795,
+      "python_process_cpu_s": 0.146849
+    },
+    {
+      "name": "factory",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 0.15006975014694035,
+      "python_process_cpu_s": 0.14611300000000016
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_0",
+      "parent": 34,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14930599997751415,
+      "python_process_cpu_s": 0.145351
+    },
+    {
+      "name": "explicit_profile_status",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 0.0001907499972730875,
+      "python_process_cpu_s": 0.00018999999999991246
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_0",
+      "parent": 36,
+      "wall_s": 0.00018570804968476295,
+      "python_process_cpu_s": 0.00018699999999993722
+    },
+    {
+      "name": "managed_query",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 8.835253749974072,
+      "python_process_cpu_s": 0.16619800000000007
+    },
+    {
+      "name": "guard",
+      "phase": "sample_0",
+      "parent": 38,
+      "wall_s": 0.00022600009106099606,
+      "python_process_cpu_s": 0.0002249999999999197
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_0",
+      "parent": 39,
+      "wall_s": 9.787501767277718e-05,
+      "python_process_cpu_s": 9.799999999993148e-05
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_0",
+      "parent": 39,
+      "wall_s": 7.47081357985735e-05,
+      "python_process_cpu_s": 7.500000000004725e-05
+    },
+    {
+      "name": "guard",
+      "phase": "sample_0",
+      "parent": 38,
+      "wall_s": 0.00020045810379087925,
+      "python_process_cpu_s": 0.00019999999999997797
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_0",
+      "parent": 42,
+      "wall_s": 0.00011120806448161602,
+      "python_process_cpu_s": 0.00011099999999997223
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_0",
+      "parent": 42,
+      "wall_s": 5.4999953135848045e-05,
+      "python_process_cpu_s": 5.6000000000056005e-05
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_0",
+      "parent": 38,
+      "wall_s": 0.1469980829861015,
+      "python_process_cpu_s": 0.14652100000000012
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_0",
+      "parent": 45,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1468892078846693,
+      "python_process_cpu_s": 0.14641300000000013
+    },
+    {
+      "name": "profile_environment",
+      "phase": "sample_0",
+      "parent": 38,
+      "wall_s": 0.00010249996557831764,
+      "python_process_cpu_s": 0.00010299999999996423
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_0",
+      "parent": 38,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/managed-args-alviz33j.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1543829999999993,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.686405332991853,
+      "python_process_cpu_s": 0.017826999999999815
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_0",
+      "parent": 38,
+      "wall_s": 0.00033829198218882084,
+      "python_process_cpu_s": 0.00033799999999994945
+    },
+    {
+      "name": "guard",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 0.00027341581881046295,
+      "python_process_cpu_s": 0.0002729999999999677
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_0",
+      "parent": 50,
+      "wall_s": 0.00011200015433132648,
+      "python_process_cpu_s": 0.00011300000000002974
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_0",
+      "parent": 50,
+      "wall_s": 0.00011574989184737206,
+      "python_process_cpu_s": 0.00011600000000000499
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 0.14749733312055469,
+      "python_process_cpu_s": 0.147011
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_0",
+      "parent": 53,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1473404581192881,
+      "python_process_cpu_s": 0.14685499999999996
+    },
+    {
+      "name": "direct_native_same_transport",
+      "phase": "sample_0",
+      "parent": null,
+      "wall_s": 8.665275541134179,
+      "python_process_cpu_s": 0.017496000000000178
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_0",
+      "parent": 55,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/diagnostic-query.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1512870000000017,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.664987665833905,
+      "python_process_cpu_s": 0.01720799999999989
+    },
+    {
+      "name": "admin_preresolve",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 0.14800933306105435,
+      "python_process_cpu_s": 0.14753300000000014
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_1",
+      "parent": 57,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14761441689915955,
+      "python_process_cpu_s": 0.1471389999999999
+    },
+    {
+      "name": "factory",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 0.14702229108661413,
+      "python_process_cpu_s": 0.14652500000000002
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_1",
+      "parent": 59,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1461952079553157,
+      "python_process_cpu_s": 0.1456970000000002
+    },
+    {
+      "name": "explicit_profile_status",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 0.00038049998693168163,
+      "python_process_cpu_s": 0.00028799999999984394
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_1",
+      "parent": 61,
+      "wall_s": 0.00037379213608801365,
+      "python_process_cpu_s": 0.00028199999999989345
+    },
+    {
+      "name": "managed_query",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 8.8226327910088,
+      "python_process_cpu_s": 0.16635
+    },
+    {
+      "name": "guard",
+      "phase": "sample_1",
+      "parent": 63,
+      "wall_s": 0.0002505409065634012,
+      "python_process_cpu_s": 0.0002510000000000012
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_1",
+      "parent": 64,
+      "wall_s": 0.00011783395893871784,
+      "python_process_cpu_s": 0.00011799999999961841
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_1",
+      "parent": 64,
+      "wall_s": 8.520809933543205e-05,
+      "python_process_cpu_s": 8.60000000000305e-05
+    },
+    {
+      "name": "guard",
+      "phase": "sample_1",
+      "parent": 63,
+      "wall_s": 0.00017075007781386375,
+      "python_process_cpu_s": 0.00017099999999992122
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_1",
+      "parent": 67,
+      "wall_s": 9.19171143323183e-05,
+      "python_process_cpu_s": 9.099999999984121e-05
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_1",
+      "parent": 67,
+      "wall_s": 4.966696724295616e-05,
+      "python_process_cpu_s": 4.999999999988347e-05
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_1",
+      "parent": 63,
+      "wall_s": 0.14741704100742936,
+      "python_process_cpu_s": 0.1468729999999998
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_1",
+      "parent": 70,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14730566693469882,
+      "python_process_cpu_s": 0.14676200000000028
+    },
+    {
+      "name": "profile_environment",
+      "phase": "sample_1",
+      "parent": 63,
+      "wall_s": 0.00011370819993317127,
+      "python_process_cpu_s": 0.00011399999999994748
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_1",
+      "parent": 63,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/managed-args-ipgzm0qf.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1638869999999994,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.673230999847874,
+      "python_process_cpu_s": 0.01749299999999998
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_1",
+      "parent": 63,
+      "wall_s": 0.00033808290027081966,
+      "python_process_cpu_s": 0.0003370000000000317
+    },
+    {
+      "name": "guard",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 0.000287290895357728,
+      "python_process_cpu_s": 0.00028700000000014825
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_1",
+      "parent": 75,
+      "wall_s": 0.00012374995276331902,
+      "python_process_cpu_s": 0.0001230000000003173
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_1",
+      "parent": 75,
+      "wall_s": 0.00011620810255408287,
+      "python_process_cpu_s": 0.00011699999999992272
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 0.14671379188075662,
+      "python_process_cpu_s": 0.14629800000000026
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_1",
+      "parent": 78,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14657533285208046,
+      "python_process_cpu_s": 0.14616000000000007
+    },
+    {
+      "name": "direct_native_same_transport",
+      "phase": "sample_1",
+      "parent": null,
+      "wall_s": 8.684931917116046,
+      "python_process_cpu_s": 0.018059000000000047
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_1",
+      "parent": 80,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/diagnostic-query.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1605030000000003,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.684371209004894,
+      "python_process_cpu_s": 0.017681000000000058
+    },
+    {
+      "name": "admin_preresolve",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 0.1522117080166936,
+      "python_process_cpu_s": 0.14950300000000016
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_2",
+      "parent": 82,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1518037081696093,
+      "python_process_cpu_s": 0.14909599999999967
+    },
+    {
+      "name": "factory",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 0.14752400014549494,
+      "python_process_cpu_s": 0.14684000000000008
+    },
+    {
+      "name": "artifact_full_sha",
+      "phase": "sample_2",
+      "parent": 84,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1467211248818785,
+      "python_process_cpu_s": 0.146042
+    },
+    {
+      "name": "explicit_profile_status",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 0.00021533295512199402,
+      "python_process_cpu_s": 0.00021500000000029829
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_2",
+      "parent": 86,
+      "wall_s": 0.00021029217168688774,
+      "python_process_cpu_s": 0.00021099999999973917
+    },
+    {
+      "name": "managed_query",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 8.789514957927167,
+      "python_process_cpu_s": 0.16478700000000002
+    },
+    {
+      "name": "guard",
+      "phase": "sample_2",
+      "parent": 88,
+      "wall_s": 0.00021720794029533863,
+      "python_process_cpu_s": 0.00021699999999968966
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_2",
+      "parent": 89,
+      "wall_s": 9.904196485877037e-05,
+      "python_process_cpu_s": 0.00010000000000021103
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_2",
+      "parent": 89,
+      "wall_s": 7.487484253942966e-05,
+      "python_process_cpu_s": 7.49999999998252e-05
+    },
+    {
+      "name": "guard",
+      "phase": "sample_2",
+      "parent": 88,
+      "wall_s": 0.00017666700296103954,
+      "python_process_cpu_s": 0.0001769999999998717
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_2",
+      "parent": 92,
+      "wall_s": 9.854207746684551e-05,
+      "python_process_cpu_s": 9.900000000007125e-05
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_2",
+      "parent": 92,
+      "wall_s": 4.712492227554321e-05,
+      "python_process_cpu_s": 4.8000000000048004e-05
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_2",
+      "parent": 88,
+      "wall_s": 0.14591341698542237,
+      "python_process_cpu_s": 0.14541199999999987
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_2",
+      "parent": 95,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.1458057500422001,
+      "python_process_cpu_s": 0.1453059999999997
+    },
+    {
+      "name": "profile_environment",
+      "phase": "sample_2",
+      "parent": 88,
+      "wall_s": 0.00011608283966779709,
+      "python_process_cpu_s": 0.00011599999999978294
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_2",
+      "parent": 88,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/managed-args-eh3ydc23.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.162924999999998,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.641727833077312,
+      "python_process_cpu_s": 0.01750000000000007
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_2",
+      "parent": 88,
+      "wall_s": 0.0003197088371962309,
+      "python_process_cpu_s": 0.00031899999999973616
+    },
+    {
+      "name": "guard",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 0.00029741600155830383,
+      "python_process_cpu_s": 0.00029799999999990945
+    },
+    {
+      "name": "profile_status",
+      "phase": "sample_2",
+      "parent": 100,
+      "wall_s": 0.00011112494394183159,
+      "python_process_cpu_s": 0.00011199999999966792
+    },
+    {
+      "name": "config_content_fingerprint",
+      "phase": "sample_2",
+      "parent": 100,
+      "wall_s": 0.00013237493112683296,
+      "python_process_cpu_s": 0.00013200000000024303
+    },
+    {
+      "name": "compatibility_gate",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 0.1474618329666555,
+      "python_process_cpu_s": 0.14675600000000033
+    },
+    {
+      "name": "dispatch_full_sha",
+      "phase": "sample_2",
+      "parent": 103,
+      "path": "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+      "bytes": 297185328,
+      "wall_s": 0.14729591691866517,
+      "python_process_cpu_s": 0.14659000000000022
+    },
+    {
+      "name": "direct_native_same_transport",
+      "phase": "sample_2",
+      "parent": null,
+      "wall_s": 8.645427000010386,
+      "python_process_cpu_s": 0.017828999999999873
+    },
+    {
+      "name": "run_command_native_envelope",
+      "phase": "sample_2",
+      "parent": 105,
+      "argv": [
+        "/private/tmp/dl-9ilc_e4q/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "cli",
+        "search_graph",
+        "--args-file",
+        "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134/tmp/diagnostic-query.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "stdout_bytes": 195,
+      "stderr_bytes": 583,
+      "reaped_children_cpu_s": 3.1408279999999986,
+      "cpu_scope": "RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete",
+      "wall_s": 8.645034875022247,
+      "python_process_cpu_s": 0.017438999999999982
+    },
+    {
+      "name": "diagnostic_cache_content_snapshot",
+      "phase": "after",
+      "parent": null,
+      "wall_s": 0.0016116669867187738,
+      "python_process_cpu_s": 0.0016120000000001689
+    },
+    {
+      "name": "profile_status",
+      "phase": "after",
+      "parent": null,
+      "wall_s": 0.0001532500609755516,
+      "python_process_cpu_s": 0.00015399999999976544
+    }
+  ],
+  "samples": [
+    {
+      "sample": 0,
+      "managed_status": "ok",
+      "native_returncode": 0
+    },
+    {
+      "sample": 1,
+      "managed_status": "ok",
+      "native_returncode": 0
+    },
+    {
+      "sample": 2,
+      "managed_status": "ok",
+      "native_returncode": 0
+    }
+  ],
+  "limits": [
+    "Instrumented nested wall times are inclusive, not additive.",
+    "Python CPU excludes native descendants; no idle inference.",
+    "run_command includes spawn/poll/pipe-drain, not pure native CPU.",
+    "OS page cache warm; no eviction; no promotion inference.",
+    "Current vendored source is not assumed identical to signed release."
+  ],
+  "cache_before": {
+    "cache/_config.db": {
+      "bytes": 12288,
+      "sha256": "321fe9ecbbaa7dadf46886b9c4827d36efec6db5a94b9db8c2ac598f08768b55"
+    },
+    "cache/config.json": {
+      "bytes": 21,
+      "sha256": "93f82ebbcadbe5554818a566d689643c181ba8be1c05da752fcaddc40267d32d"
+    },
+    "cache/logs/cbm-daemon.log": {
+      "bytes": 1583,
+      "sha256": "cf88a5e10a919715a2bacdfbf48c84e7b74927bfaf502dba1d9a4b4aacaa5593"
+    },
+    "cache/private-tmp-dl-9ilc_e4q-repo.db": {
+      "bytes": 2162688,
+      "sha256": "1061d313971560290449f7c2ef47d357e36bfa73092ebda4d5c8bfd893a142dd"
+    }
+  },
+  "cache_after": {
+    "cache/_config.db": {
+      "bytes": 12288,
+      "sha256": "321fe9ecbbaa7dadf46886b9c4827d36efec6db5a94b9db8c2ac598f08768b55"
+    },
+    "cache/config.json": {
+      "bytes": 21,
+      "sha256": "93f82ebbcadbe5554818a566d689643c181ba8be1c05da752fcaddc40267d32d"
+    },
+    "cache/logs/cbm-daemon.log": {
+      "bytes": 6281,
+      "sha256": "18947286eeeee91268ce547f5ec18ad05d87286a57fbb4d4df95d1f7b03f7f3e"
+    },
+    "cache/private-tmp-dl-9ilc_e4q-repo.db": {
+      "bytes": 2162688,
+      "sha256": "1061d313971560290449f7c2ef47d357e36bfa73092ebda4d5c8bfd893a142dd"
+    }
+  },
+  "final_status": {
+    "initialized": true,
+    "state": "READY",
+    "reason": null,
+    "namespace": "/private/tmp/dl-9ilc_e4q/rt/m-0b6736bc4801bf7b3f82b134",
+    "identity": {
+      "protocol_version": "p2-v1",
+      "generation": "initial",
+      "repo_hash": "172ddd9fd29fd6690449eb84fc38c1c9f0e49bbc71cf7604043747f1ccb4ca83",
+      "artifact_digest": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+    },
+    "ui_seed_ok": true
+  },
+  "status": "complete"
+}

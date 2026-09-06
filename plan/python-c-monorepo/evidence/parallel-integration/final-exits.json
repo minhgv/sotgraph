@@ -1,0 +1,57 @@
+[
+  {
+    "name": "final-pytest",
+    "command": [
+      "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/",
+      "-q",
+      "--strict-markers",
+      "-ra",
+      "--junitxml=/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/parallel-integration/final-pytest.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 192.67
+  },
+  {
+    "name": "reconcile",
+    "command": [
+      "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/sot",
+      "reconcile"
+    ],
+    "exit_code": 0,
+    "seconds": 0.91
+  },
+  {
+    "name": "doctor",
+    "command": [
+      "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/sot",
+      "doctor",
+      "--json"
+    ],
+    "exit_code": 0,
+    "seconds": 0.26
+  },
+  {
+    "name": "diff-impact",
+    "command": [
+      "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/sot",
+      "diff-impact",
+      "--working-tree",
+      "--json"
+    ],
+    "exit_code": 0,
+    "seconds": 20.02
+  },
+  {
+    "name": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.02
+  }
+]

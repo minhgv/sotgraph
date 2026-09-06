@@ -1,0 +1,35 @@
+{
+  "scope": "Read-only source audit; no release native lifecycle attribution without source identity verification",
+  "historical_benchmark": {
+    "runner": "plan/python-c-monorepo/evidence/continuation-native/run-matched.py:13-35",
+    "n": 30,
+    "warmup": 1,
+    "builtin_p50_s": 0.10412391694262624,
+    "managed_p50_s": 26.742611833498813,
+    "instrumentation": "Runner invokes .venv/bin/python -m sot_graph.cli, not coverage/cProfile; subprocess inherits environment. Historical trace/profile/environment state was not recorded and cannot be reconstructed from runner alone.",
+    "cache": "Declared OS warm, no eviction; no historical cache content fingerprint or descendant CPU coverage."
+  },
+  "python_path": [
+    {"anchor": "src/sot_graph/providers/admin.py:82", "finding": "CLI performs store.resolve before factory; resolve invokes full artifact verification."},
+    {"anchor": "src/sot_graph/providers/installation.py:105", "finding": "Factory resolves/verifies the full artifact again."},
+    {"anchor": "src/sot_graph/providers/artifacts.py:248-253,456-485", "finding": "Streaming full-content SHA; no stat digest cache."},
+    {"anchor": "src/sot_graph/providers/managed.py:204-211", "finding": "Search query guard runs before and after lock acquisition; then compatibility gate."},
+    {"anchor": "src/sot_graph/providers/managed.py:499-520", "finding": "Each guard fingerprints _config.db and present WAL/SHM content, not every cached index database."},
+    {"anchor": "src/sot_graph/providers/codebase_memory.py:254-268,716", "finding": "Compatibility gate hashes full executable afresh."},
+    {"anchor": "src/sot_graph/providers/runtime.py:214-227,325-349", "finding": "Profile status validates paths, identity, and UI seed; does not hash entire native index cache."},
+    {"anchor": "src/sot_graph/providers/managed.py:390-394", "finding": "run_command wraps native execution; wall time includes subprocess lifecycle and pipe handling, not solely native work."}
+  ],
+  "native_source": {
+    "exists": true,
+    "path": "engines/codebase-memory-mcp/src/main.c",
+    "anchors": ["794", "1541-1574"],
+    "finding": "Current source CLI calls main_local_cli_daemon_execute and daemon bootstrap. Top local-one-shot comment contradicts body. Must not attribute current source lifecycle to signed release until version verifier establishes matching source.",
+    "pin_caution": "git -C vendored-path rev-parse can report enclosing repository HEAD; it is not native source identity proof."
+  },
+  "hypotheses": [
+    "Repeated 297185328-byte hashing may materially contribute; measure each real hash call.",
+    "Native startup/IPC/shutdown may contribute; native envelope wall minus incomplete child CPU cannot prove idle time.",
+    "Historical tracing, machine contention or cache state may differ; historical runner alone does not establish them."
+  ],
+  "measurement": "Three sequential samples only after coordinator exclusive slot; fresh scratch repo/store/profile; exact signed release digest; seven-key replacement native environment; nested wall/Python CPU spans; explicit full hash bytes; factory/status/guards/config; managed query and same transport direct native run_command; cache content snapshots outside query samples. No timeout increases, stat caches, frozen benchmark edits or global daemon/config contact."
+}
