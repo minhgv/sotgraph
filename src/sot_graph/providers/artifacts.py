@@ -430,6 +430,29 @@ class ArtifactStore:
                 raise
             return self._descriptor(installed, final_dir)
 
+    def uninstall(self, name: str, digest: str) -> ArtifactDescriptor:
+        """Deactivate only the exact verified selected artifact.
+
+        Uninstall is deliberately non-destructive: retain binary, ownership
+        manifest, runtime namespaces, notes and evidence for rollback. No
+        process is signaled and no repository/harness configuration is touched.
+        """
+        try:
+            digest = normalize_sha256_digest(digest)
+        except ValueError as exc:
+            raise ArtifactRejected(str(exc)) from exc
+        selected = self.resolve(name)
+        if selected is None or selected.digest != digest:
+            raise ArtifactRejected('uninstall requires the exact selected digest')
+        with self._mutation():
+            selected = self.resolve(name)
+            if selected is None or selected.digest != digest:
+                raise ArtifactRejected('uninstall requires the exact selected digest')
+            pointer = self._pointer_path(name)
+            self._validate_regular_file(pointer, 'owned promotion pointer')
+            pointer.unlink()
+            return selected
+
     def resolve(self, name: str) -> ArtifactDescriptor | None:
         """Verify and return the promoted descriptor (``None``: no pointer)."""
         if not isinstance(name, str) or not _NAME_RE.fullmatch(name):

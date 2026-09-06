@@ -2096,6 +2096,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", default=".", help="Project root directory (default: current dir)")
     parser.add_argument("--db", default=None, help="Custom SQLite DB path (default: .sot/sot.db)")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    from sot_graph.providers.admin import add_parser as add_engine_parser
+    add_engine_parser(subparsers)
 
     # search
     p_search = subparsers.add_parser("search", help="Ranked search with Trust Verdicts")
@@ -2433,6 +2435,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     root = os.path.abspath(args.root)
+    if args.command == "engine":
+        from sot_graph.providers.admin import run as run_engine_admin
+        return run_engine_admin(args, root)
     try:
         db_path = args.db or default_db_path(root)
     except ValueError as exc:
