@@ -1,0 +1,26 @@
+{
+  "corpus_head": "df6434132eac652a29b3b66145e286a24c185bf9",
+  "files": {
+    "beta.py": "6828cd04a41f8e280e46950dce1a331be320b1ab83926ed46498f69477e0b99b",
+    "alpha.py": "5fd6b222bda9f1220299c0851c8b0110e290c53b6bb6c94282b9fb2377c5f299"
+  },
+  "query": "greet",
+  "repetitions": 30,
+  "warmups": 1,
+  "ordering": "alternating builtin/native, sequential",
+  "cache": "warm OS cache, no cache eviction",
+  "scope": "single Python synthetic cell; not four-corpus promotion benchmark",
+  "performance_thresholds": {
+    "p50_improvement": 0.2,
+    "p95_max_regression": 0.1,
+    "rss_max_regression": 0.2
+  },
+  "exclusions": [
+    "index repetitions not measured",
+    "CPU/RSS not measured",
+    "quality oracle only expected greet anchor",
+    "no support/preference promotion"
+  ],
+  "execution_deviation": "Adjacent Python regression tests overlapped early measurements; resource isolation not controlled. Results exploratory, cannot satisfy performance gate.",
+  "aborted": "Stopped after builtin argument rejection exit2; incomplete samples invalid for comparison. Any interrupted owned native process subject to watchdog, not success."
+}

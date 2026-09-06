@@ -1,0 +1,38 @@
+[
+  {
+    "iteration": 0,
+    "warmup": true,
+    "provider": "builtin",
+    "seconds": 0.10275141685269773,
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "usage: sot [-h] [-V] [--root ROOT] [--db DB]\n           {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits} ...\nsot: error: unrecognized arguments: --provider-policy builtin_only\n"
+  },
+  {
+    "iteration": 0,
+    "warmup": true,
+    "provider": "managed",
+    "seconds": 26.790672208881006,
+    "exit_code": 0,
+    "stdout": "{\"operation\": \"search\", \"platform_support\": \"experimental\", \"result\": {\"freshness\": \"unknown\", \"limitations\": [\"Source anchors reverified; native index HEAD binding unavailable.\"], \"results\": [{\"freshness\": \"unknown\", \"normalization_gaps\": [], \"subject\": {\"content_hash\": null, \"end_column\": null, \"end_line\": 2, \"kind\": \"function\", \"language\": \"unknown\", \"path\": \"alpha.py\", \"qualified_name\": \"private-tmp-a-u8mldiy1-repo.alpha.greet\", \"repo_id\": \"/private/tmp/a-u8mldiy1/repo\", \"start_column\": null, \"start_line\": 1}, \"verification\": {\"detail\": \"'greet' uniquely defined at alpha.py:1-2\", \"known_gaps\": [], \"status\": \"VERIFIED\"}}], \"scope_completeness\": \"bounded\", \"snapshot_bound\": false, \"status\": \"ok\"}, \"schema_version\": 1}\n",
+    "stderr": ""
+  },
+  {
+    "iteration": 1,
+    "warmup": false,
+    "provider": "builtin",
+    "seconds": 0.09774666582234204,
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "usage: sot [-h] [-V] [--root ROOT] [--db DB]\n           {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits} ...\nsot: error: unrecognized arguments: --provider-policy builtin_only\n"
+  },
+  {
+    "iteration": 1,
+    "warmup": false,
+    "provider": "managed",
+    "seconds": 26.73913387511857,
+    "exit_code": 0,
+    "stdout": "{\"operation\": \"search\", \"platform_support\": \"experimental\", \"result\": {\"freshness\": \"unknown\", \"limitations\": [\"Source anchors reverified; native index HEAD binding unavailable.\"], \"results\": [{\"freshness\": \"unknown\", \"normalization_gaps\": [], \"subject\": {\"content_hash\": null, \"end_column\": null, \"end_line\": 2, \"kind\": \"function\", \"language\": \"unknown\", \"path\": \"alpha.py\", \"qualified_name\": \"private-tmp-a-u8mldiy1-repo.alpha.greet\", \"repo_id\": \"/private/tmp/a-u8mldiy1/repo\", \"start_column\": null, \"start_line\": 1}, \"verification\": {\"detail\": \"'greet' uniquely defined at alpha.py:1-2\", \"known_gaps\": [], \"status\": \"VERIFIED\"}}], \"scope_completeness\": \"bounded\", \"snapshot_bound\": false, \"status\": \"ok\"}, \"schema_version\": 1}\n",
+    "stderr": ""
+  }
+]

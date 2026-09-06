@@ -1,0 +1,43 @@
+{
+  "n": 30,
+  "warmup": 1,
+  "corpus": {
+    "beta.py": "6828cd04a41f8e280e46950dce1a331be320b1ab83926ed46498f69477e0b99b",
+    "alpha.py": "5fd6b222bda9f1220299c0851c8b0110e290c53b6bb6c94282b9fb2377c5f299"
+  },
+  "commands": {
+    "builtin": [
+      "search",
+      "greet",
+      "--no-jit",
+      "--json"
+    ],
+    "managed": [
+      "engine",
+      "--store",
+      "/private/tmp/a-u8mldiy1/store",
+      "search",
+      "--runtime-root",
+      "/private/tmp/a-u8mldiy1/rt",
+      "--registry",
+      "/private/tmp/a-u8mldiy1/registry.json",
+      "--protocol",
+      "p4-release-2412e017-measured-v1",
+      "greet"
+    ]
+  },
+  "scope": "Single synthetic Python cell, same frozen source, source-verifying SOT paths.",
+  "cache": "OS warm, no eviction",
+  "ordering": "sequential alternating",
+  "exclusions": [
+    "No full/index/incremental distribution",
+    "No RSS/CPU measurement",
+    "No four-language quality matrix",
+    "No promotion evidence"
+  ],
+  "thresholds": {
+    "p50_improvement_min": 0.2,
+    "p95_regression_max": 0.1,
+    "rss_regression_max": 0.2
+  }
+}
