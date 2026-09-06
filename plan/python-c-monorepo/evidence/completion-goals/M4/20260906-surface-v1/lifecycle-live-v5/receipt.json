@@ -1,0 +1,1078 @@
+{
+  "schema_version": 1,
+  "status": "FAILED",
+  "commands": [
+    {
+      "label": "builtin-reconcile",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "reconcile"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 0.26783691719174385,
+      "outputs": {
+        "stdout": {
+          "file": "00.stdout",
+          "sha256": "60d688f950d5043a4004e749e3515ace7f45f53e6c51bb05fec21ccd1caf7f26",
+          "bytes": 85
+        },
+        "stderr": {
+          "file": "00.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "import",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "import",
+        "--source",
+        "/private/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+        "--manifest",
+        "/private/tmp/sl-v0c04od8/evidence/manifest-0.json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 0.4677898329682648,
+      "outputs": {
+        "stdout": {
+          "file": "01.stdout",
+          "sha256": "b03261dbc103416b49e0ca7eafd79e98b9387c4a94d64089fee6d6d5cb81a686",
+          "bytes": 908
+        },
+        "stderr": {
+          "file": "01.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "promote",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "promote",
+        "--digest",
+        "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 0.255664125084877,
+      "outputs": {
+        "stdout": {
+          "file": "02.stdout",
+          "sha256": "b03261dbc103416b49e0ca7eafd79e98b9387c4a94d64089fee6d6d5cb81a686",
+          "bytes": 908
+        },
+        "stderr": {
+          "file": "02.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "explicit-config-register",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers.trusted_config import register_managed_installation,load_managed_installation,disable_managed_installation\nrepo,store,runtime,registry,protocol,generation,config,action=sys.argv[1:]\nif action=='register':\n register_managed_installation(repo,store_path=store,artifact_name='codebase-memory',runtime_root=runtime,registry_path=registry,native_protocol_id=protocol,generation=generation,config_path=config)\n installation=load_managed_installation(repo,config_path=config)\n if installation is None: raise RuntimeError('explicit config reload failed')\n print(json.dumps({'status':'ok','artifact_digest':installation.artifact.digest,'authority':'explicit scratch library config only'}))\nelse:\n disable_managed_installation(repo,config_path=config)\n if load_managed_installation(repo,config_path=config) is not None: raise RuntimeError('disable failed')\n print(json.dumps({'status':'disabled','authority':'explicit scratch library config only'}))\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "/private/tmp/sl-v0c04od8/repo",
+        "/private/tmp/sl-v0c04od8/store",
+        "/private/tmp/sl-v0c04od8/r",
+        "/private/tmp/sl-v0c04od8/evidence/registry.json",
+        "p4-release-2412e017-measured-v1",
+        "sur12-0",
+        "/private/tmp/sl-v0c04od8/config/managed.json",
+        "register"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 0.6630913750268519,
+      "outputs": {
+        "stdout": {
+          "file": "03.stdout",
+          "sha256": "3631442ef65291aabe632e45fb2c1beaa67ee9651831f51573bc0c36a437af5d",
+          "bytes": 157
+        },
+        "stderr": {
+          "file": "03.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "prepare",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "prepare",
+        "--runtime-root",
+        "/private/tmp/sl-v0c04od8/r",
+        "--registry",
+        "/private/tmp/sl-v0c04od8/evidence/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1",
+        "--generation",
+        "sur12-0"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 9.105992625001818,
+      "outputs": {
+        "stdout": {
+          "file": "04.stdout",
+          "sha256": "21fb949cc9b87a76970cfb6404f86f6c4c5328c35e13447b6854ad83959f365d",
+          "bytes": 196
+        },
+        "stderr": {
+          "file": "04.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "probe",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "probe",
+        "--runtime-root",
+        "/private/tmp/sl-v0c04od8/r",
+        "--registry",
+        "/private/tmp/sl-v0c04od8/evidence/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1",
+        "--generation",
+        "sur12-0"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 0.7055577498394996,
+      "outputs": {
+        "stdout": {
+          "file": "05.stdout",
+          "sha256": "cf282236bd1e6eebfe2d0f23438dd8fa08f5cc5991912ef98c499c42780d9607",
+          "bytes": 329
+        },
+        "stderr": {
+          "file": "05.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "sync",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "sync",
+        "--runtime-root",
+        "/private/tmp/sl-v0c04od8/r",
+        "--registry",
+        "/private/tmp/sl-v0c04od8/evidence/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1",
+        "--generation",
+        "sur12-0"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 20.737502250121906,
+      "outputs": {
+        "stdout": {
+          "file": "06.stdout",
+          "sha256": "0a7d80771f7fd75a6f404f013d4091a509ba3571d84c70acaaad52e86f278c32",
+          "bytes": 454
+        },
+        "stderr": {
+          "file": "06.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      }
+    },
+    {
+      "label": "search",
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys,json,dataclasses\nsys.path.insert(0,sys.argv.pop(1))\nfrom sot_graph.providers import admin\noriginal_verified_search=admin.verified_search\ndef private_diagnostic(outcome, root, limit):\n # Harness-only structured receipt: captured in exclusive mode-0600 stderr.\n # Public CLI redaction and production query authority remain unchanged.\n print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)\n return original_verified_search(outcome,root,limit)\nadmin.verified_search=private_diagnostic\nfrom sot_graph.cli import main\nraise SystemExit(main())\n",
+        "/Users/giapminh79/code/GitHub/sot-graph/src",
+        "--root",
+        "/private/tmp/sl-v0c04od8/repo",
+        "engine",
+        "--store",
+        "/private/tmp/sl-v0c04od8/store",
+        "search",
+        "greet",
+        "--limit",
+        "5",
+        "--runtime-root",
+        "/private/tmp/sl-v0c04od8/r",
+        "--registry",
+        "/private/tmp/sl-v0c04od8/evidence/registry.json",
+        "--protocol",
+        "p4-release-2412e017-measured-v1",
+        "--generation",
+        "sur12-0"
+      ],
+      "returncode": 1,
+      "timed_out": false,
+      "truncated": false,
+      "error": null,
+      "output_encoding": "UTF-8 replacement decoded by shared runner",
+      "elapsed_s": 9.34529716707766,
+      "outputs": {
+        "stdout": {
+          "file": "07.stdout",
+          "sha256": "5a02c5fec4388e828b43502725608369e56d98730e6832e781df974045fc06ac",
+          "bytes": 237
+        },
+        "stderr": {
+          "file": "07.stderr",
+          "sha256": "214de59164f2a5d559b34e642ace9181ffb7be06d723c1355f46f262f0f5b48f",
+          "bytes": 1937
+        }
+      }
+    }
+  ],
+  "exclusive_slot": "MAIN_M4_20260906_V5",
+  "persisted_cli_mcp": "BLOCKED: isolated OS account authority required",
+  "m5": "NOT_PROVEN: distinct bytes alone do not prove real versions",
+  "lifetime": "BLOCKED: point-in-time inventory only; no descendant lifetime instrumentation",
+  "scope": "supplemental explicit scratch administrator CLI and trusted-config API",
+  "source_before": {
+    "files": {
+      "src/sot_graph/__init__.py": "fc0b0ed9953c7b925372b0fcc4fd512c48196a925482966981a8ae74a81852e0",
+      "src/sot_graph/_vendor/__init__.py": "414604b3da129b65df73949d6b55de77ba2c6437d160c2bf19856dad4d862d9f",
+      "src/sot_graph/_vendor/graphify/__init__.py": "da52faffd29eafa66052cb6bbcdd5fde9559de7d2d77ad1c072351b5ad69a331",
+      "src/sot_graph/_vendor/graphify/extract.py": "9d7bd0e6d16f46d45195b63e99945f693a09b071757490b42884b9721724aa7a",
+      "src/sot_graph/adapters/__init__.py": "fb59074fb3f3ae55819a81acc8ada295986dc46f606c9102b2527bf25f982631",
+      "src/sot_graph/adapters/antigravity.py": "6c6b12d306d14dc07f87bd7338be5ce7f2f970e6dda0a3620e1793a7aa7b7dec",
+      "src/sot_graph/adapters/claude.py": "c86508463dd236e538ea3eec8caa5484f38f060a63a1431504e63427b934738a",
+      "src/sot_graph/adapters/hooks.py": "13fcef5c1a4b2e5308f1c5c654dcda62eeb657965894ec10aafdeba076b008f7",
+      "src/sot_graph/adapters/installer.py": "da13c48f1e078909f63c5bd98680c681a4dda6a22f3ae57cf069867d21087ae8",
+      "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+      "src/sot_graph/adapters/opencode.py": "0417ef2bb991a0be782c4c5055ce9152dd9a567e4e59f081d3aaec336e7f733b",
+      "src/sot_graph/adapters/zcode.py": "667cd2a6319eb2aef7a06c5cd4bc9ff966d67c56b01419236d87e803f7a9b684",
+      "src/sot_graph/analytics/__init__.py": "7533161a5792b3cbc1c921b45e5863cab826a5fd653c64f6def766c1244537a8",
+      "src/sot_graph/analytics/architecture.py": "77be2669fbe66b3bbeb27e106435caaf6bc37677feb895dab6cb4e2d4f9b79ed",
+      "src/sot_graph/analytics/bundle.py": "80e51cc13e85c07cd3c9ee9430d6702140d6d620ee80460774cf0c25b49dce3b",
+      "src/sot_graph/analytics/conformance.py": "7c67f6e33c72e22cfc802c599e476714ecad9abbb7fa545713ae9fa24c300036",
+      "src/sot_graph/analytics/diagnostics.py": "3b613dcfcfffa02d0e2d3264f6d136c1e824f807685af2836693afeae806f635",
+      "src/sot_graph/analytics/graph.py": "3a2020c3ce86d29c172bcdc475638f904c7c6107123497cf0867f618bda88636",
+      "src/sot_graph/analytics/report.py": "649ea40e6df635c71dc503db82f7b0126ef15ce8edc03524d8f993923d0d4556",
+      "src/sot_graph/assurance/__init__.py": "5d8ac0111d23aee645c0c8e434edb335aacabb3c2b428df8c8ef66d323b71f80",
+      "src/sot_graph/assurance/accounting.py": "e32f9b3497882e1de6cb07972a3e3a6166d62d0bbfdf29c861fdaedd661648a0",
+      "src/sot_graph/assurance/coverage.py": "3dbac0e87a8acaa630fb5b8c8bbc39fa082e77cf96ef9d3e815bfbd4716adc75",
+      "src/sot_graph/assurance/engine.py": "bbe7bf15b7da318b15198427d57e95e9dcc5d926064eaf79dad24316eee2d759",
+      "src/sot_graph/assurance/identity.py": "49d2418b4dd9731087a518acbf90aaca55dd513b93503d20bb6f695a1baa35cc",
+      "src/sot_graph/assurance/impact_pipeline.py": "30144e5f8f5da0aae945393ebe45bae87fb7e1263ffe9c53969ebe4369335872",
+      "src/sot_graph/assurance/ledger.py": "3f54242596604ae8f2ea884a753760bfd7334f39719b389e5dccfe9556e18e5e",
+      "src/sot_graph/assurance/orchestrator.py": "ae019f63725ff3d904600d16795727e0050e3bcc5bdad6b25a6b5c7101fd8062",
+      "src/sot_graph/assurance/receipts.py": "3a6447ce65985f12e31334cb98ff8115bb51180fb4284faa4ab312025bedf9ac",
+      "src/sot_graph/assurance/routing.py": "86227d76be1d61e1789b528b517c8d6fa5a8718239cad0a43bfde95acee5d99a",
+      "src/sot_graph/assurance/state.py": "2143617467b9265d8e4c8553f805f858d2e75e9f9a6a4634a5173b41d32df24a",
+      "src/sot_graph/claims.py": "e147f62bcdc6303831b5c2aa86cf30026bc2ebf40250e291a43cf4ea13d3c930",
+      "src/sot_graph/cli.py": "2f457a51d61332c52b5f35b068cbe6c1132cd8a5ea95b39841fb1287b36ab562",
+      "src/sot_graph/config.py": "2a5a3441b49293d40dccee36f33829426595f49c14c8214e5e34f4cee60ebc2d",
+      "src/sot_graph/db.py": "17a3b4fa600fd9e4ab6afdc48efde3e67eac1813fbb062f15312a6aa225737ca",
+      "src/sot_graph/diff_impact.py": "3d9a0d7098142e841eaefbee715ca9e0f6fc96103f2550428eac00a075bef838",
+      "src/sot_graph/envelope.py": "f7ddc5ef7cf2f6ad268a7a2131d089acba7acffc65636dc9ade2b3378914df4f",
+      "src/sot_graph/evidence.py": "7fb5f56885eed3a18eed5be3f67a065298a052074f552e072c6c68b45c50824f",
+      "src/sot_graph/export/__init__.py": "42ed8ac713f06cd0e807a0abf8a12d8b751de889260359594a38c1bf74c2d761",
+      "src/sot_graph/export/exporter.py": "2ad0f96ae5094ac44f68f5490c927a1cf7488905311570a8a1c1f8969a8e9340",
+      "src/sot_graph/export/html.py": "b0c59d381c70f4ced4c63d432ee92fea58f9c4f3a1033da45765c7a9ced7bb4b",
+      "src/sot_graph/export/scip.py": "b49293149ce490aa6897ae948d3554cfa73412ee8a48c7e285ac8a3ca1a97266",
+      "src/sot_graph/extractor.py": "16f1b622a4cd74834d44d6150bf6b961e42d88e0fe12e68658e826e2353ae789",
+      "src/sot_graph/holdout/__init__.py": "524e230e1119ab640302731fb7956fac469c6e6b2c2c72b7b4fd446db84590ad",
+      "src/sot_graph/holdout/evaluator.py": "70448ab2ebfcab727188503808a7af42acd6780ccd7b3c9802942f617afa8344",
+      "src/sot_graph/holdout/splits.py": "eb2d28c93f5acbc4f91845ce7777e325b3d07ac8da28ec4565ff5431e0cad68b",
+      "src/sot_graph/ignore.py": "423cfe4c12db4bd5e978b5f8ed28678f39677bdaece3796328bcce324c637138",
+      "src/sot_graph/importer/__init__.py": "26ca3bce1d07cd8e84ce69b9eaa3b5a6c4490ef450b8c7390671e50c2e694f2a",
+      "src/sot_graph/importer/scip.py": "15c3270a1966b98fe4785119adebdf3d8e13605ab69b8b7458864ecbe1bd2b5d",
+      "src/sot_graph/locking.py": "75f830bd6d1bcfc1f7ed8b5e042ba378faf94cc51235452da755366cc0db8334",
+      "src/sot_graph/mcp_server.py": "bd64ad6be0e7885311680a330696c055626c615b7497eeea7d1d1bc8571a84cc",
+      "src/sot_graph/mcp_service.py": "b5035765856ce8cbf68f8af8d59f17efff439767412544451bed52a34505aa96",
+      "src/sot_graph/modutil.py": "1461f6231ad70ea411487d2b13fc66344031ee08086134cedbf9e628ae1d3d5a",
+      "src/sot_graph/pack.py": "540f1ba590c8aabe9da89acd8eeb1b0c0ee52fc02b590ee8f0b97358a06e6304",
+      "src/sot_graph/parser_outcome.py": "32f67018368fe1be728e51f5d7ac38f9691e189979c89ed4cb156cd6bf1fc53e",
+      "src/sot_graph/proc.py": "699bfed36a55655d5d83ee54c91a74ccba95d4600bccf95063000dcab82fdb9a",
+      "src/sot_graph/provider_contract.py": "819041c91647c46cbd945d90d914db658f23462ce6e8547a67de7d7f74953695",
+      "src/sot_graph/providers/__init__.py": "adb015a075e79cc01146a865293819086171e4bc20bb56aead4fa4c7a0e0e996",
+      "src/sot_graph/providers/admin.py": "b0a2c18c5c4753f772e353c173f4e7ab016b6c0c97a38f00cc3a96d66cca34e1",
+      "src/sot_graph/providers/artifacts.py": "0524d54e316781fc6dd4400aac13fa7dcd7b0452dc169192f16ee387e3470c1a",
+      "src/sot_graph/providers/base.py": "1b690887ac3b5613b16b56985dcb02a25769227f61ee237e58b2fc10535a8710",
+      "src/sot_graph/providers/codebase_memory.py": "e4c4609bf16d3c613a37d939ace9def5b2820f364bfbd296e2aa88c4ed2feb5d",
+      "src/sot_graph/providers/compatibility.py": "433b2b43c38cb2f140abea8aeabb5606e027820462309add48091912e2ca88da",
+      "src/sot_graph/providers/contract.py": "1d4f50b58fab45c050fb6d59425b5348cc542ab516f3999f1e9aab3ced597cd8",
+      "src/sot_graph/providers/cross_check.py": "da1795cd2a53a908cb16d4beb9690d3e3922f5e4906a6e0c34db8b53582f65eb",
+      "src/sot_graph/providers/identity_join.py": "129af39f9d36cc3c9d3f5ded4d7ff5ed462bc62602411684d1315644581ea575",
+      "src/sot_graph/providers/installation.py": "947976a702bde0bb0c011cd5cf757fd9b28323cc68b6ad714dcf7d0dcefdc616",
+      "src/sot_graph/providers/lifecycle.py": "9d1e79177ba3617c00a9505469963b58907b52802acc86c23c8d702a7e382b85",
+      "src/sot_graph/providers/managed.py": "bfcc32eb335cc50c0c48ef5a6f35bdc4ee3d060e6d20d1e54dd6c4468ca22528",
+      "src/sot_graph/providers/normalization.py": "af4f915f3c3a2f56b6eaf41cd76640ca191604a49e080f38dbe0684784bcd304",
+      "src/sot_graph/providers/runtime.py": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+      "src/sot_graph/providers/scip.py": "3bb525cc22c2cd545c3d6b525a328206cb60c94f0757a0267ca2214795cafceb",
+      "src/sot_graph/providers/trusted_config.py": "20a769fedb2ebbdb4414aed41b20aee6c2ba8d5c6d7639dd05e44aad4fcad48e",
+      "src/sot_graph/providers/verification.py": "3d60e9ee6bce4f743510637e3955bea80fee354a1fdf1c40f34c17011b6eb38d",
+      "src/sot_graph/providers_registry.py": "fde7b8007877ef3300653e4698ed9859bc717bb6e0afac712bc71c4140457b7e",
+      "src/sot_graph/receipt_explorer.py": "f3522157e2dd0a7edfad5e37323f5e86c8ce090f030309b2a6fa20c2191c2795",
+      "src/sot_graph/reconciler.py": "4b19fc9043a9e04162dd37cd86afddc89c7ae91607c62b4e3391201cfae00980",
+      "src/sot_graph/repo_map.py": "96f873316a95c31761db175be3680be12238f88bc3b0180ff15d2fdf9aaec093",
+      "src/sot_graph/snapshot.py": "7c3f9d55b32eb8cbe60085083baa137ef5b76e7134049ffb97476e3b25e968a0",
+      "src/sot_graph/solution.py": "fc58d46b168d6032f83523f12b44454da44bfa2ea9f30032adfd08a2f4b40326",
+      "src/sot_graph/tokenizer.py": "12230a59282f69cef780c5ed85082b66e826c709ba787f46544ffa4496331057",
+      "src/sot_graph/trace.py": "8c649485d2e789b39ed26ff869638ffa8cd3d1d6b3c1bc18470805e365703536",
+      "src/sot_graph/ts_extract.py": "6d7baadaefcd4b3d09cbc33ae3ff061fcb921599b08aefcd8bddf1cd8c743487",
+      "src/sot_graph/vector.py": "a0917ce7bcf57919cb615a0b23e34216abce7285d8791f6c19b6df4c3eb3b5b3",
+      "src/sot_graph/verifier.py": "8bc02b91a7b95cd5f603513d658bcadcca393028bb70e23f2e8a75b493c6c45b",
+      "src/sot_graph/watcher.py": "337d86cec36e136c4591d9a995cb71c5755687c93c5e17eef58b59ae117994c8"
+    },
+    "git_head": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/giapminh79/code/GitHub/sot-graph",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "text": "210ccddb151cb4fbd384bf323b523cb504ab7942\n",
+      "truncated": false
+    },
+    "git_status": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/giapminh79/code/GitHub/sot-graph",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=normal"
+      ],
+      "exit_code": 0,
+      "text": "?? plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/\n?? plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/\n?? plan/remaining-work-phased-plan-2026-09-05.md\n",
+      "truncated": false
+    },
+    "coverage": "Python source content; git status bounded; not compiler identity"
+  },
+  "script_sha256": "1e0bc233ee30fbaf9499c1f03088b5b8b96a0b3607789e0724b560d9ce368b63",
+  "inputs": {
+    "binary": "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+    "registry": "/private/tmp/m4-v3-registry-0ibq9dcx/registry.json",
+    "output_dir": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5",
+    "sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+    "native_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+    "protocol": "p4-release-2412e017-measured-v1",
+    "exclusive_slot": "MAIN_M4_20260906_V5",
+    "second_binary": "None",
+    "second_sha256": "None"
+  },
+  "registry_sha256": "d130c3549e0831f0c903944154fb5232474d544f39f03fb66ef884e385453340",
+  "scratch": "/private/tmp/sl-v0c04od8",
+  "inventory_before": {
+    "utc": "2026-09-06T11:37:49.040855+00:00",
+    "monotonic_s": 1161158.562628833,
+    "scratch": "/private/tmp/sl-v0c04od8",
+    "files": [
+      {
+        "path": "config",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "evidence",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "home",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "oldCBM",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "r",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "repo",
+        "mode": 16832,
+        "bytes": 128,
+        "socket": false
+      },
+      {
+        "path": "store",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "tmp",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "evidence/registry.json",
+        "mode": 33152,
+        "bytes": 4497,
+        "socket": false
+      },
+      {
+        "path": "oldCBM/sentinel",
+        "mode": 33152,
+        "bytes": 35,
+        "socket": false
+      },
+      {
+        "path": "repo/alpha.py",
+        "mode": 33152,
+        "bytes": 44,
+        "socket": false
+      },
+      {
+        "path": "repo/user-notes.txt",
+        "mode": 33152,
+        "bytes": 23,
+        "socket": false
+      }
+    ],
+    "files_truncated": false,
+    "processes": {
+      "argv": [
+        "/bin/ps",
+        "-axo",
+        "pid=,ppid=,pgid=,comm="
+      ],
+      "exit_code": 0,
+      "text": "    1     0     1 /sbin/launchd\n  322     1   322 /usr/libexec/logd\n  323     1   323 /usr/libexec/smd\n  324     1   324 /usr/libexec/UserEventAgent\n  326     1   326 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd\n  327     1   327 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted\n  330     1   330 /usr/sbin/systemstats\n  334     1   334 /usr/libexec/configd\n  336     1   336 /System/Library/CoreServices/powerd.bundle/powerd\n  337     1   337 /usr/libexec/IOMFB_bics_daemon\n  341     1   341 /usr/libexec/remoted\n  345     1   345 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd_system\n  347     1   347 /usr/libexec/watchdogd\n  351     1   351 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds\n  353     1   353 /usr/libexec/kernelmanagerd\n  354     1   354 /usr/libexec/diskarbitrationd\n  358     1   358 /usr/sbin/syslogd\n  360     1   360 /usr/libexec/thermalmonitord\n  361     1   361 /System/Library/PrivateFrameworks/CoreDuetContext.framework/Resources/contextstored\n  362     1   362 /usr/libexec/xprotectd\n  363     1   363 /usr/libexec/opendirectoryd\n  365     1   365 /System/Library/PrivateFrameworks/ApplePushService.framework/apsd\n  366     1   366 /System/Library/CoreServices/launchservicesd\n  367     1   367 /usr/libexec/timed\n  368     1   368 /System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/Resources/usbmuxd\n  369     1   369 /usr/sbin/securityd\n  371     1   371 /usr/libexec/locationd\n  372     1   372 /usr/libexec/nesessionmanager\n  374     1   374 autofsd\n  375     1   375 /usr/libexec/dasd\n  376     1   376 /usr/libexec/corerepaird\n  378     1   378 /usr/sbin/distnoted\n  382     1   382 /System/Library/CoreServices/logind\n  383     1   383 /System/Library/PrivateFrameworks/GenerationalStorage.framework/Versions/A/Support/revisiond\n  384     1   384 /usr/sbin/KernelEventAgent\n  388     1   388 /usr/sbin/bluetoothd\n  389     1   389 /usr/sbin/notifyd\n  391     1   391 /usr/libexec/corebrightnessd\n  392     1   392 /usr/libexec/AirPlayXPCHelper\n  393     1   393 /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/com.apple.cmio.registerassistantservice\n  396     1   396 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer\n  397     1   397 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd\n  398     1   398 /usr/sbin/cfprefsd\n  399     1   399 /System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow\n  400     1   400 /System/Library/PrivateFrameworks/CoreAnalytics.framework/Support/analyticsd\n  401     1   401 /usr/libexec/runningboardd\n  402     1   402 /System/Library/CoreServices/coreservicesd\n  406     1   406 /usr/libexec/trustd\n  407     1   407 /usr/sbin/coreaudiod\n  414     1   414 /usr/libexec/nsurlsessiond\n  415     1   415 /usr/libexec/nehelper\n  419     1   419 /usr/libexec/lsd\n  422     1   422 /usr/libexec/eligibilityd\n  430     1   430 /usr/sbin/distnoted\n  433     1   433 /usr/libexec/ApplicationFirewall/socketfilterfw\n  434     1   434 /usr/sbin/cron\n  436     1   436 /usr/libexec/symptomsd\n  437     1   437 /usr/libexec/airportd\n  440     1   440 /usr/sbin/distnoted\n  443     1   443 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/authd.xpc/Contents/MacOS/authd\n  444     1   444 /usr/sbin/distnoted\n  445     1   445 /usr/sbin/mDNSResponder\n  453     1   453 /usr/sbin/distnoted\n  454     1   454 /usr/sbin/mDNSResponderHelper\n  461     1   461 /usr/libexec/syspolicyd\n  467     1   467 Core Audio Driver (ParrotAudioPlugin.driver)\n  470     1   470 /System/Library/CoreServices/TimeMachine/backupd\n  473     1   473 /usr/sbin/WirelessRadioManagerd\n  497     1   497 /usr/libexec/audiomxd\n  508     1   508 /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Resources/backgroundtaskmanagementd\n  513     1   513 /usr/libexec/aned\n  519     1   519 /usr/libexec/com.apple.cmio.videodriverkithostextension.systemextension/Contents/MacOS/com.apple.cmio.videodriverkithostextension\n  521     1   521 /System/Library/CoreServices/appleeventsd\n  523     1   523 /usr/libexec/audioclocksyncd\n  524     1   524 /usr/sbin/appleh13camerad\n  532     1   532 /Library/Application Support/iStat Menus 7/com.bjango.istatmenus.daemon\n  534     1   534 /Library/Application Support/AdGuard Software/com.adguard.mac.adguard/kext/com.adguard.mac.adguard.helper\n  535     1   535 /Library/PrivilegedHelperTools/com.docker.vmnetd\n  536     1   536 /usr/libexec/cameracaptured\n  537     1   537 /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/UVCAssistant.systemextension/Contents/MacOS/UVCAssistant\n  539     1   539 /usr/libexec/modelmanagerd\n  544     1   544 /System/Library/DriverExtensions/com.apple.DriverKit-AppleBCMWLAN.dext/com.apple.DriverKit-AppleBCMWLAN\n  546     1   546 /usr/sbin/distnoted\n  547     1   547 /System/Library/DriverExtensions/com.apple.DriverKit-IOUserDockChannelSerial.dext/com.apple.DriverKit-IOUserDockChannelSerial\n  548     1   548 /System/Library/CoreServices/Software Update.app/Contents/Resources/suhelperd\n  549     1   549 /System/Library/DriverExtensions/com.apple.AppleUserHIDDrivers.dext/com.apple.AppleUserHIDDrivers\n  559     1   559 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores\n  564     1   564 /usr/sbin/distnoted\n  566     1   566 /usr/sbin/distnoted\n  567     1   567 /usr/sbin/BTLEServer\n  568     1   568 /usr/libexec/searchpartyd\n  573     1   573 /System/Library/Frameworks/LocalAuthentication.framework/Support/coreauthd\n  575     1   575 /usr/sbin/distnoted\n  577     1   577 /usr/sbin/cfprefsd\n  583     1   583 /usr/libexec/UserEventAgent\n  588     1   588 /usr/libexec/neagent\n  591     1   591 /usr/sbin/universalaccessd\n  592     1   592 /usr/libexec/containermanagerd\n  593     1   593 /System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager\n  594     1   594 /usr/libexec/pboard\n  597     1   597 /System/Library/PrivateFrameworks/BiomeStreams.framework/Support/BiomeAgent\n  598     1   598 /usr/libexec/lsd\n  600     1   600 /usr/libexec/linkd\n  601     1   601 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd\n  602     1   602 /usr/libexec/rapportd\n  603     1   603 /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd\n  604     1   604 /usr/libexec/secd\n  605     1   605 /System/Library/Frameworks/Accounts.framework/Versions/A/Support/accountsd\n  606     1   606 /usr/libexec/trustd\n  611     1   611 /usr/sbin/distnoted\n  612     1   612 /usr/libexec/wifip2pd\n  616     1   616 /usr/libexec/sharingd\n  618     1   618 /System/Library/PrivateFrameworks/IDS.framework/identityservicesd.app/Contents/MacOS/identityservicesd\n  622     1   622 /usr/libexec/nsurlsessiond\n  624     1   624 /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock\n  625     1   625 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter\n  626     1   626 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd\n  628     1   628 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer\n  629     1   629 /System/Library/CoreServices/sharedfilelistd\n  630     1   630 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder\n  631     1   631 /System/Library/Frameworks/ApplicationServices.framework/Frameworks/ATS.framework/Support/fontd\n  636     1   636 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/MacOS/AccessibilityUIServer\n  640     1   640 /System/Library/CoreServices/lockoutagent\n  641     1   641 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Support/fontworker\n  643     1   643 /usr/sbin/usernoted\n  644     1   644 /System/Library/CoreServices/WallpaperAgent.app/Contents/MacOS/WallpaperAgent\n  649     1   649 /usr/sbin/filecoordinationd\n  657     1   657 /System/Library/PrivateFrameworks/iCloudDriveCore.framework/Versions/A/Support/bird\n  661     1   661 /System/Library/PrivateFrameworks/UserNotificationsCore.framework/Support/usernotificationsd\n  662     1   662 /System/Library/PrivateFrameworks/ScreenTimeCore.framework/Versions/A/ScreenTimeAgent\n  663     1   663 /System/Library/PrivateFrameworks/FileProvider.framework/Support/fileproviderd\n  665     1   665 /System/Library/PrivateFrameworks/AMPDevices.framework/Versions/A/Support/AMPDeviceDiscoveryAgent\n  666     1   666 /usr/libexec/ContinuityCaptureAgent\n  667     1   667 /usr/libexec/gamepolicyd\n  669     1   669 /System/Library/CoreServices/audioaccessoryd\n  673     1   673 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd\n  676     1   676 /System/Library/PrivateFrameworks/ViewBridge.framework/Versions/A/XPCServices/ViewBridgeAuxiliary.xpc/Contents/MacOS/ViewBridgeAuxiliary\n  677     1   677 /System/Library/PrivateFrameworks/ChronoCore.framework/Support/chronod\n  689     1   689 /System/Library/Frameworks/CryptoTokenKit.framework/ctkd\n  692     1   692 /usr/libexec/rosetta/oahd\n  694     1   694 /System/Library/ExtensionKit/Extensions/WallpaperAerialsExtension.appex/Contents/MacOS/WallpaperAerialsExtension\n  698     1   698 /System/Library/PrivateFrameworks/CommunicationsFilter.framework/CMFSyncAgent\n  700     1   700 /System/Library/ExtensionKit/Extensions/WallpaperDynamicExtension.appex/Contents/MacOS/WallpaperDynamicExtension\n  711     1   711 /usr/libexec/nearbyd\n  713     1   713 /System/Library/PrivateFrameworks/FamilyCircle.framework/Versions/A/Resources/familycircled\n  717     1   717 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter\n  721     1   721 /System/Library/PrivateFrameworks/UserActivity.framework/Agents/useractivityd\n  722     1   722 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.extra.xpc/Contents/MacOS/com.apple.dock.extra\n  723     1   723 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n  725     1   725 /System/Library/CoreServices/Spotlight.app/Contents/MacOS/Spotlight\n  727     1   727 /usr/sbin/distnoted\n  732     1   732 /usr/libexec/wifianalyticsd\n  744     1   744 /System/Library/ExtensionKit/Extensions/HostInferenceProviderService.appex/Contents/MacOS/HostInferenceProviderService\n  745     1   745 /usr/sbin/distnoted\n  747     1   747 /System/Library/Frameworks/InputMethodKit.framework/Resources/imklaunchagent\n  750     1   750 /System/Library/Input Methods/PressAndHold.app/Contents/PlugIns/PAH_Extension.appex/Contents/MacOS/PAH_Extension\n  755     1   755 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n  758     1   758 /System/Library/CoreServices/WiFiAgent.app/Contents/MacOS/WiFiAgent\n  760     1   760 /System/Library/PrivateFrameworks/AuthKit.framework/Versions/A/Support/akd\n  762     1   762 /System/Applications/FindMy.app/Contents/PlugIns/FindMyWidgetItems.appex/Contents/MacOS/FindMyWidgetItems\n  763     1   763 /System/Applications/Home.app/Contents/PlugIns/HomeWidget.appex/Contents/MacOS/HomeWidget\n  767     1   767 /System/Applications/FindMy.app/Contents/PlugIns/FindMyWidgetPeople.appex/Contents/MacOS/FindMyWidgetPeople\n  769     1   769 /System/Applications/Journal.app/Contents/PlugIns/JournalWidgetsSecure.appex/Contents/MacOS/JournalWidgetsSecure\n  771     1   771 /usr/libexec/sysmond\n  772     1   772 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMServer\n  775     1   775 /System/Applications/Photos.app/Contents/PlugIns/PhotosReliveWidget.appex/Contents/MacOS/PhotosReliveWidget\n  776     1   776 /System/Library/CoreServices/UIKitSystem.app/Contents/MacOS/UIKitSystem\n  777     1   777 /System/Applications/Journal.app/Contents/PlugIns/JournalWidgets.appex/Contents/MacOS/JournalWidgets\n  779     1   779 /usr/libexec/searchpartyuseragent\n  780     1   780 /System/Applications/Calendar.app/Contents/PlugIns/CalendarWidgetExtension.appex/Contents/MacOS/CalendarWidgetExtension\n  782     1   782 /System/Library/CoreServices/Screen Time.app/Contents/PlugIns/ScreenTimeWidgetExtension.appex/Contents/MacOS/ScreenTimeWidgetExtension\n  783     1   783 /System/Applications/Clock.app/Contents/PlugIns/WorldClockWidget.appex/Contents/MacOS/WorldClockWidget\n  784     1   784 /System/Applications/Weather.app/Contents/PlugIns/WeatherIntents.appex/Contents/MacOS/WeatherIntents\n  785     1   785 /System/Applications/VoiceMemos.app/Contents/PlugIns/RecordWidgetExtension.appex/Contents/MacOS/RecordWidgetExtension\n  786     1   786 /System/Library/CoreServices/Screen Time.app/Contents/PlugIns/ScreenTimeWidgetIntentsExtension.appex/Contents/MacOS/ScreenTimeWidgetIntentsExtension\n  788     1   788 /System/Library/CoreServices/Batteries.app/Contents/PlugIns/BatteriesAvocadoWidgetExtension.appex/Contents/MacOS/BatteriesAvocadoWidgetExtension\n  789     1   789 /System/Applications/Notes.app/Contents/PlugIns/com.apple.Notes.WidgetExtension.appex/Contents/MacOS/com.apple.Notes.WidgetExtension\n  790     1   790 /System/Applications/Home.app/Contents/PlugIns/HomeEnergyWidgetsExtension.appex/Contents/MacOS/HomeEnergyWidgetsExtension\n  792     1   792 /System/Library/PrivateFrameworks/MobileTimer.framework/PlugIns/MobileTimerIntents.appex/Contents/MacOS/MobileTimerIntents\n  793     1   793 /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/Extensions/SafariWidgetExtension.appex/Contents/MacOS/SafariWidgetExtension\n  795     1   795 /System/Applications/Stocks.app/Contents/PlugIns/StocksWidget.appex/Contents/MacOS/StocksWidget\n  796     1   796 /System/Library/CoreServices/PeopleViewService.app/Contents/PlugIns/PeopleWidget_macOSExtension.appex/Contents/MacOS/PeopleWidget_macOSExtension\n  797     1   797 /System/Applications/Reminders.app/Contents/PlugIns/RemindersWidgetExtension.appex/Contents/MacOS/RemindersWidgetExtension\n  798     1   798 /System/Applications/Podcasts.app/Contents/PlugIns/PodcastsWidget.appex/Contents/MacOS/PodcastsWidget\n  804     1   804 /System/Applications/Shortcuts.app/Contents/PlugIns/ShortcutsWidgetExtension.appex/Contents/MacOS/ShortcutsWidgetExtension\n  805     1   805 /System/Applications/Tips.app/Contents/PlugIns/TipsWidgetExtension.appex/Contents/MacOS/TipsWidgetExtension\n  807     1   807 /usr/sbin/distnoted\n  823     1   823 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/commerce\n  824     1   824 /System/Library/DriverExtensions/IOUserBluetoothSerialDriver.dext/IOUserBluetoothSerialDriver\n  825     1   825 /bin/sh\n  834     1   834 /opt/homebrew/opt/redis/bin/redis-server 127.0.0.1:6379\n  838     1   838 /System/Library/Image Capture/Support/icdd\n  842     1   842 /Users/giapminh79/.local/bin/jcode\n  844     1   844 Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel\n  845     1   845 /Users/giapminh79/Library/Application Support/iStat Menus 7/iStat Menus Helper.app/Contents/MacOS/iStat Menus Helper\n  848     1   848 /opt/homebrew/opt/colima/bin/colima\n  849     1   849 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent\n  850     1   850 /opt/homebrew/opt/postgresql@16/bin/postgres\n  851     1   851 /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/Contents/MacOS/imagent\n  854     1   854 /Users/giapminh79/Library/Application Support/iStat Menus 7/iStat Menus Menubar.app/Contents/MacOS/iStat Menus Menubar\n  855     1   855 /System/Library/CoreServices/diagnostics_agent\n  856     1   856 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/MacOS/TextInputMenuAgent\n  860     1   860 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp\n  865     1   865 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp\n  875   330   330 /usr/sbin/systemstats\n  890     1   890 /usr/sbin/distnoted\n  903   844   844 /Applications/Ollama.app/Contents/MacOS/Ollama\n  912     1   912 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdbulkimport\n  924     1   924 /System/Library/PrivateFrameworks/DiskImages.framework/Resources/hdiejectd\n  927     1   927 /System/Library/PrivateFrameworks/CloudDocs.framework/PlugIns/com.apple.CloudDocs.iCloudDriveFileProvider.appex/Contents/MacOS/com.apple.CloudDocs.iCloudDriveFileProvider\n  930     1   930 /System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper\n  934     1   934 /private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/AppTranslocation/D32A6D8B-CCAB-41ED-A603-94CA0A266EEA/d/Mountain Duck.app/Contents/MacOS/Mountain Duck\n  939     1   939 /Applications/Shottr.app/Contents/MacOS/Shottr\n  940   903   844 /Applications/Ollama.app/Contents/Resources/ollama\n  944     1   944 /Applications/TG Pro.app/Contents/MacOS/TG Pro\n  960     1   960 /usr/libexec/avconferenced\n  961     1   961 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoteagent\n 1050     1  1050 /Library/PrivilegedHelperTools/com.tunabellysoftware.TGFanHelper\n 1055     1  1055 /System/Library/CoreServices/SubmitDiagInfo\n 1057     1  1057 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n 1157     1  1157 /System/Library/PrivateFrameworks/TextInputUIMacHelper.framework/Versions/A/XPCServices/CursorUIViewService.xpc/Contents/MacOS/CursorUIViewService\n 1315   825   825 /opt/homebrew/opt/mariadb@11.8/bin/mariadbd\n 1317   850  1317 postgres: checkpointer \n 1318   850  1318 postgres: background writer \n 1321   850  1321 postgres: walwriter \n 1322   850  1322 postgres: autovacuum launcher \n 1323   850  1323 postgres: logical replication launcher \n 1351     1  1351 /usr/sbin/distnoted\n 1357     1  1357 /Applications/AICoworker.app/Contents/MacOS/AICoworker\n 1382  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper.app/Contents/MacOS/AICoworker Helper\n 1383  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper.app/Contents/MacOS/AICoworker Helper\n 1385  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper (Renderer).app/Contents/MacOS/AICoworker Helper (Renderer)\n 1396     1  1396 automountd\n 1420     1  1420 /usr/libexec/wifivelocityd\n 1459   532  1459 /usr/bin/powermetrics\n 1460   532  1460 /usr/bin/powermetrics\n 1510     1  1510 /System/Library/PrivateFrameworks/AppStoreDaemon.framework/Support/appstoreagent\n 1522     1  1522 /usr/sbin/distnoted\n 1537     1  1537 /opt/homebrew/opt/colima/bin/colima\n 1578     1  1578 /System/Library/PrivateFrameworks/CoreFP.framework/Versions/A/fairplayd\n 1587     1  1587 /opt/homebrew/bin/limactl\n 1589     1  1589 /opt/homebrew/bin/limactl\n 1598     1  1598 /usr/sbin/distnoted\n 1602     1  1602 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine\n 1616     1  1616 /usr/libexec/taskgated\n 1619     1  1619 /usr/sbin/distnoted\n 1632     1  1632 /usr/bin/ssh-agent\n 1645     1  1645 ssh: /Users/giapminh79/.colima/_lima/colima/ssh.sock [mux]\n 1845     1  1845 /System/Library/Services/AppleSpell.service/Contents/MacOS/AppleSpell\n 2104     1  2104 /System/Applications/Calendar.app/Contents/Extensions/CalendarIntentsExtension.appex/Contents/MacOS/CalendarIntentsExtension\n 2107     1  2107 /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/Extensions/SafariLinkExtension.appex/Contents/MacOS/SafariLinkExtension\n 2122     1  2122 /System/Applications/Messages.app/Contents/Extensions/MessagesActionExtension.appex/Contents/MacOS/MessagesActionExtension\n 2205     1  2205 /Applications/pCloud Drive.app/Contents/MacOS/pCloud Drive\n 2233     1  2233 /usr/sbin/distnoted\n 2246     1  2246 /System/Library/Frameworks/ManagedAppDistribution.framework/Support/managedappdistributiond\n 2313     1  2313 /System/Library/PrivateFrameworks/People.framework/peopled\n 2350     1  2350 /System/Library/CoreServices/CrashReporterSupportHelper\n 2850     1  2850 /System/Cryptexes/App/usr/libexec/PasswordBreachAgent\n 3114     1  3114 /System/Library/Frameworks/CoreSpotlight.framework/spotlightknowledged\n 3522     1  3522 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n 3980     1  3980 /usr/libexec/promotedcontentd\n 3981     1  3981 /usr/libexec/fairplaydeviceidentityd\n 4024     1  4024 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storeuid.app/Contents/MacOS/storeuid\n 4066     1  4066 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/com.apple.CodeSigningHelper.xpc/Contents/MacOS/com.apple.CodeSigningHelper\n 4341     1  4341 /System/Library/PrivateFrameworks/PassKitCore.framework/passd\n 4359     1  4359 /System/Library/PrivateFrameworks/SafariSafeBrowsing.framework/com.apple.Safari.SafeBrowsing.Service\n 4375     1  4375 /System/Applications/Phone.app/Contents/MacOS/Phone\n 4391     1  4391 /System/iOSSupport/System/Library/Frameworks/ContactsUI.framework/PlugIns/MonogramPosterExtension.appex/Contents/MacOS/MonogramPosterExtension\n 5227 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5229 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5230 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5266 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5292     1  5290 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n 5932     1  5932 /usr/sbin/distnoted\n 6331     1  6331 /Applications/Bartender 6.app/Contents/MacOS/Bartender 6\n 6502     1  6500 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n 7472     1  7472 /usr/libexec/securityd_system\n 7917 85463 85428 /Users/giapminh79/.local/bin/codebase-memory-mcp\n 8026     1  8026 /System/Applications/Utilities/Print Center.app/Contents/PlugIns/PrintCenterWidgetExtension.macOS.appex/Contents/MacOS/PrintCenterWidgetExtension.macOS\n 9339     1  9339 /usr/libexec/proactived\n 9361     1  9361 /usr/libexec/SidecarRelay\n 9403     1  9403 /System/Library/CoreServices/PowerChime.app/Contents/MacOS/PowerChime\n 9406     1  9406 /System/Cryptexes/App/System/Library/CoreServices/SafariSupport.bundle/Contents/MacOS/SafariBookmarksSyncAgent\n 9439     1  9439 /System/Library/PrivateFrameworks/IMDPersistence.framework/XPCServices/IMDPersistenceAgent.xpc/Contents/MacOS/IMDPersistenceAgent\n 9458     1  9458 /usr/libexec/audioanalyticsd\n 9459     1  9459 /usr/libexec/rtcreportingd\n 9675     1  9675 /usr/libexec/companiond\n 9676     1  9676 /System/Library/PrivateFrameworks/MobileTimer.framework/Executables/mobiletimerd\n 9897     1  9897 /System/Library/CoreServices/Siri.app/Contents/MacOS/Siri\n 9898     1  9898 /usr/libexec/secinitd\n 9901     1  9901 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/XPCServices/com.apple.hiservices-xpcservice.xpc/Contents/MacOS/com.apple.hiservices-xpcservice\n 9917     1  9917 /usr/libexec/ospredictiond\n 9972     1  9972 /System/Library/CoreServices/ControlCenter.app/Contents/PlugIns/DisplayControls.appex/Contents/MacOS/DisplayControls\n10102     1 10102 /Applications/Tailscale.app/Contents/MacOS/Tailscale\n10154     1 10154 /usr/libexec/triald\n10156     1 10156 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n10311     1 10311 /System/Library/CoreServices/Siri.app/Contents/XPCServices/SiriNCService.xpc/Contents/MacOS/SiriNCService\n10312     1 10312 /usr/libexec/siriknowledged\n10324     1 10324 /System/Library/PrivateFrameworks/AssetCacheServices.framework/Versions/A/XPCServices/AssetCacheLocatorService.xpc/Contents/MacOS/AssetCacheLocatorService\n10329     1 10329 /System/Library/Frameworks/ManagedAppDistribution.framework/Support/managedappdistributionagent\n10331     1 10331 /System/Library/PrivateFrameworks/AmbientDisplay.framework/Versions/A/XPCServices/com.apple.AmbientDisplayAgent.xpc/Contents/MacOS/com.apple.AmbientDisplayAgent\n10361     1 10361 /Applications/GoNhanh.app/Contents/MacOS/GoNhanh\n10493     1 10493 /System/Library/PrivateFrameworks/AppleMediaServices.framework/Resources/amsaccountsd\n10495     1 10495 /usr/libexec/swcd\n10497     1 10497 /System/Library/PrivateFrameworks/iCloudDriveService.framework/XPCServices/ContainerMetadataExtractor.xpc/Contents/MacOS/ContainerMetadataExtractor\n10588     1 10588 /System/Library/Frameworks/CoreSpotlight.framework/spotlightknowledged\n10591     1 10591 /usr/libexec/pkd\n10604     1 10604 /usr/libexec/sandboxd\n10608     1 10608 /usr/libexec/triald_system\n10614     1 10614 /System/Library/CoreServices/TimeMachine/backupd-helper\n10623     1 10623 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/MacOS/CoreServicesUIAgent\n10699 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n10925     1 10925 /System/Library/PrivateFrameworks/AXAssetLoader.framework/Support/axassetsd\n10936     1 10936 /usr/libexec/remindd\n10965     1 10965 /System/Library/Frameworks/ManagedSettings.framework/Versions/A/ManagedSettingsAgent\n11004     1 11004 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n11151     1 11142 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n11406     1 11406 /System/Library/PrivateFrameworks/WorkflowKit.framework/XPCServices/ShortcutsViewService.xpc/Contents/MacOS/ShortcutsViewService\n11407     1 11407 /System/Library/PrivateFrameworks/SessionCore.framework/Support/liveactivitiesd\n11408     1 11408 /System/Library/PrivateFrameworks/ReplicatorCore.framework/Support/replicatord\n12007     1 12007 /System/Library/PrivateFrameworks/KerberosHelper/Helpers/DiskUnmountWatcher\n12283     1 12283 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdwrite\n12913     1 12913 /System/Library/Frameworks/Contacts.framework/Support/postersyncd\n12914     1 12914 /usr/libexec/knowledge-agent\n12915     1 12915 /System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/XPCServices/SetStoreUpdateService.xpc/Contents/MacOS/SetStoreUpdateService\n12928     1 12928 /usr/libexec/duetexpertd\n13096     1 13096 /System/Library/PrivateFrameworks/AppPredictionFoundation.framework/Versions/A/XPCServices/AppPredictionIntentsHelperService.xpc/Contents/MacOS/AppPredictionIntentsHelperService\n13108     1 13108 /System/Library/Frameworks/Intents.framework/XPCServices/intents_helper.xpc/Contents/MacOS/intents_helper\n13110     1 13110 /System/Library/PrivateFrameworks/SiriInference.framework/Versions/A/siriinferenced\n13111     1 13111 /System/Library/Frameworks/Intents.framework/XPCServices/intents_helper.xpc/Contents/MacOS/intents_helper\n13124     1 13124 /System/Library/PrivateFrameworks/SiriSuggestionsSupport.framework/Versions/A/XPCServices/SiriSuggestionsBookkeepingService.xpc/Contents/MacOS/SiriSuggestionsBookkeepingService\n13188     1 13188 /System/Library/CoreServices/Setup Assistant.app/Contents/Resources/mbuseragent\n13532     1 13532 /usr/libexec/powerdatad\n13627     1 13627 /usr/libexec/findmybeaconingd\n14452     1 14452 /usr/sbin/BTLEServerAgent\n14526     1 14526 /System/Library/PrivateFrameworks/IntelligencePlatformCompute.framework/Versions/A/XPCServices/IntelligencePlatformComputeService.xpc/Contents/MacOS/IntelligencePlatformComputeService\n14537     1 14537 /System/Library/PrivateFrameworks/Synapse.framework/Support/contentlinkingd\n14540     1 14540 /usr/libexec/dmd\n14541     1 14541 /System/Library/PrivateFrameworks/Categories.framework/Versions/A/XPCServices/CategoriesService.xpc/Contents/MacOS/CategoriesService\n14545     1 14545 /System/Library/PrivateFrameworks/ContextKit.framework/Versions/A/XPCServices/ContextService.xpc/Contents/MacOS/ContextService\n14712     1 14712 /System/Library/CoreServices/pbs\n14722     1 14722 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n14727     1 14727 /System/Library/ExtensionKit/Extensions/TextThumbnailExtension.appex/Contents/MacOS/TextThumbnailExtension\n15806     1 15806 /usr/libexec/trustd\n15834     1 15834 /usr/sbin/distnoted\n16134     1 16134 /usr/libexec/frauddefensed\n16800     1 16800 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores\n17245     1 17245 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n17595     1 17592 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n17744     1 17744 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n17745     1 17745 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n18642  1357 18642 openclaw-gateway\n18802     1 18802 /System/Library/CoreServices/WindowManager.app/Contents/PlugIns/WindowManagerControlsExtension.appex/Contents/MacOS/WindowManagerControlsExtension\n18803     1 18803 /System/Applications/Utilities/Screenshot.app/Contents/PlugIns/ScreenshotControls.appex/Contents/MacOS/ScreenshotControls\n19223     1 19223 /System/Library/PrivateFrameworks/GeoAnalytics.framework/geoanalyticsd\n19251     1 19251 /Applications/pCloud Drive.app/Contents/PlugIns/pCloudFinderExt.appex/Contents/MacOS/pCloudFinderExt\n19378     1 19378 /System/Library/Frameworks/QuickLookUI.framework/Versions/A/PlugIns/QLPreviewGenerationExtension.appex/Contents/MacOS/QLPreviewGenerationExtension\n19504     1 19504 /System/Library/CoreServices/appplaceholdersyncd\n19527     1 19527 /System/Library/PrivateFrameworks/StreamingZip.framework/Versions/A/XPCServices/com.apple.StreamingUnzipService.xpc/Contents/MacOS/com.apple.StreamingUnzipService\n19534     1 19534 /System/Library/CoreServices/CoreLocationAgent.app/Contents/MacOS/CoreLocationAgent\n19535     1 19535 /System/Library/PrivateFrameworks/SyncedDefaults.framework/Support/syncdefaultsd\n19718     1 19718 /System/Library/PrivateFrameworks/OnDeviceStorage.framework/Support/amsondevicestoraged\n19720     1 19720 /usr/libexec/MTLAssetUpgraderD\n19721     1 19721 /System/Library/Frameworks/MediaExtension.framework/Versions/A/Helpers/MENotificationAgent\n19722     1 19722 /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Support/BackgroundTaskManagementAgent.app/Contents/MacOS/BackgroundTaskManagementAgent\n19988     1 19988 /System/Library/PrivateFrameworks/UsageTracking.framework/Versions/A/UsageTrackingAgent\n20115     1 20110 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n20226     1 20226 /usr/libexec/gamecontrollerd\n20227     1 20227 /usr/libexec/gamecontrolleragentd\n20236     1 20236 /System/Library/PrivateFrameworks/BusinessChatService.framework/businessservicesd\n20239     1 20239 /System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/Versions/A/XPCServices/MessagesBlastDoorService.xpc/Contents/MacOS/MessagesBlastDoorService\n20240     1 20240 /usr/libexec/assessmentagent\n20246     1 20246 /usr/libexec/feedbackd\n20329     1 20329 /usr/libexec/online-auth-agent\n20512     1 20512 /System/Library/PrivateFrameworks/FaceTimeMessageStore.framework/facetimemessagestored\n20572     1 20572 /System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter\n20720     1 20720 /usr/libexec/replayd\n20741     1 20741 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/MacOS/Keychain Circle Notification\n20892     1 20892 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n20893     1 20893 /usr/libexec/secinitd\n20894     1 20894 /usr/libexec/containermanagerd_system\n20895     1 20895 /usr/libexec/containermanagerd\n20896     1 20896 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n20897     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20898     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20899     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20900     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20901     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20902     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20903     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20904     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20905     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20906     1 20906 /usr/libexec/secinitd\n20907     1 20907 /usr/sbin/cfprefsd\n20908     1 20908 /usr/libexec/trustd\n20910     1 20910 /usr/libexec/trustdFileHelper\n20915     1 20915 /usr/libexec/containermanagerd\n21531     1 21531 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTEncoderXPCService.xpc/Contents/MacOS/VTEncoderXPCService\n21532 57581 57581 /Applications/ZCode.app/Contents/Frameworks/ZCode Helper.app/Contents/MacOS/ZCode Helper\n21534     1 21534 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n22102     1 22100 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n22184     1 22184 /System/Library/PrivateFrameworks/PhotoAnalysis.framework/Versions/A/Support/photoanalysisd\n22185     1 22185 /System/Library/PrivateFrameworks/PhotoLibraryServices.framework/Versions/A/Support/photolibraryd\n22186     1 22186 /System/Library/CoreServices/ScopedBookmarkAgent\n22187     1 22187 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n22195     1 22195 /System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd\n22214     1 22214 cloudphotod\n22908     1 22906 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n23777 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n23940     1 23940 /usr/libexec/amfid\n24027 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n24064     1 24064 /usr/libexec/seputil\n24194     1 24194 /usr/libexec/metrickitd\n24289     1 24289 /usr/sbin/spindump\n24290     1 24290 /usr/libexec/spindump_agent\n24297     1 24297 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n24310     1 24310 /usr/libexec/biometrickitd\n24704     1 24701 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n24855     1 24855 /System/Library/PrivateFrameworks/IntelligenceFlowContextRuntime.framework/Versions/A/intelligencecontextd\n24919     1 24919 /System/Library/Frameworks/QuickLookThumbnailing.framework/Support/com.apple.quicklook.ThumbnailsAgent\n24920     1 24920 /usr/libexec/storagekitd\n24921     1 24921 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted\n24922     1 24922 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted_helper\n24923     1 24923 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/system_installd\n24924     1 24924 /usr/libexec/AssetCache/AssetCache\n24925     1 24925 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/installd\n24926     1 24926 /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd\n24927     1 24927 /System/Library/PrivateFrameworks/GeoServices.framework/geodMachServiceBridge\n24930     1 24930 /System/Library/PrivateFrameworks/AssetCacheServicesExtensions.framework/XPCServices/AssetCacheTetheratorService.xpc/Contents/MacOS/AssetCacheTetheratorService\n24942     1 24942 /usr/libexec/fskitd\n25101     1 25101 /Applications/Warp.app/Contents/MacOS/stable\n25103     1 25103 /System/Library/CoreServices/iconservicesagent\n25104     1 25104 /System/Library/CoreServices/iconservicesd\n25107     1 25107 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n25151     1 25151 /System/Library/CoreServices/talagentd\n25153     1 25153 /usr/libexec/logd_helper\n25154 25101 25101 /Applications/Warp.app/Contents/MacOS/stable\n25164     1 25164 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n25170     1 25170 /System/Library/PrivateFrameworks/EmailDaemon.framework/Versions/A/maild\n25186     1 25186 /usr/libexec/nfcd\n25189     1 25189 /System/Library/PrivateFrameworks/NearFieldPrivateServices.framework/Versions/A/XPCServices/NFStorageServer.xpc/Contents/MacOS/NFStorageServer\n25190     1 25190 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n25191     1 25191 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XProtectBridgeService.xpc/Contents/MacOS/XProtectBridgeService\n25278     1 25276 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n25439     1 25439 /usr/libexec/routined\n25560     1 25560 /usr/libexec/tipsd\n25566     1 25566 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistorySyncHelper\n25570     1 25570 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistoryPluginHelper\n25773     1 25770 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n25779     1 25770 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n26173     1 26173 /Library/Apple/System/Library/CoreServices/XProtect.app/Contents/MacOS/XProtect\n26279     1 26279 /usr/sbin/systemsoundserverd\n26280     1 26280 /System/Library/Frameworks/AudioToolbox.framework/AudioComponentRegistrar\n26281     1 26281 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n26342     1 26342 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n26743     1 26743 /Library/Apple/System/Library/CoreServices/XProtect.app/Contents/MacOS/XProtect\n26777     1 26772 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n27800     1 27800 /System/Library/CoreServices/sharedfilelistd\n28554     1 28554 /System/Library/PrivateFrameworks/IMDPersistence.framework/IMAutomaticHistoryDeletionAgent.app/Contents/MacOS/IMAutomaticHistoryDeletionAgent\n28822     1 28783 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n28910     1 28910 /System/Library/PrivateFrameworks/MapsSync.framework/mapssyncd\n28965     1 28965 /usr/libexec/keybagd\n28966     1 28966 /System/Library/PrivateFrameworks/IntelligencePlatformCore.framework/Versions/A/intelligenceplatformd\n29107     1 29107 /usr/libexec/mobileactivationd\n29109     1 29109 /usr/libexec/transparencyd\n29112     1 29112 /System/Library/PrivateFrameworks/CoreFollowUp.framework/Versions/A/Support/followupd\n29113     1 29113 /System/Library/PrivateFrameworks/ProtectedCloudStorage.framework/Helpers/ProtectedCloudKeySyncing\n29309     1 29309 /System/Library/CoreServices/Dock.app/Contents/XPCServices/DockHelper.xpc/Contents/MacOS/DockHelper\n29310     1 29310 /System/Library/CoreServices/ReportCrash\n29314     1 29314 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd\n29378     1 29378 /Applications/Discord.app/Contents/MacOS/Discord\n29455     1 29454 /Applications/Discord.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n29456 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29458 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29477 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper (Renderer).app/Contents/MacOS/Discord Helper (Renderer)\n29576 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29577 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29744     1 29744 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n29863     1 29863 /usr/libexec/inputanalyticsd\n29874     1 29874 /System/Library/Frameworks/StoreKit.framework/Support/storekitagent\n29875     1 29875 /usr/libexec/assetsubscriptiond\n29876     1 29876 /System/Library/PrivateFrameworks/AppleMediaServicesUI.framework/amsengagementd\n29954     1 29954 /usr/libexec/networkserviceproxy\n30015     1 30015 /System/Library/PrivateFrameworks/InstallCoordination.framework/Support/installcoordinationd\n30118     1 30118 /System/Library/PrivateFrameworks/GenerativeExperiencesRuntime.framework/Versions/A/generativeexperiencesd\n30119     1 30119 /System/Library/PrivateFrameworks/ModelCatalogRuntime.framework/Versions/A/modelcatalogd\n30333     1 30333 /System/Library/PrivateFrameworks/ModelCatalogRuntime.framework/Versions/A/ModelCatalogAgent\n30334     1 30334 /System/Library/PrivateFrameworks/CloudSubscriptionFeatures.framework/FeatureAccessAgent\n30336     1 30336 /System/Library/PrivateFrameworks/iCloudNotification.framework/iCloudNotificationAgent\n30337     1 30337 /System/Library/PrivateFrameworks/CoreAnalytics.framework/Support/analyticsagent\n30339     1 30339 /usr/libexec/appleaccountd\n30340     1 30340 /System/Library/PrivateFrameworks/TrialServer.framework/Versions/A/XPCServices/TrialArchivingService.xpc/Contents/MacOS/TrialArchivingService\n30381     1 30381 /usr/libexec/naturallanguaged\n30446     1 30446 /usr/libexec/filevaultd\n30447     1 30447 /System/Cryptexes/App/usr/libexec/AuthenticationServicesAgent\n30450     1 30450 /usr/libexec/keychainsharingmessagingd\n30451     1 30451 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/TrustedPeersHelper.xpc/Contents/MacOS/TrustedPeersHelper\n30762     1 30762 /System/Library/PrivateFrameworks/PrivateCloudCompute.framework/privatecloudcomputed.app/Contents/MacOS/privatecloudcomputed\n30764     1 30764 /Applications/Ghostty.app/Contents/MacOS/ghostty\n30765     1 30765 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n30838     1 30838 /System/Library/PrivateFrameworks/EcosystemAnalytics.framework/Support/ecosystemanalyticsd\n30841     1 30841 /System/Library/PrivateFrameworks/Ecosystem.framework/Support/ecosystemd\n31054     1 31054 /usr/libexec/mlhostd\n31127     1 31127 /opt/homebrew/Cellar/node/25.9.0_2/bin/node\n31143 64735 31143 /Users/giapminh79/aicoworker/app/nodejs/bin/python\n31163     1 31163 /usr/libexec/PowerUIAgent\n31175 31127 31175 next-server (v16.3.4)\n31179 31127 31127 /Users/giapminh79/.cache/node-systray/2.1.4/tray_darwin_release\n31583     1 31583 /System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent\n31651     1 31648 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n32083     1 32083 /Applications/Bartender 6.app/Contents/XPCServices/Bartender Service.xpc/Contents/MacOS/Bartender Service\n33082     1 33082 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n33083     1 33083 /System/Library/PrivateFrameworks/AppleCredentialManager.framework/AppleCredentialManagerDaemon\n33093     1 33093 /System/Library/PrivateFrameworks/IntlPreferences.framework/Support/localizationswitcherd\n33095     1 33095 /System/Library/PrivateFrameworks/CoreCDP.framework/Versions/A/Resources/cdpd\n33099     1 33099 /System/Library/CoreServices/TextInputSwitcher.app/Contents/MacOS/TextInputSwitcher\n33246     1 33246 /usr/libexec/powerexperienced\n33247     1 33247 /usr/libexec/PerfPowerServices\n33258     1 33258 /usr/sbin/cfprefsd\n33259     1 33259 /usr/sbin/cfprefsd\n33260     1 33260 /usr/sbin/cfprefsd\n33261     1 33261 /usr/sbin/cfprefsd\n33262     1 33262 /usr/sbin/cfprefsd\n33263     1 33263 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n33271     1 33271 /usr/sbin/cfprefsd\n33272     1 33272 /usr/sbin/cfprefsd\n33274     1 33274 /usr/sbin/cfprefsd\n33281     1 33281 /usr/sbin/cfprefsd\n33282     1 33282 /usr/sbin/cfprefsd\n33284     1 33284 /usr/sbin/cfprefsd\n33286     1 33286 /usr/sbin/cfprefsd\n33300     1 33300 /usr/libexec/symptomsd-diag\n33303     1 33303 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n33304     1 33304 /System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/Support/softwareupdated\n33305     1 33305 /System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/Versions/A/XPCServices/com.apple.MobileSoftwareUpdate.CleanupPreparePathService.xpc/Contents/MacOS/com.apple.MobileSoftwareUpdate.CleanupPreparePathService\n33309     1 33309 /usr/libexec/aneuserd\n33372     1 33372 /System/Library/PrivateFrameworks/MediaAnalysisAccess.framework/Versions/A/XPCServices/mediaanalysisd-access.xpc/Contents/MacOS/mediaanalysisd-access\n34275     1 34275 /System/Library/PrivateFrameworks/SystemStatusServer.framework/Support/systemstatusd\n34395     1 34395 /System/Library/PrivateFrameworks/CoreRecents.framework/Versions/A/Support/recentsd\n34719     1 34719 /usr/libexec/keyboardservicesd\n34820     1 34820 /Applications/Antigravity.app/Contents/Frameworks/Squirrel.framework/Resources/ShipIt\n34848     1 34848 /System/Library/Frameworks/MediaAccessibility.framework/Versions/A/XPCServices/com.apple.accessibility.mediaaccessibilityd.xpc/Contents/MacOS/com.apple.accessibility.mediaaccessibilityd\n34849     1 34849 /System/Library/Frameworks/AudioToolbox.framework/AudioComponentRegistrar\n34853     1 34853 /System/Library/Frameworks/ImageIO.framework/Versions/A/XPCServices/ImageIOXPCService.xpc/Contents/MacOS/ImageIOXPCService\n35088     1 35088 /usr/libexec/microstackshot\n35642     1 35642 /System/Library/PrivateFrameworks/IMTransferServices.framework/IMTransferAgent.app/Contents/MacOS/IMTransferAgent\n35708     1 35704 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n36421     1 36421 /System/Library/PrivateFrameworks/ContactsDonation.framework/Versions/A/Support/contactsdonationagent\n37348     1 37348 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService\n37349     1 37349 /System/Library/CoreServices/ReportCrash\n37596     1 37596 /usr/libexec/milod\n37609     1 37609 /System/Library/PrivateFrameworks/RemoteManagement.framework/remotemanagementd\n37610     1 37610 /System/Library/PrivateFrameworks/RemoteManagement.framework/RemoteManagementAgent\n37611     1 37611 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber\n37612     1 37612 /System/Library/PrivateFrameworks/SafariFoundation.framework/Versions/A/XPCServices/SafariConfigurationSubscriber.xpc/Contents/MacOS/SafariConfigurationSubscriber\n37613     1 37613 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber\n37614     1 37614 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber\n37615     1 37615 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber\n37616     1 37616 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber\n37618     1 37618 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber\n37621     1 37621 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber\n37622     1 37622 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber\n37623     1 37623 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/DiskManagementSubscriber.xpc/Contents/MacOS/DiskManagementSubscriber\n37624     1 37624 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SoftwareUpdateSubscriber.xpc/Contents/MacOS/SoftwareUpdateSubscriber\n37626     1 37626 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedAppsSubscriber.xpc/Contents/MacOS/ManagedAppsSubscriber\n37627     1 37627 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber\n37628     1 37628 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber\n37629     1 37629 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/AccountSubscriber.xpc/Contents/MacOS/AccountSubscriber\n37630     1 37630 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber\n37631     1 37631 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedAppsSubscriber.xpc/Contents/MacOS/ManagedAppsSubscriber\n37632     1 37632 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedConfigurationFilesSubscriber.xpc/Contents/MacOS/ManagedConfigurationFilesSubscriber\n37633     1 37633 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber\n37634     1 37634 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ASConfigurationSubscriber.xpc/Contents/MacOS/ASConfigurationSubscriber\n37635     1 37635 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedSettingsSubscriber.xpc/Contents/MacOS/ManagedSettingsSubscriber\n40095     1 40095 /System/Library/PrivateFrameworks/IASUtilities.framework/Versions/A/Resources/installerauthagent\n40096     1 40096 /usr/libexec/NRDUpdated\n40097     1 40097 /System/Library/AssetsV2/com_apple_MobileAsset_RecoveryOSUpdateBrain/7a84bd1c89069f2e742ece792e84523266f36fdf.asset/AssetData/com.apple.NRD.UpdateBrainService.xpc/Contents/MacOS/com.apple.NRD.UpdateBrainService\n40102     1 40102 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40103     1 40103 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/XPCServices/com.apple.hiservices-xpcservice.xpc/Contents/MacOS/com.apple.hiservices-xpcservice\n40107     1 40107 /System/Library/Frameworks/MediaAccessibility.framework/Versions/A/XPCServices/com.apple.accessibility.mediaaccessibilityd.xpc/Contents/MacOS/com.apple.accessibility.mediaaccessibilityd\n40108     1 40108 /System/Library/PrivateFrameworks/SoftwareUpdate.framework/Resources/SoftwareUpdateNotificationManager.app/Contents/MacOS/SoftwareUpdateNotificationManager\n40109     1 40109 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40110     1 40110 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40111     1 40111 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40128     1 40128 /usr/libexec/uarpassetmanagerd\n40131     1 40131 /System/Library/PrivateFrameworks/UARPAssetManager.framework/XPCServices/UARPAssetManagerServiceMobileAsset.xpc/Contents/MacOS/UARPAssetManagerServiceMobileAsset\n40234     1 40234 /usr/libexec/dprivacyd\n40426     1 40426 /System/iOSSupport/System/Library/PrivateFrameworks/HomeEnergyDaemon.framework/Support/homeenergyd\n40821     1 40821 /usr/libexec/locationaccessstored\n41109     1 41109 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n41183     1 41183 /System/Library/PrivateFrameworks/CoreDuetContext.framework/Resources/ContextStoreAgent\n41273     1 41273 /System/Library/Frameworks/Translation.framework/translationd\n41274     1 41274 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41275     1 41275 /System/Library/PrivateFrameworks/FaceTimeNotification.framework/Versions/A/XPCServices/FaceTimeNotificationService.xpc/Contents/MacOS/FaceTimeNotificationService\n41276     1 41276 /System/Library/PrivateFrameworks/FaceTimeNotificationViewBridge.framework/Versions/A/XPCServices/FaceTimeNotificationViewBridgeService.xpc/Contents/MacOS/FaceTimeNotificationViewBridgeService\n41277     1 41277 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n41278     1 41278 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n41279     1 41279 /System/Library/ExtensionKit/Extensions/FaceTimeNotificationExtension.appex/Contents/MacOS/FaceTimeNotificationExtension\n41288     1 41288 /System/Library/PrivateFrameworks/CallIntelligence.framework/callintelligenced\n41289     1 41289 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41291     1 41291 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41308     1 41308 /System/Library/PrivateFrameworks/CommunicationTrust.framework/Support/communicationtrustd\n41595     1 41595 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n41596     1 41596 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n41607     1 41607 /usr/libexec/mobileassetd\n42044 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n42182 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n42223     1 42223 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42225     1 42225 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42226     1 42226 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42227     1 42227 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42228     1 42228 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42229     1 42229 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42230     1 42230 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42231     1 42231 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42232     1 42232 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42438     1 42438 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42439     1 42439 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42440     1 42440 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42441     1 42441 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42442     1 42442 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42443     1 42443 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42444     1 42444 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42445     1 42445 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42446     1 42446 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42447     1 42447 /System/Library/Frameworks/Contacts.framework/Support/contactsd\n42529 57696 42529 /bin/zsh\n42536 42529 42529 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n42537 42536 42529 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n42541 42537 42529 /bin/ps\n43580     1 43580 /System/Library/PrivateFrameworks/CoreParsec.framework/parsecd\n43584     1 43584 /System/Library/PrivateFrameworks/iTunesCloud.framework/Support/itunescloudd\n43795     1 43795 /usr/libexec/ASPCarryLog\n43815     1 43815 /System/Library/PrivateFrameworks/CloudPhotoServices.framework/Versions/A/XPCServices/com.apple.CloudPhotosConfiguration.xpc/Contents/MacOS/com.apple.CloudPhotosConfiguration\n43816     1 43816 /System/Library/CoreServices/iconservicesagent\n43820     1 43820 /System/Library/PrivateFrameworks/BookKit.framework/Versions/A/XPCServices/com.apple.BKAgentService.xpc/Contents/MacOS/com.apple.BKAgentService\n45512     1 45509 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n45840     1 45840 /System/Library/Frameworks/PaperKit.framework/Contents/LinkedNotesUIService.app/Contents/MacOS/LinkedNotesUIService\n46469     1 46469 /usr/libexec/textunderstandingd\n46470     1 46470 /System/Library/PrivateFrameworks/SocialLayer.framework/sociallayerd.app/Contents/MacOS/sociallayerd\n46858     1 46858 /System/Library/PrivateFrameworks/DeviceCheckInternal.framework/devicecheckd\n46992     1 46992 /Library/Apple/System/Library/PrivateFrameworks/RemotePairing.framework/Versions/A/XPCServices/remotepairingd.xpc/Contents/MacOS/remotepairingd\n47134     1 47134 /Users/giapminh79/.local/bin/codebase-memory-mcp\n47730     1 47730 /usr/libexec/warmd\n49250     1 49250 /System/Library/PrivateFrameworks/DoNotDisturbServer.framework/Support/donotdisturbd\n49771     1 49771 /Applications/Telegram.app/Contents/MacOS/Telegram\n49787     1 49787 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService\n49790     1 49790 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n50096     1 50096 /System/Library/PrivateFrameworks/WebPrivacy.framework/webprivacyd\n50398     1 50398 /Applications/AlDente.app/Contents/MacOS/AlDente\n50400     1 50400 /Library/PrivilegedHelperTools/com.apphousekitchen.aldente-pro.helper\n50512     1 50512 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n50534     1 50533 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/chrome_crashpad_handler\n50539 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50540 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50541 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50562 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n50608 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n50611     1 50611 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n50631     1 50631 /System/Library/PrivateFrameworks/CoreKDL.framework/Support/corekdld\n50670 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50671 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n51205 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n51536     1 51536 /usr/libexec/tzd\n51537     1 51537 /usr/libexec/mobilerepaird\n51538     1 51538 /usr/libexec/proactiveeventtrackerd\n51539     1 51539 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XProtectUpdateService.xpc/Contents/MacOS/XProtectUpdateService\n51542     1 51542 /usr/libexec/sysdiagnosed\n51565     1 51565 /System/Library/PrivateFrameworks/AssetCacheServices.framework/Versions/A/XPCServices/AssetCacheLocatorService.xpc/Contents/MacOS/AssetCacheLocatorService\n51567     1 51567 /usr/libexec/swtransparencyd\n51570     1 51570 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n51591     1 51591 /System/Library/PrivateFrameworks/CloudServices.framework/Helpers/com.apple.sbd\n51688     1 51688 /System/Library/PrivateFramework",
+      "truncated": true
+    },
+    "scratch_open_files": {
+      "argv": [
+        "/usr/sbin/lsof",
+        "-nP",
+        "+D",
+        "/private/tmp/sl-v0c04od8"
+      ],
+      "exit_code": 1,
+      "text": "",
+      "truncated": false
+    },
+    "coverage": "POINT_IN_TIME_PARTIAL: process names only; lsof scratch open files; escaped descendants and transient listeners UNKNOWN; no kill performed"
+  },
+  "listeners_before": {
+    "argv": [
+      "/usr/sbin/lsof",
+      "-nP",
+      "-iTCP",
+      "-sTCP:LISTEN"
+    ],
+    "exit_code": 0,
+    "text": "COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nrapportd    602 giapminh79   11u  IPv4 0x3076175e089ca257      0t0  TCP *:56397 (LISTEN)\nrapportd    602 giapminh79   14u  IPv6 0xc28657d05505078b      0t0  TCP *:56397 (LISTEN)\nControlCe   625 giapminh79    9u  IPv4 0x9d4b94cc64b56cda      0t0  TCP *:7000 (LISTEN)\nControlCe   625 giapminh79   10u  IPv6 0xc92d88bf97476587      0t0  TCP *:7000 (LISTEN)\nControlCe   625 giapminh79   11u  IPv4 0x86e97130a3feae74      0t0  TCP *:5000 (LISTEN)\nControlCe   625 giapminh79   12u  IPv6 0x30dafeae577f507f      0t0  TCP *:5000 (LISTEN)\nredis-ser   834 giapminh79    6u  IPv4 0xa0a94fb7b08111fb      0t0  TCP 127.0.0.1:6379 (LISTEN)\nredis-ser   834 giapminh79    7u  IPv6 0xd9263a2923ac71d9      0t0  TCP [::1]:6379 (LISTEN)\npostgres    850 giapminh79    7u  IPv6 0xea0cd1246b5bc1ee      0t0  TCP [::1]:5432 (LISTEN)\npostgres    850 giapminh79    8u  IPv4 0xa643416cd55bbab7      0t0  TCP 127.0.0.1:5432 (LISTEN)\nOllama      903 giapminh79    4u  IPv4 0xba1fa9b7c4130d66      0t0  TCP 127.0.0.1:49165 (LISTEN)\nMountain    934 giapminh79  351u  IPv6 0xff54a21c346e5783      0t0  TCP 127.0.0.1:49405 (LISTEN)\nollama      940 giapminh79    3u  IPv4 0xcab150c59a036941      0t0  TCP 127.0.0.1:11434 (LISTEN)\nmariadbd   1315 giapminh79   22u  IPv6 0x78e4305ab7c2f2d0      0t0  TCP *:3306 (LISTEN)\nmariadbd   1315 giapminh79   23u  IPv4 0x5bca5a0d62e9b192      0t0  TCP *:3306 (LISTEN)\nAICoworke  1357 giapminh79   34u  IPv4 0x946cefe2c85f7a17      0t0  TCP 127.0.0.1:9223 (LISTEN)\nAICoworke  1357 giapminh79   72u  IPv4 0x9ce45ac32ef1a207      0t0  TCP 127.0.0.1:23333 (LISTEN)\nAICoworke  1357 giapminh79   73u  IPv4 0xd8c09026afc383d6      0t0  TCP 127.0.0.1:18790 (LISTEN)\nAICoworke  1357 giapminh79   78u  IPv4    0xc9e0dbf42ad61      0t0  TCP 127.0.0.1:9333 (LISTEN)\nAICoworke  1357 giapminh79   79u  IPv4 0xdee3e77f17dd8371      0t0  TCP 127.0.0.1:54521 (LISTEN)\nAICoworke  1357 giapminh79  249u  IPv4 0x2be6b629bf4a9b0d      0t0  TCP 127.0.0.1:53672 (LISTEN)\nlimactl    1587 giapminh79   13u  IPv4 0x4dacf108e9194dcb      0t0  TCP 127.0.0.1:49878 (LISTEN)\nlimactl    1589 giapminh79    8u  IPv6 0x852c6da9e20aca30      0t0  TCP *:53 (LISTEN)\nssh        1645 giapminh79   13u  IPv4 0x76810ff88e56a59c      0t0  TCP *:18080 (LISTEN)\npCloud     2205 giapminh79    8u  IPv4 0xe713d8b8c3818467      0t0  TCP 127.0.0.1:8989 (LISTEN)\nPython     6502 giapminh79    4u  IPv6 0x2a03d3ee56c3aa9c      0t0  TCP *:8727 (LISTEN)\nPython    11151 giapminh79    4u  IPv6 0x2a99897e4d52215e      0t0  TCP *:8412 (LISTEN)\nPython    17595 giapminh79    4u  IPv6 0x80423f41f34a3cad      0t0  TCP *:8132 (LISTEN)\nAICoworke 18642 giapminh79   20u  IPv4 0x4c5a3f40d33f956c      0t0  TCP 127.0.0.1:18789 (LISTEN)\nAICoworke 18642 giapminh79   21u  IPv6 0xdbea9ca276f86bfe      0t0  TCP [::1]:18789 (LISTEN)\nAICoworke 18642 giapminh79   22u  IPv4 0xd8d9a5c663f340c4      0t0  TCP 127.0.0.1:23334 (LISTEN)\nAICoworke 18642 giapminh79   27u  IPv4 0xea53bc259d5be49d      0t0  TCP 127.0.0.1:18791 (LISTEN)\nAICoworke 18642 giapminh79   34u  IPv4 0x21e8efcb2e5e6bcb      0t0  TCP 127.0.0.1:18792 (LISTEN)\nPython    22102 giapminh79    4u  IPv6 0x6a29b14dc40db03f      0t0  TCP *:8123 (LISTEN)\nPython    22908 giapminh79    4u  IPv6 0x932cad91b531ff0f      0t0  TCP *:8413 (LISTEN)\nPython    24704 giapminh79    4u  IPv6 0x7271dd2175cbaec8      0t0  TCP *:8741 (LISTEN)\nstable    25101 giapminh79   40u  IPv4 0xe80b3f680a930f83      0t0  TCP 127.0.0.1:9277 (LISTEN)\nPython    25278 giapminh79    4u  IPv6 0x226c9689be4e4f86      0t0  TCP *:8902 (LISTEN)\nPython    25773 giapminh79    4u  IPv6 0x85b11d280034a00c      0t0  TCP *:8137 (LISTEN)\nPython    25779 giapminh79    4u  IPv6 0x5419913a6fb6b3d9      0t0  TCP *:8135 (LISTEN)\nPython    26777 giapminh79    4u  IPv6 0x66c5ab700d8280af      0t0  TCP *:8025 (LISTEN)\nPython    28822 giapminh79    4u  IPv6 0x1b8091b3926fb86f      0t0  TCP *:8124 (LISTEN)\nDiscord   29477 giapminh79   41u  IPv4 0x839547cbb41997d0      0t0  TCP 127.0.0.1:6463 (LISTEN)\nnode      31175 giapminh79   12u  IPv4 0x6163bd6d1cecf09c      0t0  TCP *:20128 (LISTEN)\nPython    31651 giapminh79    4u  IPv6 0x7abf966a7aca7643      0t0  TCP *:8243 (LISTEN)\nPython    45512 giapminh79    4u  IPv6 0xc941795b854a1d85      0t0  TCP *:8129 (LISTEN)\ncodebase- 47134 giapminh79   15u  IPv4  0x797deafa2df791e      0t0  TCP 127.0.0.1:9749 (LISTEN)\nPython    55252 giapminh79    4u  IPv6 0xdb015a9c8b8a85ba      0t0  TCP *:8724 (LISTEN)\nRaycast   60925 giapminh79   35u  IPv4 0x6c04ba4223c93348      0t0  TCP 127.0.0.1:7265 (LISTEN)\nPython    61817 giapminh79    4u  IPv6 0x2576ffd80eca4a8f      0t0  TCP *:8125 (LISTEN)\nomp       64735 giapminh79   35u  IPv4 0x5dd5f32e58269865      0t0  TCP 127.0.0.1:64871 (LISTEN)\nAntigravi 66430 giapminh79   32u  IPv4 0xe8ef04a561a99c53      0t0  TCP 127.0.0.1:52760 (LISTEN)\nAntigravi 66430 giapminh79   37u  IPv4 0xcc3d3c4a31d55914      0t0  TCP 127.0.0.1:52761 (LISTEN)\nAntigravi 66430 giapminh79   67u  IPv4  0xcc56a7c8df580d2      0t0  TCP 127.0.0.1:59729 (LISTEN)\nlanguage_ 66449 giapminh79    7u  IPv4 0x8356f88d8d63d65f      0t0  TCP 127.0.0.1:52762 (LISTEN)\nlanguage_ 66449 giapminh79    8u  IPv4 0x8d7425d3ffd56b99      0t0  TCP 127.0.0.1:52763 (LISTEN)\nPython    67200 giapminh79    4u  IPv6 0xe7bdaae4e6dbb03e      0t0  TCP *:8140 (LISTEN)\nPython    74269 giapminh79    4u  IPv6 0x7ee9e64818c1c4a7      0t0  TCP *:8317 (LISTEN)\nomp       76489 giapminh79   34u  IPv4 0xa8fd464c2acf7500      0t0  TCP 127.0.0.1:50989 (LISTEN)\nPython    78498 giapminh79    4u  IPv6 0x92dcac4a06f7261e      0t0  TCP *:8024 (LISTEN)\nopencode2 81148 giapminh79    6u  IPv4 0x7047ce5f46d54883      0t0  TCP 127.0.0.1:49374 (LISTEN)\nElectron  85428 giapminh79   45u  IPv4 0xdc0678dc417f1a52      0t0  TCP 127.0.0.1:52806 (LISTEN)\nElectron  85428 giapminh79   46u  IPv4 0x858c23c17dd37a1e      0t0  TCP 127.0.0.1:52807 (LISTEN)\nlanguage_ 85463 giapminh79    7u  IPv4 0x9337ec323bf323c1      0t0  TCP 127.0.0.1:52812 (LISTEN)\nlanguage_ 85463 giapminh79    8u  IPv4 0xbbb88d1345160a24      0t0  TCP 127.0.0.1:52813 (LISTEN)\nPython    89313 giapminh79    4u  IPv6 0x12029cb616630823      0t0  TCP *:8131 (LISTEN)\nPython    91983 giapminh79    4u  IPv6 0x4560af8f6c038106      0t0  TCP *:8901 (LISTEN)\nPython    98011 giapminh79    3u  IPv4 0xaa0e280c78483eaa      0t0  TCP 127.0.0.1:8931 (LISTEN)\nPython    98070 giapminh79    4u  IPv6 0x8f250eac023b7bd8      0t0  TCP *:8241 (LISTEN)\n",
+    "truncated": false
+  },
+  "legacy_before": {
+    "sentinel": "c93ca097aaa5cd9ec8e54a9a9cf87ed23d7ad906f34f0117d776913e4500e8c2"
+  },
+  "fixture_before": {
+    "alpha.py": "c66fe374189689fffcc2eb20c4dbaa8ed53918c922b1ef240622635e1fbc5f5d",
+    "user-notes.txt": "eb8ce9e5fb4771936b1539e6069d82b9b0d6256ea775aa82547506026e36dc96"
+  },
+  "error": "RuntimeError: search failed; unsafe dependent steps not attempted",
+  "inventory_after": {
+    "utc": "2026-09-06T11:38:31.071567+00:00",
+    "monotonic_s": 1161200.593036166,
+    "scratch": "/private/tmp/sl-v0c04od8",
+    "files": [
+      {
+        "path": "config",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "evidence",
+        "mode": 16832,
+        "bytes": 128,
+        "socket": false
+      },
+      {
+        "path": "home",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "oldCBM",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "r",
+        "mode": 16832,
+        "bytes": 128,
+        "socket": false
+      },
+      {
+        "path": "repo",
+        "mode": 16832,
+        "bytes": 160,
+        "socket": false
+      },
+      {
+        "path": "store",
+        "mode": 16832,
+        "bytes": 192,
+        "socket": false
+      },
+      {
+        "path": "tmp",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "config/managed.json",
+        "mode": 33152,
+        "bytes": 539,
+        "socket": false
+      },
+      {
+        "path": "evidence/manifest-0.json",
+        "mode": 33152,
+        "bytes": 243,
+        "socket": false
+      },
+      {
+        "path": "evidence/registry.json",
+        "mode": 33152,
+        "bytes": 4497,
+        "socket": false
+      },
+      {
+        "path": "oldCBM/sentinel",
+        "mode": 33152,
+        "bytes": 35,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f",
+        "mode": 16832,
+        "bytes": 320,
+        "socket": false
+      },
+      {
+        "path": "r/managed.lock",
+        "mode": 33188,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache",
+        "mode": 16832,
+        "bytes": 192,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/config",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/execution.lock",
+        "mode": 33188,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/home",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/managed-ready.json",
+        "mode": 33152,
+        "bytes": 350,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/manifest.json",
+        "mode": 33152,
+        "bytes": 793,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/tmp",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache/_config.db",
+        "mode": 33188,
+        "bytes": 12288,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache/config.json",
+        "mode": 33152,
+        "bytes": 21,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache/logs",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache/private-tmp-sl-v0c04od8-repo.db",
+        "mode": 33152,
+        "bytes": 2162688,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/cache/logs/cbm-daemon.log",
+        "mode": 33152,
+        "bytes": 2366,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501",
+        "mode": 16832,
+        "bytes": 512,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-6c98475802a59fdef3c26595c95bf47614a6cea09179e9113a1fb933575ae78f.rw",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-6c98475802a59fdef3c26595c95bf47614a6cea09179e9113a1fb933575ae78f.turn",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-90ea1983e154783986e558b0eb1b37b34a20a6e3e257a3df409405df8f009a37.rw",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-90ea1983e154783986e558b0eb1b37b34a20a6e3e257a3df409405df8f009a37.turn",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.anc",
+        "mode": 49536,
+        "bytes": 0,
+        "socket": true
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.lifetime.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.sock",
+        "mode": 49536,
+        "bytes": 0,
+        "socket": true
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.sock.identity",
+        "mode": 33152,
+        "bytes": 104,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.startup-v2.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-admission-v1.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-daemon-v1.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-lifetime-v1.lock",
+        "mode": 33152,
+        "bytes": 214,
+        "socket": false
+      },
+      {
+        "path": "r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-maintenance-v1.lock",
+        "mode": 33152,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "repo/.sot",
+        "mode": 16877,
+        "bytes": 128,
+        "socket": false
+      },
+      {
+        "path": "repo/alpha.py",
+        "mode": 33152,
+        "bytes": 44,
+        "socket": false
+      },
+      {
+        "path": "repo/user-notes.txt",
+        "mode": 33152,
+        "bytes": 23,
+        "socket": false
+      },
+      {
+        "path": "repo/.sot/sot.db",
+        "mode": 33188,
+        "bytes": 258048,
+        "socket": false
+      },
+      {
+        "path": "repo/.sot/write.lock",
+        "mode": 33188,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "store/pointers",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "store/store",
+        "mode": 16877,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "store/tmp",
+        "mode": 16832,
+        "bytes": 64,
+        "socket": false
+      },
+      {
+        "path": "store/write.lock",
+        "mode": 33188,
+        "bytes": 0,
+        "socket": false
+      },
+      {
+        "path": "store/pointers/codebase-memory",
+        "mode": 33152,
+        "bytes": 65,
+        "socket": false
+      },
+      {
+        "path": "store/store/codebase-memory",
+        "mode": 16832,
+        "bytes": 96,
+        "socket": false
+      },
+      {
+        "path": "store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+        "mode": 16832,
+        "bytes": 128,
+        "socket": false
+      },
+      {
+        "path": "store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact",
+        "mode": 33088,
+        "bytes": 297185328,
+        "socket": false
+      },
+      {
+        "path": "store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/manifest.json",
+        "mode": 33152,
+        "bytes": 252,
+        "socket": false
+      }
+    ],
+    "files_truncated": false,
+    "processes": {
+      "argv": [
+        "/bin/ps",
+        "-axo",
+        "pid=,ppid=,pgid=,comm="
+      ],
+      "exit_code": 0,
+      "text": "    1     0     1 /sbin/launchd\n  322     1   322 /usr/libexec/logd\n  323     1   323 /usr/libexec/smd\n  324     1   324 /usr/libexec/UserEventAgent\n  326     1   326 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd\n  327     1   327 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted\n  330     1   330 /usr/sbin/systemstats\n  334     1   334 /usr/libexec/configd\n  336     1   336 /System/Library/CoreServices/powerd.bundle/powerd\n  337     1   337 /usr/libexec/IOMFB_bics_daemon\n  341     1   341 /usr/libexec/remoted\n  345     1   345 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd_system\n  347     1   347 /usr/libexec/watchdogd\n  351     1   351 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds\n  353     1   353 /usr/libexec/kernelmanagerd\n  354     1   354 /usr/libexec/diskarbitrationd\n  358     1   358 /usr/sbin/syslogd\n  360     1   360 /usr/libexec/thermalmonitord\n  361     1   361 /System/Library/PrivateFrameworks/CoreDuetContext.framework/Resources/contextstored\n  362     1   362 /usr/libexec/xprotectd\n  363     1   363 /usr/libexec/opendirectoryd\n  365     1   365 /System/Library/PrivateFrameworks/ApplePushService.framework/apsd\n  366     1   366 /System/Library/CoreServices/launchservicesd\n  367     1   367 /usr/libexec/timed\n  368     1   368 /System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/Resources/usbmuxd\n  369     1   369 /usr/sbin/securityd\n  371     1   371 /usr/libexec/locationd\n  372     1   372 /usr/libexec/nesessionmanager\n  374     1   374 autofsd\n  375     1   375 /usr/libexec/dasd\n  376     1   376 /usr/libexec/corerepaird\n  378     1   378 /usr/sbin/distnoted\n  382     1   382 /System/Library/CoreServices/logind\n  383     1   383 /System/Library/PrivateFrameworks/GenerationalStorage.framework/Versions/A/Support/revisiond\n  384     1   384 /usr/sbin/KernelEventAgent\n  388     1   388 /usr/sbin/bluetoothd\n  389     1   389 /usr/sbin/notifyd\n  391     1   391 /usr/libexec/corebrightnessd\n  392     1   392 /usr/libexec/AirPlayXPCHelper\n  393     1   393 /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/com.apple.cmio.registerassistantservice\n  396     1   396 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer\n  397     1   397 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd\n  398     1   398 /usr/sbin/cfprefsd\n  399     1   399 /System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow\n  400     1   400 /System/Library/PrivateFrameworks/CoreAnalytics.framework/Support/analyticsd\n  401     1   401 /usr/libexec/runningboardd\n  402     1   402 /System/Library/CoreServices/coreservicesd\n  406     1   406 /usr/libexec/trustd\n  407     1   407 /usr/sbin/coreaudiod\n  414     1   414 /usr/libexec/nsurlsessiond\n  415     1   415 /usr/libexec/nehelper\n  419     1   419 /usr/libexec/lsd\n  422     1   422 /usr/libexec/eligibilityd\n  430     1   430 /usr/sbin/distnoted\n  433     1   433 /usr/libexec/ApplicationFirewall/socketfilterfw\n  434     1   434 /usr/sbin/cron\n  436     1   436 /usr/libexec/symptomsd\n  437     1   437 /usr/libexec/airportd\n  440     1   440 /usr/sbin/distnoted\n  443     1   443 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/authd.xpc/Contents/MacOS/authd\n  444     1   444 /usr/sbin/distnoted\n  445     1   445 /usr/sbin/mDNSResponder\n  453     1   453 /usr/sbin/distnoted\n  454     1   454 /usr/sbin/mDNSResponderHelper\n  461     1   461 /usr/libexec/syspolicyd\n  467     1   467 Core Audio Driver (ParrotAudioPlugin.driver)\n  470     1   470 /System/Library/CoreServices/TimeMachine/backupd\n  473     1   473 /usr/sbin/WirelessRadioManagerd\n  497     1   497 /usr/libexec/audiomxd\n  508     1   508 /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Resources/backgroundtaskmanagementd\n  513     1   513 /usr/libexec/aned\n  519     1   519 /usr/libexec/com.apple.cmio.videodriverkithostextension.systemextension/Contents/MacOS/com.apple.cmio.videodriverkithostextension\n  521     1   521 /System/Library/CoreServices/appleeventsd\n  523     1   523 /usr/libexec/audioclocksyncd\n  524     1   524 /usr/sbin/appleh13camerad\n  532     1   532 /Library/Application Support/iStat Menus 7/com.bjango.istatmenus.daemon\n  534     1   534 /Library/Application Support/AdGuard Software/com.adguard.mac.adguard/kext/com.adguard.mac.adguard.helper\n  535     1   535 /Library/PrivilegedHelperTools/com.docker.vmnetd\n  536     1   536 /usr/libexec/cameracaptured\n  537     1   537 /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/UVCAssistant.systemextension/Contents/MacOS/UVCAssistant\n  539     1   539 /usr/libexec/modelmanagerd\n  544     1   544 /System/Library/DriverExtensions/com.apple.DriverKit-AppleBCMWLAN.dext/com.apple.DriverKit-AppleBCMWLAN\n  546     1   546 /usr/sbin/distnoted\n  547     1   547 /System/Library/DriverExtensions/com.apple.DriverKit-IOUserDockChannelSerial.dext/com.apple.DriverKit-IOUserDockChannelSerial\n  548     1   548 /System/Library/CoreServices/Software Update.app/Contents/Resources/suhelperd\n  549     1   549 /System/Library/DriverExtensions/com.apple.AppleUserHIDDrivers.dext/com.apple.AppleUserHIDDrivers\n  559     1   559 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores\n  564     1   564 /usr/sbin/distnoted\n  566     1   566 /usr/sbin/distnoted\n  567     1   567 /usr/sbin/BTLEServer\n  568     1   568 /usr/libexec/searchpartyd\n  573     1   573 /System/Library/Frameworks/LocalAuthentication.framework/Support/coreauthd\n  575     1   575 /usr/sbin/distnoted\n  577     1   577 /usr/sbin/cfprefsd\n  583     1   583 /usr/libexec/UserEventAgent\n  588     1   588 /usr/libexec/neagent\n  591     1   591 /usr/sbin/universalaccessd\n  592     1   592 /usr/libexec/containermanagerd\n  593     1   593 /System/Library/CoreServices/WindowManager.app/Contents/MacOS/WindowManager\n  594     1   594 /usr/libexec/pboard\n  597     1   597 /System/Library/PrivateFrameworks/BiomeStreams.framework/Support/BiomeAgent\n  598     1   598 /usr/libexec/lsd\n  600     1   600 /usr/libexec/linkd\n  601     1   601 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd\n  602     1   602 /usr/libexec/rapportd\n  603     1   603 /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd\n  604     1   604 /usr/libexec/secd\n  605     1   605 /System/Library/Frameworks/Accounts.framework/Versions/A/Support/accountsd\n  606     1   606 /usr/libexec/trustd\n  611     1   611 /usr/sbin/distnoted\n  612     1   612 /usr/libexec/wifip2pd\n  616     1   616 /usr/libexec/sharingd\n  618     1   618 /System/Library/PrivateFrameworks/IDS.framework/identityservicesd.app/Contents/MacOS/identityservicesd\n  622     1   622 /usr/libexec/nsurlsessiond\n  624     1   624 /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock\n  625     1   625 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter\n  626     1   626 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd\n  628     1   628 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer\n  629     1   629 /System/Library/CoreServices/sharedfilelistd\n  630     1   630 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder\n  631     1   631 /System/Library/Frameworks/ApplicationServices.framework/Frameworks/ATS.framework/Support/fontd\n  636     1   636 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/MacOS/AccessibilityUIServer\n  640     1   640 /System/Library/CoreServices/lockoutagent\n  641     1   641 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Support/fontworker\n  643     1   643 /usr/sbin/usernoted\n  644     1   644 /System/Library/CoreServices/WallpaperAgent.app/Contents/MacOS/WallpaperAgent\n  649     1   649 /usr/sbin/filecoordinationd\n  657     1   657 /System/Library/PrivateFrameworks/iCloudDriveCore.framework/Versions/A/Support/bird\n  661     1   661 /System/Library/PrivateFrameworks/UserNotificationsCore.framework/Support/usernotificationsd\n  662     1   662 /System/Library/PrivateFrameworks/ScreenTimeCore.framework/Versions/A/ScreenTimeAgent\n  663     1   663 /System/Library/PrivateFrameworks/FileProvider.framework/Support/fileproviderd\n  665     1   665 /System/Library/PrivateFrameworks/AMPDevices.framework/Versions/A/Support/AMPDeviceDiscoveryAgent\n  666     1   666 /usr/libexec/ContinuityCaptureAgent\n  667     1   667 /usr/libexec/gamepolicyd\n  669     1   669 /System/Library/CoreServices/audioaccessoryd\n  673     1   673 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd\n  676     1   676 /System/Library/PrivateFrameworks/ViewBridge.framework/Versions/A/XPCServices/ViewBridgeAuxiliary.xpc/Contents/MacOS/ViewBridgeAuxiliary\n  677     1   677 /System/Library/PrivateFrameworks/ChronoCore.framework/Support/chronod\n  689     1   689 /System/Library/Frameworks/CryptoTokenKit.framework/ctkd\n  692     1   692 /usr/libexec/rosetta/oahd\n  694     1   694 /System/Library/ExtensionKit/Extensions/WallpaperAerialsExtension.appex/Contents/MacOS/WallpaperAerialsExtension\n  698     1   698 /System/Library/PrivateFrameworks/CommunicationsFilter.framework/CMFSyncAgent\n  700     1   700 /System/Library/ExtensionKit/Extensions/WallpaperDynamicExtension.appex/Contents/MacOS/WallpaperDynamicExtension\n  711     1   711 /usr/libexec/nearbyd\n  713     1   713 /System/Library/PrivateFrameworks/FamilyCircle.framework/Versions/A/Resources/familycircled\n  717     1   717 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter\n  721     1   721 /System/Library/PrivateFrameworks/UserActivity.framework/Agents/useractivityd\n  722     1   722 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.extra.xpc/Contents/MacOS/com.apple.dock.extra\n  723     1   723 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n  725     1   725 /System/Library/CoreServices/Spotlight.app/Contents/MacOS/Spotlight\n  727     1   727 /usr/sbin/distnoted\n  732     1   732 /usr/libexec/wifianalyticsd\n  744     1   744 /System/Library/ExtensionKit/Extensions/HostInferenceProviderService.appex/Contents/MacOS/HostInferenceProviderService\n  745     1   745 /usr/sbin/distnoted\n  747     1   747 /System/Library/Frameworks/InputMethodKit.framework/Resources/imklaunchagent\n  750     1   750 /System/Library/Input Methods/PressAndHold.app/Contents/PlugIns/PAH_Extension.appex/Contents/MacOS/PAH_Extension\n  755     1   755 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n  758     1   758 /System/Library/CoreServices/WiFiAgent.app/Contents/MacOS/WiFiAgent\n  760     1   760 /System/Library/PrivateFrameworks/AuthKit.framework/Versions/A/Support/akd\n  762     1   762 /System/Applications/FindMy.app/Contents/PlugIns/FindMyWidgetItems.appex/Contents/MacOS/FindMyWidgetItems\n  763     1   763 /System/Applications/Home.app/Contents/PlugIns/HomeWidget.appex/Contents/MacOS/HomeWidget\n  767     1   767 /System/Applications/FindMy.app/Contents/PlugIns/FindMyWidgetPeople.appex/Contents/MacOS/FindMyWidgetPeople\n  769     1   769 /System/Applications/Journal.app/Contents/PlugIns/JournalWidgetsSecure.appex/Contents/MacOS/JournalWidgetsSecure\n  771     1   771 /usr/libexec/sysmond\n  772     1   772 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMServer\n  775     1   775 /System/Applications/Photos.app/Contents/PlugIns/PhotosReliveWidget.appex/Contents/MacOS/PhotosReliveWidget\n  776     1   776 /System/Library/CoreServices/UIKitSystem.app/Contents/MacOS/UIKitSystem\n  777     1   777 /System/Applications/Journal.app/Contents/PlugIns/JournalWidgets.appex/Contents/MacOS/JournalWidgets\n  779     1   779 /usr/libexec/searchpartyuseragent\n  780     1   780 /System/Applications/Calendar.app/Contents/PlugIns/CalendarWidgetExtension.appex/Contents/MacOS/CalendarWidgetExtension\n  782     1   782 /System/Library/CoreServices/Screen Time.app/Contents/PlugIns/ScreenTimeWidgetExtension.appex/Contents/MacOS/ScreenTimeWidgetExtension\n  783     1   783 /System/Applications/Clock.app/Contents/PlugIns/WorldClockWidget.appex/Contents/MacOS/WorldClockWidget\n  784     1   784 /System/Applications/Weather.app/Contents/PlugIns/WeatherIntents.appex/Contents/MacOS/WeatherIntents\n  785     1   785 /System/Applications/VoiceMemos.app/Contents/PlugIns/RecordWidgetExtension.appex/Contents/MacOS/RecordWidgetExtension\n  786     1   786 /System/Library/CoreServices/Screen Time.app/Contents/PlugIns/ScreenTimeWidgetIntentsExtension.appex/Contents/MacOS/ScreenTimeWidgetIntentsExtension\n  788     1   788 /System/Library/CoreServices/Batteries.app/Contents/PlugIns/BatteriesAvocadoWidgetExtension.appex/Contents/MacOS/BatteriesAvocadoWidgetExtension\n  789     1   789 /System/Applications/Notes.app/Contents/PlugIns/com.apple.Notes.WidgetExtension.appex/Contents/MacOS/com.apple.Notes.WidgetExtension\n  790     1   790 /System/Applications/Home.app/Contents/PlugIns/HomeEnergyWidgetsExtension.appex/Contents/MacOS/HomeEnergyWidgetsExtension\n  792     1   792 /System/Library/PrivateFrameworks/MobileTimer.framework/PlugIns/MobileTimerIntents.appex/Contents/MacOS/MobileTimerIntents\n  793     1   793 /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/Extensions/SafariWidgetExtension.appex/Contents/MacOS/SafariWidgetExtension\n  795     1   795 /System/Applications/Stocks.app/Contents/PlugIns/StocksWidget.appex/Contents/MacOS/StocksWidget\n  796     1   796 /System/Library/CoreServices/PeopleViewService.app/Contents/PlugIns/PeopleWidget_macOSExtension.appex/Contents/MacOS/PeopleWidget_macOSExtension\n  797     1   797 /System/Applications/Reminders.app/Contents/PlugIns/RemindersWidgetExtension.appex/Contents/MacOS/RemindersWidgetExtension\n  798     1   798 /System/Applications/Podcasts.app/Contents/PlugIns/PodcastsWidget.appex/Contents/MacOS/PodcastsWidget\n  804     1   804 /System/Applications/Shortcuts.app/Contents/PlugIns/ShortcutsWidgetExtension.appex/Contents/MacOS/ShortcutsWidgetExtension\n  805     1   805 /System/Applications/Tips.app/Contents/PlugIns/TipsWidgetExtension.appex/Contents/MacOS/TipsWidgetExtension\n  807     1   807 /usr/sbin/distnoted\n  823     1   823 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/commerce\n  824     1   824 /System/Library/DriverExtensions/IOUserBluetoothSerialDriver.dext/IOUserBluetoothSerialDriver\n  825     1   825 /bin/sh\n  834     1   834 /opt/homebrew/opt/redis/bin/redis-server 127.0.0.1:6379\n  838     1   838 /System/Library/Image Capture/Support/icdd\n  842     1   842 /Users/giapminh79/.local/bin/jcode\n  844     1   844 Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel\n  845     1   845 /Users/giapminh79/Library/Application Support/iStat Menus 7/iStat Menus Helper.app/Contents/MacOS/iStat Menus Helper\n  848     1   848 /opt/homebrew/opt/colima/bin/colima\n  849     1   849 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent\n  850     1   850 /opt/homebrew/opt/postgresql@16/bin/postgres\n  851     1   851 /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/Contents/MacOS/imagent\n  854     1   854 /Users/giapminh79/Library/Application Support/iStat Menus 7/iStat Menus Menubar.app/Contents/MacOS/iStat Menus Menubar\n  855     1   855 /System/Library/CoreServices/diagnostics_agent\n  856     1   856 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/MacOS/TextInputMenuAgent\n  860     1   860 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp\n  865     1   865 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp\n  875   330   330 /usr/sbin/systemstats\n  890     1   890 /usr/sbin/distnoted\n  903   844   844 /Applications/Ollama.app/Contents/MacOS/Ollama\n  912     1   912 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdbulkimport\n  924     1   924 /System/Library/PrivateFrameworks/DiskImages.framework/Resources/hdiejectd\n  927     1   927 /System/Library/PrivateFrameworks/CloudDocs.framework/PlugIns/com.apple.CloudDocs.iCloudDriveFileProvider.appex/Contents/MacOS/com.apple.CloudDocs.iCloudDriveFileProvider\n  930     1   930 /System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper\n  934     1   934 /private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/AppTranslocation/D32A6D8B-CCAB-41ED-A603-94CA0A266EEA/d/Mountain Duck.app/Contents/MacOS/Mountain Duck\n  939     1   939 /Applications/Shottr.app/Contents/MacOS/Shottr\n  940   903   844 /Applications/Ollama.app/Contents/Resources/ollama\n  944     1   944 /Applications/TG Pro.app/Contents/MacOS/TG Pro\n  960     1   960 /usr/libexec/avconferenced\n  961     1   961 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoteagent\n 1050     1  1050 /Library/PrivilegedHelperTools/com.tunabellysoftware.TGFanHelper\n 1055     1  1055 /System/Library/CoreServices/SubmitDiagInfo\n 1057     1  1057 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n 1157     1  1157 /System/Library/PrivateFrameworks/TextInputUIMacHelper.framework/Versions/A/XPCServices/CursorUIViewService.xpc/Contents/MacOS/CursorUIViewService\n 1315   825   825 /opt/homebrew/opt/mariadb@11.8/bin/mariadbd\n 1317   850  1317 postgres: checkpointer \n 1318   850  1318 postgres: background writer \n 1321   850  1321 postgres: walwriter \n 1322   850  1322 postgres: autovacuum launcher \n 1323   850  1323 postgres: logical replication launcher \n 1351     1  1351 /usr/sbin/distnoted\n 1357     1  1357 /Applications/AICoworker.app/Contents/MacOS/AICoworker\n 1382  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper.app/Contents/MacOS/AICoworker Helper\n 1383  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper.app/Contents/MacOS/AICoworker Helper\n 1385  1357  1357 /Applications/AICoworker.app/Contents/Frameworks/AICoworker Helper (Renderer).app/Contents/MacOS/AICoworker Helper (Renderer)\n 1396     1  1396 automountd\n 1420     1  1420 /usr/libexec/wifivelocityd\n 1459   532  1459 /usr/bin/powermetrics\n 1460   532  1460 /usr/bin/powermetrics\n 1510     1  1510 /System/Library/PrivateFrameworks/AppStoreDaemon.framework/Support/appstoreagent\n 1522     1  1522 /usr/sbin/distnoted\n 1537     1  1537 /opt/homebrew/opt/colima/bin/colima\n 1578     1  1578 /System/Library/PrivateFrameworks/CoreFP.framework/Versions/A/fairplayd\n 1587     1  1587 /opt/homebrew/bin/limactl\n 1589     1  1589 /opt/homebrew/bin/limactl\n 1598     1  1598 /usr/sbin/distnoted\n 1602     1  1602 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine\n 1616     1  1616 /usr/libexec/taskgated\n 1619     1  1619 /usr/sbin/distnoted\n 1632     1  1632 /usr/bin/ssh-agent\n 1645     1  1645 ssh: /Users/giapminh79/.colima/_lima/colima/ssh.sock [mux]\n 1845     1  1845 /System/Library/Services/AppleSpell.service/Contents/MacOS/AppleSpell\n 2104     1  2104 /System/Applications/Calendar.app/Contents/Extensions/CalendarIntentsExtension.appex/Contents/MacOS/CalendarIntentsExtension\n 2107     1  2107 /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/Extensions/SafariLinkExtension.appex/Contents/MacOS/SafariLinkExtension\n 2122     1  2122 /System/Applications/Messages.app/Contents/Extensions/MessagesActionExtension.appex/Contents/MacOS/MessagesActionExtension\n 2205     1  2205 /Applications/pCloud Drive.app/Contents/MacOS/pCloud Drive\n 2233     1  2233 /usr/sbin/distnoted\n 2246     1  2246 /System/Library/Frameworks/ManagedAppDistribution.framework/Support/managedappdistributiond\n 2313     1  2313 /System/Library/PrivateFrameworks/People.framework/peopled\n 2350     1  2350 /System/Library/CoreServices/CrashReporterSupportHelper\n 2850     1  2850 /System/Cryptexes/App/usr/libexec/PasswordBreachAgent\n 3114     1  3114 /System/Library/Frameworks/CoreSpotlight.framework/spotlightknowledged\n 3522     1  3522 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n 3980     1  3980 /usr/libexec/promotedcontentd\n 3981     1  3981 /usr/libexec/fairplaydeviceidentityd\n 4024     1  4024 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storeuid.app/Contents/MacOS/storeuid\n 4066     1  4066 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/com.apple.CodeSigningHelper.xpc/Contents/MacOS/com.apple.CodeSigningHelper\n 4341     1  4341 /System/Library/PrivateFrameworks/PassKitCore.framework/passd\n 4359     1  4359 /System/Library/PrivateFrameworks/SafariSafeBrowsing.framework/com.apple.Safari.SafeBrowsing.Service\n 4375     1  4375 /System/Applications/Phone.app/Contents/MacOS/Phone\n 4391     1  4391 /System/iOSSupport/System/Library/Frameworks/ContactsUI.framework/PlugIns/MonogramPosterExtension.appex/Contents/MacOS/MonogramPosterExtension\n 5227 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5229 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5230 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5266 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n 5292     1  5290 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n 5932     1  5932 /usr/sbin/distnoted\n 6331     1  6331 /Applications/Bartender 6.app/Contents/MacOS/Bartender 6\n 6502     1  6500 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n 7472     1  7472 /usr/libexec/securityd_system\n 7917 85463 85428 /Users/giapminh79/.local/bin/codebase-memory-mcp\n 8026     1  8026 /System/Applications/Utilities/Print Center.app/Contents/PlugIns/PrintCenterWidgetExtension.macOS.appex/Contents/MacOS/PrintCenterWidgetExtension.macOS\n 9339     1  9339 /usr/libexec/proactived\n 9361     1  9361 /usr/libexec/SidecarRelay\n 9403     1  9403 /System/Library/CoreServices/PowerChime.app/Contents/MacOS/PowerChime\n 9406     1  9406 /System/Cryptexes/App/System/Library/CoreServices/SafariSupport.bundle/Contents/MacOS/SafariBookmarksSyncAgent\n 9439     1  9439 /System/Library/PrivateFrameworks/IMDPersistence.framework/XPCServices/IMDPersistenceAgent.xpc/Contents/MacOS/IMDPersistenceAgent\n 9458     1  9458 /usr/libexec/audioanalyticsd\n 9459     1  9459 /usr/libexec/rtcreportingd\n 9675     1  9675 /usr/libexec/companiond\n 9676     1  9676 /System/Library/PrivateFrameworks/MobileTimer.framework/Executables/mobiletimerd\n 9897     1  9897 /System/Library/CoreServices/Siri.app/Contents/MacOS/Siri\n 9898     1  9898 /usr/libexec/secinitd\n 9901     1  9901 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/XPCServices/com.apple.hiservices-xpcservice.xpc/Contents/MacOS/com.apple.hiservices-xpcservice\n 9917     1  9917 /usr/libexec/ospredictiond\n 9972     1  9972 /System/Library/CoreServices/ControlCenter.app/Contents/PlugIns/DisplayControls.appex/Contents/MacOS/DisplayControls\n10102     1 10102 /Applications/Tailscale.app/Contents/MacOS/Tailscale\n10154     1 10154 /usr/libexec/triald\n10156     1 10156 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n10311     1 10311 /System/Library/CoreServices/Siri.app/Contents/XPCServices/SiriNCService.xpc/Contents/MacOS/SiriNCService\n10312     1 10312 /usr/libexec/siriknowledged\n10324     1 10324 /System/Library/PrivateFrameworks/AssetCacheServices.framework/Versions/A/XPCServices/AssetCacheLocatorService.xpc/Contents/MacOS/AssetCacheLocatorService\n10329     1 10329 /System/Library/Frameworks/ManagedAppDistribution.framework/Support/managedappdistributionagent\n10331     1 10331 /System/Library/PrivateFrameworks/AmbientDisplay.framework/Versions/A/XPCServices/com.apple.AmbientDisplayAgent.xpc/Contents/MacOS/com.apple.AmbientDisplayAgent\n10361     1 10361 /Applications/GoNhanh.app/Contents/MacOS/GoNhanh\n10493     1 10493 /System/Library/PrivateFrameworks/AppleMediaServices.framework/Resources/amsaccountsd\n10495     1 10495 /usr/libexec/swcd\n10497     1 10497 /System/Library/PrivateFrameworks/iCloudDriveService.framework/XPCServices/ContainerMetadataExtractor.xpc/Contents/MacOS/ContainerMetadataExtractor\n10588     1 10588 /System/Library/Frameworks/CoreSpotlight.framework/spotlightknowledged\n10591     1 10591 /usr/libexec/pkd\n10604     1 10604 /usr/libexec/sandboxd\n10608     1 10608 /usr/libexec/triald_system\n10614     1 10614 /System/Library/CoreServices/TimeMachine/backupd-helper\n10623     1 10623 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/MacOS/CoreServicesUIAgent\n10699 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n10925     1 10925 /System/Library/PrivateFrameworks/AXAssetLoader.framework/Support/axassetsd\n10936     1 10936 /usr/libexec/remindd\n10965     1 10965 /System/Library/Frameworks/ManagedSettings.framework/Versions/A/ManagedSettingsAgent\n11004     1 11004 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n11151     1 11142 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n11406     1 11406 /System/Library/PrivateFrameworks/WorkflowKit.framework/XPCServices/ShortcutsViewService.xpc/Contents/MacOS/ShortcutsViewService\n11407     1 11407 /System/Library/PrivateFrameworks/SessionCore.framework/Support/liveactivitiesd\n11408     1 11408 /System/Library/PrivateFrameworks/ReplicatorCore.framework/Support/replicatord\n12007     1 12007 /System/Library/PrivateFrameworks/KerberosHelper/Helpers/DiskUnmountWatcher\n12283     1 12283 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdwrite\n12913     1 12913 /System/Library/Frameworks/Contacts.framework/Support/postersyncd\n12914     1 12914 /usr/libexec/knowledge-agent\n12915     1 12915 /System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/XPCServices/SetStoreUpdateService.xpc/Contents/MacOS/SetStoreUpdateService\n12928     1 12928 /usr/libexec/duetexpertd\n13096     1 13096 /System/Library/PrivateFrameworks/AppPredictionFoundation.framework/Versions/A/XPCServices/AppPredictionIntentsHelperService.xpc/Contents/MacOS/AppPredictionIntentsHelperService\n13108     1 13108 /System/Library/Frameworks/Intents.framework/XPCServices/intents_helper.xpc/Contents/MacOS/intents_helper\n13110     1 13110 /System/Library/PrivateFrameworks/SiriInference.framework/Versions/A/siriinferenced\n13111     1 13111 /System/Library/Frameworks/Intents.framework/XPCServices/intents_helper.xpc/Contents/MacOS/intents_helper\n13124     1 13124 /System/Library/PrivateFrameworks/SiriSuggestionsSupport.framework/Versions/A/XPCServices/SiriSuggestionsBookkeepingService.xpc/Contents/MacOS/SiriSuggestionsBookkeepingService\n13188     1 13188 /System/Library/CoreServices/Setup Assistant.app/Contents/Resources/mbuseragent\n13532     1 13532 /usr/libexec/powerdatad\n13627     1 13627 /usr/libexec/findmybeaconingd\n14452     1 14452 /usr/sbin/BTLEServerAgent\n14526     1 14526 /System/Library/PrivateFrameworks/IntelligencePlatformCompute.framework/Versions/A/XPCServices/IntelligencePlatformComputeService.xpc/Contents/MacOS/IntelligencePlatformComputeService\n14537     1 14537 /System/Library/PrivateFrameworks/Synapse.framework/Support/contentlinkingd\n14540     1 14540 /usr/libexec/dmd\n14541     1 14541 /System/Library/PrivateFrameworks/Categories.framework/Versions/A/XPCServices/CategoriesService.xpc/Contents/MacOS/CategoriesService\n14545     1 14545 /System/Library/PrivateFrameworks/ContextKit.framework/Versions/A/XPCServices/ContextService.xpc/Contents/MacOS/ContextService\n14712     1 14712 /System/Library/CoreServices/pbs\n14722     1 14722 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n14727     1 14727 /System/Library/ExtensionKit/Extensions/TextThumbnailExtension.appex/Contents/MacOS/TextThumbnailExtension\n15806     1 15806 /usr/libexec/trustd\n15834     1 15834 /usr/sbin/distnoted\n16134     1 16134 /usr/libexec/frauddefensed\n16800     1 16800 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores\n17245     1 17245 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n17595     1 17592 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n17744     1 17744 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n17745     1 17745 /System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService\n18642  1357 18642 openclaw-gateway\n18802     1 18802 /System/Library/CoreServices/WindowManager.app/Contents/PlugIns/WindowManagerControlsExtension.appex/Contents/MacOS/WindowManagerControlsExtension\n18803     1 18803 /System/Applications/Utilities/Screenshot.app/Contents/PlugIns/ScreenshotControls.appex/Contents/MacOS/ScreenshotControls\n19223     1 19223 /System/Library/PrivateFrameworks/GeoAnalytics.framework/geoanalyticsd\n19251     1 19251 /Applications/pCloud Drive.app/Contents/PlugIns/pCloudFinderExt.appex/Contents/MacOS/pCloudFinderExt\n19378     1 19378 /System/Library/Frameworks/QuickLookUI.framework/Versions/A/PlugIns/QLPreviewGenerationExtension.appex/Contents/MacOS/QLPreviewGenerationExtension\n19504     1 19504 /System/Library/CoreServices/appplaceholdersyncd\n19527     1 19527 /System/Library/PrivateFrameworks/StreamingZip.framework/Versions/A/XPCServices/com.apple.StreamingUnzipService.xpc/Contents/MacOS/com.apple.StreamingUnzipService\n19534     1 19534 /System/Library/CoreServices/CoreLocationAgent.app/Contents/MacOS/CoreLocationAgent\n19535     1 19535 /System/Library/PrivateFrameworks/SyncedDefaults.framework/Support/syncdefaultsd\n19718     1 19718 /System/Library/PrivateFrameworks/OnDeviceStorage.framework/Support/amsondevicestoraged\n19720     1 19720 /usr/libexec/MTLAssetUpgraderD\n19721     1 19721 /System/Library/Frameworks/MediaExtension.framework/Versions/A/Helpers/MENotificationAgent\n19722     1 19722 /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Support/BackgroundTaskManagementAgent.app/Contents/MacOS/BackgroundTaskManagementAgent\n19988     1 19988 /System/Library/PrivateFrameworks/UsageTracking.framework/Versions/A/UsageTrackingAgent\n20115     1 20110 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n20226     1 20226 /usr/libexec/gamecontrollerd\n20227     1 20227 /usr/libexec/gamecontrolleragentd\n20236     1 20236 /System/Library/PrivateFrameworks/BusinessChatService.framework/businessservicesd\n20239     1 20239 /System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/Versions/A/XPCServices/MessagesBlastDoorService.xpc/Contents/MacOS/MessagesBlastDoorService\n20240     1 20240 /usr/libexec/assessmentagent\n20246     1 20246 /usr/libexec/feedbackd\n20329     1 20329 /usr/libexec/online-auth-agent\n20512     1 20512 /System/Library/PrivateFrameworks/FaceTimeMessageStore.framework/facetimemessagestored\n20572     1 20572 /System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter\n20720     1 20720 /usr/libexec/replayd\n20741     1 20741 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/MacOS/Keychain Circle Notification\n20892     1 20892 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n20893     1 20893 /usr/libexec/secinitd\n20894     1 20894 /usr/libexec/containermanagerd_system\n20895     1 20895 /usr/libexec/containermanagerd\n20896     1 20896 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod\n20897     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20898     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20899     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20900     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20901     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20902     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20903     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20904     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20905     1  2288 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n20906     1 20906 /usr/libexec/secinitd\n20907     1 20907 /usr/sbin/cfprefsd\n20908     1 20908 /usr/libexec/trustd\n20910     1 20910 /usr/libexec/trustdFileHelper\n20915     1 20915 /usr/libexec/containermanagerd\n21531     1 21531 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTEncoderXPCService.xpc/Contents/MacOS/VTEncoderXPCService\n21532 57581 57581 /Applications/ZCode.app/Contents/Frameworks/ZCode Helper.app/Contents/MacOS/ZCode Helper\n21534     1 21534 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n22102     1 22100 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n22184     1 22184 /System/Library/PrivateFrameworks/PhotoAnalysis.framework/Versions/A/Support/photoanalysisd\n22185     1 22185 /System/Library/PrivateFrameworks/PhotoLibraryServices.framework/Versions/A/Support/photolibraryd\n22186     1 22186 /System/Library/CoreServices/ScopedBookmarkAgent\n22187     1 22187 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n22195     1 22195 /System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd\n22214     1 22214 cloudphotod\n22908     1 22906 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n23777 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n23940     1 23940 /usr/libexec/amfid\n24027 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n24064     1 24064 /usr/libexec/seputil\n24194     1 24194 /usr/libexec/metrickitd\n24289     1 24289 /usr/sbin/spindump\n24290     1 24290 /usr/libexec/spindump_agent\n24297     1 24297 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n24310     1 24310 /usr/libexec/biometrickitd\n24704     1 24701 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n24855     1 24855 /System/Library/PrivateFrameworks/IntelligenceFlowContextRuntime.framework/Versions/A/intelligencecontextd\n24919     1 24919 /System/Library/Frameworks/QuickLookThumbnailing.framework/Support/com.apple.quicklook.ThumbnailsAgent\n24920     1 24920 /usr/libexec/storagekitd\n24921     1 24921 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted\n24922     1 24922 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted_helper\n24923     1 24923 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/system_installd\n24924     1 24924 /usr/libexec/AssetCache/AssetCache\n24925     1 24925 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/installd\n24926     1 24926 /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd\n24927     1 24927 /System/Library/PrivateFrameworks/GeoServices.framework/geodMachServiceBridge\n24930     1 24930 /System/Library/PrivateFrameworks/AssetCacheServicesExtensions.framework/XPCServices/AssetCacheTetheratorService.xpc/Contents/MacOS/AssetCacheTetheratorService\n24942     1 24942 /usr/libexec/fskitd\n25101     1 25101 /Applications/Warp.app/Contents/MacOS/stable\n25103     1 25103 /System/Library/CoreServices/iconservicesagent\n25104     1 25104 /System/Library/CoreServices/iconservicesd\n25107     1 25107 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n25151     1 25151 /System/Library/CoreServices/talagentd\n25153     1 25153 /usr/libexec/logd_helper\n25154 25101 25101 /Applications/Warp.app/Contents/MacOS/stable\n25164     1 25164 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n25170     1 25170 /System/Library/PrivateFrameworks/EmailDaemon.framework/Versions/A/maild\n25186     1 25186 /usr/libexec/nfcd\n25189     1 25189 /System/Library/PrivateFrameworks/NearFieldPrivateServices.framework/Versions/A/XPCServices/NFStorageServer.xpc/Contents/MacOS/NFStorageServer\n25190     1 25190 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n25191     1 25191 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XProtectBridgeService.xpc/Contents/MacOS/XProtectBridgeService\n25278     1 25276 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n25439     1 25439 /usr/libexec/routined\n25560     1 25560 /usr/libexec/tipsd\n25566     1 25566 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistorySyncHelper\n25570     1 25570 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistoryPluginHelper\n25773     1 25770 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n25779     1 25770 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n26173     1 26173 /Library/Apple/System/Library/CoreServices/XProtect.app/Contents/MacOS/XProtect\n26279     1 26279 /usr/sbin/systemsoundserverd\n26280     1 26280 /System/Library/Frameworks/AudioToolbox.framework/AudioComponentRegistrar\n26281     1 26281 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n26342     1 26342 /System/Library/Frameworks/NetFS.framework/Versions/A/XPCServices/PlugInLibraryService.xpc/Contents/MacOS/PlugInLibraryService\n26743     1 26743 /Library/Apple/System/Library/CoreServices/XProtect.app/Contents/MacOS/XProtect\n26777     1 26772 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n27800     1 27800 /System/Library/CoreServices/sharedfilelistd\n28554     1 28554 /System/Library/PrivateFrameworks/IMDPersistence.framework/IMAutomaticHistoryDeletionAgent.app/Contents/MacOS/IMAutomaticHistoryDeletionAgent\n28822     1 28783 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n28910     1 28910 /System/Library/PrivateFrameworks/MapsSync.framework/mapssyncd\n28965     1 28965 /usr/libexec/keybagd\n28966     1 28966 /System/Library/PrivateFrameworks/IntelligencePlatformCore.framework/Versions/A/intelligenceplatformd\n29107     1 29107 /usr/libexec/mobileactivationd\n29109     1 29109 /usr/libexec/transparencyd\n29112     1 29112 /System/Library/PrivateFrameworks/CoreFollowUp.framework/Versions/A/Support/followupd\n29113     1 29113 /System/Library/PrivateFrameworks/ProtectedCloudStorage.framework/Helpers/ProtectedCloudKeySyncing\n29309     1 29309 /System/Library/CoreServices/Dock.app/Contents/XPCServices/DockHelper.xpc/Contents/MacOS/DockHelper\n29310     1 29310 /System/Library/CoreServices/ReportCrash\n29314     1 29314 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd\n29378     1 29378 /Applications/Discord.app/Contents/MacOS/Discord\n29455     1 29454 /Applications/Discord.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n29456 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29458 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29477 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper (Renderer).app/Contents/MacOS/Discord Helper (Renderer)\n29576 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29577 29378 29378 /Applications/Discord.app/Contents/Frameworks/Discord Helper.app/Contents/MacOS/Discord Helper\n29744     1 29744 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n29863     1 29863 /usr/libexec/inputanalyticsd\n29874     1 29874 /System/Library/Frameworks/StoreKit.framework/Support/storekitagent\n29875     1 29875 /usr/libexec/assetsubscriptiond\n29876     1 29876 /System/Library/PrivateFrameworks/AppleMediaServicesUI.framework/amsengagementd\n29954     1 29954 /usr/libexec/networkserviceproxy\n30015     1 30015 /System/Library/PrivateFrameworks/InstallCoordination.framework/Support/installcoordinationd\n30118     1 30118 /System/Library/PrivateFrameworks/GenerativeExperiencesRuntime.framework/Versions/A/generativeexperiencesd\n30119     1 30119 /System/Library/PrivateFrameworks/ModelCatalogRuntime.framework/Versions/A/modelcatalogd\n30333     1 30333 /System/Library/PrivateFrameworks/ModelCatalogRuntime.framework/Versions/A/ModelCatalogAgent\n30334     1 30334 /System/Library/PrivateFrameworks/CloudSubscriptionFeatures.framework/FeatureAccessAgent\n30336     1 30336 /System/Library/PrivateFrameworks/iCloudNotification.framework/iCloudNotificationAgent\n30337     1 30337 /System/Library/PrivateFrameworks/CoreAnalytics.framework/Support/analyticsagent\n30339     1 30339 /usr/libexec/appleaccountd\n30340     1 30340 /System/Library/PrivateFrameworks/TrialServer.framework/Versions/A/XPCServices/TrialArchivingService.xpc/Contents/MacOS/TrialArchivingService\n30381     1 30381 /usr/libexec/naturallanguaged\n30446     1 30446 /usr/libexec/filevaultd\n30447     1 30447 /System/Cryptexes/App/usr/libexec/AuthenticationServicesAgent\n30450     1 30450 /usr/libexec/keychainsharingmessagingd\n30451     1 30451 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/TrustedPeersHelper.xpc/Contents/MacOS/TrustedPeersHelper\n30762     1 30762 /System/Library/PrivateFrameworks/PrivateCloudCompute.framework/privatecloudcomputed.app/Contents/MacOS/privatecloudcomputed\n30764     1 30764 /Applications/Ghostty.app/Contents/MacOS/ghostty\n30765     1 30765 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.external.extra.arm64.xpc/Contents/MacOS/com.apple.dock.external.extra.arm64\n30838     1 30838 /System/Library/PrivateFrameworks/EcosystemAnalytics.framework/Support/ecosystemanalyticsd\n30841     1 30841 /System/Library/PrivateFrameworks/Ecosystem.framework/Support/ecosystemd\n31054     1 31054 /usr/libexec/mlhostd\n31127     1 31127 /opt/homebrew/Cellar/node/25.9.0_2/bin/node\n31143 64735 31143 /Users/giapminh79/aicoworker/app/nodejs/bin/python\n31163     1 31163 /usr/libexec/PowerUIAgent\n31175 31127 31175 next-server (v16.3.4)\n31179 31127 31127 /Users/giapminh79/.cache/node-systray/2.1.4/tray_darwin_release\n31583     1 31583 /System/Library/Frameworks/WebKit.framework/Versions/A/XPCServices/com.apple.WebKit.WebContent.xpc/Contents/MacOS/com.apple.WebKit.WebContent\n31651     1 31648 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n32083     1 32083 /Applications/Bartender 6.app/Contents/XPCServices/Bartender Service.xpc/Contents/MacOS/Bartender Service\n33082     1 33082 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n33083     1 33083 /System/Library/PrivateFrameworks/AppleCredentialManager.framework/AppleCredentialManagerDaemon\n33093     1 33093 /System/Library/PrivateFrameworks/IntlPreferences.framework/Support/localizationswitcherd\n33095     1 33095 /System/Library/PrivateFrameworks/CoreCDP.framework/Versions/A/Resources/cdpd\n33099     1 33099 /System/Library/CoreServices/TextInputSwitcher.app/Contents/MacOS/TextInputSwitcher\n33246     1 33246 /usr/libexec/powerexperienced\n33247     1 33247 /usr/libexec/PerfPowerServices\n33258     1 33258 /usr/sbin/cfprefsd\n33259     1 33259 /usr/sbin/cfprefsd\n33260     1 33260 /usr/sbin/cfprefsd\n33261     1 33261 /usr/sbin/cfprefsd\n33262     1 33262 /usr/sbin/cfprefsd\n33263     1 33263 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n33271     1 33271 /usr/sbin/cfprefsd\n33272     1 33272 /usr/sbin/cfprefsd\n33274     1 33274 /usr/sbin/cfprefsd\n33281     1 33281 /usr/sbin/cfprefsd\n33282     1 33282 /usr/sbin/cfprefsd\n33284     1 33284 /usr/sbin/cfprefsd\n33286     1 33286 /usr/sbin/cfprefsd\n33300     1 33300 /usr/libexec/symptomsd-diag\n33303     1 33303 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n33304     1 33304 /System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/Support/softwareupdated\n33305     1 33305 /System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/Versions/A/XPCServices/com.apple.MobileSoftwareUpdate.CleanupPreparePathService.xpc/Contents/MacOS/com.apple.MobileSoftwareUpdate.CleanupPreparePathService\n33309     1 33309 /usr/libexec/aneuserd\n33372     1 33372 /System/Library/PrivateFrameworks/MediaAnalysisAccess.framework/Versions/A/XPCServices/mediaanalysisd-access.xpc/Contents/MacOS/mediaanalysisd-access\n34275     1 34275 /System/Library/PrivateFrameworks/SystemStatusServer.framework/Support/systemstatusd\n34395     1 34395 /System/Library/PrivateFrameworks/CoreRecents.framework/Versions/A/Support/recentsd\n34719     1 34719 /usr/libexec/keyboardservicesd\n34820     1 34820 /Applications/Antigravity.app/Contents/Frameworks/Squirrel.framework/Resources/ShipIt\n34848     1 34848 /System/Library/Frameworks/MediaAccessibility.framework/Versions/A/XPCServices/com.apple.accessibility.mediaaccessibilityd.xpc/Contents/MacOS/com.apple.accessibility.mediaaccessibilityd\n34849     1 34849 /System/Library/Frameworks/AudioToolbox.framework/AudioComponentRegistrar\n34853     1 34853 /System/Library/Frameworks/ImageIO.framework/Versions/A/XPCServices/ImageIOXPCService.xpc/Contents/MacOS/ImageIOXPCService\n35088     1 35088 /usr/libexec/microstackshot\n35642     1 35642 /System/Library/PrivateFrameworks/IMTransferServices.framework/IMTransferAgent.app/Contents/MacOS/IMTransferAgent\n35708     1 35704 /Applications/ZCode.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler\n36421     1 36421 /System/Library/PrivateFrameworks/ContactsDonation.framework/Versions/A/Support/contactsdonationagent\n37348     1 37348 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService\n37349     1 37349 /System/Library/CoreServices/ReportCrash\n37596     1 37596 /usr/libexec/milod\n37609     1 37609 /System/Library/PrivateFrameworks/RemoteManagement.framework/remotemanagementd\n37610     1 37610 /System/Library/PrivateFrameworks/RemoteManagement.framework/RemoteManagementAgent\n37611     1 37611 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber\n37612     1 37612 /System/Library/PrivateFrameworks/SafariFoundation.framework/Versions/A/XPCServices/SafariConfigurationSubscriber.xpc/Contents/MacOS/SafariConfigurationSubscriber\n37613     1 37613 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber\n37614     1 37614 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber\n37615     1 37615 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber\n37616     1 37616 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber\n37618     1 37618 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber\n37621     1 37621 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber\n37622     1 37622 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber\n37623     1 37623 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/DiskManagementSubscriber.xpc/Contents/MacOS/DiskManagementSubscriber\n37624     1 37624 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SoftwareUpdateSubscriber.xpc/Contents/MacOS/SoftwareUpdateSubscriber\n37626     1 37626 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedAppsSubscriber.xpc/Contents/MacOS/ManagedAppsSubscriber\n37627     1 37627 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber\n37628     1 37628 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber\n37629     1 37629 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/AccountSubscriber.xpc/Contents/MacOS/AccountSubscriber\n37630     1 37630 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber\n37631     1 37631 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedAppsSubscriber.xpc/Contents/MacOS/ManagedAppsSubscriber\n37632     1 37632 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedConfigurationFilesSubscriber.xpc/Contents/MacOS/ManagedConfigurationFilesSubscriber\n37633     1 37633 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber\n37634     1 37634 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ASConfigurationSubscriber.xpc/Contents/MacOS/ASConfigurationSubscriber\n37635     1 37635 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedSettingsSubscriber.xpc/Contents/MacOS/ManagedSettingsSubscriber\n40095     1 40095 /System/Library/PrivateFrameworks/IASUtilities.framework/Versions/A/Resources/installerauthagent\n40096     1 40096 /usr/libexec/NRDUpdated\n40097     1 40097 /System/Library/AssetsV2/com_apple_MobileAsset_RecoveryOSUpdateBrain/7a84bd1c89069f2e742ece792e84523266f36fdf.asset/AssetData/com.apple.NRD.UpdateBrainService.xpc/Contents/MacOS/com.apple.NRD.UpdateBrainService\n40102     1 40102 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40103     1 40103 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/XPCServices/com.apple.hiservices-xpcservice.xpc/Contents/MacOS/com.apple.hiservices-xpcservice\n40107     1 40107 /System/Library/Frameworks/MediaAccessibility.framework/Versions/A/XPCServices/com.apple.accessibility.mediaaccessibilityd.xpc/Contents/MacOS/com.apple.accessibility.mediaaccessibilityd\n40108     1 40108 /System/Library/PrivateFrameworks/SoftwareUpdate.framework/Resources/SoftwareUpdateNotificationManager.app/Contents/MacOS/SoftwareUpdateNotificationManager\n40109     1 40109 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40110     1 40110 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40111     1 40111 /System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/XPCServices/nsattributedstringagent.xpc/Contents/MacOS/nsattributedstringagent\n40128     1 40128 /usr/libexec/uarpassetmanagerd\n40131     1 40131 /System/Library/PrivateFrameworks/UARPAssetManager.framework/XPCServices/UARPAssetManagerServiceMobileAsset.xpc/Contents/MacOS/UARPAssetManagerServiceMobileAsset\n40234     1 40234 /usr/libexec/dprivacyd\n40426     1 40426 /System/iOSSupport/System/Library/PrivateFrameworks/HomeEnergyDaemon.framework/Support/homeenergyd\n40821     1 40821 /usr/libexec/locationaccessstored\n41109     1 41109 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n41183     1 41183 /System/Library/PrivateFrameworks/CoreDuetContext.framework/Resources/ContextStoreAgent\n41273     1 41273 /System/Library/Frameworks/Translation.framework/translationd\n41274     1 41274 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41275     1 41275 /System/Library/PrivateFrameworks/FaceTimeNotification.framework/Versions/A/XPCServices/FaceTimeNotificationService.xpc/Contents/MacOS/FaceTimeNotificationService\n41276     1 41276 /System/Library/PrivateFrameworks/FaceTimeNotificationViewBridge.framework/Versions/A/XPCServices/FaceTimeNotificationViewBridgeService.xpc/Contents/MacOS/FaceTimeNotificationViewBridgeService\n41277     1 41277 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper\n41278     1 41278 /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice\n41279     1 41279 /System/Library/ExtensionKit/Extensions/FaceTimeNotificationExtension.appex/Contents/MacOS/FaceTimeNotificationExtension\n41288     1 41288 /System/Library/PrivateFrameworks/CallIntelligence.framework/callintelligenced\n41289     1 41289 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41291     1 41291 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition\n41308     1 41308 /System/Library/PrivateFrameworks/CommunicationTrust.framework/Support/communicationtrustd\n41595     1 41595 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n41596     1 41596 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n41607     1 41607 /usr/libexec/mobileassetd\n42044 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n42182 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n42529 57696 42529 /bin/zsh\n42536 42529 42529 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n42537 42536 42529 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n42565     1 42565 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n42567     1 42567 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n42569     1 42569 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n42610     1 42610 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared\n42685     1 42685 /private/tmp/sl-v0c04od8/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\n42713 42537 42529 /bin/ps\n43580     1 43580 /System/Library/PrivateFrameworks/CoreParsec.framework/parsecd\n43584     1 43584 /System/Library/PrivateFrameworks/iTunesCloud.framework/Support/itunescloudd\n43795     1 43795 /usr/libexec/ASPCarryLog\n43815     1 43815 /System/Library/PrivateFrameworks/CloudPhotoServices.framework/Versions/A/XPCServices/com.apple.CloudPhotosConfiguration.xpc/Contents/MacOS/com.apple.CloudPhotosConfiguration\n43816     1 43816 /System/Library/CoreServices/iconservicesagent\n43820     1 43820 /System/Library/PrivateFrameworks/BookKit.framework/Versions/A/XPCServices/com.apple.BKAgentService.xpc/Contents/MacOS/com.apple.BKAgentService\n45512     1 45509 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\n45840     1 45840 /System/Library/Frameworks/PaperKit.framework/Contents/LinkedNotesUIService.app/Contents/MacOS/LinkedNotesUIService\n46469     1 46469 /usr/libexec/textunderstandingd\n46470     1 46470 /System/Library/PrivateFrameworks/SocialLayer.framework/sociallayerd.app/Contents/MacOS/sociallayerd\n46858     1 46858 /System/Library/PrivateFrameworks/DeviceCheckInternal.framework/devicecheckd\n46992     1 46992 /Library/Apple/System/Library/PrivateFrameworks/RemotePairing.framework/Versions/A/XPCServices/remotepairingd.xpc/Contents/MacOS/remotepairingd\n47134     1 47134 /Users/giapminh79/.local/bin/codebase-memory-mcp\n47730     1 47730 /usr/libexec/warmd\n49250     1 49250 /System/Library/PrivateFrameworks/DoNotDisturbServer.framework/Support/donotdisturbd\n49771     1 49771 /Applications/Telegram.app/Contents/MacOS/Telegram\n49787     1 49787 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService\n49790     1 49790 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n50096     1 50096 /System/Library/PrivateFrameworks/WebPrivacy.framework/webprivacyd\n50398     1 50398 /Applications/AlDente.app/Contents/MacOS/AlDente\n50400     1 50400 /Library/PrivilegedHelperTools/com.apphousekitchen.aldente-pro.helper\n50512     1 50512 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n50534     1 50533 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/chrome_crashpad_handler\n50539 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50540 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50541 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50562 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n50608 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n50611     1 50611 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper\n50631     1 50631 /System/Library/PrivateFrameworks/CoreKDL.framework/Support/corekdld\n50670 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n50671 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper\n51205 50512 50512 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.82/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)\n51536     1 51536 /usr/libexec/tzd\n51537     1 51537 /usr/libexec/mobilerepaird\n51538     1 51538 /usr/libexec/proactiveeventtrackerd\n51539     1 51539 /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XProtectUpdateService.xpc/Contents/MacOS/XProtectUpdateService\n51542     1 51542 /usr/libexec/sysdiagnosed\n51565     1 51565 /System/Library/PrivateFrameworks/AssetCacheServices.framework/Versions/A/XPCServices/AssetCacheLocatorService.xpc/Contents/MacOS/AssetCacheLocatorService\n51567     1 51567 /usr/libexec/swtransparencyd\n51570     1 51570 /System/Library/PrivateFrameworks/CloudTelemetry.framework/Versions/A/XPCServices/CloudTelemetryService.xpc/Contents/MacOS/CloudTelemetryService\n51591     1 51591 /System/Library/PrivateFrameworks/CloudServices.framework/Helpers/com.apple.sbd\n51688     1 51688 /System/Library/PrivateFrameworks/PowerLog.framework/Versions/A/XPCServices/PerfPowerTelemetryClientRegistrationService.xpc/Contents/MacOS/PerfPowerTelemetryClientRegistrationService\n51790     1 51790 /System/Library/PrivateFrameworks/AssistantServices.framework/Versions/A/XPCServices/media-indexer.xpc/Contents/MacOS/media-indexer\n51791     1 51791 /System/Library/PrivateFrameworks/AMPLibrary.framework/Versions/A/Support/AMPLibraryAgent\n51797     1 51797 /System/Library/PrivateFrameworks/PodcastServices.framework/XPCServices/PodcastContentService.xpc/Contents/MacOS/PodcastContentService\n51798     1 51798 /System/Library/PrivateFrameworks/AMPLibrary.framework/Versions/A/Support/AMPArtworkAgent\n52306     1 52306 /System/Library/Frameworks/CryptoTokenKit.framework/ctkd\n53479     1 53479 /Applications/Orca.app/Contents/Frameworks/Orca Helper.app/Contents/MacOS/",
+      "truncated": true
+    },
+    "scratch_open_files": {
+      "argv": [
+        "/usr/sbin/lsof",
+        "-nP",
+        "+D",
+        "/private/tmp/sl-v0c04od8"
+      ],
+      "exit_code": 1,
+      "text": "COMMAND    PID       USER   FD   TYPE             DEVICE  SIZE/OFF     NODE NAME\nartifact 42685 giapminh79  cwd    DIR               1,16       160 65541999 /private/tmp/sl-v0c04od8/repo\nartifact 42685 giapminh79  txt    REG               1,16 297185328 65542031 /private/tmp/sl-v0c04od8/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\nartifact 42685 giapminh79    3w   REG               1,16      2366 65542106 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/cache/logs/cbm-daemon.log\nartifact 42685 giapminh79    4r   DIR               1,16       512 65542066 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501\nartifact 42685 giapminh79    5r   DIR               1,16       512 65542066 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501\nartifact 42685 giapminh79    6u   REG               1,16         0 65542071 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.lock\nartifact 42685 giapminh79    7u   REG               1,16         0 65542073 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-daemon-v1.lock\nartifact 42685 giapminh79    8u   REG               1,16       214 65542069 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-version-cohort-lifetime-v1.lock\nartifact 42685 giapminh79    9u   REG               1,16         0 65542072 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.lifetime.lock\nartifact 42685 giapminh79   10u   REG               1,16     12288 65542074 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/cache/_config.db\nartifact 42685 giapminh79   11r   DIR               1,16       512 65542066 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501\nartifact 42685 giapminh79   12r   REG               1,16 297185328 65542031 /private/tmp/sl-v0c04od8/store/store/codebase-memory/2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf/artifact\nartifact 42685 giapminh79   13u  unix 0x6a2c251bff6dfb71       0t0          /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501/cbm-c888acc3ae367a1e.anc\nartifact 42685 giapminh79   14r   DIR               1,16       512 65542066 /private/tmp/sl-v0c04od8/r/m-35092bbee59d8225a472874f/runtime/cbm-daemon-501\n",
+      "truncated": false
+    },
+    "coverage": "POINT_IN_TIME_PARTIAL: process names only; lsof scratch open files; escaped descendants and transient listeners UNKNOWN; no kill performed"
+  },
+  "listeners_after": {
+    "argv": [
+      "/usr/sbin/lsof",
+      "-nP",
+      "-iTCP",
+      "-sTCP:LISTEN"
+    ],
+    "exit_code": 0,
+    "text": "COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nrapportd    602 giapminh79   11u  IPv4 0x3076175e089ca257      0t0  TCP *:56397 (LISTEN)\nrapportd    602 giapminh79   14u  IPv6 0xc28657d05505078b      0t0  TCP *:56397 (LISTEN)\nControlCe   625 giapminh79    9u  IPv4 0x9d4b94cc64b56cda      0t0  TCP *:7000 (LISTEN)\nControlCe   625 giapminh79   10u  IPv6 0xc92d88bf97476587      0t0  TCP *:7000 (LISTEN)\nControlCe   625 giapminh79   11u  IPv4 0x86e97130a3feae74      0t0  TCP *:5000 (LISTEN)\nControlCe   625 giapminh79   12u  IPv6 0x30dafeae577f507f      0t0  TCP *:5000 (LISTEN)\nredis-ser   834 giapminh79    6u  IPv4 0xa0a94fb7b08111fb      0t0  TCP 127.0.0.1:6379 (LISTEN)\nredis-ser   834 giapminh79    7u  IPv6 0xd9263a2923ac71d9      0t0  TCP [::1]:6379 (LISTEN)\npostgres    850 giapminh79    7u  IPv6 0xea0cd1246b5bc1ee      0t0  TCP [::1]:5432 (LISTEN)\npostgres    850 giapminh79    8u  IPv4 0xa643416cd55bbab7      0t0  TCP 127.0.0.1:5432 (LISTEN)\nOllama      903 giapminh79    4u  IPv4 0xba1fa9b7c4130d66      0t0  TCP 127.0.0.1:49165 (LISTEN)\nMountain    934 giapminh79  351u  IPv6 0xff54a21c346e5783      0t0  TCP 127.0.0.1:49405 (LISTEN)\nollama      940 giapminh79    3u  IPv4 0xcab150c59a036941      0t0  TCP 127.0.0.1:11434 (LISTEN)\nmariadbd   1315 giapminh79   22u  IPv6 0x78e4305ab7c2f2d0      0t0  TCP *:3306 (LISTEN)\nmariadbd   1315 giapminh79   23u  IPv4 0x5bca5a0d62e9b192      0t0  TCP *:3306 (LISTEN)\nAICoworke  1357 giapminh79   34u  IPv4 0x946cefe2c85f7a17      0t0  TCP 127.0.0.1:9223 (LISTEN)\nAICoworke  1357 giapminh79   72u  IPv4 0x9ce45ac32ef1a207      0t0  TCP 127.0.0.1:23333 (LISTEN)\nAICoworke  1357 giapminh79   73u  IPv4 0xd8c09026afc383d6      0t0  TCP 127.0.0.1:18790 (LISTEN)\nAICoworke  1357 giapminh79   78u  IPv4    0xc9e0dbf42ad61      0t0  TCP 127.0.0.1:9333 (LISTEN)\nAICoworke  1357 giapminh79   79u  IPv4 0xdee3e77f17dd8371      0t0  TCP 127.0.0.1:54521 (LISTEN)\nAICoworke  1357 giapminh79  249u  IPv4 0x2be6b629bf4a9b0d      0t0  TCP 127.0.0.1:53672 (LISTEN)\nlimactl    1587 giapminh79   13u  IPv4 0x4dacf108e9194dcb      0t0  TCP 127.0.0.1:49878 (LISTEN)\nlimactl    1589 giapminh79    8u  IPv6 0x852c6da9e20aca30      0t0  TCP *:53 (LISTEN)\nssh        1645 giapminh79   13u  IPv4 0x76810ff88e56a59c      0t0  TCP *:18080 (LISTEN)\npCloud     2205 giapminh79    8u  IPv4 0xe713d8b8c3818467      0t0  TCP 127.0.0.1:8989 (LISTEN)\nPython     6502 giapminh79    4u  IPv6 0x2a03d3ee56c3aa9c      0t0  TCP *:8727 (LISTEN)\nPython    11151 giapminh79    4u  IPv6 0x2a99897e4d52215e      0t0  TCP *:8412 (LISTEN)\nPython    17595 giapminh79    4u  IPv6 0x80423f41f34a3cad      0t0  TCP *:8132 (LISTEN)\nAICoworke 18642 giapminh79   20u  IPv4 0x4c5a3f40d33f956c      0t0  TCP 127.0.0.1:18789 (LISTEN)\nAICoworke 18642 giapminh79   21u  IPv6 0xdbea9ca276f86bfe      0t0  TCP [::1]:18789 (LISTEN)\nAICoworke 18642 giapminh79   22u  IPv4 0xd8d9a5c663f340c4      0t0  TCP 127.0.0.1:23334 (LISTEN)\nAICoworke 18642 giapminh79   27u  IPv4 0xea53bc259d5be49d      0t0  TCP 127.0.0.1:18791 (LISTEN)\nAICoworke 18642 giapminh79   34u  IPv4 0x21e8efcb2e5e6bcb      0t0  TCP 127.0.0.1:18792 (LISTEN)\nPython    22102 giapminh79    4u  IPv6 0x6a29b14dc40db03f      0t0  TCP *:8123 (LISTEN)\nPython    22908 giapminh79    4u  IPv6 0x932cad91b531ff0f      0t0  TCP *:8413 (LISTEN)\nPython    24704 giapminh79    4u  IPv6 0x7271dd2175cbaec8      0t0  TCP *:8741 (LISTEN)\nstable    25101 giapminh79   40u  IPv4 0xe80b3f680a930f83      0t0  TCP 127.0.0.1:9277 (LISTEN)\nPython    25278 giapminh79    4u  IPv6 0x226c9689be4e4f86      0t0  TCP *:8902 (LISTEN)\nPython    25773 giapminh79    4u  IPv6 0x85b11d280034a00c      0t0  TCP *:8137 (LISTEN)\nPython    25779 giapminh79    4u  IPv6 0x5419913a6fb6b3d9      0t0  TCP *:8135 (LISTEN)\nPython    26777 giapminh79    4u  IPv6 0x66c5ab700d8280af      0t0  TCP *:8025 (LISTEN)\nPython    28822 giapminh79    4u  IPv6 0x1b8091b3926fb86f      0t0  TCP *:8124 (LISTEN)\nDiscord   29477 giapminh79   41u  IPv4 0x839547cbb41997d0      0t0  TCP 127.0.0.1:6463 (LISTEN)\nnode      31175 giapminh79   12u  IPv4 0x6163bd6d1cecf09c      0t0  TCP *:20128 (LISTEN)\nPython    31651 giapminh79    4u  IPv6 0x7abf966a7aca7643      0t0  TCP *:8243 (LISTEN)\nPython    45512 giapminh79    4u  IPv6 0xc941795b854a1d85      0t0  TCP *:8129 (LISTEN)\ncodebase- 47134 giapminh79   15u  IPv4  0x797deafa2df791e      0t0  TCP 127.0.0.1:9749 (LISTEN)\nPython    55252 giapminh79    4u  IPv6 0xdb015a9c8b8a85ba      0t0  TCP *:8724 (LISTEN)\nRaycast   60925 giapminh79   35u  IPv4 0x6c04ba4223c93348      0t0  TCP 127.0.0.1:7265 (LISTEN)\nPython    61817 giapminh79    4u  IPv6 0x2576ffd80eca4a8f      0t0  TCP *:8125 (LISTEN)\nomp       64735 giapminh79   35u  IPv4 0x5dd5f32e58269865      0t0  TCP 127.0.0.1:64871 (LISTEN)\nAntigravi 66430 giapminh79   32u  IPv4 0xe8ef04a561a99c53      0t0  TCP 127.0.0.1:52760 (LISTEN)\nAntigravi 66430 giapminh79   37u  IPv4 0xcc3d3c4a31d55914      0t0  TCP 127.0.0.1:52761 (LISTEN)\nAntigravi 66430 giapminh79   67u  IPv4  0xcc56a7c8df580d2      0t0  TCP 127.0.0.1:59729 (LISTEN)\nlanguage_ 66449 giapminh79    7u  IPv4 0x8356f88d8d63d65f      0t0  TCP 127.0.0.1:52762 (LISTEN)\nlanguage_ 66449 giapminh79    8u  IPv4 0x8d7425d3ffd56b99      0t0  TCP 127.0.0.1:52763 (LISTEN)\nPython    67200 giapminh79    4u  IPv6 0xe7bdaae4e6dbb03e      0t0  TCP *:8140 (LISTEN)\nPython    74269 giapminh79    4u  IPv6 0x7ee9e64818c1c4a7      0t0  TCP *:8317 (LISTEN)\nomp       76489 giapminh79   34u  IPv4 0xa8fd464c2acf7500      0t0  TCP 127.0.0.1:50989 (LISTEN)\nPython    78498 giapminh79    4u  IPv6 0x92dcac4a06f7261e      0t0  TCP *:8024 (LISTEN)\nopencode2 81148 giapminh79    6u  IPv4 0x7047ce5f46d54883      0t0  TCP 127.0.0.1:49374 (LISTEN)\nElectron  85428 giapminh79   45u  IPv4 0xdc0678dc417f1a52      0t0  TCP 127.0.0.1:52806 (LISTEN)\nElectron  85428 giapminh79   46u  IPv4 0x858c23c17dd37a1e      0t0  TCP 127.0.0.1:52807 (LISTEN)\nlanguage_ 85463 giapminh79    7u  IPv4 0x9337ec323bf323c1      0t0  TCP 127.0.0.1:52812 (LISTEN)\nlanguage_ 85463 giapminh79    8u  IPv4 0xbbb88d1345160a24      0t0  TCP 127.0.0.1:52813 (LISTEN)\nPython    89313 giapminh79    4u  IPv6 0x12029cb616630823      0t0  TCP *:8131 (LISTEN)\nPython    91983 giapminh79    4u  IPv6 0x4560af8f6c038106      0t0  TCP *:8901 (LISTEN)\nPython    98011 giapminh79    3u  IPv4 0xaa0e280c78483eaa      0t0  TCP 127.0.0.1:8931 (LISTEN)\nPython    98070 giapminh79    4u  IPv6 0x8f250eac023b7bd8      0t0  TCP *:8241 (LISTEN)\n",
+    "truncated": false
+  },
+  "legacy_after": {
+    "sentinel": "c93ca097aaa5cd9ec8e54a9a9cf87ed23d7ad906f34f0117d776913e4500e8c2"
+  },
+  "fixtures_preserved": true,
+  "source_after": {
+    "files": {
+      "src/sot_graph/__init__.py": "fc0b0ed9953c7b925372b0fcc4fd512c48196a925482966981a8ae74a81852e0",
+      "src/sot_graph/_vendor/__init__.py": "414604b3da129b65df73949d6b55de77ba2c6437d160c2bf19856dad4d862d9f",
+      "src/sot_graph/_vendor/graphify/__init__.py": "da52faffd29eafa66052cb6bbcdd5fde9559de7d2d77ad1c072351b5ad69a331",
+      "src/sot_graph/_vendor/graphify/extract.py": "9d7bd0e6d16f46d45195b63e99945f693a09b071757490b42884b9721724aa7a",
+      "src/sot_graph/adapters/__init__.py": "fb59074fb3f3ae55819a81acc8ada295986dc46f606c9102b2527bf25f982631",
+      "src/sot_graph/adapters/antigravity.py": "6c6b12d306d14dc07f87bd7338be5ce7f2f970e6dda0a3620e1793a7aa7b7dec",
+      "src/sot_graph/adapters/claude.py": "c86508463dd236e538ea3eec8caa5484f38f060a63a1431504e63427b934738a",
+      "src/sot_graph/adapters/hooks.py": "13fcef5c1a4b2e5308f1c5c654dcda62eeb657965894ec10aafdeba076b008f7",
+      "src/sot_graph/adapters/installer.py": "da13c48f1e078909f63c5bd98680c681a4dda6a22f3ae57cf069867d21087ae8",
+      "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+      "src/sot_graph/adapters/opencode.py": "0417ef2bb991a0be782c4c5055ce9152dd9a567e4e59f081d3aaec336e7f733b",
+      "src/sot_graph/adapters/zcode.py": "667cd2a6319eb2aef7a06c5cd4bc9ff966d67c56b01419236d87e803f7a9b684",
+      "src/sot_graph/analytics/__init__.py": "7533161a5792b3cbc1c921b45e5863cab826a5fd653c64f6def766c1244537a8",
+      "src/sot_graph/analytics/architecture.py": "77be2669fbe66b3bbeb27e106435caaf6bc37677feb895dab6cb4e2d4f9b79ed",
+      "src/sot_graph/analytics/bundle.py": "80e51cc13e85c07cd3c9ee9430d6702140d6d620ee80460774cf0c25b49dce3b",
+      "src/sot_graph/analytics/conformance.py": "7c67f6e33c72e22cfc802c599e476714ecad9abbb7fa545713ae9fa24c300036",
+      "src/sot_graph/analytics/diagnostics.py": "3b613dcfcfffa02d0e2d3264f6d136c1e824f807685af2836693afeae806f635",
+      "src/sot_graph/analytics/graph.py": "3a2020c3ce86d29c172bcdc475638f904c7c6107123497cf0867f618bda88636",
+      "src/sot_graph/analytics/report.py": "649ea40e6df635c71dc503db82f7b0126ef15ce8edc03524d8f993923d0d4556",
+      "src/sot_graph/assurance/__init__.py": "5d8ac0111d23aee645c0c8e434edb335aacabb3c2b428df8c8ef66d323b71f80",
+      "src/sot_graph/assurance/accounting.py": "e32f9b3497882e1de6cb07972a3e3a6166d62d0bbfdf29c861fdaedd661648a0",
+      "src/sot_graph/assurance/coverage.py": "3dbac0e87a8acaa630fb5b8c8bbc39fa082e77cf96ef9d3e815bfbd4716adc75",
+      "src/sot_graph/assurance/engine.py": "bbe7bf15b7da318b15198427d57e95e9dcc5d926064eaf79dad24316eee2d759",
+      "src/sot_graph/assurance/identity.py": "49d2418b4dd9731087a518acbf90aaca55dd513b93503d20bb6f695a1baa35cc",
+      "src/sot_graph/assurance/impact_pipeline.py": "30144e5f8f5da0aae945393ebe45bae87fb7e1263ffe9c53969ebe4369335872",
+      "src/sot_graph/assurance/ledger.py": "3f54242596604ae8f2ea884a753760bfd7334f39719b389e5dccfe9556e18e5e",
+      "src/sot_graph/assurance/orchestrator.py": "ae019f63725ff3d904600d16795727e0050e3bcc5bdad6b25a6b5c7101fd8062",
+      "src/sot_graph/assurance/receipts.py": "3a6447ce65985f12e31334cb98ff8115bb51180fb4284faa4ab312025bedf9ac",
+      "src/sot_graph/assurance/routing.py": "86227d76be1d61e1789b528b517c8d6fa5a8718239cad0a43bfde95acee5d99a",
+      "src/sot_graph/assurance/state.py": "2143617467b9265d8e4c8553f805f858d2e75e9f9a6a4634a5173b41d32df24a",
+      "src/sot_graph/claims.py": "e147f62bcdc6303831b5c2aa86cf30026bc2ebf40250e291a43cf4ea13d3c930",
+      "src/sot_graph/cli.py": "2f457a51d61332c52b5f35b068cbe6c1132cd8a5ea95b39841fb1287b36ab562",
+      "src/sot_graph/config.py": "2a5a3441b49293d40dccee36f33829426595f49c14c8214e5e34f4cee60ebc2d",
+      "src/sot_graph/db.py": "17a3b4fa600fd9e4ab6afdc48efde3e67eac1813fbb062f15312a6aa225737ca",
+      "src/sot_graph/diff_impact.py": "3d9a0d7098142e841eaefbee715ca9e0f6fc96103f2550428eac00a075bef838",
+      "src/sot_graph/envelope.py": "f7ddc5ef7cf2f6ad268a7a2131d089acba7acffc65636dc9ade2b3378914df4f",
+      "src/sot_graph/evidence.py": "7fb5f56885eed3a18eed5be3f67a065298a052074f552e072c6c68b45c50824f",
+      "src/sot_graph/export/__init__.py": "42ed8ac713f06cd0e807a0abf8a12d8b751de889260359594a38c1bf74c2d761",
+      "src/sot_graph/export/exporter.py": "2ad0f96ae5094ac44f68f5490c927a1cf7488905311570a8a1c1f8969a8e9340",
+      "src/sot_graph/export/html.py": "b0c59d381c70f4ced4c63d432ee92fea58f9c4f3a1033da45765c7a9ced7bb4b",
+      "src/sot_graph/export/scip.py": "b49293149ce490aa6897ae948d3554cfa73412ee8a48c7e285ac8a3ca1a97266",
+      "src/sot_graph/extractor.py": "16f1b622a4cd74834d44d6150bf6b961e42d88e0fe12e68658e826e2353ae789",
+      "src/sot_graph/holdout/__init__.py": "524e230e1119ab640302731fb7956fac469c6e6b2c2c72b7b4fd446db84590ad",
+      "src/sot_graph/holdout/evaluator.py": "70448ab2ebfcab727188503808a7af42acd6780ccd7b3c9802942f617afa8344",
+      "src/sot_graph/holdout/splits.py": "eb2d28c93f5acbc4f91845ce7777e325b3d07ac8da28ec4565ff5431e0cad68b",
+      "src/sot_graph/ignore.py": "423cfe4c12db4bd5e978b5f8ed28678f39677bdaece3796328bcce324c637138",
+      "src/sot_graph/importer/__init__.py": "26ca3bce1d07cd8e84ce69b9eaa3b5a6c4490ef450b8c7390671e50c2e694f2a",
+      "src/sot_graph/importer/scip.py": "15c3270a1966b98fe4785119adebdf3d8e13605ab69b8b7458864ecbe1bd2b5d",
+      "src/sot_graph/locking.py": "75f830bd6d1bcfc1f7ed8b5e042ba378faf94cc51235452da755366cc0db8334",
+      "src/sot_graph/mcp_server.py": "bd64ad6be0e7885311680a330696c055626c615b7497eeea7d1d1bc8571a84cc",
+      "src/sot_graph/mcp_service.py": "b5035765856ce8cbf68f8af8d59f17efff439767412544451bed52a34505aa96",
+      "src/sot_graph/modutil.py": "1461f6231ad70ea411487d2b13fc66344031ee08086134cedbf9e628ae1d3d5a",
+      "src/sot_graph/pack.py": "540f1ba590c8aabe9da89acd8eeb1b0c0ee52fc02b590ee8f0b97358a06e6304",
+      "src/sot_graph/parser_outcome.py": "32f67018368fe1be728e51f5d7ac38f9691e189979c89ed4cb156cd6bf1fc53e",
+      "src/sot_graph/proc.py": "699bfed36a55655d5d83ee54c91a74ccba95d4600bccf95063000dcab82fdb9a",
+      "src/sot_graph/provider_contract.py": "819041c91647c46cbd945d90d914db658f23462ce6e8547a67de7d7f74953695",
+      "src/sot_graph/providers/__init__.py": "adb015a075e79cc01146a865293819086171e4bc20bb56aead4fa4c7a0e0e996",
+      "src/sot_graph/providers/admin.py": "b0a2c18c5c4753f772e353c173f4e7ab016b6c0c97a38f00cc3a96d66cca34e1",
+      "src/sot_graph/providers/artifacts.py": "0524d54e316781fc6dd4400aac13fa7dcd7b0452dc169192f16ee387e3470c1a",
+      "src/sot_graph/providers/base.py": "1b690887ac3b5613b16b56985dcb02a25769227f61ee237e58b2fc10535a8710",
+      "src/sot_graph/providers/codebase_memory.py": "e4c4609bf16d3c613a37d939ace9def5b2820f364bfbd296e2aa88c4ed2feb5d",
+      "src/sot_graph/providers/compatibility.py": "433b2b43c38cb2f140abea8aeabb5606e027820462309add48091912e2ca88da",
+      "src/sot_graph/providers/contract.py": "1d4f50b58fab45c050fb6d59425b5348cc542ab516f3999f1e9aab3ced597cd8",
+      "src/sot_graph/providers/cross_check.py": "da1795cd2a53a908cb16d4beb9690d3e3922f5e4906a6e0c34db8b53582f65eb",
+      "src/sot_graph/providers/identity_join.py": "129af39f9d36cc3c9d3f5ded4d7ff5ed462bc62602411684d1315644581ea575",
+      "src/sot_graph/providers/installation.py": "947976a702bde0bb0c011cd5cf757fd9b28323cc68b6ad714dcf7d0dcefdc616",
+      "src/sot_graph/providers/lifecycle.py": "9d1e79177ba3617c00a9505469963b58907b52802acc86c23c8d702a7e382b85",
+      "src/sot_graph/providers/managed.py": "bfcc32eb335cc50c0c48ef5a6f35bdc4ee3d060e6d20d1e54dd6c4468ca22528",
+      "src/sot_graph/providers/normalization.py": "af4f915f3c3a2f56b6eaf41cd76640ca191604a49e080f38dbe0684784bcd304",
+      "src/sot_graph/providers/runtime.py": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+      "src/sot_graph/providers/scip.py": "3bb525cc22c2cd545c3d6b525a328206cb60c94f0757a0267ca2214795cafceb",
+      "src/sot_graph/providers/trusted_config.py": "20a769fedb2ebbdb4414aed41b20aee6c2ba8d5c6d7639dd05e44aad4fcad48e",
+      "src/sot_graph/providers/verification.py": "3d60e9ee6bce4f743510637e3955bea80fee354a1fdf1c40f34c17011b6eb38d",
+      "src/sot_graph/providers_registry.py": "fde7b8007877ef3300653e4698ed9859bc717bb6e0afac712bc71c4140457b7e",
+      "src/sot_graph/receipt_explorer.py": "f3522157e2dd0a7edfad5e37323f5e86c8ce090f030309b2a6fa20c2191c2795",
+      "src/sot_graph/reconciler.py": "4b19fc9043a9e04162dd37cd86afddc89c7ae91607c62b4e3391201cfae00980",
+      "src/sot_graph/repo_map.py": "96f873316a95c31761db175be3680be12238f88bc3b0180ff15d2fdf9aaec093",
+      "src/sot_graph/snapshot.py": "7c3f9d55b32eb8cbe60085083baa137ef5b76e7134049ffb97476e3b25e968a0",
+      "src/sot_graph/solution.py": "fc58d46b168d6032f83523f12b44454da44bfa2ea9f30032adfd08a2f4b40326",
+      "src/sot_graph/tokenizer.py": "12230a59282f69cef780c5ed85082b66e826c709ba787f46544ffa4496331057",
+      "src/sot_graph/trace.py": "8c649485d2e789b39ed26ff869638ffa8cd3d1d6b3c1bc18470805e365703536",
+      "src/sot_graph/ts_extract.py": "6d7baadaefcd4b3d09cbc33ae3ff061fcb921599b08aefcd8bddf1cd8c743487",
+      "src/sot_graph/vector.py": "a0917ce7bcf57919cb615a0b23e34216abce7285d8791f6c19b6df4c3eb3b5b3",
+      "src/sot_graph/verifier.py": "8bc02b91a7b95cd5f603513d658bcadcca393028bb70e23f2e8a75b493c6c45b",
+      "src/sot_graph/watcher.py": "337d86cec36e136c4591d9a995cb71c5755687c93c5e17eef58b59ae117994c8"
+    },
+    "git_head": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/giapminh79/code/GitHub/sot-graph",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "text": "210ccddb151cb4fbd384bf323b523cb504ab7942\n",
+      "truncated": false
+    },
+    "git_status": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/giapminh79/code/GitHub/sot-graph",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=normal"
+      ],
+      "exit_code": 0,
+      "text": "?? plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/\n?? plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/\n?? plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/\n?? plan/remaining-work-phased-plan-2026-09-05.md\n",
+      "truncated": false
+    },
+    "coverage": "Python source content; git status bounded; not compiler identity"
+  },
+  "source_drift": false
+}

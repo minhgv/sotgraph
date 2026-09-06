@@ -1,0 +1,1 @@
+{"operation": "probe", "platform_support": "experimental", "result": {"capabilities": [], "detail": "ok; managed runtime prepared; exact-compat(index_status)=compatible; version withheld (managed probe performs no --version)", "healthy": true, "installed": true, "name": "codebase-memory", "version": null}, "schema_version": 1}

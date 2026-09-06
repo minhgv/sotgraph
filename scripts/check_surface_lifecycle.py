@@ -156,7 +156,8 @@ class Runner:
     def managed(self, action, generation):
         if self.lab is None:
             raise RuntimeError('scratch not allocated')
-        extra = ['greet', '--limit', '5'] if action == 'search' else []
+        # Native compatibility evidence covers the fixed wire limit of 20.
+        extra = ['greet', '--limit', '20'] if action == 'search' else []
         self.engine(action, *extra, '--runtime-root', self.lab / 'r',
                     '--registry', self.lab / 'evidence/registry.json',
                     '--protocol', self.args.protocol, '--generation', generation)
