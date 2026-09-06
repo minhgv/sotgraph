@@ -1,0 +1,3 @@
+[submodule "engines/codebase-memory-mcp"]
+	path = engines/codebase-memory-mcp
+	url = https://github.com/minhgv/sotgraph-cbm.git

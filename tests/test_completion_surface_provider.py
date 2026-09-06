@@ -24,6 +24,13 @@ _PREPARE = ManagedNativeRuntime.prepare
 _INITIALIZE = ManagedRuntimeProfile.initialize
 trusted_lab = trusted.trusted_lab
 
+# MCP evaluates Popen[bytes] on import; load before dependent fixtures mock it.
+# Absence remains optional and is handled by importorskip in the MCP test.
+try:
+    __import__("mcp")
+except ImportError:
+    pass
+
 
 @pytest.fixture
 def surface(trusted_lab, monkeypatch):

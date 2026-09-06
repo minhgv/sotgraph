@@ -64,6 +64,14 @@ def verify(source: Path, manifest_path: Path) -> dict:
     root = source.resolve()
     actual = set()
     for directory, dirs, files in os.walk(source, followlinks=False):
+        # Only the regular root submodule gitfile is checkout metadata.
+        # Nested .git paths and directories remain subject to inventory checks.
+        if Path(directory) == source and ".git" in files:
+            gitfile = source / ".git"
+            if (gitfile.is_symlink() or not gitfile.is_file()
+                    or not gitfile.read_text().startswith("gitdir: ")):
+                raise ValueError("Invalid submodule gitfile")
+            files = [name for name in files if name != ".git"]
         for name in dirs + files:
             path = Path(directory) / name
             mode = path.lstat().st_mode

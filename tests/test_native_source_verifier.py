@@ -46,6 +46,30 @@ def packet(tmp_path):
     return source, path, manifest
 
 
+def test_submodule_gitfile(packet):
+    source, path, _ = packet
+    (source / ".git").write_text("gitdir: ../../.git/modules/native\n")
+    assert verifier.verify(source, path)["verified"]
+    (source / "nested/.git").write_text("gitdir: unexpected\n")
+    with pytest.raises(ValueError, match="inventory mismatch"):
+        verifier.verify(source, path)
+
+
+@pytest.mark.parametrize("kind", ["symlink", "invalid", "directory"])
+def test_reject_invalid_git_metadata(packet, kind):
+    source, path, _ = packet
+    gitfile = source / ".git"
+    if kind == "symlink":
+        gitfile.symlink_to("run")
+    elif kind == "directory":
+        gitfile.mkdir()
+        (gitfile / "config").write_text("unexpected")
+    else:
+        gitfile.write_text("not a gitfile")
+    with pytest.raises(ValueError):
+        verifier.verify(source, path)
+
+
 def test_intact(packet):
     source, path, manifest = packet
     assert verifier.verify(source, path) == {

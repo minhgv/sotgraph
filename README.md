@@ -14,6 +14,38 @@
 
 ---
 
+## Development checkout
+
+```bash
+git clone https://github.com/minhgv/sotgraph.git
+cd sotgraph
+uv sync --locked --all-extras --group dev
+.venv/bin/sot --help
+# Optional native source (requires access to both private repositories):
+git submodule update --init --recursive
+.venv/bin/python scripts/verify_native_source.py
+```
+
+Python-only CLI development does not require the native checkout, compiler, or
+an installed CBM binary. For a complete checkout, use `git clone --recurse-submodules`
+with the same URL. After pulling a changed native pin, run
+`git submodule update --init --recursive` again. The native source checkout is
+approximately 1.33 GB; building it requires the toolchain documented in
+`engines/codebase-memory-mcp/README.md`. No installer is run by Python setup.
+The CLI remains `sot`, the distribution `sot-graph`, and imports `sot_graph`.
+
+The native submodule is the private standalone controlled mirror
+[ minhgv/sotgraph-cbm ](https://github.com/minhgv/sotgraph-cbm), **not a GitHub fork**.
+It preserves authentic history from `DeusData/codebase-memory-mcp`, including
+commit `46ae198fc11cda80e817acbc5f5908d7c2de7032` and its unchanged source tree
+`01132faf9bb4acfbd260fcbc6f29638d005be0ee`, licenses, executable modes, and symlinks.
+The existing source manifest continues to bind that authentic upstream pin;
+no synthetic snapshot identity or artifact trust substitution is involved.
+GitHub Actions are disabled in both private repositories. Before enabling any
+native workflow, configure `NATIVE_SOURCE_READ_TOKEN` with read-only contents
+access to both private repositories; the default parent token cannot read the
+private submodule. Native build checks are experimental, not release certification.
+
 ## What is sot-graph?
 
 `sot-graph` is an ultra-fast, zero-daemon knowledge graph and symbol intelligence engine designed specifically for **Autonomous AI Coding Agents** (Oh My Pi / OMP, Claude Code, Cursor, OpenCode, Google Antigravity / Gemini CLI, ZCode IDE).

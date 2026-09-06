@@ -28,6 +28,12 @@ def isolated_home(tmp_path, monkeypatch):
     monkeypatch.setenv('HOME', str(home))
     monkeypatch.setenv('XDG_CONFIG_HOME', str(home / '.config'))
 
+    # Resolve MCP's runtime Popen[bytes] annotation before installing the guard.
+    try:
+        __import__('mcp')
+    except ImportError:
+        pass
+
     def forbidden(*args, **kwargs):
         pytest.fail('surface test must not spawn a process')
 
