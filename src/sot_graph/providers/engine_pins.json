@@ -6,12 +6,32 @@
     {
       "name": "codebase-memory",
       "platform": "darwin-arm64",
-      "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+      "engine_commit": "e477a32d060bef57e58773ffc63ac970229665d9",
       "protocol": "artifacts-v1",
-      "version": "dev",
-      "source": "https://github.com/minhgv/sotgraph-cbm/releases/download/engine-v2026.09.06/codebase-memory-mcp-darwin-arm64",
-      "sha256": "8953ad08b2815817d3cc3704fddc88611e4d1678ebc4e4b45c4dd0e122b72c13",
-      "size_bytes": 296408656
+      "version": "engine-v2026.09.07",
+      "source": "https://github.com/minhgv/sotgraph-cbm/releases/download/engine-v2026.09.07/codebase-memory-mcp-darwin-arm64",
+      "sha256": "ef52626f53bc7222dfb20d120c3ca516a4270382de0293ff8f7a47e555ac6e8f",
+      "size_bytes": 296728224
+    },
+    {
+      "name": "codebase-memory",
+      "platform": "linux-arm64",
+      "engine_commit": "e477a32d060bef57e58773ffc63ac970229665d9",
+      "protocol": "artifacts-v1",
+      "version": "engine-v2026.09.07",
+      "source": "https://github.com/minhgv/sotgraph-cbm/releases/download/engine-v2026.09.07/codebase-memory-mcp-linux-arm64",
+      "sha256": "0b169edc67101ccd2ef309d375a96c12d74939cd1d2d9b82f5b1c67c74bdaaf5",
+      "size_bytes": 294135256
+    },
+    {
+      "name": "codebase-memory",
+      "platform": "linux-x86_64",
+      "engine_commit": "e477a32d060bef57e58773ffc63ac970229665d9",
+      "protocol": "artifacts-v1",
+      "version": "engine-v2026.09.07",
+      "source": "https://github.com/minhgv/sotgraph-cbm/releases/download/engine-v2026.09.07/codebase-memory-mcp-linux-x86_64",
+      "sha256": "a9c938191325c303efc5c1beb4257cc420c786d9f5f4f1b0d825a108313e3146",
+      "size_bytes": 293321008
     }
   ]
 }

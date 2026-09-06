@@ -172,3 +172,13 @@
   `status: ok` (protocol 2024-11-05, 15 tools). **Khuyến nghị owner: chạy lại full suite
   trong terminal user làm chuẩn nghiệm thu cuối** (môi trường shebang lành mạnh kỳ vọng
   ~2257 collected, 0 skipped-environmental).
+- **Release engine-v2026.09.07 đã thực hiện (2026-09-07, agent thay owner):** phát hiện
+  Actions trên `minhgv/sotgraph-cbm` đang TẮT (tag push đầu bị drop im lặng) → đã bật
+  (`enabled=true, allowed_actions=all`) rồi đẩy lại tag. CI xanh toàn tuyến: preflight
+  pass (version gate), 3 leg native build pass (macos-14 darwin-arm64, ubuntu-latest
+  linux-x86_64, ubuntu-24.04-arm linux-arm64), release job publish đủ assets
+  (3 binary ~293-297MB + checksums.txt + engine-pins.json artifacts-v1, engine_commit
+  `e477a32d`). Repo cha: `engine_pins.json` thay bằng manifest released (1 pin darwin →
+  3 nền tảng); test `test_shipped_pins_manifest_is_valid` cập nhật để kiểm mỗi pin trên
+  nền tảng của chính nó (parse() vẫn fail-closed với nền tảng lạ — đúng thiết kế).
+  Bước duy nhất còn lại ngoài phạm vi agent: chạy full suite trong terminal user.

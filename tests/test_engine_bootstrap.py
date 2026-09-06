@@ -143,11 +143,17 @@ def test_github_url_maps_to_tag_api():
     assert bp._github_release_tag_api("https://github.com/owner/repo/blob/main/x") is None
 
 
-def test_shipped_pins_manifest_is_valid():
+def test_shipped_pins_manifest_is_valid(monkeypatch):
     data = bp.load_pins()
     assert data["schema_version"] == 1 and data["pins"], "package must ship usable pins"
+    # The manifest ships one pin per target platform; each must be installable
+    # on its own host. parse() stays fail-closed against foreign platforms by
+    # design, so the host is pinned per entry rather than weakened in parse().
     for pin in data["pins"]:
-        ArtifactManifest.parse(bp._manifest_bytes(pin))  # every shipped pin is installable
+        monkeypatch.setattr(
+            "sot_graph.providers.artifacts.host_platform",
+            lambda platform=pin["platform"]: platform)
+        ArtifactManifest.parse(bp._manifest_bytes(pin))
 
 
 def test_engine_runtime_env_namespaces_layout(tmp_path, monkeypatch):
