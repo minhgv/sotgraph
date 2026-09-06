@@ -35,7 +35,9 @@ from sot_graph.config import (
 from sot_graph.mcp_service import McpService, McpServiceError
 
 from test_cbm_exact_compatibility import VERSION, make_exe, spawns
-from test_p2_orchestrator import repo  # noqa: F401  (fixture reuse)
+from test_p2_orchestrator import repo as repo_fixture
+
+repo = repo_fixture  # Register the reused fixture under its original name.
 
 PROVIDER = "codebase-memory"
 

@@ -209,10 +209,15 @@ class TestBindingRollback:
     ):
         ev = [{"id": "ev_rb", "path": "a.py", "src_symbol": "foo",
                "relation": "defines", "snapshot_hash": "s" * 40}]
-        bind = lambda pid, h: {"sot_repo_id": "/rb", "provider_name": "cbm",
-                               "provider_project_id": pid, "head_sha": h}
-        run = lambda rid: {"provider_name": "cbm", "capability": "search_graph",
-                           "status": "ok", "run_id": rid}
+
+        def bind(pid, h):
+            return {"sot_repo_id": "/rb", "provider_name": "cbm",
+                    "provider_project_id": pid, "head_sha": h}
+
+        def run(rid):
+            return {"provider_name": "cbm", "capability": "search_graph",
+                    "status": "ok", "run_id": rid}
+
         db.record_provider_outcome(run("run_ok"), bind("p1", "1" * 40), ev)
         # Duplicate evidence id -> the evidence INSERT fails AFTER the run
         # INSERT and binding UPDATE; everything must roll back and the prior
