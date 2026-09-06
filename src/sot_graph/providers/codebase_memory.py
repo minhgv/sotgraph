@@ -837,7 +837,7 @@ class CodebaseMemoryProvider:
                     installed=installed,
                     healthy=False,
                     version=None,
-                    detail=refused.error,
+                    detail=refused.error or "compatibility gate refused",
                     capabilities=self.capabilities,
                 )
         started = time.monotonic()
@@ -984,7 +984,8 @@ class CodebaseMemoryProvider:
         try:
             if profile.status().get("state") != "READY":
                 return False
-            return marker_state()[0] == "valid"
+            state = marker_state()
+            return isinstance(state, tuple) and len(state) == 2 and state[0] == "valid"
         except Exception:  # noqa: BLE001 - a state read must never raise
             return False
 
@@ -1061,7 +1062,11 @@ class CodebaseMemoryProvider:
                     f"{args.get('limit')!r} is not the managed wire limit; "
                     "refusing without legacy fallback"
                 )
-        if problem is not None:
+        runtime = self._managed
+        if runtime is None:
+            problem = problem or "no managed runtime bound"
+        if problem is not None or runtime is None:
+            problem = problem or "no managed runtime bound"
             record = self._managed_run_record(
                 tool, refusal_status, 0, problem, gate)
             return _InvokeOutcome(False, refusal_status, error=problem,
@@ -1074,7 +1079,7 @@ class CodebaseMemoryProvider:
         status = "runtime_refused"
         mr: "ManagedResult | None" = None
         try:
-            mr = self._managed.query(tool, margs)
+            mr = runtime.query(tool, margs)
         except Exception as exc:  # noqa: BLE001 - dispatch never raises
             failure = (
                 f"managed dispatch raised {type(exc).__name__}; "
@@ -1132,12 +1137,15 @@ class CodebaseMemoryProvider:
         pre_dirty, _ = dirty_state(repo_path)
         started = time.monotonic()
         problem = self._managed_binding_problem(repo_path)
+        runtime = self._managed
+        if runtime is None:
+            problem = problem or "no managed runtime bound"
         status, detail = "provider_error", problem or ""
-        if problem is None:
+        if problem is None and runtime is not None:
             prep: "ManagedResult | None" = None
             sync_res: "ManagedResult | None" = None
             try:
-                prep = self._managed.prepare()
+                prep = runtime.prepare()
             except Exception as exc:  # noqa: BLE001 - receipt, never raise
                 detail = (
                     "managed prepare raised "
@@ -1149,7 +1157,7 @@ class CodebaseMemoryProvider:
                     detail += f"; {prep.cancellation_state}"
             elif prep is not None:
                 try:
-                    sync_res = self._managed.sync(repo_path)
+                    sync_res = runtime.sync(repo_path)
                 except Exception as exc:  # noqa: BLE001 - receipt, never raise
                     detail = (
                         "managed sync raised "
@@ -1929,7 +1937,7 @@ class CodebaseMemoryProvider:
                 refused = self._gate_outcome("index_repository", gate)
                 return self._index_record(
                     request, result=None, status=refused.status,
-                    duration_ms=0, detail=refused.error,
+                    duration_ms=0, detail=refused.error or "compatibility gate refused",
                     redacted=("index_repository",),
                     next_action=NEXT_ACTION_VERSION_PIN,
                 )

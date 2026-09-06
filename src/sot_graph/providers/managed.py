@@ -264,8 +264,9 @@ class ManagedNativeRuntime:
                         "via list_projects/root_path")
                 else:
                     status, error = "ok", None
-                    if not self._write_marker(self._config_fingerprint(),
-                                              project=project):
+                    fingerprint = self._config_fingerprint()
+                    if fingerprint is None or not self._write_marker(
+                            fingerprint, project=project):
                         indexed, status, error = False, "runtime_refused", (
                             "managed-ready marker update failed")
             elif outcome.status == "ok":
@@ -337,6 +338,8 @@ class ManagedNativeRuntime:
         if verdict == "absent":
             return self._result("not_prepared",
                                 error="prepare() has not confirmed this profile")
+        if marker is None:
+            return self._quarantine("managed-ready marker missing from valid verdict")
         if marker.get("config_fingerprint") != self._config_fingerprint():
             return self._quarantine(
                 "config db changed since prepare; auto_watch state unverified")

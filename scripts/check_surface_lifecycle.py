@@ -28,7 +28,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from sot_graph.proc import run_command  # noqa: E402
 
-CLI = "import sys;sys.path.insert(0,sys.argv.pop(1));from sot_graph.cli import main;raise SystemExit(main())"
+CLI = """import sys,json,dataclasses
+sys.path.insert(0,sys.argv.pop(1))
+from sot_graph.providers import admin
+original_verified_search=admin.verified_search
+def private_diagnostic(outcome, root, limit):
+ # Harness-only structured receipt: captured in exclusive mode-0600 stderr.
+ # Public CLI redaction and production query authority remain unchanged.
+ print(json.dumps({'private_search_outcome':dataclasses.asdict(outcome)},default=str),file=sys.stderr)
+ return original_verified_search(outcome,root,limit)
+admin.verified_search=private_diagnostic
+from sot_graph.cli import main
+raise SystemExit(main())
+"""
 CONFIG = """import sys,json
 sys.path.insert(0,sys.argv.pop(1))
 from sot_graph.providers.trusted_config import register_managed_installation,load_managed_installation,disable_managed_installation

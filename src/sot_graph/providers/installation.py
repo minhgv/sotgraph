@@ -124,7 +124,12 @@ def create_managed_installation(
         operation_fixture_digests=MappingProxyType(dict(operation_fixture_digests)),
         protocol_compatibility_id=native_protocol_id,
     )
-    for operation, digest in context.operation_fixture_digests.items():
+    # Validate the same immutable mapping supplied to the context. The context
+    # supports legacy None elsewhere, but installation requires explicit fixtures.
+    fixtures = context.operation_fixture_digests
+    if fixtures is None:
+        raise CompatibilityRecordError("explicit operation fixtures are required")
+    for operation, digest in fixtures.items():
         assessment = registry.assess(identity, operation, digest, native_protocol_id)
         if assessment.verdict != CompatibilityVerdict.COMPATIBLE:
             raise CompatibilityRecordError(
