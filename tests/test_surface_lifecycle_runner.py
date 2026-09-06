@@ -90,9 +90,35 @@ def test_full_fake_lifecycle_and_durable_receipts(runner_module, inputs, monkeyp
     lab = Path(receipt['scratch'])
     assert lab.stat().st_mode & 0o777 == 0o700
     assert (lab / 'oldCBM/sentinel').read_bytes() == b'never adopt or remove legacy state\n'
-    assert (lab / 'config/registry.json').read_bytes() == (tmp_path / 'registry.json').read_bytes()
-    assert (lab / 'config/manifest-0.json').read_bytes() == (tmp_path / 'result/manifest-0.json').read_bytes()
+    assert (lab / 'evidence/registry.json').read_bytes() == (tmp_path / 'registry.json').read_bytes()
+    assert (lab / 'evidence/manifest-0.json').read_bytes() == (tmp_path / 'result/manifest-0.json').read_bytes()
     assert all('register' not in argv[6:9] for argv, _ in calls)
+
+
+def test_actual_trusted_path_validation_on_runner_layout(runner_module, inputs, monkeypatch, tmp_path):
+    # Exercise the production security validator, not a mock of registration.
+    # No native binary or CLI subprocess is executed by this test.
+    from sot_graph.providers.artifacts import ArtifactRejected
+    from sot_graph.providers.trusted_config import _validate_paths
+
+    calls = fake_commands(runner_module, monkeypatch)
+    assert runner_module.main(inputs + ['--exclusive-slot', 'fake-layout']) == 0
+    receipt = json.loads((tmp_path / 'result/receipt.json').read_text())
+    lab = Path(receipt['scratch'])
+    register = next(argv for argv, _ in calls if argv[-1] == 'register')
+    repo, store, runtime, registry, _protocol, _generation, config, _action = register[-8:]
+    entry = {'project_path': repo, 'store_path': store, 'runtime_root': runtime,
+             'registry_path': registry}
+    assert Path(config) == lab / 'config/managed.json'
+    assert Path(registry) == lab / 'evidence/registry.json'
+    assert (lab / 'evidence').stat().st_mode & 0o777 == 0o700
+    _validate_paths(entry, Path(config))
+
+    # Frozen v1 layout must still be rejected; production security is unchanged.
+    old_registry = lab / 'config/registry.json'
+    runner_module.private_write(old_registry, Path(registry).read_bytes())
+    with pytest.raises(ArtifactRejected, match='disjoint'):
+        _validate_paths({**entry, 'registry_path': str(old_registry)}, Path(config))
 
 
 def test_failed_prepare_stops_dependents_and_keeps_outputs(runner_module, inputs, monkeypatch, tmp_path):

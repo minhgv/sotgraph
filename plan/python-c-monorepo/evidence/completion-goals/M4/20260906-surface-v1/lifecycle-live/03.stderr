@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 58, in _errors
+    yield
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 271, in register_managed_installation
+    installation = _installation(entry, config, pin=False)
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 167, in _installation
+    _validate_paths(entry, config)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 163, in _validate_paths
+    _require_disjoint(left, right, 'managed registration paths')
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/installation.py", line 42, in _require_disjoint
+    raise ArtifactRejected(f"{label} must be disjoint in both directions")
+sot_graph.providers.artifacts.ArtifactRejected: managed registration paths must be disjoint in both directions
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+    register_managed_installation(repo,store_path=store,artifact_name='codebase-memory',runtime_root=runtime,registry_path=registry,native_protocol_id=protocol,generation=generation,config_path=config)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 262, in register_managed_installation
+    with _errors():
+         ~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 62, in _errors
+    raise TrustedConfigError('trusted managed configuration refused') from exc
+sot_graph.providers.trusted_config.TrustedConfigError: trusted managed configuration refused

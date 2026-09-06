@@ -146,7 +146,7 @@ class Runner:
             raise RuntimeError('scratch not allocated')
         extra = ['greet', '--limit', '5'] if action == 'search' else []
         self.engine(action, *extra, '--runtime-root', self.lab / 'runtime',
-                    '--registry', self.lab / 'config/registry.json',
+                    '--registry', self.lab / 'evidence/registry.json',
                     '--protocol', self.args.protocol, '--generation', generation)
 
     def config(self, action, generation):
@@ -155,7 +155,7 @@ class Runner:
         self.command('explicit-config-' + action,
                      [sys.executable, '-I', '-B', '-c', CONFIG, str(ROOT / 'src'),
                       str(self.lab / 'repo'), str(self.lab / 'store'),
-                      str(self.lab / 'runtime'), str(self.lab / 'config/registry.json'),
+                      str(self.lab / 'runtime'), str(self.lab / 'evidence/registry.json'),
                       self.args.protocol, generation, str(self.lab / 'config/managed.json'), action])
 
     def execute(self):
@@ -184,12 +184,12 @@ class Runner:
                     raise ValueError('binary SHA mismatch')
             self.lab = Path(tempfile.mkdtemp(prefix='sl-', dir='/tmp')).resolve()
             os.chmod(self.lab, 0o700)
-            for name in ('repo', 'home', 'store', 'runtime', 'config', 'tmp', 'oldCBM'):
+            for name in ('repo', 'home', 'store', 'runtime', 'config', 'evidence', 'tmp', 'oldCBM'):
                 (self.lab / name).mkdir(mode=0o700)
             private_write(self.lab / 'repo/alpha.py', b'def greet(name):\n    return "hello " + name\n')
             private_write(self.lab / 'repo/user-notes.txt', b'preserve user evidence\n')
             private_write(self.lab / 'oldCBM/sentinel', b'never adopt or remove legacy state\n')
-            private_write(self.lab / 'config/registry.json', registry_bytes)
+            private_write(self.lab / 'evidence/registry.json', registry_bytes)
             private_write(self.out / 'registry.json', registry_bytes)
             self.receipt['registry_sha256'] = hashlib.sha256(registry_bytes).hexdigest()
             self.receipt['scratch'] = str(self.lab)
@@ -216,7 +216,7 @@ class Runner:
                             'platform': sys.platform + '-' + {'aarch64': 'arm64', 'amd64': 'x86_64'}.get(platform.machine().lower(), platform.machine().lower()),
                             'protocol': 'artifacts-v1', 'engine_commit': commit}
                 data = json.dumps(manifest, sort_keys=True).encode()
-                path = self.lab / f'config/manifest-{index}.json'
+                path = self.lab / f'evidence/manifest-{index}.json'
                 private_write(path, data)
                 private_write(self.out / f'manifest-{index}.json', data)
                 self.engine('import', '--source', binary.resolve(), '--manifest', path)

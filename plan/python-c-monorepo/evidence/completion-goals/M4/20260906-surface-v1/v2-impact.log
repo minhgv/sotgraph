@@ -1,0 +1,35 @@
+receipt stored: .sot/receipts/8e5b0b9ba479f003e152cd358a6640e5a951f89bbcb0d95a29b5064091329dcd.json
+_Snapshot: pre sha256:0879f16019a7 (dirty=True) → post sha256:880d193e0c02 (dirty=True)_
+# SOT-Graph Diff Impact Analysis Report
+
+**Target:** `HEAD` | **Risk Level:** 🟡 **MEDIUM** (Score: 33/100) | **Execution Time:** 59.11ms
+
+## 📊 Summary Metrics
+
+| Metric | Count |
+| :--- | :--- |
+| Changed Files | **13** |
+| Diff Hunks | **13** |
+| Directly Modified Symbols | **1** |
+| Blast Radius Callers (In-Degree) | **0** |
+| Impacted API Endpoints | **0** |
+| Tests to Re-Run | **0** |
+
+## 🎯 1. Directly Modified AST Symbols
+
+| Symbol | Kind | File | Lines | Change Type |
+| :--- | :--- | :--- | :--- | :--- |
+| `freeze.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/freeze.md` | L1-L12 | **modified** |
+
+## 💥 2. Blast Radius: Upstream Inward Callers
+
+_Zero inward caller dependencies detected (low ripple effect)._
+
+## 🌐 3. Affected Cross-Stack API Endpoints
+
+_No direct or indirect API contract bindings affected._
+
+## 🧪 4. Recommended Test Coverage Verification
+
+_No existing test suites mapped directly to modified symbols. Consider adding new test coverage._
+
