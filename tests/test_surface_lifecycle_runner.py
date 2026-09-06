@@ -84,6 +84,11 @@ def test_full_fake_lifecycle_and_durable_receipts(runner_module, inputs, monkeyp
                       'explicit-config-disable', 'uninstall']
     assert all(row['returncode'] == 0 for row in receipt['commands'])
     for row in receipt['commands']:
+        if row['label'] == 'search':
+            argv = row['argv']
+            assert argv[argv.index('--limit') + 1] == '20'
+    assert 'private_search_outcome' in runner_module.CLI
+    for row in receipt['commands']:
         for output in row['outputs'].values():
             path = tmp_path / 'result' / output['file']
             assert hashlib.sha256(path.read_bytes()).hexdigest() == output['sha256']

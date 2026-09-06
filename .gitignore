@@ -55,6 +55,11 @@ sot_obsidian_vault/
 .holdout-cache/
 .holdout-cache-unseen/
 
+# Retained packaging-test user homes/workspaces are runtime fixtures, not source.
+# Keep receipts outside these exact scratch directories tracked; never delete them.
+/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/
+/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/
+
 # Exact upstream source and durable phase receipts (not generated runtime state).
 !engines/codebase-memory-mcp/**
 !plan/python-c-monorepo/evidence/source-import-manifest.json
