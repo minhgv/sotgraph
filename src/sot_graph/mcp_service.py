@@ -66,13 +66,17 @@ def sanitize_transport_value(value: Any) -> Any:
 class McpServiceError(Exception):
     """Stable public error with a machine-readable code."""
 
-    def __init__(self, code: str, message: str):
+    def __init__(self, code: str, message: str, *, details: Optional[Dict[str, Any]] = None):
         self.code = code
         self.message = message
+        self.details = details
         super().__init__(f"{code}: {message}")
 
-    def as_dict(self) -> Dict[str, str]:
-        return {"code": self.code, "message": self.message}
+    def as_dict(self) -> Dict[str, Any]:
+        result: Dict[str, Any] = {"code": self.code, "message": self.message}
+        if self.details is not None:
+            result["details"] = self.details
+        return result
 
 
 def resolve_and_validate_output_path(
@@ -125,6 +129,48 @@ def _honest_policy_meta(provider_policy: str) -> Dict[str, Any]:
         "builtin_only": provider_policy == "builtin_only",
         "note": note,
     }
+
+
+def _managed_read_fields(
+    root: str, operation: str, symbol: str, provider_policy: str,
+    limit: int, scope: Optional[str],
+) -> Dict[str, Any]:
+    """Keep managed candidate evidence separate from the builtin trust envelope."""
+    if provider_policy == "builtin_only":
+        return {"policy": _honest_policy_meta(provider_policy)}
+
+    try:
+        resolved_root = os.path.realpath(root)
+        resolved_scope = os.path.realpath(os.path.join(resolved_root, scope or ""))
+        valid_scope = os.path.commonpath((resolved_root, resolved_scope)) == resolved_root
+    except (OSError, ValueError):
+        valid_scope = False
+    if not valid_scope:
+        raise McpServiceError("invalid_argument", "scope must be within project root")
+
+    from sot_graph.assurance.orchestrator import managed_read_dispatch
+
+    managed = managed_read_dispatch(
+        root, operation, symbol, provider_policy=provider_policy,
+        limit=min(limit, 20), scope=scope or "",
+    )
+    fields = {
+        "policy": {
+            "provider_policy": provider_policy,
+            "builtin_only": provider_policy == "builtin_only",
+            "note": managed.get("fail_message") or "; ".join(managed.get("warnings", [])) or None,
+            "reason": managed.get("reason"),
+        },
+        "managed": managed,
+    }
+    if managed["status"] == "error":
+        raise McpServiceError(
+            "policy_unsatisfiable",
+            "Managed external read unavailable. Ask a trusted administrator "
+            "to inspect provider status and configuration.",
+            details=fields,
+        )
+    return fields
 
 
 @dataclass(frozen=True)
@@ -724,16 +770,17 @@ class McpService:
                 "invalid_argument",
                 "provider_policy must be builtin_only | prefer_external | require_external",
             )
-        _require_satisfiable_policy(provider_policy)
         if budget is not None:
             limit = self._bounded(budget, limit)
-        policy_meta = _honest_policy_meta(provider_policy)
         try:
             threshold = float(threshold)
         except (TypeError, ValueError) as exc:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1") from exc
         if not 0 <= threshold <= 1:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1")
+        managed_fields = _managed_read_fields(
+            self.project_root, "search", query, provider_policy, limit, scope,
+        )
         # Shared query interpretation with Database.search_fts (one ranker
         # semantics for CLI and MCP): FTS prefix terms plus the lowercase
         # identifier parts feeding the exact-bare-name ordering tier.
@@ -745,7 +792,7 @@ class McpService:
                     "results": [],
                     "returned": 0,
                     "stale": 0,
-                    "policy": policy_meta,
+                    **managed_fields,
                     "providers": self._providers(conn),
                     "axes_schema_version": AXES_SCHEMA_VERSION,
                     "axes_semantics": AXES_SEMANTICS,
@@ -851,7 +898,7 @@ class McpService:
                 "results": out[:limit],
                 "returned": min(len(out), limit),
                 "stale": stale,
-                "policy": policy_meta,
+                **managed_fields,
                 "coverage": self._coverage_note(conn) if assurance else None,
                 "providers": self._providers(conn),
                 "axes_schema_version": AXES_SCHEMA_VERSION,
@@ -971,6 +1018,8 @@ class McpService:
                assurance: bool = True, provider_policy: str = "builtin_only",
                budget: Optional[int] = None) -> Dict[str, Any]:
         """Reference sites of a symbol grouped by caller (find-all-references)."""
+        if scope is not None and (not isinstance(scope, str) or len(scope) > 4096):
+            raise McpServiceError("invalid_argument", "scope exceeds 4096 characters")
         if not isinstance(target, str) or not target.strip():
             raise McpServiceError("invalid_argument", "target must not be empty")
         if len(target) > 512:
@@ -981,9 +1030,11 @@ class McpService:
                 "invalid_argument",
                 "provider_policy must be builtin_only | prefer_external | require_external",
             )
-        _require_satisfiable_policy(provider_policy)
         if budget is not None:
             limit = self._bounded(budget, limit)
+        managed_fields = _managed_read_fields(
+            self.project_root, "usages", target, provider_policy, limit, scope,
+        )
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
             row = self._resolve_target_row(conn, target)
@@ -1030,13 +1081,28 @@ class McpService:
                                       - (len(callers_all) + len(risk_all)),
                 "next_steps": data.get("next_steps", []),
                 "truncated": len(data["callers"]) > limit or len(data["risk"]) > limit,
-                "policy": _honest_policy_meta(provider_policy),
+                **managed_fields,
                 "coverage": self._coverage_note(conn) if assurance else None,
                 "providers": self._providers(conn),
                 "snapshot": snapshot,
                 "stale_files": stale,
             })
-        return self._run(op)
+        try:
+            return self._run(op)
+        except McpServiceError as exc:
+            if provider_policy == "builtin_only":
+                raise
+            safe_errors = {
+                "not_found": "symbol was not found",
+                "cancelled": "graph operation cancelled",
+                "timeout": "graph operation timed out",
+                "closed": "MCP service is closed",
+            }
+            code = exc.code if exc.code in safe_errors else "query_failed"
+            raise McpServiceError(
+                code, safe_errors.get(code, "graph query failed"),
+                details=managed_fields,
+            ) from None
 
     def implementations(self, target: str) -> Dict[str, Any]:
         """extends/implements edges of a symbol, both directions."""

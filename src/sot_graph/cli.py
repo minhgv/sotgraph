@@ -209,14 +209,83 @@ def _p4_sort_key(row: Dict[str, Any]) -> Tuple[int, Any, Any, float]:
     )
 
 
+class _ExplicitProviderAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, values)
+        setattr(namespace, f"_{self.dest}_explicit", True)
+
+
+def _managed_policy_metadata(managed: dict) -> dict:
+    return {
+        "provider_policy": managed["policy"],
+        "builtin_only": managed["policy"] == "builtin_only",
+        "note": managed.get("fail_message") or "; ".join(managed.get("warnings", [])) or None,
+        "reason": managed.get("reason"),
+    }
+
+
+def _cli_managed_read(args: argparse.Namespace, root: str, operation: str, query: str):
+    policy = getattr(args, "provider_policy", "builtin_only")
+    explicit_policy = getattr(args, "_provider_policy_explicit", False)
+    legacy_external = getattr(args, "provider", "builtin") not in (None, "builtin")
+    if policy == "builtin_only" and not (explicit_policy and legacy_external):
+        return None
+    cached = getattr(args, "_managed_read", None)
+    if cached is not None:
+        return cached
+    if (legacy_external or (policy != "builtin_only"
+                            and getattr(args, "_provider_explicit", False))):
+        return {
+            "policy": policy, "operation": operation, "status": "error",
+            "reason": "conflicting_provider_options", "warnings": [],
+            "fail_message": "Conflicting --provider and explicit --provider-policy options.",
+            "candidates": [], "conflicts": [], "providers_extra": [],
+            "coverage": {}, "known_gaps": [], "truncated": False,
+        }
+    from sot_graph.assurance.orchestrator import managed_read_dispatch
+
+    return managed_read_dispatch(
+        root, operation, query, provider_policy=policy,
+        limit=getattr(args, "limit", 20), scope=getattr(args, "scope", None) or "",
+    )
+
+
+def _print_managed_error(args: argparse.Namespace, managed: dict) -> int:
+    if getattr(args, "json", False):
+        print(json.dumps({"error": managed["fail_message"],
+                          "policy": _managed_policy_metadata(managed),
+                          "managed": managed}, indent=2))
+    else:
+        print(f"Provider policy error ({managed['reason']}): {managed['fail_message']}",
+              file=sys.stderr)
+    return 2
+
+
+def _print_managed_read(managed: Optional[dict]) -> None:
+    if managed is None:
+        return
+    print(f"Managed external evidence: {managed['status']}"
+          f" (policy={managed['policy']}, reason={managed.get('reason') or 'none'})")
+    for note in dict.fromkeys(managed.get("warnings", []) + managed.get("known_gaps", [])):
+        print(f"  {note}")
+    for candidate in managed.get("candidates", []):
+        print(f"  External candidate (not a builtin trust verdict): {json.dumps(candidate)}")
+    if managed.get("truncated"):
+        print("  Managed candidates truncated; coverage is bounded, not exhaustive.")
+
+
 def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
+    managed = _cli_managed_read(args, root, "search", args.query)
+    if managed is not None and managed["status"] == "error":
+        return _print_managed_error(args, managed)
     q_toks = tokenize(args.query)
     hybrid = bool(getattr(args, "hybrid", False))
     if hybrid:
         from sot_graph.vector import available as vec_available, hybrid_search
         if not vec_available():
             print("⚠ sqlite-vec not installed — install with `pip install 'sot-graph[vector]'`; "
-                  "falling back to BM25.")
+                  "falling back to BM25.",
+                  file=sys.stderr if managed is not None and args.json else sys.stdout)
         res = hybrid_search(db, args.query, limit=args.limit * 2,
                             scope=getattr(args, "scope", None))
         candidates = res["results"]
@@ -226,7 +295,7 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
         mode = "bm25"
     verified = []
     has_stale = False
-    jit_enabled = getattr(args, "jit", True)
+    jit_enabled = managed is None and getattr(args, "jit", True)
     for cand in candidates:
         res = TrustVerifier.verify_hit(
             db, cand, q_toks, root, threshold=args.threshold, auto_heal=False, jit_reconcile=jit_enabled
@@ -303,8 +372,11 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
             },
         }
         envelope = wrap_envelope(data, db=db, project_root=root)
+        if managed is not None:
+            envelope.update(policy=_managed_policy_metadata(managed), managed=managed)
         print(json.dumps(envelope, indent=2))
         return 0
+    _print_managed_read(managed)
     mode_note = " [hybrid: bm25+vector]" if hybrid and mode == "hybrid" else ""
     print(f"\n🔍 Knowledge Search: \"{args.query}\" (Found: {len(final_list)} verified hits){mode_note}")
     print("=" * 80)
@@ -569,8 +641,18 @@ def _print_usages_risk(risk: list, symbol: str) -> None:
 
 def cmd_usages(args: argparse.Namespace, db: Database, root: str = ".") -> int:
     query = args.target.strip()
+    managed = _cli_managed_read(args, root, "usages", query)
+    if managed is not None and managed["status"] == "error":
+        return _print_managed_error(args, managed)
     row = resolve_symbol(db, query)
     if not row:
+        if managed is not None:
+            if getattr(args, "json", False):
+                print(json.dumps({"error": "Symbol not found", "target": query,
+                                  "policy": _managed_policy_metadata(managed),
+                                  "managed": managed}, indent=2))
+                return 1
+            _print_managed_read(managed)
         print(f"❌ No symbol or node matching '{query}' found in graph.")
         return 1
     node_id, label, kind, path, line, symbol = row
@@ -578,7 +660,7 @@ def cmd_usages(args: argparse.Namespace, db: Database, root: str = ".") -> int:
         resolve_federated_spec(getattr(args, "provider", None), root),
         root, "usages", query, builtin_target=(symbol, path, line),
         db=db,
-    )
+    ) if (managed is None and not getattr(args, "_provider_policy_explicit", False)) else None
     if fed is not None and fed["fail_message"]:
         print(f"❌ {fed['fail_message']}", file=sys.stderr)
         return 2
@@ -601,9 +683,12 @@ def cmd_usages(args: argparse.Namespace, db: Database, root: str = ".") -> int:
             envelope = wrap_envelope(data, db=db, **envelope_fed_kwargs(db, fed))
         else:
             envelope = wrap_envelope(data, db=db)
+        if managed is not None:
+            envelope.update(policy=_managed_policy_metadata(managed), managed=managed)
         print(json.dumps(envelope, indent=2))
         return 0
 
+    _print_managed_read(managed)
     print(f"\n🔎 Usages of [{label}] ({kind}) — {total} site(s) across "
           f"{len(data['callers'])} caller(s)")
     print("=" * 80)
@@ -2100,7 +2185,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_engine_parser(subparsers)
 
     # search
-    p_search = subparsers.add_parser("search", help="Ranked search with Trust Verdicts")
+    p_search = subparsers.add_parser("search", help="Ranked search with Trust Verdicts", allow_abbrev=False)
     p_search.add_argument("query", help="Query string")
     p_search.add_argument("-n", "--limit", type=int, default=6, help="Maximum results (default: 6)")
     p_search.add_argument("--scope", default=None, help="Filter by path or keyword substring")
@@ -2126,8 +2211,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_usg.add_argument("target", help="Symbol, function name, or class to inspect")
     p_usg.add_argument("--json", action="store_true", help="Output raw JSON format")
 
-    p_usg.add_argument("--provider", default="builtin",
+    p_usg.add_argument("--provider", default="builtin", action=_ExplicitProviderAction,
                        help="External evidence providers: builtin | auto | prefer:<name> | require:<name> | all (default: builtin)")
+    for read_parser in (p_search, p_usg):
+        read_parser.add_argument(
+            "--provider-policy", default="builtin_only", action=_ExplicitProviderAction,
+            choices=("builtin_only", "prefer_external", "require_external"),
+            help="Managed external evidence policy (default: builtin_only; external reads disable JIT)",
+        )
     # implementations
     p_imp = subparsers.add_parser("implementations", help="Show extends/implements relationships of a symbol")
     p_imp.add_argument("target", help="Base class/interface or derived type to inspect")
@@ -2435,6 +2526,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     root = os.path.abspath(args.root)
+    if (args.command == "usages"
+            and getattr(args, "_provider_policy_explicit", False)
+            and args.provider_policy == "builtin_only"
+            and getattr(args, "provider", "builtin") not in (None, "builtin")):
+        managed = _cli_managed_read(args, root, "usages", args.target.strip())
+        assert managed is not None
+        return _print_managed_error(args, managed)
     if args.command == "engine":
         from sot_graph.providers.admin import run as run_engine_admin
         return run_engine_admin(args, root)
@@ -2481,6 +2579,33 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # files; it never needs the graph DB, so it dispatches before
         # Database init (same short-circuit as `claims`/`providers`).
         return cmd_receipt(args, root)
+    if (args.command in ("search", "usages")
+            and getattr(args, "provider_policy", "builtin_only") != "builtin_only"):
+        query = args.query if args.command == "search" else args.target.strip()
+        managed = _cli_managed_read(args, root, args.command, query)
+        assert managed is not None
+        if managed["status"] == "error":
+            return _print_managed_error(args, managed)
+        args._managed_read = managed
+        # No schema reset, automatic reconcile, or JIT writes on this path.
+        try:
+            db = Database(db_path, read_only=True)
+        except (OSError, sqlite3.Error, LockBusy, RuntimeError):
+            message = "Builtin index unavailable; run 'sot reconcile' explicitly before querying."
+            if getattr(args, "json", False):
+                print(json.dumps({"error": message,
+                                  "policy": _managed_policy_metadata(managed),
+                                  "managed": managed}, indent=2))
+            else:
+                _print_managed_read(managed)
+                print(message, file=sys.stderr)
+            return 1
+        try:
+            if args.command == "search":
+                return cmd_search(args, db, root)
+            return cmd_usages(args, db, root)
+        finally:
+            db.close()
     try:
         db = Database(db_path)
     except (LockBusy, RuntimeError) as exc:
