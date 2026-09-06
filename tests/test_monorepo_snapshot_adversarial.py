@@ -11,6 +11,8 @@ capture and verify. Fake private-PATH exe; no native binary, no net.
 import os, stat, subprocess, sys  # noqa: E401
 import pytest
 
+from conftest import require_shebang_exec
+
 from sot_graph.db import Database
 from sot_graph.providers.base import IndexRequest, SymbolRequest
 from sot_graph.providers.codebase_memory import (
@@ -89,6 +91,7 @@ def make_fake_cli(directory, name: str = "cbm-adv") -> str:
         wrapper.write_text(
             f'@"{sys.executable}" "%~dp0{name}.py" %*\r\n', encoding="utf-8")
         return str(wrapper)
+    require_shebang_exec()
     path = directory / name
     path.write_text(f"#!{sys.executable}\n{body}")
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)

@@ -118,7 +118,7 @@ def run_audit(wheel: Path, output: Path, dependencies: list[Path]) -> dict[str, 
         assert not any('cbm' in n.lower() or 'codebase-memory' in n.lower() for n in added)
         run([str(python), '-m', 'pip', 'check'], output)
         run([str(python), '-c',
-             'import importlib.metadata as m; d=m.distribution("sot-graph"); '
+             'import importlib.metadata as m; d=m.distribution("sotgraph"); '
              'print(d.read_text("RECORD"))'], output)
         run([str(bindir / ('sotgraph.exe' if os.name == 'nt' else 'sotgraph')), '--help'], output)
         report['bin_added'] = sorted(added)
@@ -133,7 +133,7 @@ def run_audit(wheel: Path, output: Path, dependencies: list[Path]) -> dict[str, 
             assert snapshot(root) == first, f'non-idempotent {harness} setup'
             report[harness] = first
         assert snapshot(home) == before, 'workspace setup mutated HOME/config'
-        run([str(python), '-m', 'pip', 'uninstall', '--yes', 'sot-graph'], output)
+        run([str(python), '-m', 'pip', 'uninstall', '--yes', 'sotgraph'], output)
         assert snapshot(home) == before, 'uninstall mutated user HOME/config'
         assert not (bindir / ('sotgraph.exe' if os.name == 'nt' else 'sotgraph')).exists()
         report['result'] = 'PASS_SCOPED'

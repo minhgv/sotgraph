@@ -5,12 +5,14 @@ sot_graph.adapters.omp - OMP (Oh My Pi) Harness Adapter.
 from pathlib import Path
 import shutil
 
+from sot_graph.adapters.migration import remove_legacy_file, write_skill_dir
+
 SKILL_MARKDOWN = """---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export), and 2-stage fact bundle extraction for comprehensive LLM architecture reports.
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer)
+# /sotgraph (Single Source of Truth Knowledge Layer)
 
 When to use:
 - **Top-down orientation**: Map repository architecture without token waste (`sotgraph map` / `sot_map`).
@@ -185,48 +187,49 @@ def setup_omp(root: Path, global_install: bool = True, workspace_install: bool =
     if workspace_install:
         omp_dir = root / ".omp"
         ext_dir = omp_dir / "extensions"
-        skill_dir = omp_dir / "skills" / "sot-graph"
         rules_dir = omp_dir / "rules"
         ext_dir.mkdir(parents=True, exist_ok=True)
-        skill_dir.mkdir(parents=True, exist_ok=True)
         rules_dir.mkdir(parents=True, exist_ok=True)
 
         # Write extension
         if adapter_src.exists():
-            shutil.copy2(adapter_src, ext_dir / "sot-graph.ts")
-            installed.append(str(ext_dir / "sot-graph.ts"))
+            shutil.copy2(adapter_src, ext_dir / "sotgraph.ts")
+            installed.append(str(ext_dir / "sotgraph.ts"))
+            # Migrate a template-identical legacy extension; user edits survive.
+            remove_legacy_file(ext_dir / "sot-graph.ts", adapter_src.read_bytes())
 
         # Write skill
-        (skill_dir / "SKILL.md").write_text(SKILL_MARKDOWN, encoding="utf-8")
-        installed.append(str(skill_dir / "SKILL.md"))
+        installed.append(str(write_skill_dir(omp_dir / "skills", SKILL_MARKDOWN)))
 
         # Write rules
         _update_omp_rules(omp_dir / "RULES.md")
         installed.append(str(omp_dir / "RULES.md"))
-        (rules_dir / "sot-graph.md").write_text(RULES_MARKDOWN, encoding="utf-8")
-        installed.append(str(rules_dir / "sot-graph.md"))
+        rules_file = rules_dir / "sotgraph.md"
+        rules_file.write_text(RULES_MARKDOWN, encoding="utf-8")
+        installed.append(str(rules_file))
+        remove_legacy_file(rules_dir / "sot-graph.md", RULES_MARKDOWN.encode("utf-8"))
 
     # Global level (~/.omp/)
     if global_install:
         home = Path.home()
         global_omp = home / ".omp"
         global_ext_dir = global_omp / "agent" / "extensions"
-        global_skill_dir = global_omp / "skills" / "sot-graph"
         global_rules_dir = global_omp / "rules"
         global_ext_dir.mkdir(parents=True, exist_ok=True)
-        global_skill_dir.mkdir(parents=True, exist_ok=True)
         global_rules_dir.mkdir(parents=True, exist_ok=True)
 
         if adapter_src.exists():
-            shutil.copy2(adapter_src, global_ext_dir / "sot-graph.ts")
-            installed.append(str(global_ext_dir / "sot-graph.ts"))
+            shutil.copy2(adapter_src, global_ext_dir / "sotgraph.ts")
+            installed.append(str(global_ext_dir / "sotgraph.ts"))
+            remove_legacy_file(global_ext_dir / "sot-graph.ts", adapter_src.read_bytes())
 
-        (global_skill_dir / "SKILL.md").write_text(SKILL_MARKDOWN, encoding="utf-8")
-        installed.append(str(global_skill_dir / "SKILL.md"))
+        installed.append(str(write_skill_dir(global_omp / "skills", SKILL_MARKDOWN)))
 
         _update_omp_rules(global_omp / "RULES.md")
         installed.append(str(global_omp / "RULES.md"))
-        (global_rules_dir / "sot-graph.md").write_text(RULES_MARKDOWN, encoding="utf-8")
-        installed.append(str(global_rules_dir / "sot-graph.md"))
+        global_rules_file = global_rules_dir / "sotgraph.md"
+        global_rules_file.write_text(RULES_MARKDOWN, encoding="utf-8")
+        installed.append(str(global_rules_file))
+        remove_legacy_file(global_rules_dir / "sot-graph.md", RULES_MARKDOWN.encode("utf-8"))
 
     return installed

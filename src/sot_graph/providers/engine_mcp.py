@@ -35,12 +35,22 @@ class McpToolInfo:
 
 @dataclass
 class EngineMcpClient:
-    """One-request-at-a-time MCP stdio client over a spawned engine process."""
+    """One-request-at-a-time MCP stdio client over a spawned engine process.
+
+    ``store_root`` opts the spawn into the per-account namespaced runtime
+    layout (master plan §7.1): ``CBM_RUNTIME_DIR``/``CBM_CACHE_DIR`` are
+    resolved against the engine store at :meth:`start` time and merged into
+    the child environment (``os.environ`` is never touched). Namespace
+    failures are fail-closed: :class:`EngineMcpError`, no fallback to the
+    default rendezvous.
+    """
 
     executable: str
     args: tuple[str, ...] = ()
     timeout_s: float = 20.0
     env: dict[str, str] | None = None
+    store_root: str | None = None
+    engine_name: str = "codebase-memory"
     process: subprocess.Popen | None = field(default=None, init=False, repr=False)
     _next_id: int = field(default=1, init=False, repr=False)
     _pending: bytes = field(default=b"", init=False, repr=False)
@@ -48,10 +58,16 @@ class EngineMcpClient:
     def start(self) -> None:
         if self.process is not None:
             raise EngineMcpError("engine process already started")
-        env = self.env if self.env is not None else {
+        env = dict(self.env) if self.env is not None else {
             key: os.environ.get(key, "")
             for key in ("PATH", "HOME") if os.environ.get(key)
         }
+        if self.store_root is not None:
+            from .bootstrap import BootstrapError, engine_runtime_env
+            try:
+                env.update(engine_runtime_env(self.store_root, self.engine_name))
+            except BootstrapError as exc:
+                raise EngineMcpError(f"cannot start engine process: {exc}") from exc
         try:
             self.process = subprocess.Popen(
                 [self.executable, *self.args],
@@ -182,9 +198,18 @@ class EngineMcpClient:
         return stderr_tail
 
 
-def probe_engine_mcp(executable: str, timeout_s: float = 20.0) -> dict[str, Any]:
-    """Handshake + tools/list against an engine executable; fail-closed."""
-    client = EngineMcpClient(executable, timeout_s=timeout_s)
+def probe_engine_mcp(executable: str, timeout_s: float = 20.0,
+                     store_root: str | None = None,
+                     engine_name: str = "codebase-memory",
+                     args: tuple[str, ...] = ()) -> dict[str, Any]:
+    """Handshake + tools/list against an engine executable; fail-closed.
+
+    ``store_root`` namespaces the probe spawn under the engine store layout
+    (master plan §7.1); a namespace failure surfaces as ``refused`` — never a
+    fallback to the default rendezvous and never engine-operations guidance.
+    """
+    client = EngineMcpClient(executable, args=args, timeout_s=timeout_s,
+                             store_root=store_root, engine_name=engine_name)
     try:
         client.start()
         init = client.initialize()
@@ -199,7 +224,7 @@ def probe_engine_mcp(executable: str, timeout_s: float = 20.0) -> dict[str, Any]
             "tools": [tool.name for tool in tools],
         }
     except EngineMcpError as exc:
-        tail = client.close()
+        tail = client.close() if client.process is not None else ""
         detail = f"{exc}" + (f"; stderr tail: {tail[:512]}" if tail else "")
         return {"schema_version": 1, "status": "refused", "error": detail[:1024]}
     finally:

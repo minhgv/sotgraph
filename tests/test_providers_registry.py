@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import shebang_exec_available
+
 from sot_graph.cli import main as cli_main
 from sot_graph.config import DEFAULT_PROVIDERS, SotConfig
 from sot_graph.providers_registry import (
@@ -24,8 +26,9 @@ from sot_graph.providers_registry import (
 # The spawn contract itself stays covered cross-platform by
 # tests/test_cbm_adapter.py, whose fakes use absolute command paths.
 requires_spawned_fake_bin = pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="PATH-resolved fake binaries need real PE executables on Windows",
+    sys.platform == "win32" or not shebang_exec_available(),
+    reason="PATH-resolved fake binaries need real PE executables on Windows, "
+           "or direct shebang exec is unavailable (see tests/conftest.py)",
 )
 
 HEALTHY_VERSION_SCRIPT = "#!/bin/sh\necho 'gitnexus 1.2.3'\n"

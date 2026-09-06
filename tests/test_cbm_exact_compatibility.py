@@ -15,6 +15,9 @@ import threading
 from pathlib import Path
 
 import pytest
+
+from conftest import require_shebang_exec
+
 from sot_graph.config import ProviderConfig
 from sot_graph.provider_contract import (
     Capability,
@@ -83,6 +86,7 @@ def _exe_body(marker: str, root: str | None = None) -> str:
 def make_exe(directory: Path, marker: Path, root: str | None = None) -> str:
     """Write the fake binary and return its ABSOLUTE path (strict context
     forbids PATH discovery, so the adapter command is always this path)."""
+    require_shebang_exec()
     if os.name == "nt":
         raise RuntimeError("these tests require a POSIX exec launcher")
     path = directory / "cbm-fake"

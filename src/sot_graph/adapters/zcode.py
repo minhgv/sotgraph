@@ -6,12 +6,14 @@ from pathlib import Path
 import json
 import sys
 
+from sot_graph.adapters.migration import assign_server_entry, write_skill_dir
+
 ZCODE_SKILL_MARKDOWN = """---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles).
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer for ZCode)
+# /sotgraph (Single Source of Truth Knowledge Layer for ZCode)
 
 Ground every implementation decision in physical filesystem reality. The graph
 (`.sot/sot.db`) is an authoritative projection of the codebase — never a
@@ -267,10 +269,12 @@ def _merge_zcode_config(config_path: Path, python_bin: str, root: Path) -> None:
 
     ZCode expects ``{"mcp": {"servers": {...}}}`` (nested, unlike the flat
     ``.mcp.json`` layout). The merge is conservative and idempotent: an
-    existing config is parsed and only the ``mcp.servers["sot-graph"]`` entry
+    existing config is parsed and only the ``mcp.servers["sotgraph"]`` entry
     is added/overwritten — every other key (themes, other servers, unrelated
-    settings) is preserved untouched. An unreadable/corrupt file is treated as
-    empty rather than propagated as an error.
+    settings) is preserved untouched. A legacy ``sot-graph`` entry that is
+    provably ours is migrated to the new key (never duplicated); a foreign
+    entry with that name is left untouched. An unreadable/corrupt file is
+    treated as empty rather than propagated as an error.
     """
     data = {}
     if config_path.exists():
@@ -291,24 +295,20 @@ def _merge_zcode_config(config_path: Path, python_bin: str, root: Path) -> None:
         servers = {}
         mcp["servers"] = servers
 
-    servers["sot-graph"] = {
+    assign_server_entry(servers, {
         "command": python_bin,
         "args": ["-m", "sot_graph.cli", "mcp"],
         "env": {"PYTHONPATH": str(root / "src")},
         "cwd": str(root),
-    }
+    })
 
     config_path.parent.mkdir(parents=True, exist_ok=True)
     config_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 def _write_zcode_skill(base_dir: Path) -> Path:
-    """Write the sot-graph skill into a .zcode directory and return its path."""
-    skill_dir = base_dir / "skills" / "sot-graph"
-    skill_dir.mkdir(parents=True, exist_ok=True)
-    skill_file = skill_dir / "SKILL.md"
-    skill_file.write_text(ZCODE_SKILL_MARKDOWN, encoding="utf-8")
-    return skill_file
+    """Write the sotgraph skill into a .zcode directory and return its path."""
+    return write_skill_dir(base_dir / "skills", ZCODE_SKILL_MARKDOWN)
 
 
 def _write_zcode_commands(base_dir: Path) -> list[Path]:

@@ -13,6 +13,8 @@ import time
 
 import pytest
 
+from conftest import require_shebang_exec
+
 from sot_graph.proc import run_command
 
 PY = sys.executable
@@ -27,6 +29,7 @@ pytestmark = pytest.mark.skipif(
 
 
 def make_exe(directory, name, body):
+    require_shebang_exec()
     path = directory / name
     path.write_text(f"#!{sys.executable}\n{body}")
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)

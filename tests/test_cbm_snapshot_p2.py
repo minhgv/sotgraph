@@ -18,6 +18,8 @@ import uuid
 
 import pytest
 
+from conftest import require_shebang_exec
+
 from sot_graph.db import SCHEMA_VERSION, Database
 from sot_graph.providers.base import SymbolRequest, CoverageRequest
 from sot_graph.providers.codebase_memory import (
@@ -45,6 +47,7 @@ def make_exe(directory, name: str, body: str) -> str:
         wrapper = directory / f"{name}.cmd"
         wrapper.write_text(f'@"{sys.executable}" "%~dp0{name}.py" %*\r\n', encoding="utf-8")
         return str(wrapper)
+    require_shebang_exec()
     path = directory / name
     path.write_text(f"#!{PY}\n{body}")
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)

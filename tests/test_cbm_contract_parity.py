@@ -34,6 +34,7 @@ from sot_graph.config import (
 )
 from sot_graph.mcp_service import McpService, McpServiceError
 
+from conftest import require_shebang_exec
 from test_cbm_exact_compatibility import VERSION, make_exe, spawns
 from test_p2_orchestrator import repo as repo_fixture
 
@@ -59,6 +60,7 @@ def _mcp(repo: Path) -> McpService:
 def _broken_version_exe(directory: Path, marker: Path) -> str:
     """Fake runner whose ``--version`` output does NOT match the native
     version pattern (drives the unknown-version policy branch)."""
+    require_shebang_exec()
     path = directory / "cbm-broken"
     path.write_text(
         f"#!{sys.executable}\n"

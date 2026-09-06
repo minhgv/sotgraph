@@ -50,7 +50,7 @@ import tempfile
 import time
 import uuid
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Iterator, Mapping
 
 from sot_graph.locking import WriteLock
@@ -94,6 +94,35 @@ _CONFIG_TABLE, _CONFIG_KEY_COL, _CONFIG_VAL_COL = "config", "key", "value"
 _FALSE_VALUES = (False, 0, "false", "False", "0")
 _QUERY_TIMEOUT, _INDEX_TIMEOUT = 30.0, 300.0
 
+# P1.2 (master plan §7.2): MCP stdio is the DEFAULT transport for managed
+# reads; the plain-CLI spawn below stays the evidence-backed fallback.
+#: Managed read op -> engine MCP stdio tool. Identity mapping, verified
+#: against the engine tools registry + dispatcher (engines/codebase-memory-mcp/
+#: src/mcp/mcp.c: registry rows :609/:621/:410, dispatch_tool :11359-:11373).
+_MANAGED_MCP_TOOLS: dict[str, str] = {
+    "search_graph": "search_graph",
+    "index_status": "index_status",
+    "list_projects": "list_projects",
+}
+_TRANSPORT_ENV = "SOT_ENGINE_TRANSPORT"
+_TRANSPORT_POLICIES = ("auto", "mcp", "cli")
+#: Per-JSON-RPC-request budget; handshake + tools/list + tools/call keep the
+#: whole MCP attempt bounded by the SAME total budget as one CLI dispatch.
+_MCP_STEP_TIMEOUT = _QUERY_TIMEOUT / 3
+
+
+def _transport_policy() -> tuple[str, str | None]:
+    """Resolve ``SOT_ENGINE_TRANSPORT`` (default ``auto``); an unknown value is
+    a controlled config refusal surfaced at dispatch time, never a guess."""
+    raw = os.environ.get(_TRANSPORT_ENV, "").strip().lower()
+    if not raw:
+        return "auto", None
+    if raw in _TRANSPORT_POLICIES:
+        return raw, None
+    return "auto", (
+        f"invalid {_TRANSPORT_ENV} value {raw!r}; expected auto|mcp|cli; "
+        "request refused (transport policy is a controlled setting)")
+
 
 @dataclass(frozen=True)
 class ManagedResult:
@@ -105,6 +134,11 @@ class ManagedResult:
     error: str | None = None
     cancellation_state: str | None = None  # None | "cancellation_unknown"
     runtime_state: str = "UNINITIALIZED"
+    # P1.2 provenance (additive): the transport that actually served the op
+    # ("mcp" | "cli") and, on a cli fallback under policy auto, WHY the MCP
+    # attempt failed. None on paths that predate transport selection.
+    transport: str | None = None
+    fallback_reason: str | None = None
 
 
 class ManagedNativeRuntime:
@@ -221,7 +255,23 @@ class ManagedNativeRuntime:
             if operation == "search_graph":  # adapter-verified search wire
                 payload_args["format"] = "json"
                 payload_args["limit"] = _SEARCH_DEFAULT_LIMIT
+            policy, config_problem = _transport_policy()
+            if config_problem is not None:
+                return self._result("runtime_refused", error=config_problem)
+            mcp_reason: str | None = None
+            if policy != "cli":
+                outcome, mcp_reason = self._mcp_dispatch(operation, payload_args)
+                if outcome is not None:
+                    return outcome
+                if policy == "mcp":  # strict: a controlled refusal, NO fallback
+                    return self._result(
+                        "runtime_refused",
+                        error=(f"engine MCP transport failed: {mcp_reason}; "
+                               "no CLI fallback (strict mcp transport)"),
+                        transport="mcp", fallback_reason=mcp_reason)
             outcome = self._args_dispatch(operation, payload_args, _QUERY_TIMEOUT)
+            if mcp_reason is not None:  # auto policy fell back to the CLI wire
+                outcome = replace(outcome, transport="cli", fallback_reason=mcp_reason)
             if operation == "list_projects" and outcome.status == "ok":
                 outcome = self._filter_listing(outcome)
             if outcome.status == "timeout":
@@ -229,7 +279,9 @@ class ManagedNativeRuntime:
                 # index, but an unknown writer cannot be excluded.
                 self._profile.quarantine("query deadline expired; possible unknown writer")
                 return self._result(outcome.status, outcome.payload, outcome.error,
-                                    outcome.cancellation_state)
+                                    outcome.cancellation_state,
+                                    transport=outcome.transport,
+                                    fallback_reason=outcome.fallback_reason)
             return outcome
 
     def sync(self, repo_path: str) -> ManagedResult:
@@ -302,9 +354,12 @@ class ManagedNativeRuntime:
 
     def _result(self, status: str, payload: dict[str, Any] | None = None,
                 error: str | None = None,
-                cancellation_state: str | None = None) -> ManagedResult:
+                cancellation_state: str | None = None, *,
+                transport: str | None = None,
+                fallback_reason: str | None = None) -> ManagedResult:
         return ManagedResult(status, payload, error, cancellation_state,
-                             self._profile.status()["state"])
+                             self._profile.status()["state"],
+                             transport=transport, fallback_reason=fallback_reason)
 
     def _quarantine(self, reason: str) -> ManagedResult:
         """Safe helper: persist quarantine if possible, never raise."""
@@ -356,6 +411,61 @@ class ManagedNativeRuntime:
         return self._result("gate_refused", error=(
             f"{operation} refused before dispatch: exact-compatibility "
             f"{assessment.verdict.value}; native diagnostic withheld"))
+
+    def _mcp_dispatch(self, operation: str,
+                      payload_args: dict[str, Any],
+                      ) -> tuple["ManagedResult | None", str | None]:
+        """One MCP stdio attempt (P1.2 §7.2): per-op spawn, closed at scope
+        exit — persistent connection pooling is explicitly P2. Returns
+        (outcome, None) on success or (None, bounded clean reason) on ANY
+        MCP failure; NEVER spawns the CLI and never raises. The engine's
+        server-supplied error text is withheld (same honesty rule as the
+        CLI receipt path); the env is the SAME private profile namespace the
+        CLI dispatch uses, so both transports serve one verified binding.
+        """
+        from .codebase_memory import _extract_payload
+        from .engine_mcp import EngineMcpClient, EngineMcpError
+        tool = _MANAGED_MCP_TOOLS.get(operation)
+        if tool is None:
+            return None, f"{operation} has no engine MCP tool mapping"
+        try:
+            env = self._profile.environment()
+        except ManagedRuntimeError as exc:
+            return None, str(exc)
+        client = EngineMcpClient(self._exe, env=env, timeout_s=_MCP_STEP_TIMEOUT)
+        try:
+            client.start()
+        except EngineMcpError as exc:
+            return None, str(exc)[:200]
+        except Exception as exc:
+            # A transport that breaches its own contract (anything outside
+            # EngineMcpError, e.g. an intercepted Popen surface) is still just
+            # a failed MCP attempt: record it and fall back to the CLI wire.
+            return None, f"engine MCP transport contract breach: {type(exc).__name__}"
+        try:
+            client.initialize()
+            available = {info.name for info in client.list_tools()}
+            if tool not in available:
+                return None, f"engine MCP tools/list has no {tool} tool"
+            envelope = client.call_tool(tool, dict(payload_args))
+        except EngineMcpError as exc:
+            text = str(exc)
+            if "error response" in text:  # server-supplied detail is withheld
+                text = "engine MCP request refused by the engine"
+            return None, text[:200]
+        except Exception as exc:
+            return None, f"engine MCP transport contract breach: {type(exc).__name__}"
+        finally:
+            try:
+                client.close()
+            except Exception:
+                pass  # teardown diagnostics are best-effort, never the result
+        if envelope.get("isError"):
+            return None, f"engine MCP {tool} reported failure; diagnostic withheld"
+        payload, problem = _extract_payload(envelope)
+        if problem is not None or not isinstance(payload, Mapping):
+            return None, f"engine MCP {tool} payload is not a plain JSON object"
+        return self._result("ok", dict(payload), transport="mcp"), None
 
     def _args_dispatch(self, operation: str, args: dict[str, Any],
                        timeout: float) -> ManagedResult:
@@ -446,7 +556,9 @@ class ManagedNativeRuntime:
                  and isinstance(p.get("root_path"), str)
                  and os.path.realpath(p["root_path"]) == self._repo]
         return self._result(outcome.status, {**payload, "projects": bound},
-                            outcome.error, outcome.cancellation_state)
+                            outcome.error, outcome.cancellation_state,
+                            transport=outcome.transport,
+                            fallback_reason=outcome.fallback_reason)
 
     def _bind_project(self, receipt: Any) -> str | None:
         """Verified project binding: exactly one list_projects entry whose

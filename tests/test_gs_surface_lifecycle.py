@@ -30,7 +30,7 @@ def test_sur12_sot_only_upgrade_recovery_and_uninstall(tmp_path, monkeypatch, ca
     monkeypatch.setattr(subprocess, 'run', forbidden)
     install_harnesses(['claude'], repo, global_install=False)
     config_before = (repo / '.mcp.json').read_bytes()
-    assert set(json.loads(config_before)['mcpServers']) == {'sot-graph'}
+    assert set(json.loads(config_before)['mcpServers']) == {'sotgraph'}
     (repo / 'alpha.py').write_text('def greet(name):\n    return name\n')
     preserved = repo / 'user-notes.txt'
     preserved.write_text('user-owned evidence and notes')

@@ -198,7 +198,7 @@ def test_default_path_uses_account_home_not_environment(tmp_path, monkeypatch):
     monkeypatch.setattr(pwd, "getpwuid", lambda uid: SimpleNamespace(pw_dir=str(home)))
     monkeypatch.setenv("HOME", str(tmp_path / "attacker-home"))
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "attacker-config"))
-    assert config.default_config_path() == home / ".config" / "sot-graph" / "managed.json"
+    assert config.default_config_path() == home / ".config" / "sotgraph" / "managed.json"
     assert not home.exists()
 
 
@@ -396,3 +396,53 @@ def test_repository_config_cannot_self_enable_or_select_registry(trusted_lab):
     assert config.load_managed_installation(lab.repo, config_path=lab.path) is None
     assert not lab.path.exists()
     assert not lab.runtime.exists()
+
+
+_ORIGINAL_DEFAULT_CONFIG_PATH = config.default_config_path
+
+
+def test_legacy_managed_config_fallback_then_migrate_on_write(
+        trusted_lab, monkeypatch):
+    import pwd
+    lab = trusted_lab
+    # Undo the lab's default_config_path stub; use the real account-home path.
+    monkeypatch.setattr(config, "default_config_path",
+                        _ORIGINAL_DEFAULT_CONFIG_PATH)
+    home = lab.private.parent / "account-home"
+    home.mkdir()
+    monkeypatch.setattr(pwd, "getpwuid",
+                        lambda uid: SimpleNamespace(pw_dir=str(home)))
+    monkeypatch.setenv("HOME", str(lab.private / "attacker-home"))
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(lab.private / "attacker-config"))
+
+    legacy_dir = home / ".config" / "sot-graph"
+    legacy_dir.mkdir(mode=0o700, parents=True)
+    legacy = legacy_dir / "managed.json"
+    kwargs = dict(lab.kwargs, config_path=legacy)
+    config.register_managed_installation(lab.repo, **kwargs)
+
+    new_default = home / ".config" / "sotgraph" / "managed.json"
+    assert not new_default.exists()
+    # Default-path reads fall back to the legacy file without migrating.
+    loaded = config.load_managed_installation(lab.repo)
+    assert loaded is not None
+    assert loaded.artifact == lab.artifact
+    assert not new_default.exists()
+    assert not new_default.parent.exists()
+
+    # The first write through the default path migrates; the legacy file is
+    # never deleted or rewritten.
+    legacy_bytes = legacy.read_bytes()
+    default_kwargs = {key: value for key, value in lab.kwargs.items()
+                      if key != "config_path"}
+    config.register_managed_installation(lab.repo, **default_kwargs)
+    assert new_default.exists()
+    assert new_default.parent.stat().st_mode & 0o077 == 0
+    assert legacy.read_bytes() == legacy_bytes
+
+    # The new file is now the sole authority; stale legacy data is ignored.
+    legacy.write_text("not the authority anymore")
+    legacy.chmod(0o600)
+    assert config.load_managed_installation(lab.repo) is not None
+    assert config.disable_managed_installation(lab.repo) is True
+    assert config.load_managed_installation(lab.repo) is None

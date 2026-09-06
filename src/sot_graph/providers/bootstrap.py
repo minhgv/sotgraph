@@ -8,12 +8,18 @@ and refused before it can reach :class:`ArtifactStore`. No PATH discovery and
 no unpinned URLs are accepted, with one narrow exception: an explicit
 administrator ``source_override`` (local file or URL) whose bytes must still
 match the pinned digest for the host platform.
+
+Provenance decision (master plan 2026-09-06 §7.1): the pinned source is the
+private mirror ``minhgv/sotgraph-cbm`` pinned by engine commit (the mirror
+does not tag releases like upstream, so a commit pin is the stable identity);
+mirror-only today — upstream is not consulted.
 """
 from __future__ import annotations
 
 import hashlib
 import json
 import os
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -23,8 +29,8 @@ from typing import Any
 
 from .artifacts import ArtifactStore, host_platform
 
-__all__ = ["BootstrapError", "default_store_root", "auto_bootstrap_allowed",
-           "load_pins", "resolve_pin", "bootstrap_engine"]
+__all__ = ["BootstrapError", "default_store_root", "engine_runtime_env",
+           "auto_bootstrap_allowed", "load_pins", "resolve_pin", "bootstrap_engine"]
 
 _SIZE_SLACK_BYTES = 64 << 20  # tolerate rebuild variance; digest is the gate
 _FETCH_CHUNK = 1 << 20
@@ -38,6 +44,50 @@ class BootstrapError(RuntimeError):
 def default_store_root() -> Path:
     """User-level engine store outside every repository (master plan D3)."""
     return Path.home() / ".sotgraph" / "engine-store"
+
+
+def _engine_runtime_parent() -> Path:
+    """Short rendezvous parent the engine itself trusts (root-owned sticky
+    system tmp — the same directory the engine uses by default)."""
+    return Path("/private/tmp" if sys.platform == "darwin" else "/tmp")
+
+
+def engine_runtime_env(store_root: str | os.PathLike[str],
+                       engine_name: str) -> dict[str, str]:
+    """Per-account namespaced runtime/cache layout for a managed engine spawn.
+
+    Master plan 2026-09-06 §7.1 (P1.1): ``CBM_RUNTIME_DIR`` isolates the
+    managed engine's rendezvous from the account-wide default so a privately
+    owned CBM daemon with a different build fingerprint can never collide
+    with the managed admission handshake. ``CBM_CACHE_DIR`` stays under the
+    engine store (``<store>/cache/<name>``, 0700, cold by design per D3 —
+    never shared with a user daemon's cache).
+
+    The rendezvous parent must be SHORT: the engine binds
+    ``<parent>/cbm-daemon-<uid>/cbm-<16hex>.sock`` and a Unix ``sun_path``
+    holds at most 104 bytes, so the parent must stay within
+    ``103 - 38 - len(str(uid))`` bytes (65 for a 3-digit uid). A home-based
+    store path overflows that budget on ordinary usernames, so the runtime
+    namespace lives at ``<system-tmp>/sotgraph-engine-<uid>`` (0700) — the
+    root-owned sticky tmp pattern the engine's own security walk accepts.
+    Directories are created lazily at spawn; failure is fail-closed
+    (:class:`BootstrapError`, clean message) — never a silent fallback to the
+    default per-account layout.
+    """
+    geteuid = getattr(os, "geteuid", None)
+    if geteuid is None:
+        raise BootstrapError(
+            "managed engine runtime namespace is unsupported on this platform")
+    runtime = _engine_runtime_parent() / f"sotgraph-engine-{geteuid()}"
+    cache = Path(store_root) / "cache" / engine_name
+    try:
+        for path in (runtime, cache):
+            path.mkdir(parents=True, exist_ok=True)
+            os.chmod(path, 0o700)
+    except OSError as exc:
+        raise BootstrapError(
+            f"managed engine runtime namespace unavailable: {exc}") from exc
+    return {"CBM_RUNTIME_DIR": os.fspath(runtime), "CBM_CACHE_DIR": os.fspath(cache)}
 
 
 def auto_bootstrap_allowed() -> bool:

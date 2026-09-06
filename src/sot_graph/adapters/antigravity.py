@@ -6,12 +6,14 @@ from pathlib import Path
 import json
 import sys
 
+from sot_graph.adapters.migration import assign_server_entry, write_skill_dir
+
 ANTIGRAVITY_SKILL_MARKDOWN = """---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles).
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer for Google Antigravity / Gemini CLI)
+# /sotgraph (Single Source of Truth Knowledge Layer for Google Antigravity / Gemini CLI)
 
 Ground Gemini and Antigravity agent actions in physical filesystem reality using the SOT knowledge layer.
 
@@ -141,10 +143,10 @@ def _merge_gemini_settings(settings_path: Path, python_bin: str) -> None:
     if "mcpServers" not in data or not isinstance(data["mcpServers"], dict):
         data["mcpServers"] = {}
 
-    data["mcpServers"]["sot-graph"] = {
+    assign_server_entry(data["mcpServers"], {
         "command": python_bin,
         "args": ["-m", "sot_graph.cli", "mcp"],
-    }
+    })
 
     settings_path.parent.mkdir(parents=True, exist_ok=True)
     settings_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
@@ -170,12 +172,8 @@ def setup_antigravity(root: Path, global_install: bool = True, workspace_install
     # Workspace level (.gemini/ and .antigravity/)
     if workspace_install:
         gemini_dir = root / ".gemini"
-        skill_dir = gemini_dir / "skills" / "sot-graph"
-        skill_dir.mkdir(parents=True, exist_ok=True)
-
-        # Write workspace skill
-        (skill_dir / "SKILL.md").write_text(ANTIGRAVITY_SKILL_MARKDOWN, encoding="utf-8")
-        installed.append(str(skill_dir / "SKILL.md"))
+        skill_file = write_skill_dir(gemini_dir / "skills", ANTIGRAVITY_SKILL_MARKDOWN)
+        installed.append(str(skill_file))
 
         # Write workspace settings.json
         ws_settings = gemini_dir / "settings.json"
@@ -191,16 +189,10 @@ def setup_antigravity(root: Path, global_install: bool = True, workspace_install
     if global_install:
         home = Path.home()
         global_gemini = home / ".gemini"
-        global_skill_dir1 = global_gemini / "antigravity" / "skills" / "sot-graph"
-        global_skill_dir2 = global_gemini / "skills" / "sot-graph"
-
-        global_skill_dir1.mkdir(parents=True, exist_ok=True)
-        global_skill_dir2.mkdir(parents=True, exist_ok=True)
-
-        (global_skill_dir1 / "SKILL.md").write_text(ANTIGRAVITY_SKILL_MARKDOWN, encoding="utf-8")
-        (global_skill_dir2 / "SKILL.md").write_text(ANTIGRAVITY_SKILL_MARKDOWN, encoding="utf-8")
-        installed.append(str(global_skill_dir1 / "SKILL.md"))
-        installed.append(str(global_skill_dir2 / "SKILL.md"))
+        installed.append(str(write_skill_dir(
+            global_gemini / "antigravity" / "skills", ANTIGRAVITY_SKILL_MARKDOWN)))
+        installed.append(str(write_skill_dir(
+            global_gemini / "skills", ANTIGRAVITY_SKILL_MARKDOWN)))
 
         global_settings = global_gemini / "settings.json"
         _merge_gemini_settings(global_settings, python_bin)

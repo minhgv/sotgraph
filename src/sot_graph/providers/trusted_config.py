@@ -42,14 +42,27 @@ def _require_supported_platform():
         raise TrustedConfigError('managed configuration is unsupported on this platform')
 
 
-def default_config_path() -> Path:
-    """Ignore environment-selected homes and repository configuration."""
+_CONFIG_REL_PATH = '.config/sotgraph/managed.json'
+_LEGACY_CONFIG_REL_PATH = '.config/sot-graph/managed.json'
+
+
+def _account_home() -> Path:
     _require_supported_platform()
     assert pwd is not None
     home = pwd.getpwuid(os.getuid()).pw_dir
     if not isinstance(home, str) or not home or '\x00' in home or not os.path.isabs(home):
         raise TrustedConfigError('OS account home must be a nonempty absolute path')
-    return Path(home).resolve() / '.config/sot-graph/managed.json'
+    return Path(home).resolve()
+
+
+def default_config_path() -> Path:
+    """Ignore environment-selected homes and repository configuration."""
+    return _account_home() / _CONFIG_REL_PATH
+
+
+def legacy_config_path() -> Path:
+    """Pre-rename managed configuration location; read-only fallback source."""
+    return _account_home() / _LEGACY_CONFIG_REL_PATH
 
 
 @contextmanager
@@ -128,11 +141,38 @@ def _read_json(path):
     return json.loads(data, object_pairs_hook=_unique_object)
 
 
+def _read_legacy_migration_source(config):
+    """Consult the pre-rename managed.json when the new default one is absent.
+
+    Reads stay side-effect free: the legacy file is only read, never moved or
+    deleted, so read paths still create no directories. The first write
+    through the new default path supersedes it; afterwards the new file is
+    the single authority and the stale legacy file is deliberately left in
+    place (never deleted), so no user data is ever destroyed. Explicit
+    config_path values and non-default locations never trigger the fallback,
+    keeping test and administrator supplied files fully hermetic.
+    """
+    try:
+        if config != _account_home() / _CONFIG_REL_PATH:
+            return None
+        legacy = _account_home() / _LEGACY_CONFIG_REL_PATH
+    except TrustedConfigError:
+        return None
+    if legacy == config:
+        return None
+    try:
+        return _read_json(legacy)
+    except FileNotFoundError:
+        return None
+
+
 def _read(config):
     try:
         payload = _read_json(config)
     except FileNotFoundError:
-        return {'schema_version': 1, 'projects': {}}
+        payload = _read_legacy_migration_source(config)
+        if payload is None:
+            return {'schema_version': 1, 'projects': {}}
     if (not isinstance(payload, dict) or set(payload) != {'schema_version', 'projects'}
             or type(payload['schema_version']) is not int or payload['schema_version'] != 1
             or not isinstance(payload['projects'], dict)):

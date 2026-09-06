@@ -100,7 +100,7 @@ def test_sur01_sur08_generated_setup_preserves_foreign_surface(
     if config is not None:
         result = json.loads(config.read_text())
         actual = result[key]['servers'] if harness == 'zcode' else result[key]
-        assert set(actual) == set(entries) | {'sot-graph'}
+        assert set(actual) == set(entries) | {'sotgraph'}
         assert {k: actual[k] for k in entries} == entries
         assert result['foreign_setting'] == ['preserve']
 

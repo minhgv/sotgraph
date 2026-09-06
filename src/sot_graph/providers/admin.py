@@ -118,7 +118,8 @@ def run(args, root):
             descriptor = probe_store.resolve(args.name)
             if descriptor is None:
                 raise ValueError('no promoted artifact; run engine bootstrap first')
-            probe = probe_engine_mcp(descriptor.executable)
+            probe = probe_engine_mcp(descriptor.executable, store_root=store_root,
+                                     engine_name=args.name)
             print(json.dumps(probe, sort_keys=True))
             return 0 if probe.get('status') == 'ok' else 2
         if not args.store:

@@ -1,6 +1,7 @@
 """Trusted engine bootstrap: pinned fetch, verify, stage, promote (no network)."""
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -147,3 +148,47 @@ def test_shipped_pins_manifest_is_valid():
     assert data["schema_version"] == 1 and data["pins"], "package must ship usable pins"
     for pin in data["pins"]:
         ArtifactManifest.parse(bp._manifest_bytes(pin))  # every shipped pin is installable
+
+
+def test_engine_runtime_env_namespaces_layout(tmp_path, monkeypatch):
+    """P1.1 §7.1: rendezvous at a short runtime parent, cache under the store."""
+    monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
+    env = bp.engine_runtime_env(tmp_path, "codebase-memory")
+    runtime = tmp_path / "rt" / f"sotgraph-engine-{os.geteuid()}"
+    cache = tmp_path / "cache" / "codebase-memory"
+    assert env == {"CBM_RUNTIME_DIR": str(runtime), "CBM_CACHE_DIR": str(cache)}
+    for path in (runtime, cache):
+        assert path.is_dir()
+        assert path.stat().st_mode & 0o777 == 0o700
+    # Idempotent: a second spawn over the same store keeps the layout.
+    assert bp.engine_runtime_env(tmp_path, "codebase-memory") == env
+
+
+def test_engine_runtime_env_default_parent_fits_socket_budget():
+    """The engine binds <parent>/cbm-daemon-<uid>/cbm-<16hex>.sock and a Unix
+    sun_path holds at most 104 bytes; the shipped default parent must keep the
+    full socket path within 103 bytes (a home-based store path overflows)."""
+    if not hasattr(os, "geteuid"):
+        pytest.skip("unix-only rendezvous budget")
+    parent = bp._engine_runtime_parent()
+    socket_path = (f"{parent}/sotgraph-engine-{os.geteuid()}"
+                   f"/cbm-daemon-{os.getuid()}/cbm-{'a' * 16}.sock")
+    assert len(socket_path.encode("utf-8")) <= 103
+
+
+def test_engine_runtime_env_fail_closed_on_unusable_store(tmp_path, monkeypatch):
+    def broken_mkdir(self, *args, **kwargs):
+        raise OSError("disk on fire")
+    monkeypatch.setattr(bp.Path, "mkdir", broken_mkdir)
+    with pytest.raises(bp.BootstrapError, match="runtime namespace unavailable"):
+        bp.engine_runtime_env(tmp_path, "codebase-memory")
+    # No silent fallback: env vars are only returned together with real dirs.
+    with pytest.raises(bp.BootstrapError):
+        bp.engine_runtime_env(tmp_path, "other-engine")
+
+
+def test_engine_runtime_env_fail_closed_without_posix_euid(tmp_path, monkeypatch):
+    """Platforms without geteuid (Windows) refuse cleanly instead of crashing."""
+    monkeypatch.delattr(os, "geteuid", raising=False)
+    with pytest.raises(bp.BootstrapError, match="unsupported on this platform"):
+        bp.engine_runtime_env(tmp_path, "codebase-memory")

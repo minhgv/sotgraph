@@ -188,6 +188,38 @@ class GitHooksTests(unittest.TestCase):
         self.assertIn("#!/bin/sh", content)
         self.assertIn(HOOK_MARKER, content)
 
+    def test_hooks_legacy_marker_migrated_in_place(self):
+        from sot_graph.adapters.hooks import (
+            HOOK_MARKER,
+            LEGACY_HOOK_MARKERS,
+            install_git_hooks,
+        )
+
+        legacy = LEGACY_HOOK_MARKERS[0]
+        hook = Path(self.test_dir) / ".git" / "hooks" / "post-merge"
+        hook.parent.mkdir(parents=True, exist_ok=True)
+        hook.write_text(
+            "#!/bin/sh\n"
+            f"{legacy}\n"
+            'PYTHONPATH="/old" python -m sot_graph.cli reconcile || true\n'
+            "echo user-owned\n",
+            encoding="utf-8",
+        )
+
+        installed = install_git_hooks(Path(self.test_dir))
+
+        self.assertEqual({h.name for h in installed}, {"post-merge", "post-checkout"})
+        content = hook.read_text(encoding="utf-8")
+        self.assertNotIn(legacy, content)
+        self.assertEqual(content.count(HOOK_MARKER), 1)
+        self.assertIn("#!/bin/sh", content)
+        self.assertIn("echo user-owned", content)
+        self.assertTrue(os.access(hook, os.X_OK))
+
+        # Re-running stays idempotent and never duplicates the migrated block.
+        install_git_hooks(Path(self.test_dir))
+        self.assertEqual(hook.read_text(encoding="utf-8").count(HOOK_MARKER), 1)
+
 
 class BenchmarkScriptTests(unittest.TestCase):
     def setUp(self):

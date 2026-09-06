@@ -6,6 +6,8 @@ from pathlib import Path
 import json
 import sys
 
+from sot_graph.adapters.migration import assign_server_entry
+
 CLAUDE_SECTION = """
 ## SOT-Graph Knowledge Reuse Protocol (SSOT)
 
@@ -105,10 +107,10 @@ def _merge_mcp_json(mcp_path: Path, python_bin: str) -> None:
     if "mcpServers" not in data or not isinstance(data["mcpServers"], dict):
         data["mcpServers"] = {}
 
-    data["mcpServers"]["sot-graph"] = {
+    assign_server_entry(data["mcpServers"], {
         "command": python_bin,
         "args": ["-m", "sot_graph.cli", "mcp"],
-    }
+    })
 
     mcp_path.parent.mkdir(parents=True, exist_ok=True)
     mcp_path.write_text(json.dumps(data, indent=2), encoding="utf-8")

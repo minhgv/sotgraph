@@ -11,7 +11,8 @@ import sys
 from pathlib import Path
 from typing import List
 
-HOOK_MARKER = "# sot-graph: keep the knowledge graph in sync"
+HOOK_MARKER = "# sotgraph: keep the knowledge graph in sync"
+LEGACY_HOOK_MARKERS = ("# sot-graph: keep the knowledge graph in sync",)
 HOOK_NAMES = ("post-merge", "post-checkout")
 
 
@@ -49,6 +50,18 @@ def install_git_hooks(root: Path) -> List[Path]:
             if HOOK_MARKER in existing:
                 installed.append(hook)
                 continue
+            # Migrate in place: a legacy-marked block is re-labelled, never
+            # duplicated. Non-marker content (user lines, old command lines)
+            # is preserved byte-for-byte.
+            migrated = existing
+            for legacy in LEGACY_HOOK_MARKERS:
+                if legacy in migrated:
+                    migrated = migrated.replace(legacy, HOOK_MARKER)
+            if migrated != existing:
+                hook.write_text(migrated, encoding="utf-8")
+                hook.chmod(0o755)
+                installed.append(hook)
+                continue
         with open(hook, "a", encoding="utf-8") as fh:
             if existing and not existing.endswith("\n"):
                 fh.write("\n")
@@ -58,4 +71,4 @@ def install_git_hooks(root: Path) -> List[Path]:
     return installed
 
 
-__all__ = ["install_git_hooks", "HOOK_MARKER", "HOOK_NAMES"]
+__all__ = ["install_git_hooks", "HOOK_MARKER", "LEGACY_HOOK_MARKERS", "HOOK_NAMES"]

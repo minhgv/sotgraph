@@ -1,9 +1,9 @@
 ---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export), and 2-stage fact bundle extraction for comprehensive LLM architecture reports.
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer)
+# /sotgraph (Single Source of Truth Knowledge Layer)
 
 When to use:
 - **Top-down orientation**: Map repository architecture without token waste (`sotgraph map` / `sot_map`).
@@ -35,7 +35,7 @@ When to use:
 | **Inspect Usages** | `sotgraph usages "<symbol>"` | `xd://sot_usages` |
 | **Implementations** | `sotgraph implementations "<interface>"` | `xd://sot_implementations` |
 | **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
-| **Pack Subgraph** | `sotgraph pack "<symbol>" [--depth 2] [-o <file>]`| `xd://sot_pack` |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `xd://sot_pack` |
 | **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `xd://sot_reconcile` |
 | **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
 | **Audit Drift** | `sotgraph verify [--deep]` | `xd://sot_verify` |

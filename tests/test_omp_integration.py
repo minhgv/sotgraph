@@ -23,6 +23,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from conftest import require_shebang_exec
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BIN_SOT = REPO_ROOT / "bin" / "sotgraph"
 
@@ -40,6 +42,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
         cls.tmp_dir.cleanup()
 
     def run_sot(self, args: list[str], check: bool = True) -> subprocess.CompletedProcess:
+        require_shebang_exec()
         has_db = any(a == "--db" or a.startswith("--db=") for a in args)
         extra_args = [] if has_db else ["--db", str(self.db_path)]
         if sys.platform == "win32":
@@ -221,6 +224,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
             self.assertIn("<graphml", graphml_out.read_text())
     def test_adapter_security_and_maintenance_contracts(self):
         """OMP/OpenCode adapters use trusted PATH commands and safe tool flags."""
+        require_shebang_exec()
         if sys.platform == "win32":
             self.skipTest("The executable PATH harness is POSIX-specific")
         bun = shutil.which("bun")
@@ -472,7 +476,7 @@ process.env.PATH = originalPath;
         """Scenario 10: OMP and OpenCode TypeScript compilation."""
         extension_paths = [
             REPO_ROOT / "src" / "sot_graph" / "adapters" / "omp_extension.ts",
-            REPO_ROOT / ".omp" / "extensions" / "sot-graph.ts",
+            REPO_ROOT / ".omp" / "extensions" / "sotgraph.ts",
             REPO_ROOT / "src" / "sot_graph" / "adapters" / "opencode_plugin.ts",
         ]
         self.assertEqual(extension_paths[0].read_bytes(), extension_paths[1].read_bytes())

@@ -500,6 +500,7 @@ class CodebaseMemoryProvider:
         provider_version: str | None = None,
         exact_context: ExactCompatibilityContext | None = None,
         managed_runtime: "ManagedQueryRuntime | None" = None,
+        engine_store_root: str | os.PathLike[str] | None = None,
     ) -> None:
         cfg_command: list[str] | None = getattr(config, "command", None)
         cfg_caps = tuple(getattr(config, "capabilities", ()) or ())
@@ -530,6 +531,11 @@ class CodebaseMemoryProvider:
         self._query_timeout = float(query_timeout)
         self._index_timeout = float(index_timeout)
         self._max_output_bytes = int(max_output_bytes)
+        # P1.1 namespace (master plan §7.1): when set, every engine spawn
+        # merges CBM_RUNTIME_DIR/CBM_CACHE_DIR into the child env (per-account
+        # layout under the engine store); the parent environment is untouched.
+        self._engine_store_root = (
+            os.fspath(engine_store_root) if engine_store_root is not None else None)
         #: repo_root(realpath) -> (resolved_project, problem, next_action);
         #: avoids one ``list_projects`` round-trip per query on the same root.
         self._project_cache: dict[str, tuple[str | None, str | None, str | None]] = {}
@@ -816,6 +822,17 @@ class CodebaseMemoryProvider:
             return VERSION_UNTESTED
         return VERSION_INCOMPATIBLE
 
+    def _engine_spawn_env(self) -> dict[str, str] | None:
+        """Namespaced engine env for one-shot spawns; ``None`` when opted out.
+
+        Fail-closed: an unusable store raises BootstrapError (RuntimeError)
+        with a clean message instead of falling back to the default layout.
+        """
+        if self._engine_store_root is None:
+            return None
+        from .bootstrap import engine_runtime_env
+        return engine_runtime_env(self._engine_store_root, PROVIDER_NAME)
+
     def probe(self, repo_root: str) -> ProviderStatus:
         """Probe ``<command> --version``; never raises.
 
@@ -846,6 +863,7 @@ class CodebaseMemoryProvider:
             cwd=os.path.realpath(repo_root),
             timeout_seconds=min(self._query_timeout, 15.0),
             max_output_bytes=self._max_output_bytes,
+            env_extra=self._engine_spawn_env(),
         )
         duration_ms = int((time.monotonic() - started) * 1000)
         self._persist_run(
@@ -1108,9 +1126,14 @@ class CodebaseMemoryProvider:
         # A runtime-side gate refusal overrides this dispatch's identity
         # claim: artifact_verified is never reported from a refused gate.
         assessment = None if mr.status == "gate_refused" else gate
+        detail = failure or "managed dispatch ok"
+        transport = getattr(mr, "transport", None)
+        if transport is not None:  # P1.2 additive provenance (honest D6)
+            detail += f"; transport={transport}"
+            if getattr(mr, "fallback_reason", None):
+                detail += f" (fallback: {mr.fallback_reason})"
         run = self._managed_run_record(
-            tool, status, duration_ms, failure or "managed dispatch ok",
-            assessment,
+            tool, status, duration_ms, detail, assessment,
         )
         match = (
             self.snapshot_match(repo_root, project=project)
@@ -1265,6 +1288,7 @@ class CodebaseMemoryProvider:
                 cwd=cwd,
                 timeout_seconds=timeout_seconds,
                 max_output_bytes=self._max_output_bytes,
+                env_extra=self._engine_spawn_env(),
             )
             duration_ms = int((time.monotonic() - started) * 1000)
         finally:
@@ -1974,6 +1998,7 @@ class CodebaseMemoryProvider:
                 argv, cwd=repo_path,
                 timeout_seconds=timeout,
                 max_output_bytes=self._max_output_bytes,
+                env_extra=self._engine_spawn_env(),
             )
             duration_ms = int((time.monotonic() - started) * 1000)
         except OSError as exc:

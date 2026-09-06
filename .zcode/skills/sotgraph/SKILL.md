@@ -1,21 +1,23 @@
 ---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles).
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer for OpenCode)
+# /sotgraph (Single Source of Truth Knowledge Layer for ZCode)
 
-Ground OpenCode agent actions in physical filesystem reality using the SOT knowledge layer.
+Ground every implementation decision in physical filesystem reality. The graph
+(`.sot/sot.db`) is an authoritative projection of the codebase — never a
+replacement for verifying against disk.
 
 ## When to Use SOT-Graph
 - **Top-down orientation**: Map repository architecture without token waste (`sotgraph map` / `sot_map`).
 - **Before writing or implementing code**: Search if utilities or existing solutions already exist (`sotgraph search` / `sot_search`).
 - **Before modifying core functions or classes**: Trace upstream/downstream dependencies (`sotgraph explore` / `sot_explore`, `sotgraph usages` / `sot_usages`).
 - **Polymorphism & interface inspection**: Inspect concrete implementations (`sotgraph implementations` / `sot_implementations`).
-- **Safe symbol refactoring**: Plan or execute multi-file renames (`sotgraph rename` / `sot_rename`).
+- **Safe symbol refactoring**: Plan or execute multi-file renames (`sotgraph rename`).
 - **Token-efficient context packaging**: Extract k-hop subgraphs into YAML ContextBundles (`sotgraph pack` / `sot_pack`).
-- **Verifying disk consistency**: Audit phantom anchors and drift (`sotgraph verify` / `sot_verify`).
-- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sotgraph insert` / `sot_insert`).
+- **Verifying disk consistency**: Audit phantom anchors and drift (`sotgraph verify`).
+- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sotgraph insert`).
 - **Architecture analysis & reports**: Extract 5 fact bundle files (`sotgraph bundle` / `sot_bundle`), generate visual graphs, community clustering, or health reports (`sotgraph cluster`, `sotgraph report`, `sotgraph viz`, `sotgraph export`).
 - **Git diff & revision blast radius**: Trace upstream callers, breaking API impacts, and affected tests across commits or working tree changes (`sotgraph diff-impact` / `sot_diff_impact`).
 - **Git commit risk analysis**: Inspect commit history with automated risk scoring and impacted symbol tracking (`sotgraph log` / `sot_git_history`).
@@ -38,19 +40,19 @@ Ground OpenCode agent actions in physical filesystem reality using the SOT knowl
 | **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `sot_explore` |
 | **Inspect Usages** | `sotgraph usages "<symbol>"` | `sot_usages` |
 | **Implementations** | `sotgraph implementations "<interface>"` | `sot_implementations` |
-| **Rename Impact** | `sotgraph rename "<symbol>" --to <new_name>` | `sot_rename` |
-| **Pack Subgraph** | `sotgraph pack "<symbol>" [--depth 2] [-o <file>]`| `sot_pack` |
-| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `sot_reconcile` |
+| **Rename Impact** | `sotgraph rename "<symbol>" --to <new_name>` | `CLI only` |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `sot_pack` |
+| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `CLI only` |
 | **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
-| **Audit Drift** | `sotgraph verify [--deep]` | `sot_verify` |
-| **Database Doctor** | `sotgraph doctor` | `sot_doctor` |
-| **Clean Stale Data**| `sotgraph clean [--purge-missing] [--include-notes]` | `sot_clean` |
-| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `sot_vacuum` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_insert` |
-| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `sot_cluster` |
-| **Architecture Report** | `sotgraph report [-o report.md]` | `sot_report` |
-| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `sot_viz` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `sot_export` |
+| **Audit Drift** | `sotgraph verify [--deep]` | `sot_verify_drift` |
+| **Database Doctor** | `sotgraph doctor` | `CLI only` |
+| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `CLI only` |
+| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `CLI only` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `CLI only` |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `CLI only` |
+| **Architecture Report** | `sotgraph report [-o report.md]` | `sot_architecture_report` |
+| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `CLI only` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `CLI only` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `sot_bundle` |
 | **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
@@ -90,12 +92,12 @@ Before modifying, refactoring, or renaming core functions/classes:
 6. Inspect commit risk history via `sotgraph log` or `sot_git_history`.
 ### 4. Context Isolation & Subgraph Packaging Protocol
 When delegating code context to subagents or prompt registers:
-1. Run `sotgraph pack "<symbol>" --depth 2 -o .sot/bundle/context.yaml` to extract a token-efficient k-hop subgraph.
+1. Run `sotgraph pack "<symbol>" --max-hops 2 -o .sot/bundle/context.yaml` to extract a token-efficient k-hop subgraph.
 2. Feed the compact YAML ContextBundle instead of full raw files to save 60-70% tokens.
 
 ### 5. Self-Healing & Drift Reconciliation
-- If you create, move, or delete files, run `sotgraph reconcile` or `sot_reconcile` (or `sotgraph batch-reconcile` for monorepos).
-- Run `sotgraph verify --deep` or `sot_verify` to audit phantom anchors and dead paths.
+- If you create, move, or delete files, run `sotgraph reconcile` (or `sotgraph batch-reconcile` for monorepos).
+- Run `sotgraph verify --deep` or `sot_verify_drift` to audit phantom anchors and dead paths.
 - After completing tricky bugs or complex architectural designs, record knowledge:
   `sotgraph insert --title "..." --body "..." --keywords "..."`.
 

@@ -35,7 +35,7 @@ db.close()
 service = McpService(db_path, ".")
 try:
     s = create_server(service)
-    assert s._sot_initialization_options.server_version == importlib.metadata.version("sot-graph")
+    assert s._sot_initialization_options.server_version == importlib.metadata.version("sotgraph")
     print("MCP server verified:", s._sot_initialization_options.server_version)
 finally:
     service.close()

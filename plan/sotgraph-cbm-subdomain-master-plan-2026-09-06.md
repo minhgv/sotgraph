@@ -95,3 +95,80 @@
    (SUR-08), `~/.config/sot-graph/managed.json` path, hook marker, skill dir names.
 5. G-gates: G4/G5/G7 (BLOCKED), G6 hiệu năng (managed p50 26.7s), SG-202 (<95%), SG-201
    human study.
+
+## 8. Kết quả P1 (ghi nhận 2026-09-06, cuối phiên P1)
+
+- **#1 (§7.1) Engine version coexistence — ĐẠT, 0 dòng C sửa.** Engine đã có sẵn
+  `CBM_RUNTIME_DIR` (bootstrap.c:228) được honor trên cả MCP client role (endpoint tự
+  phân giải override khi `runtime_parent==NULL`; validate fail-closed tại ipc.c:869-912);
+  engine test contract tồn tại sẵn (`daemon_bootstrap_runtime_dir_env_relocates_rendezvous`,
+  suite daemon_bootstrap 25/25 PASS). Provenance decision: pin = private mirror
+  `minhgv/sotgraph-cbm` theo commit (mirror chưa có tag 0.10.8; upstream không được tham
+  chiếu). sotgraph inject namespace env tại mọi điểm spawn (`bootstrap.engine_runtime_env`;
+  `EngineMcpClient(store_root=…)`; FEDERATED_CLI `env_extra`).
+  **Bài học sun_path (bug bắt từ E2E thật):** rendezvous socket
+  `<parent>/cbm-daemon-<uid>/cbm-<16hex>.sock` bị cap 104 bytes → parent tối đa
+  ~65 bytes; layout đầu `<store>/runtime/<name>` tràn (105 bytes trên máy này) → engine
+  tạo được dir nhưng chết ở `unix_address_set` không kèm diagnostic. Fix: runtime namespace
+  tại `<sys-tmp>/sotgraph-engine-<uid>` (0700) — đúng pattern root+sticky mà security walk
+  của engine chấp nhận; cache giữ `<store>/cache/<name>` (D3, cold by design).
+- **#2 (§7.2) MCP default transport — ĐẠT (code + stub tests).** `SOT_ENGINE_TRANSPORT`
+  = `auto` (default) | `mcp` (strict, refuse không fallback) | `cli` (hành vi cũ); giá
+  trị lạ refuse controlled. `auto`: managed read (`search_graph`/`index_status`/
+  `list_projects` — mapping identity với tools registry thật của engine) thử MCP stdio
+  trước, BẤT KỲ lỗi nào → fallback FEDERATED_CLI nguyên vẹn + ghi reason; provenance
+  trung thực (D6): `ManagedResult.transport`/`fallback_reason` + receipt
+  `transport=mcp|cli (fallback: …)`. `usages` do orchestrator refuse trước transport
+  (`unsupported_operation`, có từ trước). Per-op spawn + close; pooling là P2.
+- **#3 (§7.3) Platform matrix CI — ĐÃ AUTHOR, chưa vận hành.** Thêm
+  `engines/codebase-memory-mcp/.github/workflows/engine-release.yml` (trigger tag
+  `engine-v*`; preflight fail-closed refuse tag malformed; build matrix native runners
+  macos-14/ubuntu-latest/ubuntu-24.04-arm; release private kèm
+  `codebase-memory-mcp-<platform>` ×3 + checksums + `engine-pins.json` sinh tự động đúng
+  schema pin manifest) + `docs/RELEASING-ENGINE.md` (checklist owner: commit+push submodule,
+  enable Actions, push tag, copy pins). YAML parse OK; chưa actionlint; chưa push/tag.
+- **#4 (§7.4) Rename sâu P1 — ĐẠT.** MCP server key `sot-graph`→`sotgraph` mọi harness
+  kèm migration chống duplicate qua `adapters/migration.py` (chỉ xóa legacy khi chứng minh
+  được là của sotgraph — entry chứa `sot_graph`/`sotgraph`; foreign kept nguyên vẹn);
+  skill dirs → `skills/sotgraph` (legacy xóa chỉ khi byte-identical template); HOOK_MARKER
+  mới + nhận diện marker cũ migrate in-place không đúp; `~/.config/sotgraph/managed.json`
+  (read-fallback legacy tại account-home thật + migrate-on-write; không bao giờ xóa file
+  legacy). +9 test migration; dogfood surfaces repo đã chuyển (.zcode/.omp/.opencode/.gemini).
+  Sót có chủ đích: docstrings/plan-file refs, regex phát hiện legacy
+  (check_repository_identity), brand prose, `BEGIN/END SOT-GRAPH` content markers.
+  Vụt sót P0 đã đắp: `scripts/ci_smoke.py` + `scripts/check_surface_packaging.py` còn
+  tra cứu dist `sot-graph` → đã đổi `sotgraph`.
+- **#5 (§7.5) G-gates — KHÔNG THỰC HIỆN** (BLOCKED như ghi tại §7.5); G6 giờ đo được trên
+  transport MCP thật (đã khả dụng).
+- **E2E thật (trên máy owner, daemon CBM cá nhân 0.10.8 vẫn đang chạy):**
+  `sotgraph engine mcp-probe` → **status ok**, handshake `2024-11-05`, engine liệt kê 15
+  tools (index_repository, search_graph, query_graph, trace_path, get_code_snippet,
+  get_graph_schema, get_architecture, search_code, list_projects, delete_project,
+  index_status, check_index_coverage, detect_changes, manage_adr, ingest_traces).
+  P0 §6.#3 ("bắt tay dương tính chưa đạt") → **ĐẠT**.
+- **Giới hạn trung thực — môi trường agent shell:** exec script shebang trực tiếp bị treo
+  trong sandbox agent (binary + explicit-interpreter bình thường; chứng minh bằng stash:
+  `test_resolution_cached_per_repo_root` fail y hệt trên pristine HEAD sau đúng 30s
+  budget). `test_probe_ok` nay skip-có-lý-do khi shebang exec không khả dụng. Các fail
+  nhóm `make_exe`/PATH-fake shebang trong môi trường agent là environmental; chuẩn đối
+  chiếu là full suite trong terminal user (P0: 2223 pass).
+- **Test cuối phiên (kết thúc P1, có shebang guard):** full suite **2143 passed /
+  114 skipped / 0 failed** trong **159s** (trước guard: 2168/81/6 mất 54:55). Diễn biến
+  nghiệm thu: (1) phát hiện 81 fail = **77 environmental** (shebang/PATH-fake spawn treo
+  trong sandbox agent — stash-verify trực tiếp 18 đại diện fail y hệt trên pristine HEAD)
+  + **4 regression thật** (`test_completion_surface_provider.py` SUR-02/10/11:
+  `_mcp_dispatch` chỉ bắt `EngineMcpError` nên exception ngoài hợp đồng client — xuất hiện
+  khi surface test intercept `subprocess.Popen` — crash dispatch thành
+  `policy_unsatisfiable`, vi phạm cam kết "fallback mọi lỗi MCP"). (2) **Fix regression**:
+  `_mcp_dispatch` bắt thêm exception ngoài hợp đồng với reason
+  `engine MCP transport contract breach: <type>`, close() best-effort; test mới
+  `test_auto_transport_contract_breach_falls_back_to_cli`; 12/12 pass sau fix. (3) **Chuyển
+  77 environmental thành skip-có-lý-do**: `tests/conftest.py` thêm detect differential
+  `shebang_exec_available()` (chỉ kết luận False khi direct exec hỏng mà explicit
+  interpreter chạy được — tránh nhầm môi trường chỉ chậm) + `require_shebang_exec()`;
+  10 file test dùng fake shebang engine gọi guard. Kết quả: agent shell 0 fail, 114 skip
+  (77 environmental + Windows precedent + side-effect cùng helper); runtime toàn suite
+  giảm 54:55 → 2:39 do không còn đốt budget 30s/test treo. Probe MCP thật sau guard vẫn
+  `status: ok` (protocol 2024-11-05, 15 tools). **Khuyến nghị owner: chạy lại full suite
+  trong terminal user làm chuẩn nghiệm thu cuối** (môi trường shebang lành mạnh kỳ vọng
+  ~2257 collected, 0 skipped-environmental).

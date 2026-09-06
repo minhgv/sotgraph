@@ -14,6 +14,9 @@ import time
 from pathlib import Path
 
 import pytest
+
+from conftest import require_shebang_exec
+
 from sot_graph.config import ProviderConfig
 from sot_graph.proc import RunResult
 from sot_graph.providers.base import IndexRequest, SymbolRequest
@@ -56,6 +59,7 @@ def make_exe(directory: Path, name: str, body: str) -> str:
         wrapper = directory / f"{name}.cmd"
         wrapper.write_text(f'@"{sys.executable}" "%~dp0{name}.py" %*\r\n', encoding="utf-8")
         return str(wrapper)
+    require_shebang_exec()
     path = directory / name
     path.write_text(f"#!{sys.executable}\n{body}")
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -749,3 +753,77 @@ class TestProjectResolution:
 def _index_request(repo_root):
     from sot_graph.providers.base import IndexRequest
     return IndexRequest(repo_root=repo_root)
+
+
+ENV_ECHO_FAKE = (
+    "import json, os, sys\n"
+    "argv = sys.argv[1:]\n"
+    "tool = argv[argv.index('--json') + 1] if '--json' in argv else ''\n"
+    "if tool == 'list_projects':\n"
+    "    payload = {'projects': [{'name': 'fake-proj', 'root_path': os.getcwd()}],"
+    " 'total': 1, 'has_more': False}\n"
+    "elif tool == 'index_status':\n"
+    "    payload = {'indexed': True, 'head_sha': 'a' * 40, 'dirty': False}\n"
+    "else:\n"
+    "    payload = {'runtime': os.environ.get('CBM_RUNTIME_DIR', ''),\n"
+    "               'cache': os.environ.get('CBM_CACHE_DIR', '')}\n"
+    "env = {'content': [{'type': 'text', 'text': json.dumps(payload)}],\n"
+    "       'isError': False, 'structuredContent': {}}\n"
+    "print(json.dumps(env))\n"
+)
+
+
+def py_fake(directory: Path, name: str, body: str) -> tuple[str, ...]:
+    """Interpreter-prefixed command (no shebang exec): (sys.executable, script)."""
+    script = directory / f"{name}.py"
+    script.write_text(body, encoding="utf-8")
+    return (PY, str(script))
+
+
+class TestEngineNamespaceEnv:
+    """P1.1 §7.1: every engine spawn merges the per-account store namespace."""
+
+    def test_search_spawn_carries_namespaced_env(self, tmp_path, monkeypatch):
+        import sot_graph.providers.bootstrap as bp
+        monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
+        store = tmp_path / "store"
+        command = py_fake(tmp_path, "cbm-env", ENV_ECHO_FAKE)
+        provider = CodebaseMemoryProvider(command=command, engine_store_root=str(store))
+        outcome = provider.search_symbols(_sym_request(str(tmp_path), "foo", project=None))
+        assert outcome.ok is True
+        runtime = tmp_path / "rt" / f"sotgraph-engine-{os.geteuid()}"
+        cache = store / "cache" / "codebase-memory"
+        assert outcome.payload == {"runtime": str(runtime), "cache": str(cache)}
+        for path in (runtime, cache):
+            assert path.is_dir()
+            assert path.stat().st_mode & 0o777 == 0o700
+
+    def test_index_spawn_carries_namespaced_env(self, tmp_path, monkeypatch):
+        import sot_graph.providers.bootstrap as bp
+        monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
+        store = tmp_path / "store"
+        command = py_fake(tmp_path, "cbm-env-index", ENV_ECHO_FAKE)
+        provider = CodebaseMemoryProvider(command=command, engine_store_root=str(store))
+        record = provider.index(_index_request(str(tmp_path)))
+        assert record.status == "ok"
+        assert (tmp_path / "rt" / f"sotgraph-engine-{os.geteuid()}").is_dir()
+        assert (store / "cache" / "codebase-memory").is_dir()
+
+    def test_no_store_root_keeps_default_spawn_env(self, tmp_path):
+        command = py_fake(tmp_path, "cbm-noenv", ENV_ECHO_FAKE)
+        provider = CodebaseMemoryProvider(command=command)
+        outcome = provider.search_symbols(_sym_request(str(tmp_path), "foo", project=None))
+        assert outcome.ok is True
+        assert outcome.payload == {"runtime": "", "cache": ""}
+
+    def test_fail_closed_when_namespace_unavailable(self, tmp_path, monkeypatch):
+        import sot_graph.providers.bootstrap as bp
+        command = py_fake(tmp_path, "cbm-broken", ENV_ECHO_FAKE)
+        provider = CodebaseMemoryProvider(command=command, engine_store_root=str(tmp_path))
+
+        def broken(store_root, engine_name):
+            raise bp.BootstrapError("managed engine runtime namespace unavailable: nope")
+
+        monkeypatch.setattr(bp, "engine_runtime_env", broken)
+        with pytest.raises(bp.BootstrapError, match="runtime namespace unavailable"):
+            provider.search_symbols(_sym_request(str(tmp_path), "foo", project=None))

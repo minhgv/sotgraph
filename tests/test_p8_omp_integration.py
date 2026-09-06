@@ -133,7 +133,7 @@ class TestAssuredChangeLoop:
         installed = omp_adapter.setup_omp(
             tmp_path, global_install=False, workspace_install=True,
         )
-        rules = tmp_path / ".omp" / "rules" / "sot-graph.md"
+        rules = tmp_path / ".omp" / "rules" / "sotgraph.md"
         assert str(rules) in installed
         text = rules.read_text(encoding="utf-8")
         assert "scope-receipt" in text
@@ -146,7 +146,7 @@ class TestAssuredChangeLoop:
 
         omp_adapter.setup_omp(tmp_path, global_install=False,
                               workspace_install=True)
-        for rel in (".omp/rules/sot-graph.md", ".omp/skills/sot-graph/SKILL.md"):
+        for rel in (".omp/rules/sotgraph.md", ".omp/skills/sotgraph/SKILL.md"):
             text = (tmp_path / rel).read_text(encoding="utf-8")
             assert "100%" not in text, rel
 

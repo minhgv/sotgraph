@@ -7,12 +7,18 @@ import json
 import shutil
 import sys
 
+from sot_graph.adapters.migration import (
+    assign_server_entry,
+    remove_legacy_dir,
+    write_skill_dir,
+)
+
 OPENCODE_SKILL_MARKDOWN = """---
-name: sot-graph
+name: sotgraph
 description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles).
 ---
 
-# /sot-graph (Single Source of Truth Knowledge Layer for OpenCode)
+# /sotgraph (Single Source of Truth Knowledge Layer for OpenCode)
 
 Ground OpenCode agent actions in physical filesystem reality using the SOT knowledge layer.
 
@@ -141,11 +147,11 @@ def _merge_opencode_json(config_path: Path, python_bin: str) -> None:
     if "mcp" not in data or not isinstance(data["mcp"], dict):
         data["mcp"] = {}
 
-    data["mcp"]["sot-graph"] = {
+    assign_server_entry(data["mcp"], {
         "type": "local",
         "command": [python_bin, "-m", "sot_graph.cli", "mcp"],
         "enabled": True,
-    }
+    })
 
     # 2. Add skill permissions
     if "permission" not in data or not isinstance(data["permission"], dict):
@@ -174,12 +180,8 @@ def setup_opencode(root: Path, global_install: bool = True, workspace_install: b
     # Workspace level (.opencode/)
     if workspace_install:
         opencode_dir = root / ".opencode"
-        skill_dir = opencode_dir / "skills" / "sot-graph"
-        skill_dir.mkdir(parents=True, exist_ok=True)
-
-        # Write workspace skill
-        (skill_dir / "SKILL.md").write_text(OPENCODE_SKILL_MARKDOWN, encoding="utf-8")
-        installed.append(str(skill_dir / "SKILL.md"))
+        skill_file = write_skill_dir(opencode_dir / "skills", OPENCODE_SKILL_MARKDOWN)
+        installed.append(str(skill_file))
 
         # Write workspace opencode.json
         ws_config = opencode_dir / "opencode.json"
@@ -190,8 +192,8 @@ def setup_opencode(root: Path, global_install: bool = True, workspace_install: b
     if global_install:
         home = Path.home()
         global_cfg_dir = home / ".config" / "opencode"
-        global_skill_dir = global_cfg_dir / "skill" / "sot-graph"
-        global_plugin_dir = global_cfg_dir / "plugins" / "sot-graph"
+        global_skill_dir = global_cfg_dir / "skill" / "sotgraph"
+        global_plugin_dir = global_cfg_dir / "plugins" / "sotgraph"
 
         global_skill_dir.mkdir(parents=True, exist_ok=True)
         global_plugin_dir.mkdir(parents=True, exist_ok=True)
@@ -204,6 +206,11 @@ def setup_opencode(root: Path, global_install: bool = True, workspace_install: b
         if plugin_src.exists():
             shutil.copy2(plugin_src, global_plugin_dir / "index.ts")
             installed.append(str(global_plugin_dir / "index.ts"))
+            # Migrate a template-only legacy plugin dir; never touch user edits.
+            remove_legacy_dir(
+                global_cfg_dir / "plugins" / "sot-graph",
+                {"index.ts": plugin_src.read_bytes()},
+            )
 
         # Update global opencode.json
         global_config = global_cfg_dir / "opencode.json"

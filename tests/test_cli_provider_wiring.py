@@ -14,6 +14,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import require_shebang_exec, shebang_exec_available
+
 from sot_graph.cli import main as cli_main
 from sot_graph.db import Database
 from sot_graph.reconciler import Reconciler
@@ -26,8 +28,9 @@ PY = sys.executable
 # fake cannot be spawned there. Adapter spawn behavior stays covered
 # cross-platform by tests/test_cbm_adapter.py (absolute command paths).
 requires_path_spawned_cbm = pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="PATH-discovered bare-name fakes need PE executables on Windows",
+    sys.platform == "win32" or not shebang_exec_available(),
+    reason="PATH-discovered bare-name fakes need PE executables on Windows, "
+           "or direct shebang exec is unavailable (see tests/conftest.py)",
 )
 
 def make_exe(directory: Path, name: str, body: str) -> str:
@@ -39,6 +42,7 @@ def make_exe(directory: Path, name: str, body: str) -> str:
         wrapper = directory / f"{name}.cmd"
         wrapper.write_text(f'@"{sys.executable}" "%~dp0{name}.py" %*\r\n', encoding="utf-8")
         return str(wrapper)
+    require_shebang_exec()
     path = directory / name
     path.write_text(f"#!{PY}\n{body}")
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)

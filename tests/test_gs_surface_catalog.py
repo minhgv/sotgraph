@@ -115,10 +115,10 @@ def test_sur08_existing_native_entries_preserved_and_setup_idempotent(tmp_path, 
     assert {str(p.relative_to(root)): p.read_bytes() for p in root.rglob('*') if p.is_file()} == first
     result = json.loads(config.read_text())
     entries = result['mcpServers'] if harness == 'claude' else result['mcp']['servers']
-    assert set(entries) == set(existing) | {'sot-graph'}
+    assert set(entries) == set(existing) | {'sotgraph'}
     assert {key: entries[key] for key in existing} == existing
     assert result['keep'] == [1]
-    assert entries['sot-graph']['args'] == ['-m', 'sot_graph.cli', 'mcp']
+    assert entries['sotgraph']['args'] == ['-m', 'sot_graph.cli', 'mcp']
     assert os.environ.get('PATH') == path_before
     assert (root / 'AGENTS.md').read_text().startswith(user_rules)
 

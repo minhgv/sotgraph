@@ -37,7 +37,7 @@ Before modifying, refactoring, or renaming core functions/classes:
 
 ## 6. Self-Healing & Drift Reconciliation
 - If you create, move, or delete files, run:
-  `sotgraph reconcile` or `sot_reconcile` tool (or `sotgraph batch-reconcile` for monorepo roots).
+  `sotgraph reconcile` tool (or `sotgraph batch-reconcile` for monorepo roots).
 - After completing tricky bugs or complex architectural designs, record knowledge:
   `sotgraph insert --title "..." --body "..." --keywords "..."`.
 
