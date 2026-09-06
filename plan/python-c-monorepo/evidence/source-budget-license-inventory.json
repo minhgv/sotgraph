@@ -1,0 +1,1320 @@
+{
+  "pin": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+  "classification": "Path heuristic, not legal review or proof that all generated files are identified",
+  "groups": {
+    "other-source-resources": {
+      "files": 826,
+      "bytes": 28906344
+    },
+    "grammar-wrapper": {
+      "files": 160,
+      "bytes": 30992
+    },
+    "other-vendored": {
+      "files": 903,
+      "bytes": 54496363
+    },
+    "generated-parser": {
+      "files": 161,
+      "bytes": 1249323393
+    }
+  },
+  "license_notice_files": [
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/common/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/common/tree_sitter/LICENSE",
+      "mode": "100644",
+      "git_blob": "971b81f9a86c0c91827e225aeac9159a13bfd3c1",
+      "bytes": 1080,
+      "sha256": "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ada/LICENSE",
+      "mode": "100644",
+      "git_blob": "e721cfa9879bb0e2576b6674f73f6903c4ea4d8a",
+      "bytes": 1071,
+      "sha256": "ad8425038de519f8c4e3e9339feebf99dfad8a6002dcf79227d91402780a32cc"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/agda/LICENSE",
+      "mode": "100644",
+      "git_blob": "70f51714c33fbbf40b45858286df9e562b08cc6e",
+      "bytes": 1069,
+      "sha256": "ef120ea13e3e543234f3d9a193c99ea512872979802dc0cebaea404c1a47047c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/apex/LICENSE",
+      "mode": "100644",
+      "git_blob": "4d78f763e739b1456b316200e5acdcf6f0130a2d",
+      "bytes": 1079,
+      "sha256": "c3d045abbc0a8dec1b00737c0668f6dbb028d248521b74e79778c726671925ed"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/assembly/LICENSE",
+      "mode": "100644",
+      "git_blob": "af20f4ccec1b50b96524292b1ee8736b6b0a2343",
+      "bytes": 1052,
+      "sha256": "0e9f43573925c2e4b49f328a45c4df22c882191d77d876b0d18ecd60bd21e17c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/astro/LICENSE",
+      "mode": "100644",
+      "git_blob": "844cf163cb8ab4940585669f72a1eed87e68a29b",
+      "bytes": 1071,
+      "sha256": "9ec95a90150fa19e2cee78faf49138fc480f6f7a2354006a0ab150c44239447e"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/awk/LICENSE",
+      "mode": "100644",
+      "git_blob": "2fa7442c4e4b6145a30ef6b1b406de0b500b35c7",
+      "bytes": 1084,
+      "sha256": "512d5f9072b6227e356c765b40a4194fda964f75095b0816f24ce75aa8df03fa"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/bash/LICENSE",
+      "mode": "100644",
+      "git_blob": "aa9f858db5722d9576104726471b11cc0e31f131",
+      "bytes": 1080,
+      "sha256": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/beancount/LICENSE",
+      "mode": "100644",
+      "git_blob": "98ba9221dceb0acf69483fbd64ad7802b9f8ff9a",
+      "bytes": 1067,
+      "sha256": "8976806a7d187d8e152d49146fae44d8a98bb15be05099e63843756c116efcf0"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/bibtex/LICENSE",
+      "mode": "100644",
+      "git_blob": "59eebc277049c4fe095ce1ae229ca267ee0951de",
+      "bytes": 1073,
+      "sha256": "e4bfcc87169fdab12e351211541723132f58648a5ffad8f0f45b534349dbed45"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/bicep/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/bitbake/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/blade/LICENSE",
+      "mode": "100644",
+      "git_blob": "63059db9dfa53b961bf66f978f3b2a8bbdd242fa",
+      "bytes": 1078,
+      "sha256": "96e0c1803ffb831c7287b1fb7f88567d05e58d37da553e6bb9a9c4a765434ecb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/c/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/c_sharp/LICENSE",
+      "mode": "100644",
+      "git_blob": "c8921f694d834542874bd0403afe97adb8f5dab3",
+      "bytes": 1133,
+      "sha256": "778fb7d63b8c1844da315648c02f325c4713a6f4a5d19644fd413421422776d3"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cairo/LICENSE",
+      "mode": "100644",
+      "git_blob": "eb7cf4400f6dc0304fb13715de60076d7999511f",
+      "bytes": 1146,
+      "sha256": "108bfb047e0d45962dcadedfce730c86c278bc2a67f6939df405a706bec27e20"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/capnp/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cfml/LICENSE",
+      "mode": "100644",
+      "git_blob": "aaf7a85db9f6e80c1ade3484da50e719087fe4a8",
+      "bytes": 1098,
+      "sha256": "7e17ba5e26b0438ca04ebf2d9e7931da3080509da6625e117f6feb943ecf767a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cfscript/LICENSE",
+      "mode": "100644",
+      "git_blob": "aaf7a85db9f6e80c1ade3484da50e719087fe4a8",
+      "bytes": 1098,
+      "sha256": "7e17ba5e26b0438ca04ebf2d9e7931da3080509da6625e117f6feb943ecf767a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/clojure/LICENSE",
+      "mode": "100644",
+      "git_blob": "0e259d42c996742e9e3cba14c677129b2c1b6311",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cmake/LICENSE",
+      "mode": "100644",
+      "git_blob": "6fc357f1c1b48bd764a2d38e9375fc65cfc68690",
+      "bytes": 1073,
+      "sha256": "97334c0f9c0962b33cbe03223f584b8ed64c2d14419ce80cc2e945eb8d367d28"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cobol/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/commonlisp/LICENSE",
+      "mode": "100644",
+      "git_blob": "09ba2f7c641bad68036687b6407c626932e2ea04",
+      "bytes": 1080,
+      "sha256": "00bb7f417416e8233ae465209e72eaa6162d53b061add7d9bed0238552a6fa0c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cpp/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/crystal/LICENSE",
+      "mode": "100644",
+      "git_blob": "546203e6bde30d10f810b4e38f55927737d5cd9f",
+      "bytes": 1072,
+      "sha256": "d1e5e5f807a9e842c16a0b392d7dcc5542f9ed9163533fa7d9798f7289fa8547"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/css/LICENSE",
+      "mode": "100644",
+      "git_blob": "971b81f9a86c0c91827e225aeac9159a13bfd3c1",
+      "bytes": 1080,
+      "sha256": "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/csv/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/cuda/LICENSE",
+      "mode": "100644",
+      "git_blob": "9f9389569253be78ee6a4f66b8ae73c3f810cf68",
+      "bytes": 1114,
+      "sha256": "f44d7107a33801260dc82624c91a71ebf5918b4038a0fb0e3ef60e2dd9ba1999"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/d/LICENSE",
+      "mode": "100644",
+      "git_blob": "9fb815cbfbca0f450d615128f2dfd684d01c09cf",
+      "bytes": 1040,
+      "sha256": "ecf206b1a27e8e4ea07f1e1529cb111b4be5ce8420bd27b8269981d9c0c389f8"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/dart/LICENSE",
+      "mode": "100644",
+      "git_blob": "9633f23d30fc86c9ee3914c25ae356a92c8a191c",
+      "bytes": 1071,
+      "sha256": "d270cb3a4985d75033bd77d875ccebff1d66e32788a3f727891e28d76132dd46"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/devicetree/LICENSE",
+      "mode": "100644",
+      "git_blob": "1dcadfcba5b0c5255162694b3516b5527fb88e42",
+      "bytes": 1077,
+      "sha256": "b539c1b4ccd868c8d4fc89651c8133a1678823f5057e2e1a81455a3df4f4c0b8"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/diff/LICENSE",
+      "mode": "100644",
+      "git_blob": "d1e0083ce13f8f2c06fffa4b00dbb46172e2f491",
+      "bytes": 1070,
+      "sha256": "bb98faf5a86e9458536a6c745e02b53775d01066f1e51dda4ae220a3c0b050f4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/dockerfile/LICENSE",
+      "mode": "100644",
+      "git_blob": "97faf2b669c6a117400ede53c66691c542f400a0",
+      "bytes": 1080,
+      "sha256": "806b8fcd19c1cdf23e178eb25942acc844a38669e36b2c896c7baf5f8bcecbb4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/dotenv/LICENSE",
+      "mode": "100644",
+      "git_blob": "5ffd2d72c2d2bbea5e9d52469ca95880411c942a",
+      "bytes": 1074,
+      "sha256": "117a35332cc959aea7d16cfa7427f097f7fcfff6b4ef16b14a91a7296f3897dc"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/elisp/LICENSE",
+      "mode": "100644",
+      "git_blob": "b0a66cd4c15a24185720d694c7ce12463fecdce1",
+      "bytes": 1071,
+      "sha256": "f7d440114acea14bf9f510bb2e4b93f2aac6a51baf271acc112009b9b2ebe55e"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/elixir/LICENSE",
+      "mode": "100644",
+      "git_blob": "d9a10c0d8e868ebf8da0b3dc95bb0be634c34bfe",
+      "bytes": 10173,
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/elm/LICENSE",
+      "mode": "100644",
+      "git_blob": "fe2acf7122b955ec38bb315cbdcd6e11770f3667",
+      "bytes": 1078,
+      "sha256": "26f7bf09693dd895ea64777316bad0133b131a8478a660b4785d4b9d1322f9a1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/erlang/LICENSE",
+      "mode": "100644",
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/fennel/LICENSE",
+      "mode": "100644",
+      "git_blob": "0e259d42c996742e9e3cba14c677129b2c1b6311",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/fish/LICENSE",
+      "mode": "100644",
+      "git_blob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "bytes": 1211,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/form/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/fortran/LICENSE",
+      "mode": "100644",
+      "git_blob": "d13cc4b26a53906de87bb29eb6c1ab82b1ef91fe",
+      "bytes": 1046,
+      "sha256": "c0fc02a86ae2b179c4729694c523bbf42da674e5136ed8e12e3cb2f26556ea9f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/fsharp/LICENSE",
+      "mode": "100644",
+      "git_blob": "e80345de40217b2a691664d934b07573354d6373",
+      "bytes": 1074,
+      "sha256": "f9352b63e87252b282b252bf27530027c8ca69829e0023f8b8b682a736f271fd"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/func/LICENSE",
+      "mode": "100644",
+      "git_blob": "dceaf2047f2c53d8e06dae5a8b74641eaefac514",
+      "bytes": 1073,
+      "sha256": "8193651e765c9c23b0259b508320925dfbd99418aa424105b622b7787c2f01c5"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gdscript/LICENSE",
+      "mode": "100644",
+      "git_blob": "ff8ed93cb0dd57d68feeefe4829dbc9083584b5e",
+      "bytes": 1080,
+      "sha256": "d724405ce238a22c0d35769c5a36b386ad5958192efe8bbb304fb2896254575f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gitattributes/LICENSE",
+      "mode": "100644",
+      "git_blob": "60eef23339f2c497367be6822407ecbc47593aff",
+      "bytes": 1058,
+      "sha256": "413ec4c3842f95bcaf662aba7d646b22baf044aa6ac5efa6531b94d4ee00248b"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gitignore/LICENSE",
+      "mode": "100644",
+      "git_blob": "93e1efc927c10f1b49ac691bb2e9cdc96e79d649",
+      "bytes": 1069,
+      "sha256": "239b228dfcf83043b3be6afe8c7508bbbecff75e8fe1e66db020ed21e213e721"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gleam/LICENSE",
+      "mode": "100644",
+      "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/glsl/LICENSE",
+      "mode": "100644",
+      "git_blob": "9f9389569253be78ee6a4f66b8ae73c3f810cf68",
+      "bytes": 1114,
+      "sha256": "f44d7107a33801260dc82624c91a71ebf5918b4038a0fb0e3ef60e2dd9ba1999"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gn/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/go/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gomod/LICENSE",
+      "mode": "100644",
+      "git_blob": "97faf2b669c6a117400ede53c66691c542f400a0",
+      "bytes": 1080,
+      "sha256": "806b8fcd19c1cdf23e178eb25942acc844a38669e36b2c896c7baf5f8bcecbb4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/gotemplate/LICENSE",
+      "mode": "100644",
+      "git_blob": "b2224a96e0999d53a82a57e1658c51fa824f5fc0",
+      "bytes": 1071,
+      "sha256": "44ee910db99318d5d0b74b0d187ab2c8cbc411ca0be632ad9300e54036a9d822"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/graphql/LICENSE",
+      "mode": "100644",
+      "git_blob": "992b6e7d8c59ecc9e214d69e57e85377246cd534",
+      "bytes": 1064,
+      "sha256": "7bd2788c7154b102cf03eeb335faba32d897fb82f252b28663c16c76738aaba5"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/groovy/LICENSE",
+      "mode": "100644",
+      "git_blob": "0eec29ce8028759c4480adee930bdd3e2dd81854",
+      "bytes": 1071,
+      "sha256": "5f10fff4ea3c4892af1e2f1af0b9ba7fa79843598808a1dbbbbc8231ca81d1ad"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/hare/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/haskell/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/hcl/LICENSE",
+      "mode": "100644",
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/hlsl/LICENSE",
+      "mode": "100644",
+      "git_blob": "2d80e15e2a1d4ce371c95846b12ad727d3db98a5",
+      "bytes": 1114,
+      "sha256": "dec735ccc031754dd05e6556dd9e959915eb367cf01cf009c77a1a38786932b1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/html/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/hyprlang/LICENSE",
+      "mode": "100644",
+      "git_blob": "7b26a945b4f99cf8ebb194d8d73898668f9bccd5",
+      "bytes": 1081,
+      "sha256": "4ea4f76b4942edcbac34ea41d6cb988ef8dcccd18117a179430cc7b2e3624807"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ini/LICENSE",
+      "mode": "100644",
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ispc/LICENSE",
+      "mode": "100644",
+      "git_blob": "bbc7f1af925122f8b4fff1a9286bb16143bf6f86",
+      "bytes": 1084,
+      "sha256": "a1f7bdd70d68ab4e4adeb135b11cfa1696abf573c14495fb883a54f5d7968d0a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/janet/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/java/LICENSE",
+      "mode": "100644",
+      "git_blob": "4e0446f76ca7d380d615e31b5500711df66a9ea2",
+      "bytes": 1069,
+      "sha256": "52ed137b039cd9c46409bc22e89938af911c95b157feae2d040b51e6084369a7"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/javascript/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/jinja2/LICENSE",
+      "mode": "100644",
+      "git_blob": "110395f64134da71df8060ffb810190f1e499170",
+      "bytes": 11344,
+      "sha256": "9a204f0ddf288ec72bc40d593faee33c8ac1f4aed518dc80f9b77e03b0f6cbf3"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/jsdoc/LICENSE",
+      "mode": "100644",
+      "git_blob": "f0fb3e7da462c9f0f708c570384643d3ccea523b",
+      "bytes": 1105,
+      "sha256": "ffaefecad68467134f8c701120a2410a2384ffff7a605b63638cf0b51e7d16cc"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/json/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/json5/LICENSE",
+      "mode": "100644",
+      "git_blob": "48c5f05bb79e913594434621b3c03f2d19dc49b5",
+      "bytes": 1085,
+      "sha256": "c91845be8393ab50c602041e1b1e96994ad40a1d28fec9b9ee3ffe0933e4e641"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/jsonnet/LICENSE",
+      "mode": "100644",
+      "git_blob": "b8a2a7e537b05a8b1cfe7664eedc83c009be243d",
+      "bytes": 1068,
+      "sha256": "9255998527012c182050a5bdb9ce619176f96bbeb2a056c3ba939011f85da611"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/julia/LICENSE",
+      "mode": "100644",
+      "git_blob": "607d94b7fa6196b7a11744acbc1556048adb3937",
+      "bytes": 1088,
+      "sha256": "74f800107f200f4e28da33e9c3f86230d37d8f4c0a4916f7111e800c395ee3a2"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/just/LICENSE",
+      "mode": "100644",
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/kconfig/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/kdl/LICENSE",
+      "mode": "100644",
+      "git_blob": "848a3c3ba86d2fa43fe9f2121f0b38d1afad5e02",
+      "bytes": 1138,
+      "sha256": "b193808d3a13d34ec589a2c0bc2959f52a57f8fb1fc234d04ff8d87ac075864a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/kotlin/LICENSE",
+      "mode": "100644",
+      "git_blob": "777756371d981380e00992bed77f52d220d7d6f5",
+      "bytes": 1071,
+      "sha256": "948495f61768f7de26bcc61113d8cd95f50bbc15adb678c28c941c6c8fcd5903"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/lean/LICENSE",
+      "mode": "100644",
+      "git_blob": "4c47660023531fb7c3bc861039a8196e82a6724b",
+      "bytes": 1057,
+      "sha256": "30dcd1c85faa36ad0917120a4d67a859e99f2dd8ff544cfc74c17f8b0b3ad06f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/linkerscript/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/liquid/LICENSE",
+      "mode": "100644",
+      "git_blob": "b976c9b4c70b2aad4bb31de3d6504193dc0be83c",
+      "bytes": 1069,
+      "sha256": "3b3e4e4252d5d7d1c18e1257005f23242bf0580ad619204fd093c99b8c56748d"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/llvm/LICENSE",
+      "mode": "100644",
+      "git_blob": "af72395f4a69eac3eb0b0519d9a4e4866818a58b",
+      "bytes": 1072,
+      "sha256": "a292ff39c53d0d2af3a0804ec291737508f1c888efb148f8f2bd3030e7cfdc48"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/lua/LICENSE",
+      "mode": "100644",
+      "git_blob": "ff0407e77c183db53bf525741a76314e15e8f6ea",
+      "bytes": 1079,
+      "sha256": "9a32b02e4c917b1ce6b5e79d8ea81e25cefd7f27d89c7235f2afb262c06cf32e"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/luau/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/magma/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/make/LICENSE",
+      "mode": "100644",
+      "git_blob": "5c279ffb8001a7c2d293764beda5fa8b38d4243e",
+      "bytes": 1076,
+      "sha256": "28eecdb75b6de2d9020603531461444bf54db827ee2fb345a8fcf4dbee7c2ad1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/markdown/LICENSE",
+      "mode": "100644",
+      "git_blob": "c125939af9e397f845811e9d8f31e07dc69170db",
+      "bytes": 1071,
+      "sha256": "52ec8a1bf8256511e2a92613e0bb41ffefba3897f16fa958d7bb28c466dd4804"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/matlab/LICENSE",
+      "mode": "100644",
+      "git_blob": "e40550fdcf9aaa48af6e9d00a6e82e0647848ec1",
+      "bytes": 1061,
+      "sha256": "8673f5acd59bfb3bd129760a57f72092d5e3c01e05837532eac9497cf8006a46"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/mermaid/LICENSE",
+      "mode": "100644",
+      "git_blob": "4e648a429fee3ea44c33ae2ae47fb96bf001a5ed",
+      "bytes": 1072,
+      "sha256": "40e46efcec726e70cc95c553ac377674f0a5d2eec6089483ba237af7dae4c54c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/meson/LICENSE",
+      "mode": "100644",
+      "git_blob": "ca3be732718935eb83bae6e7646d9218b35144fc",
+      "bytes": 1071,
+      "sha256": "62bca3ac5aaf95fdebc7f3d22f061dfa2fabd069c21b89cf18f704ef428f92b9"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/mojo/LICENSE",
+      "mode": "100644",
+      "git_blob": "ff8ed93cb0dd57d68feeefe4829dbc9083584b5e",
+      "bytes": 1080,
+      "sha256": "d724405ce238a22c0d35769c5a36b386ad5958192efe8bbb304fb2896254575f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/move/LICENSE",
+      "mode": "100644",
+      "git_blob": "e6b7d443bd56b86a4d28c511c294e8222f6db5fa",
+      "bytes": 2215,
+      "sha256": "9d65ce763fc8041bf860b52fe8e2e91bad4034deb1d93fe8a303f31b3217ecc0"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/nasm/LICENSE",
+      "mode": "100644",
+      "git_blob": "2e4cec054618ab8a6cf827cbd1c1464984e6d1ee",
+      "bytes": 1074,
+      "sha256": "d6e36f2e5d337e6f72ea697a9675ed97fc53daf04522682d6f8db316b0e5b472"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/nickel/LICENSE",
+      "mode": "100644",
+      "git_blob": "4a3a5b272456def0876be721eb208496992c9160",
+      "bytes": 1087,
+      "sha256": "39313c75af91e581acd59f2c43a94d6216ce52e76f65125a1bd8e900f6f548a5"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/nix/LICENSE",
+      "mode": "100644",
+      "git_blob": "cfa8a0f54529fd8761bfe49111becff3d30fdd09",
+      "bytes": 1072,
+      "sha256": "c1b72e50266464ec5118d26200e17bf1f472d142e62ab637e1ffc23986657a78"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/objc/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/objectscript_routine/LICENSE",
+      "mode": "100644",
+      "git_blob": "c1c982f2bb01a3644c0c30a9e24b526ed5c36ded",
+      "bytes": 1081,
+      "sha256": "85b458dc150c4d17873dd5e73d01cfa23c797997a09d841884e08378242e929c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/objectscript_udl/LICENSE",
+      "mode": "100644",
+      "git_blob": "c1c982f2bb01a3644c0c30a9e24b526ed5c36ded",
+      "bytes": 1081,
+      "sha256": "85b458dc150c4d17873dd5e73d01cfa23c797997a09d841884e08378242e929c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ocaml/LICENSE",
+      "mode": "100644",
+      "git_blob": "82557a14d7f9606f8f5c25de89f55b365bb9b000",
+      "bytes": 1094,
+      "sha256": "f977a20805dd6e275f14bc090a5f8e638401dad4df366841c1060f12c75b74ae"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/odin/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/pascal/LICENSE",
+      "mode": "100644",
+      "git_blob": "9f44cc5b43fa0dd6ce8c9dc0f2eacf447068d31c",
+      "bytes": 1070,
+      "sha256": "2e2fcc500eacb15b76c11fd2229aebf0a5b4c8ed476f068447c6dce778a17ac9"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/perl/LICENSE",
+      "mode": "100644",
+      "git_blob": "8718a72b468c8e20bb97451be98b28d07525659a",
+      "bytes": 1071,
+      "sha256": "68a9a526ae357ed5a2f8ca5dabb14131b283554b69639bb04816088d4b1f2fa0"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/php/LICENSE",
+      "mode": "100644",
+      "git_blob": "513857dd3fbca4e33bb8ee0d70cd5c2aee163eae",
+      "bytes": 1166,
+      "sha256": "664764fabf40c0b318e06324a5a12379092a2df25b8cbf2415f71bc0bb352346"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/pine/LICENSE",
+      "mode": "100644",
+      "git_blob": "93b98f503e7443a42630e86a843bbf3bb9a69ddf",
+      "bytes": 837,
+      "sha256": "01aa3f7bf8fe0c7d06a983422d5ea7e1a71b1363501eaabfdbc6f2bac95aa5f0"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/pkl/LICENSE",
+      "mode": "100644",
+      "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/po/LICENSE",
+      "mode": "100644",
+      "git_blob": "4369bf19ff267693c0322b08bdc384b5e30aa52d",
+      "bytes": 1136,
+      "sha256": "109ed1ed2db40c798111e05757f5b8576fe14bdb17aa24c7f2515b300c78572c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/pony/LICENSE",
+      "mode": "100644",
+      "git_blob": "0e3aa7b77efb1e9ce87f2641ff33489b0c81dc00",
+      "bytes": 1139,
+      "sha256": "e8d649c1f03766310c675dc46e9733748ca1a9eedbc5196f3247196eddcbc31f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/powershell/LICENSE",
+      "mode": "100644",
+      "git_blob": "0e31aad2db44f171cd7c0163f8fea1cc0c934b7b",
+      "bytes": 1068,
+      "sha256": "1fca8454c0d77a73f9922a52d39e1f7c339f5da5d03f2766eff66b859fa19477"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/prisma/LICENSE",
+      "mode": "100644",
+      "git_blob": "c069454aaecc5111a7916bdec099b81f23449968",
+      "bytes": 1088,
+      "sha256": "fbce36bb615a015ea545373da62c178fe9e7e3a7b7de656455738e6f671aa652"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/properties/LICENSE",
+      "mode": "100644",
+      "git_blob": "7094a20529cd00436ad0cab177e635308982b1ef",
+      "bytes": 1058,
+      "sha256": "3297073719030b7261afd78b7267931ccc03a27f7a65ca6fc644316180f71bf6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/protobuf/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/puppet/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/purescript/LICENSE",
+      "mode": "100644",
+      "git_blob": "466524f333600edbb7031335ca0f3f2c20e397e0",
+      "bytes": 1121,
+      "sha256": "3ae7f9f8e25ac9a5466114a8593c138c8cab8d34898b57db4fc3f0c3f22eca98"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/python/LICENSE",
+      "mode": "100644",
+      "git_blob": "ff8ed93cb0dd57d68feeefe4829dbc9083584b5e",
+      "bytes": 1080,
+      "sha256": "d724405ce238a22c0d35769c5a36b386ad5958192efe8bbb304fb2896254575f"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/qml/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b46abcac3ff6f36143cefba5401003b1bbaf260",
+      "bytes": 1058,
+      "sha256": "a8fb3a7df5ba9ef3b6511a1d65ad69869de66828fe2d690b7b65913678739738"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/r/LICENSE",
+      "mode": "100644",
+      "git_blob": "04e174fb42f98e51a3e9fdadc2927f1016d9ab5a",
+      "bytes": 1078,
+      "sha256": "de2e49529f03d573bc3fa229dc83acfe22c63a5ad1766b289563edfd45b72dea"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/racket/LICENSE",
+      "mode": "100644",
+      "git_blob": "44ce726cdd205a2046750da1f3524c4f3605a57b",
+      "bytes": 1062,
+      "sha256": "cc35bd4a973bf6067558e88b56d9a369e02c36e240b2b537aef8f751b7808fd7"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/regex/LICENSE",
+      "mode": "100644",
+      "git_blob": "4b52d191cead337b11e274b79459a86f1b5a7779",
+      "bytes": 1080,
+      "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/requirements/LICENSE",
+      "mode": "100644",
+      "git_blob": "60eef23339f2c497367be6822407ecbc47593aff",
+      "bytes": 1058,
+      "sha256": "413ec4c3842f95bcaf662aba7d646b22baf044aa6ac5efa6531b94d4ee00248b"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/rescript/LICENSE",
+      "mode": "100644",
+      "git_blob": "2d50acb6e2b44b51f4bf79c231028d932de3aa50",
+      "bytes": 1084,
+      "sha256": "21da9b4e463af4b4501cbd4e0c5886a1f321a740b584002a9c9a5fe7b2d46a8a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ron/LICENSE",
+      "mode": "100644",
+      "git_blob": "6b0457324e59a491197b69da1a1fa858bbd0ab86",
+      "bytes": 1140,
+      "sha256": "c6137844f3f63aa4522dfc1cde8dff4f3314ed594ea954a73e3073dcc9d33b11"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/rst/LICENSE",
+      "mode": "100644",
+      "git_blob": "bf4fd67eb0f41b03e307ea51b0ca58c6d1730f76",
+      "bytes": 1072,
+      "sha256": "5b337e5d1fedbb6275550101f7a1e7b00465409d32a29b308812fca394348500"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/ruby/LICENSE",
+      "mode": "100644",
+      "git_blob": "2a79f435f473717691c5e2b356fbf3e758ba930d",
+      "bytes": 1075,
+      "sha256": "ee006f02a3d856df282e409be2a86e24a65bb573a98b9c28343771141351bb6b"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/rust/LICENSE",
+      "mode": "100644",
+      "git_blob": "ceaf3c9adca54f7d3242593dd4db8065b1611699",
+      "bytes": 1080,
+      "sha256": "31d5b6f4243d5c7c6e1c4ebbbb9f6407bd1457a08bcc4f706521710341acba36"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/scala/LICENSE",
+      "mode": "100644",
+      "git_blob": "bd0a4d6c7d625591c54e1f023b93af2a4650271a",
+      "bytes": 1091,
+      "sha256": "1f95ed26e1f4074074c9c7083e61c0a9e4c3b9f435745044995f3beb4ed28575"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/scheme/LICENSE",
+      "mode": "100644",
+      "git_blob": "44ce726cdd205a2046750da1f3524c4f3605a57b",
+      "bytes": 1062,
+      "sha256": "cc35bd4a973bf6067558e88b56d9a369e02c36e240b2b537aef8f751b7808fd7"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/scss/LICENSE",
+      "mode": "100644",
+      "git_blob": "3446b7a690661e3a281f29341a0ea8bde8586ef3",
+      "bytes": 1086,
+      "sha256": "ad64f38da1571e9042cef6bea8f4232c2761c2f52ae93cbada9ae7aeaeeafa74"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/slang/LICENSE",
+      "mode": "100644",
+      "git_blob": "6adb7f765a282c8fdb4540e4afe8ab8b1fc55269",
+      "bytes": 1080,
+      "sha256": "188fdcca13247f567cddb0d5155c622de1a6cf3f0245e52f0986907b6c2819f5"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/smali/LICENSE",
+      "mode": "100644",
+      "git_blob": "1fb8fdab9cbc55ad522f0680c316dcce995a2275",
+      "bytes": 1130,
+      "sha256": "1337ef2684df318a38036aeecfcdd4a041368de0b73c300c709da259bf994246"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/smithy/LICENSE",
+      "mode": "100644",
+      "git_blob": "1803b319e34b3b6c1b95666bf1dda6b4aa60b6ae",
+      "bytes": 1088,
+      "sha256": "c51b88530abf05268b117585ac199b590d160de1d49e763fee745c07518b7c54"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/solidity/LICENSE",
+      "mode": "100644",
+      "git_blob": "9ced3c1a5b45875a29ec4a6a72efaa579d19bbed",
+      "bytes": 1054,
+      "sha256": "8844f0cc9b76b9c8a9d0251904eb7536b6bb9976e0ec577e8f27ab96d42523ef"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/soql/LICENSE",
+      "mode": "100644",
+      "git_blob": "4d78f763e739b1456b316200e5acdcf6f0130a2d",
+      "bytes": 1079,
+      "sha256": "c3d045abbc0a8dec1b00737c0668f6dbb028d248521b74e79778c726671925ed"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/sosl/LICENSE",
+      "mode": "100644",
+      "git_blob": "4d78f763e739b1456b316200e5acdcf6f0130a2d",
+      "bytes": 1079,
+      "sha256": "c3d045abbc0a8dec1b00737c0668f6dbb028d248521b74e79778c726671925ed"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/sql/LICENSE",
+      "mode": "100644",
+      "git_blob": "b976c9b4c70b2aad4bb31de3d6504193dc0be83c",
+      "bytes": 1069,
+      "sha256": "3b3e4e4252d5d7d1c18e1257005f23242bf0580ad619204fd093c99b8c56748d"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/squirrel/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/sshconfig/LICENSE",
+      "mode": "100644",
+      "git_blob": "7094a20529cd00436ad0cab177e635308982b1ef",
+      "bytes": 1058,
+      "sha256": "3297073719030b7261afd78b7267931ccc03a27f7a65ca6fc644316180f71bf6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/starlark/LICENSE",
+      "mode": "100644",
+      "git_blob": "5af536362c15275bb3a57445bc5be23b349cd1de",
+      "bytes": 1101,
+      "sha256": "099c44248f8cf353123211318680e93465587c005a4b3730ce8cb5334de043d6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/svelte/LICENSE",
+      "mode": "100644",
+      "git_blob": "4e8c9b38350135b69d7137e508d29e8980794569",
+      "bytes": 1101,
+      "sha256": "0eea8dc45e89deeb03c7799bbbc7b4688f365fb274562f4540ecfebdea82e727"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/sway/LICENSE",
+      "mode": "100644",
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/swift/LICENSE",
+      "mode": "100644",
+      "git_blob": "f158d7005311344ac316830fe68492214e1645e6",
+      "bytes": 1068,
+      "sha256": "3533cec129bb4bba015c0d61d86dd7c3b7e82110e4d2ff7837a01eff5bad5ccc"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/systemverilog/LICENSE",
+      "mode": "100644",
+      "git_blob": "eace567a4a35babdf6bdd9ce451db9c9460d2e1f",
+      "bytes": 1080,
+      "sha256": "f4ceaa91e73e623d6b30895a3b644e0e277754a81c8b28655b75d7a9113f1ac4"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/tablegen/LICENSE",
+      "mode": "100644",
+      "git_blob": "b14d8521976a94d6a43dd8f2a2bd0d9dd587642e",
+      "bytes": 1133,
+      "sha256": "4d6033889c2f0e054589c67aa638e59e609b029c62b993c9659ebba19abfde5c"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/tcl/LICENSE",
+      "mode": "100644",
+      "git_blob": "867f51093d8f0fac95b089f49baddd85336a7d46",
+      "bytes": 1070,
+      "sha256": "e3578fe6a7e9592bd4d39fb52d2be62c07e5f8bdca2ca66b3e22f553ec8351fb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/teal/LICENSE",
+      "mode": "100644",
+      "git_blob": "8d72422cbb6f260609e2616b5790f78354d08312",
+      "bytes": 1099,
+      "sha256": "b2ddc8d974b4a74abebd8a4ac19b8fbfa3f4d37ec5b88f748cdfda3c76a22797"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/templ/LICENSE",
+      "mode": "100644",
+      "git_blob": "049f3cd5b7c9d1d07f51a89ba89eca6c5c76a748",
+      "bytes": 1097,
+      "sha256": "fb8a4a7edd1e655b1ecf15dd5324fd9c073bbbf07e50c064566c693d854a0f76"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/thrift/LICENSE",
+      "mode": "100644",
+      "git_blob": "2917832fbf8ca1a52be450aa97b7d0aae7c66946",
+      "bytes": 1147,
+      "sha256": "f0a0f84bedde3f160f9db0337715a534ca8f1fb5f19726d743dadfde44bb08c8"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/tlaplus/LICENSE",
+      "mode": "100644",
+      "git_blob": "c6bed1148fb6175b30a56f41c42b905ca1f92e96",
+      "bytes": 1052,
+      "sha256": "bb9ed59c3ddf6631a6138e4656fbcf7fb225b1a3260760e729d6e58a52c6b15a"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/toml/LICENSE",
+      "mode": "100644",
+      "git_blob": "7bf071b1d83ca0644118769f568c978bb7ccf3ae",
+      "bytes": 1116,
+      "sha256": "b727eee929bee836e8102cecf749a795b199f291b58c885bcd81cae727ac5a46"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/tsx/LICENSE",
+      "mode": "100644",
+      "git_blob": "aa9f858db5722d9576104726471b11cc0e31f131",
+      "bytes": 1080,
+      "sha256": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/typescript/LICENSE",
+      "mode": "100644",
+      "git_blob": "aa9f858db5722d9576104726471b11cc0e31f131",
+      "bytes": 1080,
+      "sha256": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/typst/LICENSE",
+      "mode": "100644",
+      "git_blob": "9ba07836a509783babb4ecd57dbac89947ea7219",
+      "bytes": 1075,
+      "sha256": "0d129fe54977b282fa928da9bcf1f609d3388b54862361c9292d83605f71bd4b"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/verilog/LICENSE",
+      "mode": "100644",
+      "git_blob": "d7a5632c880f77a952a89c23deb431eb9a1602ca",
+      "bytes": 1082,
+      "sha256": "8d2ff8d1e308828099436c43dc8bfbb8b6f368ad2a012ab9802a80ca22b03b53"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/vhdl/LICENSE",
+      "mode": "100644",
+      "git_blob": "14dda3100ce2fd2b13c7516690c3f0bbad63918a",
+      "bytes": 1077,
+      "sha256": "a9323218abe9aabd3429b76634470b40c3be012600e1f96bd16ca254724fa954"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/vim/LICENSE",
+      "mode": "100644",
+      "git_blob": "f7cde7129340dafc4bda9d4e51da1bc2cc7d2e1c",
+      "bytes": 1073,
+      "sha256": "14eaaaa5c0cdb0eb86e85c55643c4cfa04593dbfbaef6a20f35337667b7278d7"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/vue/LICENSE",
+      "mode": "100644",
+      "git_blob": "6cad787a85a02f60be6ed27f160eeed9897edf87",
+      "bytes": 1078,
+      "sha256": "91ebb180e4e2e34628c45e405584d0faac6863660b69e8139da96290e58c14dd"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/wgsl/LICENSE",
+      "mode": "100644",
+      "git_blob": "b3227a30931bbd3aedb1ec3f19d1bee517f3976d",
+      "bytes": 1070,
+      "sha256": "d1b7f7ca8ec73d915cec4aa64d9e8b7f2d89b874225d4532e00d9c36c98528fe"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/wit/LICENSE",
+      "mode": "100644",
+      "git_blob": "1e5baaeae4c96e0783778482b4056b51e23dcc14",
+      "bytes": 12241,
+      "sha256": "3b26cd02b9d9bf324bce59edd88c02cb93fa9a908528b805264db8cde53295e6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/wolfram/LICENSE",
+      "mode": "100644",
+      "git_blob": "0b95352746a97a8cf2d1f3ba568bc7bb5e514d1f",
+      "bytes": 1107,
+      "sha256": "1f58f9911dc5e3bcb96de28bb28e7b6bb7eb323952d29569c5d7214a152146bb"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/xml/LICENSE",
+      "mode": "100644",
+      "git_blob": "7094a20529cd00436ad0cab177e635308982b1ef",
+      "bytes": 1058,
+      "sha256": "3297073719030b7261afd78b7267931ccc03a27f7a65ca6fc644316180f71bf6"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/yaml/LICENSE",
+      "mode": "100644",
+      "git_blob": "262eb4627a5a69362c210c270c304e2341591585",
+      "bytes": 1105,
+      "sha256": "2d181298822a124f6d106118dcc69c8d4d26ac668559be29682c452e712b0947"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/zig/LICENSE",
+      "mode": "100644",
+      "git_blob": "4e8c9b38350135b69d7137e508d29e8980794569",
+      "bytes": 1101,
+      "sha256": "0eea8dc45e89deeb03c7799bbbc7b4688f365fb274562f4540ecfebdea82e727"
+    },
+    {
+      "path": "internal/cbm/vendored/grammars/zsh/LICENSE",
+      "mode": "100644",
+      "git_blob": "aa9f858db5722d9576104726471b11cc0e31f131",
+      "bytes": 1080,
+      "sha256": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559"
+    },
+    {
+      "path": "internal/cbm/vendored/lz4/LICENSE",
+      "mode": "100644",
+      "git_blob": "488491695a6b6984aa3a49a8392b192ed2bcac1d",
+      "bytes": 1311,
+      "sha256": "8b58c446121a109ccf32edc094bba3010a3d85e4ee3702950db55e4d3e87736c"
+    },
+    {
+      "path": "internal/cbm/vendored/simplecpp/LICENSE",
+      "mode": "100644",
+      "git_blob": "b1f013e92fa30005b58c0cc8743330c1b8f0ef7c",
+      "bytes": 667,
+      "sha256": "e10e0877c3b49180e55eaef544b796570841b3265544ab069f7bc5687b7ec584"
+    },
+    {
+      "path": "internal/cbm/vendored/ts_runtime/LICENSE",
+      "mode": "100644",
+      "git_blob": "971b81f9a86c0c91827e225aeac9159a13bfd3c1",
+      "bytes": 1080,
+      "sha256": "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78"
+    },
+    {
+      "path": "internal/cbm/vendored/verstable/LICENSE",
+      "mode": "100644",
+      "git_blob": "11a4c5282a3c9bc772abc1b97315075a5529628e",
+      "bytes": 1078,
+      "sha256": "2ef609c58a83269273396bd1176fc47eeb3fa5bd705b7c7fc2abe2d672740f65"
+    },
+    {
+      "path": "internal/cbm/vendored/wyhash/LICENSE",
+      "mode": "100644",
+      "git_blob": "471f09f4cfb55e0f1eada17d06022eccead0c747",
+      "bytes": 1212,
+      "sha256": "6a90b88421a0d9b090e121daa11b3c6d55eed5eeb3281a2fcc454d6a28b5547c"
+    },
+    {
+      "path": "internal/cbm/vendored/zstd/LICENSE",
+      "mode": "100644",
+      "git_blob": "75800288cc243f164b9d130f125e2ffae28f8e39",
+      "bytes": 1549,
+      "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+    },
+    {
+      "path": "scripts/audit-license-provenance.py",
+      "mode": "100755",
+      "git_blob": "3fc97429daac12f5dfebc488676f5d5900ffbb6c",
+      "bytes": 9567,
+      "sha256": "65beab7aa6ca3efd12505c27dcffd74ad29abf89c0bee32c30d0f8098cf8d5c0"
+    },
+    {
+      "path": "scripts/gen-third-party-notices.sh",
+      "mode": "100755",
+      "git_blob": "3ae9585e821d797c8caf5268e14dd357ac4a973a",
+      "bytes": 2041,
+      "sha256": "41b7d3723628371e16b3757a6f458dcca4eeaa0145fc07766274c6a719024adf"
+    },
+    {
+      "path": "scripts/gen-ui-licenses.py",
+      "mode": "100755",
+      "git_blob": "97fea571ec1cf0c82a9196e2046b1fe0327a1d6b",
+      "bytes": 4228,
+      "sha256": "ba273806fbc7d1460f837bf83b512ece95f12798f3db76d1e7f747ff31771616"
+    },
+    {
+      "path": "scripts/license-gate-check-npm.py",
+      "mode": "100755",
+      "git_blob": "b16f6ca6a0ed92cfdfb94f88a59b4c11208f8cca",
+      "bytes": 3974,
+      "sha256": "a0456bf6f6f40b562417fffefa53657586193fbc240c8fede1ffbbb18b050417"
+    },
+    {
+      "path": "scripts/license-gate-check.py",
+      "mode": "100755",
+      "git_blob": "a432e8f0c3358ee0edef82a86c2c566cf5e77b86",
+      "bytes": 1657,
+      "sha256": "9f4fc12b961565779dc2d2320099915ae444bce68e6e9e8da92b7a71d99b175d"
+    },
+    {
+      "path": "scripts/license-gate.sh",
+      "mode": "100755",
+      "git_blob": "afc98f17c87dd582703b60f6104f30f5ffd4c781",
+      "bytes": 4856,
+      "sha256": "b8ec7c9b3c6ad4aa922babf93cff35c788d922ae0233598051ea1c08aeb1f222"
+    },
+    {
+      "path": "scripts/license-policy.json",
+      "mode": "100644",
+      "git_blob": "a5c1cc9c30f640ea093662103db8c1a4d94cf5aa",
+      "bytes": 1466,
+      "sha256": "b3777d9facbe0058d18ffdf8c40afd0869b1c94d218c6d4828b8b6217b65a859"
+    },
+    {
+      "path": "tests/test_hook_conflict_notice.sh",
+      "mode": "100644",
+      "git_blob": "35cd844d1e03c9bffc2ff8d88d0733dc23fbdce1",
+      "bytes": 5445,
+      "sha256": "bb11193a5772c7128b5d5b2acd4759a1d6d92855f5db9455b4db8fd970fc4c5a"
+    },
+    {
+      "path": "vendored/mimalloc/LICENSE",
+      "mode": "100644",
+      "git_blob": "53315ebee557ac22f3396ea1781df0440c26bb15",
+      "bytes": 1096,
+      "sha256": "82ade5d7d9b029044b5fbbc326207fc47c2d44ee4dd71e8a559c36d728217de9"
+    },
+    {
+      "path": "vendored/nomic/LICENSE",
+      "mode": "100644",
+      "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "vendored/nomic/NOTICE",
+      "mode": "100644",
+      "git_blob": "efbfa75efd9a758a2773b996a6add639e8792763",
+      "bytes": 782,
+      "sha256": "893a74d9e3f0a74358344edc999e165739df343b36297967f3fd9cd462022f39"
+    },
+    {
+      "path": "vendored/sqlite3/LICENSE.md",
+      "mode": "100644",
+      "git_blob": "936ac5e6619d7412bc43152d6674d2b537a52667",
+      "bytes": 401,
+      "sha256": "49e5417011e9720fc8a5fa2a400c1541535195788c59ab33888ade39b2a3f9f0"
+    },
+    {
+      "path": "vendored/tre/LICENSE",
+      "mode": "100644",
+      "git_blob": "76ea75f409c48158c812477ebd29aec2f9096b13",
+      "bytes": 1479,
+      "sha256": "6a50ab50d856b30c965cf2dd899e577ec108c938242fd3a2e7a7a25eed996200"
+    },
+    {
+      "path": "vendored/xxhash/LICENSE",
+      "mode": "100644",
+      "git_blob": "e4c5da7234eca7baad9a46f0b144e49ccad2e500",
+      "bytes": 1389,
+      "sha256": "6ffedbc0f7878612d2b23589f1ff2ab15633e1df7963a5d9fc750ec5500c7e7a"
+    },
+    {
+      "path": "vendored/yyjson/LICENSE",
+      "mode": "100644",
+      "git_blob": "a09bff355348932f9a1bd8c2e7417afb1ec0c943",
+      "bytes": 1084,
+      "sha256": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947"
+    }
+  ],
+  "source_bytes_including_symlink": 1332757092,
+  "build_bytes_including_binary": 593302728,
+  "binary_bytes": 296408656,
+  "binary_sha256": "8953ad08b2815817d3cc3704fddc88611e4d1678ebc4e4b45c4dd0e122b72c13",
+  "isolated_cache_bytes": 0,
+  "upstream_shared_git_count_objects": "count: 28\nsize: 176\nin-pack: 23951\npacks: 1\nsize-pack: 196442\nprune-packable: 0\ngarbage: 0\nsize-garbage: 0\n",
+  "upstream_git_scope": "shared multi-revision object store, not release-exclusive",
+  "destination_git_delta": "No commit/staging; release-exclusive packed git size not measured",
+  "largest_source": {
+    "path": "internal/cbm/vendored/grammars/lean/parser.c",
+    "mode": "100644",
+    "git_blob": "6e171f902d2449914cd9e4da210d86e70f5f8064",
+    "bytes": 104437134,
+    "sha256": "9a1652cf2bfafdaf1b17d103cecd3255170748720abef08e05edddb45630e8a3"
+  }
+}

@@ -54,3 +54,12 @@ sot_obsidian_vault/
 # SG-204 holdout benchmark — cloned repos and their .sot indexes
 .holdout-cache/
 .holdout-cache-unseen/
+
+# Exact upstream source and durable phase receipts (not generated runtime state).
+!engines/codebase-memory-mcp/**
+!plan/python-c-monorepo/evidence/source-import-manifest.json
+!plan/python-c-monorepo/evidence/source-budget-license-inventory.json
+!plan/python-c-monorepo/evidence/native-build-receipt.json
+!plan/python-c-monorepo/evidence/python-package-*.json
+!plan/python-c-monorepo/evidence/continuation-*.json
+!plan/python-c-monorepo/evidence/continuation-native/**/*.json
