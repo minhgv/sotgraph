@@ -1,0 +1,7 @@
+{
+  "src/sot_graph/providers/trusted_config.py": "f991eba8c821710dd141a95a25dbf904baf923c6e4edaa42d2935273b36a9d9b",
+  "src/sot_graph/providers/admin.py": "dbf992c2f5e613056c04f36492ddb5b97f5f5e985b01ce451ba98f24f01090f8",
+  "tests/test_trusted_managed_config.py": "772524f653ed8cb2e7923df9b27074ccae2de3f51a30c27a265cd2826dfbf009",
+  "tests/test_engine_trusted_config.py": "4d9f398237b5494f87496cddc24869cfe25888e721e05a90034001f2051de85a",
+  "plan/python-c-monorepo/trusted-opt-in-runbook.md": "49b280c8196ea91b0c9a385ac3d8f184237af3a12334cdb77bfb303fd3c8665b"
+}

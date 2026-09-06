@@ -1,0 +1,14 @@
+[
+  {
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "src/sot_graph/providers/trusted_config.py",
+      "src/sot_graph/providers/admin.py",
+      "tests/test_trusted_managed_config.py",
+      "tests/test_engine_trusted_config.py"
+    ],
+    "exit": 1
+  }
+]
