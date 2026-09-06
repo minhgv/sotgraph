@@ -111,7 +111,7 @@ _REASON_EXPLANATIONS: Dict[str, Tuple[str, str]] = {
          "snapshot binding"),
     "stale_sources":
         ("cited files changed after the index generation was captured",
-         "run `sot reconcile` to rebuild the index for the current tree"),
+         "run `sotgraph reconcile` to rebuild the index for the current tree"),
     "open_conflicts":
         ("the evidence ledger has unresolved builtin-vs-provider conflicts",
          "resolve the conflicting provider evidence, then re-run"),
@@ -147,7 +147,7 @@ _REASON_EXPLANATIONS: Dict[str, Tuple[str, str]] = {
          "re-parse the partial files so the AST is complete"),
     "provider_capability_missing":
         ("a required evidence provider capability is missing",
-         "install/enable the provider (see `sot providers doctor`)"),
+         "install/enable the provider (see `sotgraph providers doctor`)"),
 }
 
 

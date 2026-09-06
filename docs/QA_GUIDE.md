@@ -7,7 +7,7 @@
 
 ## 🌐 Ways to View This Document:
 - 📖 **Directly on GitHub (Markdown UI)**: Viewing this document (using the expandable accordions below).
-- ⚡ **Interactive Standalone HTML (Live Search & Filter)**: [Open on HTMLPreview (GitHub)](https://htmlpreview.github.io/?https://github.com/minhgv/sot-graph/blob/main/sot_qa_guide.html)
+- ⚡ **Interactive Standalone HTML (Live Search & Filter)**: [Download and open locally](../sot_qa_guide.html) (private repository; public HTMLPreview cannot authenticate)
 - 💻 **Local Offline Browser**: `open sot_qa_guide.html` (macOS) or `xdg-open sot_qa_guide.html` (Linux).
 
 ---
@@ -79,7 +79,7 @@ Once flagged as dirty, the Reconciler executes an **Atomic Full-File Replacement
 <details>
 <summary><h3>Q3: How does the Trust Verdict System work? What are the exact meanings of [STRONG], [WEAK], [REBUILT], [REMOVED], [NOPATH]?</h3></summary>
 
-When an Agent runs `sot search "<query>"`, all candidate hits from FTS5 pass through `TrustVerifier.verify_hit` for physical on-disk validation:
+When an Agent runs `sotgraph search "<query>"`, all candidate hits from FTS5 pass through `TrustVerifier.verify_hit` for physical on-disk validation:
 
 ```
 [Agent Query] ──> [SQLite FTS5 (BM25)] ──> [Candidate Node]
@@ -149,11 +149,11 @@ As a result, indexing order is completely decoupled, ensuring **deterministic gr
 
 There are two distinct paths for `sot-graph` to detect and purge deleted files:
 
-1. **Active Reconciliation (`sot reconcile`):**  
+1. **Active Reconciliation (`sotgraph reconcile`):**
    The Reconciler walks the disk tree and compares the current physical path set against `_known_abs_paths()` in the database. Any path present in the DB but absent from disk is pruned immediately via `db.delete_path(path)`.
 
-2. **Passive Self-Healing at Query Time (`sot search`):**  
-   If an Agent executes a search before `sot reconcile` is called, `TrustVerifier.verify_hit` encounters `os.path.exists(path) == False`. It attempts a rehome scan; upon finding no candidate, it **deletes the stale record immediately during the search call** and returns `[REMOVED]`:
+2. **Passive Self-Healing at Query Time (`sotgraph search`):**
+   If an Agent executes a search before `sotgraph reconcile` is called, `TrustVerifier.verify_hit` encounters `os.path.exists(path) == False`. It attempts a rehome scan; upon finding no candidate, it **deletes the stale record immediately during the search call** and returns `[REMOVED]`:
 
 ```python
 # src/sot_graph/verifier.py:139-141
@@ -179,7 +179,7 @@ When a file is moved or its parent directory renamed, its prior path becomes inv
    - Invokes `db.update_node_path(node_id, old_path, new_path)`.
    - Updates the path and label attributes in `graph_nodes`.
    - Returns the verdict `[REBUILT]` alongside the new path.
-4. If **≥ 2 candidate files** match the basename (ambiguous match): The system refuses to guess, safely purges the stale path, and awaits the next `sot reconcile` run.
+4. If **≥ 2 candidate files** match the basename (ambiguous match): The system refuses to guess, safely purges the stale path, and awaits the next `sotgraph reconcile` run.
 
 </details>
 
@@ -233,7 +233,7 @@ It then inserts the newly extracted classes, functions, and call edges from the 
 <details>
 <summary><h3>Q9: What tools does the MCP (Model Context Protocol) Server provide to LLMs? Why is the MCP server strictly Read-Only?</h3></summary>
 
-Running `./bin/sot mcp` launches a standard MCP Stdio Server exposing 5 tools and 2 resources to LLMs:
+Running `./bin/sotgraph mcp` launches a standard MCP Stdio Server exposing 5 tools and 2 resources to LLMs:
 
 - `sot_search`: Search on-disk verified codebase symbols and knowledge notes.
 - `sot_explore`: Multi-hop relationship traversal and call graph inspection.
@@ -256,14 +256,14 @@ Running `./bin/sot mcp` launches a standard MCP Stdio Server exposing 5 tools an
 To optimize token consumption and prevent redundant code implementation, agents follow a 4-step protocol:
 
 1. **Step 1 - Retrieve Existing Logic:**  
-   `sot search "<feature or utility to implement>"`
+   `sotgraph search "<feature or utility to implement>"`
 2. **Step 2 - Evaluate Trust Verdict:**  
    If `[STRONG]`: Open the reported file:line and reuse the logic. If `[WEAK]`: Skim the file first.
 3. **Step 3 - Analyze Blast Radius:**  
-   `sot explore "<function_or_class_name>"` to inspect all incoming and outgoing dependencies.
+   `sotgraph explore "<function_or_class_name>"` to inspect all incoming and outgoing dependencies.
 4. **Step 4 - Persist Knowledge Decisions:**  
    After completing complex bug fixes or architectural changes:  
-   `sot insert --title "Solution Title" --body "Fix details..." --keywords "tag1,tag2"`
+   `sotgraph insert --title "Solution Title" --body "Fix details..." --keywords "tag1,tag2"`
 
 </details>
 
@@ -287,7 +287,7 @@ To optimize token consumption and prevent redundant code implementation, agents 
 
 ```bash
 # Detect God Nodes and export full architecture report
-./bin/sot report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md
+./bin/sotgraph report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md
 ```
 
 </details>
@@ -307,7 +307,7 @@ The `Label Propagation / Louvain` algorithm in `sot_graph.analytics` groups tigh
 
 ```bash
 # Inspect detected architectural communities
-./bin/sot cluster --min-size 3
+./bin/sotgraph cluster --min-size 3
 ```
 
 </details>
@@ -321,16 +321,16 @@ The `Label Propagation / Louvain` algorithm in `sot_graph.analytics` groups tigh
 
 ```bash
 # 1. Interactive D3.js HTML visualization opened directly in browser
-./bin/sot viz -o graph.html --open
+./bin/sotgraph viz -o graph.html --open
 
 # 2. Hierarchical dataset export for GraphRAG pipelines
-./bin/sot export -f graphrag -o graphrag_dataset.json
+./bin/sotgraph export -f graphrag -o graphrag_dataset.json
 
 # 3. Obsidian Vault export (with bidirectional [[Node]] Wikilinks)
-./bin/sot export -f obsidian -o my_obsidian_vault/
+./bin/sotgraph export -f obsidian -o my_obsidian_vault/
 
 # 4. Standard GraphML XML export for Gephi, Cytoscape, NetworkX
-./bin/sot export -f graphml -o graph.graphml
+./bin/sotgraph export -f graphml -o graph.graphml
 ```
 
 </details>
@@ -340,24 +340,24 @@ The `Label Propagation / Louvain` algorithm in `sot_graph.analytics` groups tigh
 ## ⚙️ 5. Operations, Maintenance & Performance
 
 <details>
-<summary><h3>Q14: When should I run sot clean and sot vacuum? What is the difference between --dry-run and live execution?</h3></summary>
+<summary><h3>Q14: When should I run sotgraph clean and sotgraph vacuum? What is the difference between --dry-run and live execution?</h3></summary>
 
 Over prolonged active development, the SQLite database may accumulate freelist disk pages or orphaned relationship edges:
 
-- **`sot clean`:** Prunes deleted file records, orphaned edges, and obsolete pending edges.
+- **`sotgraph clean`:** Prunes deleted file records, orphaned edges, and obsolete pending edges.
   - `--dry-run`: Previews the count of removable records in JSON format **without altering the database**.
   - `--all --yes`: Completely wipes all graph nodes and edges to prepare for a clean re-index.
-- **`sot vacuum`:** Checkpoints the SQLite WAL (Write-Ahead Log) and runs `VACUUM` to defragment B-Tree pages and reclaim disk space.
+- **`sotgraph vacuum`:** Checkpoints the SQLite WAL (Write-Ahead Log) and runs `VACUUM` to defragment B-Tree pages and reclaim disk space.
 
 ```bash
 # Preview cleanable stale records
-./bin/sot clean --dry-run --json
+./bin/sotgraph clean --dry-run --json
 
 # Execute safe pruning
-./bin/sot clean --json
+./bin/sotgraph clean --json
 
 # Defragment database and reclaim disk space
-./bin/sot vacuum --analyze
+./bin/sotgraph vacuum --analyze
 ```
 
 </details>
@@ -367,17 +367,17 @@ Over prolonged active development, the SQLite database may accumulate freelist d
 <details>
 <summary><h3>Q15: How do I run Drift Verification in CI/CD pipelines without modifying the database or failing builds?</h3></summary>
 
-The `sot verify` command is specifically engineered for CI/CD pipelines and pre-commit checks:
+The `sotgraph verify` command is specifically engineered for CI/CD pipelines and pre-commit checks:
 
 - Operates in **Strictly Read-Only Mode**: Never mutates SQLite files or acquires write locks.
-- `sot verify`: Rapidly cross-checks metadata (`size`, `mtime`) between database and filesystem.
-- `sot verify --deep`: Re-computes SHA-256 hashes for all physical files to catch hidden code mutations.
+- `sotgraph verify`: Rapidly cross-checks metadata (`size`, `mtime`) between database and filesystem.
+- `sotgraph verify --deep`: Re-computes SHA-256 hashes for all physical files to catch hidden code mutations.
 - **Exit Code Convention:** Returns `0` if the knowledge graph is fully in sync with disk; returns `1` if drift is detected (with a JSON payload of anomalous paths).
 
 ```yaml
 # GitHub Actions / CI workflow step
 - name: Verify Knowledge Graph Drift
-  run: ./bin/sot verify --deep --json
+  run: ./bin/sotgraph verify --deep --json
 ```
 
 </details>
@@ -416,7 +416,7 @@ if basename in files:
 return cands[0] if len(cands) == 1 else None
 ```
 
-The `find_rehome` routine enforces an **Ambiguity Guard**: If 2 or more files named `user.py` exist across the project tree, the function immediately returns `None`. It **refuses to guess**. The stale path is safely pruned and awaits the next `sot reconcile` cycle for deterministic AST-based re-indexing.
+The `find_rehome` routine enforces an **Ambiguity Guard**: If 2 or more files named `user.py` exist across the project tree, the function immediately returns `None`. It **refuses to guess**. The stale path is safely pruned and awaits the next `sotgraph reconcile` cycle for deterministic AST-based re-indexing.
 
 </details>
 
@@ -438,10 +438,10 @@ All parsers in `src/sot_graph/extractor.py` and `_vendor/graphify/extract.py` ar
 <details>
 <summary><h3>Q19: How do I store Architecture Decision Records (ADRs) or tricky bug-fixing notes in the knowledge graph?</h3></summary>
 
-Developers or AI Agents can persist Virtual Knowledge Notes using `sot insert`:
+Developers or AI Agents can persist Virtual Knowledge Notes using `sotgraph insert`:
 
 ```bash
-./bin/sot insert \
+./bin/sotgraph insert \
   --title "Database Transaction Safety Guidelines" \
   --body "All multi-table mutations must be wrapped inside 'with self.conn:' to guarantee ACID compliance and prevent lock leaks." \
   --path "src/sot_graph/db.py" \

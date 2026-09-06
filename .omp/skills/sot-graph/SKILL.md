@@ -6,18 +6,18 @@ description: Single Source of Truth (SOT) verified knowledge graph for AI coding
 # /sot-graph (Single Source of Truth Knowledge Layer)
 
 When to use:
-- **Top-down orientation**: Map repository architecture without token waste (`sot map` / `sot_map`).
-- **Before writing or implementing code**: Search if utilities or existing solutions already exist (`sot search` / `sot_search`).
-- **Before modifying core functions or classes**: Trace upstream/downstream dependencies (`sot explore` / `sot_explore`) and exact call-sites (`sot usages` / `sot_usages`).
-- **Polymorphism & interface inspection**: Inspect concrete implementations (`sot implementations` / `sot_implementations`).
-- **Safe symbol refactoring**: Plan or execute multi-file renames (`sot rename`).
-- **Token-efficient context packaging**: Extract k-hop subgraphs into YAML ContextBundles (`sot pack` / `sot_pack`).
-- **Verifying disk consistency**: Audit phantom anchors and drift (`sot verify` / `sot_verify_drift`).
-- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sot insert` / `sot_notes`).
-- **Architecture analysis & reports**: Extract 5 fact bundle files (`sot bundle` / `sot_bundle`), generate visual graphs, community clustering, or health reports (`sot cluster`, `sot report`, `sot viz`, `sot export`).
-- **Git diff & revision blast radius**: Trace upstream callers, breaking API impacts, and affected tests across commits or working tree changes (`sot diff-impact` / `sot_diff_impact`).
-- **Git commit risk analysis**: Inspect commit history with automated risk scoring and impacted symbol tracking (`sot log` / `sot_git_history`).
-- **Database maintenance**: Purge stale records and vacuum freelists (`sot clean`, `sot vacuum`, `sot doctor`).
+- **Top-down orientation**: Map repository architecture without token waste (`sotgraph map` / `sot_map`).
+- **Before writing or implementing code**: Search if utilities or existing solutions already exist (`sotgraph search` / `sot_search`).
+- **Before modifying core functions or classes**: Trace upstream/downstream dependencies (`sotgraph explore` / `sot_explore`) and exact call-sites (`sotgraph usages` / `sot_usages`).
+- **Polymorphism & interface inspection**: Inspect concrete implementations (`sotgraph implementations` / `sot_implementations`).
+- **Safe symbol refactoring**: Plan or execute multi-file renames (`sotgraph rename`).
+- **Token-efficient context packaging**: Extract k-hop subgraphs into YAML ContextBundles (`sotgraph pack` / `sot_pack`).
+- **Verifying disk consistency**: Audit phantom anchors and drift (`sotgraph verify` / `sot_verify_drift`).
+- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sotgraph insert` / `sot_notes`).
+- **Architecture analysis & reports**: Extract 5 fact bundle files (`sotgraph bundle` / `sot_bundle`), generate visual graphs, community clustering, or health reports (`sotgraph cluster`, `sotgraph report`, `sotgraph viz`, `sotgraph export`).
+- **Git diff & revision blast radius**: Trace upstream callers, breaking API impacts, and affected tests across commits or working tree changes (`sotgraph diff-impact` / `sot_diff_impact`).
+- **Git commit risk analysis**: Inspect commit history with automated risk scoring and impacted symbol tracking (`sotgraph log` / `sot_git_history`).
+- **Database maintenance**: Purge stale records and vacuum freelists (`sotgraph clean`, `sotgraph vacuum`, `sotgraph doctor`).
 
 ## Trust Verdicts
 - `[STRONG]`: hash-verified against disk reality (high confidence, not absolute). File exists, symbol exists, token coverage matches.
@@ -29,33 +29,33 @@ When to use:
 ## Quick CLI & Native Tool Device Reference
 | Category | CLI Command | Native Tool Device |
 | :--- | :--- | :--- |
-| **Search Codebase** | `sot search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
-| **Repository Map** | `sot map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
-| **Trace Call Graph** | `sot explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
-| **Inspect Usages** | `sot usages "<symbol>"` | `xd://sot_usages` |
-| **Implementations** | `sot implementations "<interface>"` | `xd://sot_implementations` |
-| **Rename Impact** | `sot rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
-| **Pack Subgraph** | `sot pack "<symbol>" [--depth 2] [-o <file>]`| `xd://sot_pack` |
-| **Synchronize DB** | `sot reconcile [--workers 4]` | `xd://sot_reconcile` |
-| **Batch Reconcile** | `sot batch-reconcile <dir> [--workers 4]` | CLI |
-| **Audit Drift** | `sot verify [--deep]` | `xd://sot_verify` |
-| **Database Doctor** | `sot doctor` | `xd://sot_doctor` |
-| **Clean Stale Data**| `sot clean [--all] [--include-notes]` | `xd://sot_clean` |
-| **Vacuum Database** | `sot vacuum [--analyze]` | `xd://sot_vacuum` |
-| **Store Note** | `sot insert --title "..." --body "..."` | `xd://sot_insert` |
-| **Cluster Graph** | `sot cluster [--scope <path>]` | `xd://sot_cluster` |
-| **Architecture Report** | `sot report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
-| **Interactive Viz** | `sot viz [-o graph.html]` | `xd://sot_viz` |
-| **Export Graph** | `sot export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
-| **Fact Bundler** | `sot bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
-| **Full-Stack Trace** | `sot trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
-| **UI Decision Tree** | `sot ui-tree "<component>"` | `xd://sot_ui_tree` |
-| **Backend Flow** | `sot be-flow "<service>"` | `xd://sot_backend_flow` |
-| **Feature Inventory** | `sot solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
-| **Micro-steps Decompose** | `sot solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
-| **Solution Bundle** | `sot solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
-| **Diff Impact** | `sot diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
-| **Commit History** | `sot log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
-| **Embed Index** | `sot embed [--limit 5000]` | CLI |
-| **File Watcher** | `sot watch [--debounce-ms 200]` | CLI (Daemon) |
-| **Harness Setup** | `sot setup [--harness <name>]` | CLI |
+| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
+| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
+| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
+| **Inspect Usages** | `sotgraph usages "<symbol>"` | `xd://sot_usages` |
+| **Implementations** | `sotgraph implementations "<interface>"` | `xd://sot_implementations` |
+| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--depth 2] [-o <file>]`| `xd://sot_pack` |
+| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `xd://sot_reconcile` |
+| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
+| **Audit Drift** | `sotgraph verify [--deep]` | `xd://sot_verify` |
+| **Database Doctor** | `sotgraph doctor` | `xd://sot_doctor` |
+| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `xd://sot_clean` |
+| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `xd://sot_vacuum` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `xd://sot_insert` |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `xd://sot_cluster` |
+| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
+| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `xd://sot_viz` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
+| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
+| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
+| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `xd://sot_ui_tree` |
+| **Backend Flow** | `sotgraph be-flow "<service>"` | `xd://sot_backend_flow` |
+| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
+| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
+| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
+| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
+| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
+| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
+| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |

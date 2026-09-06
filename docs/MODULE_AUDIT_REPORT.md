@@ -35,7 +35,7 @@ Kết quả audit: **~20 P1** (hành vi sai) và **~45 P2** (perf/robustness). P
 
 7. **`watcher.py:76-84` — LockBusy làm MẤT vĩnh viễn event đổi file.** Sleep 0.2s rồi `continue` sang path khác, không re-enqueue — mọi event trong lúc CLI migration giữ write lock đều rơi, DB stale cho tới lần sửa tiếp theo.
 8. **`watcher.py:101-104` + `reconciler.py:483-537` — churn index file binary/unsupported.** Watcher chỉ check `is_ignored`, không check `_supported()` → `logo.png` được index vào FTS (preview mojibake), rồi lần reconcile full sau đó sweep xóa, rồi index lại khi file chạm lần nữa.
-9. **`watcher.py:344-346,606-611` — `sot watch --daemon` không bao giờ khởi động được trên Windows.** `_process_identity` trả `None` trên win32 → `start_daemon` coi là unverifiable, kill con vừa spawn. Nền tảng có code hỗ trợ đầy đủ nhưng deterministically fail.
+9. **`watcher.py:344-346,606-611` — `sotgraph watch --daemon` không bao giờ khởi động được trên Windows.** `_process_identity` trả `None` trên win32 → `start_daemon` coi là unverifiable, kill con vừa spawn. Nền tảng có code hỗ trợ đầy đủ nhưng deterministically fail.
 10. **`verifier.py:395-421` — jit_reconcile gán FRESH không phụ thuộc kết quả reconcile.** Dù commit conflict/failed, verdict vẫn FRESH → [STRONG] có thể khẳng định trên content chưa re-index.
 
 ### 2.4 query-analytics
@@ -48,11 +48,11 @@ Kết quả audit: **~20 P1** (hành vi sai) và **~45 P2** (perf/robustness). P
 
 ### 2.5 surfaces
 
-16. **`cli.py:374,2136-2145` — `sot --db custom.db providers sync` bỏ qua `--db`.** `cmd_providers_sync` hardcode `.sot/sot.db`; evidence ledger ghi vào DB khác với DB mọi lệnh khác đọc — receipt mô tả DB user không query.
+16. **`cli.py:374,2136-2145` — `sotgraph --db custom.db providers sync` bỏ qua `--db`.** `cmd_providers_sync` hardcode `.sot/sot.db`; evidence ledger ghi vào DB khác với DB mọi lệnh khác đọc — receipt mô tả DB user không query.
 17. **`mcp_server.py:205` + `mcp_service.py:696` — MCP `sot_usages` khai báo param `scope` nhưng bỏ qua hoàn toàn.** Client filter theo subdir nhận nguyên repo, không lỗi, không cảnh báo.
 18. **`mcp_server.py:299` vs `cli.py:1851` — semantics `depth` CLI≠MCP.** MCP default 1 + cap 4; CLI default 2, không cap; skill文档 ghi "default 2" — cùng câu hỏi qua MCP trả cây nông hơn cam kết.
-19. **`cli.py:210-216` — `sot search --hybrid` âm thầm bỏ `--scope`** — `hybrid_search()` không có tham số scope, argparse vẫn nhận cặp cờ. *(Probe: BUG_PRESENT.)*
-20. **`adapters/zcode.py:103,158,210` — adapter sinh doc/slash-command trỏ flag và MCP tool không tồn tại.** `sot pack -o`/`--depth`/`--format` không có trong parser (chỉ `--max-hops/--max-nodes/--max-bytes`); bảng quick-ref liệt kê 11 MCP tool không đăng ký (`sot_rename`, `sot_reconcile`…); `sot clean --purge-missing` không tồn tại.
+19. **`cli.py:210-216` — `sotgraph search --hybrid` âm thầm bỏ `--scope`** — `hybrid_search()` không có tham số scope, argparse vẫn nhận cặp cờ. *(Probe: BUG_PRESENT.)*
+20. **`adapters/zcode.py:103,158,210` — adapter sinh doc/slash-command trỏ flag và MCP tool không tồn tại.** `sotgraph pack -o`/`--depth`/`--format` không có trong parser (chỉ `--max-hops/--max-nodes/--max-bytes`); bảng quick-ref liệt kê 11 MCP tool không đăng ký (`sot_rename`, `sot_reconcile`…); `sotgraph clean --purge-missing` không tồn tại.
 
 ### 2.6 assurance
 
@@ -81,7 +81,7 @@ Kết quả audit: **~20 P1** (hành vi sai) và **~45 P2** (perf/robustness). P
 - `export/exporter.py:283-287` — Obsidian export đè file khi sanitize gây collision tên.
 
 **Nhất quán CLI↔MCP:**
-- `cli.py:1846,671` — `sot embed --limit` khai báo nhưng không truyền vào `index_nodes`.
+- `cli.py:1846,671` — `sotgraph embed --limit` khai báo nhưng không truyền vào `index_nodes`.
 - `cli.py:1465,1229` — `-o` bị bỏ qua khi `--json` với diff-impact/trace (pack thì honored).
 - `mcp_service.py:545-547` — scope filter MCP không escape LIKE (CLI có escape) → `scope: "_"` match tất cả.
 - `cli.py:231-242` — P4 ranking factor "qualified-name match" dead vì `fqn` không copy vào row.
@@ -147,7 +147,7 @@ Sau G1 nên bổng probe mới từ các P2 còn lại vào `PROBES` registry c�
 
 ### Đã sửa trong G1–G5
 - **G1 (assurance):** solution.py bỏ template bịa 10 bước + trạng thái NOT_FOUND trung thực; receipts tests_to_run đọc `path` thay `test_file`; coverage staleness theo sha+size (bỏ mtime); ledger cross-check ngừng bỏ qua failed runs.
-- **G2 (surfaces):** `sot providers sync --db`; MCP usages/search tôn trọng `scope` (kèm escape LIKE `ESCAPE '\'`); `sot_explore` depth mặc định 2; hybrid_search hỗ trợ scope; adapter docs đồng bộ tên MCP thật.
+- **G2 (surfaces):** `sotgraph providers sync --db`; MCP usages/search tôn trọng `scope` (kèm escape LIKE `ESCAPE '\'`); `sot_explore` depth mặc định 2; hybrid_search hỗ trợ scope; adapter docs đồng bộ tên MCP thật.
 - **G3 (extraction):** SCIP field 3 = Relationship (luôn parse) + field 17 kind enum; Go `import (...)` block state-machine giữ số dòng thật; receiver `this/self/cls` resolve; SCIP_KIND_MAP tái sinh 87 entry từ scip.proto chuẩn; nested .gitignore/​.sotignore + negation precedence.
 - **G4 (sync-healing):** watcher re-enqueue LockBusy (pending set + retry 0.2s); reconciler `_supported()` gate trả "excluded"; Windows daemon identity qua CIM (Get-CimInstance) thay fail cứng; verifier jit-FRESH theo reconcile outcome thật.
 - **G5 (core-storage + query-analytics):** journal LIKE escape 3 site; manifest digest fail-closed (TypeError/OperationalError); mark_evidence_stale chunk 200/statement (<999 params); index `idx_pending_src`, `idx_p_evidence_file_path`; snapshot dirty phân biệt non-git (0) vs repo không verify được (1, fail-closed); diff-impact bỏ match `"differ"` trong hunk + API exact-match + test discovery escape; pack.py tính `trusted_instructions` vào byte-cap; extractor import-provenance chuẩn hoá theo `dotted_module` (src-layout).

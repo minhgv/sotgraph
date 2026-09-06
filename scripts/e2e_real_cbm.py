@@ -117,8 +117,8 @@ def test_e2e() -> None:
         run_cmd(["git", "add", "."], cwd=str(repo_dir))
         run_cmd(["git", "commit", "-m", "Initial commit"], cwd=str(repo_dir))
 
-        # 2. Run sot reconcile
-        log("Running sot reconcile...")
+        # 2. Run sotgraph reconcile
+        log("Running sotgraph reconcile...")
         out_reconcile = run_cmd([sys.executable, "-m", "sot_graph.cli", "reconcile"], cwd=str(repo_dir))
         log(f"Reconcile output: {out_reconcile.strip()}")
 
@@ -138,7 +138,7 @@ def test_e2e() -> None:
             fail(f"Missing required SQLite tables: {missing_tables}")
         log(f"SQLite verified: found tables {sorted(tables)}")
         # 4. Check Provider Detection
-        log("Running sot providers detect...")
+        log("Running sotgraph providers detect...")
         out_detect = run_cmd([sys.executable, "-m", "sot_graph.cli", "providers", "detect", "--format", "json"], cwd=str(repo_dir))
         try:
             detect_json = json.loads(out_detect)
@@ -167,7 +167,7 @@ def test_e2e() -> None:
             log(f"Pre-sync git head: {get_head_sha(str(repo_dir))}")
             log(f"Pre-sync git status entries: {_status_entries(str(repo_dir))}")
             log(f"Pre-sync dirty state: {dirty_state(str(repo_dir))}")
-            log("Running sot providers sync codebase-memory...")
+            log("Running sotgraph providers sync codebase-memory...")
             env = dict(os.environ)
             src_path = str(Path(__file__).resolve().parent.parent / "src")
             existing_pp = env.get("PYTHONPATH", "")
@@ -315,7 +315,7 @@ def test_e2e() -> None:
             fail("Expected require:nonexistent to fail closed, but it returned 0!")
         log(f"Fail-closed verified: non-existent provider exited with code {res_neg.returncode}")
         # 5. Run scope_receipt via CLI
-        log("Running sot scope-receipt for verify_credentials...")
+        log("Running sotgraph scope-receipt for verify_credentials...")
         out_receipt = run_cmd(
             [sys.executable, "-m", "sot_graph.cli", "scope-receipt", "verify_credentials", "--json"],
             cwd=str(repo_dir),

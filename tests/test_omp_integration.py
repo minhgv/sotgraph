@@ -24,7 +24,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-BIN_SOT = REPO_ROOT / "bin" / "sot"
+BIN_SOT = REPO_ROOT / "bin" / "sotgraph"
 
 
 class TestOMPIntegrationScenarios(unittest.TestCase):
@@ -43,7 +43,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
         has_db = any(a == "--db" or a.startswith("--db=") for a in args)
         extra_args = [] if has_db else ["--db", str(self.db_path)]
         if sys.platform == "win32":
-            # bin/sot is a bash launcher; on Windows drive the CLI module
+            # bin/sotgraph is a bash launcher; on Windows drive the CLI module
             # directly with the same PYTHONPATH the launcher exports.
             cmd = [sys.executable, "-m", "sot_graph.cli"] + extra_args + args
         else:
@@ -57,7 +57,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
             errors="replace",  # on every platform; never locale-decode them
         )
         if check and proc.returncode != 0:
-            self.fail(f"sot command failed: {' '.join(cmd)}\nStdout: {proc.stdout}\nStderr: {proc.stderr}")
+            self.fail(f"sotgraph command failed: {' '.join(cmd)}\nStdout: {proc.stdout}\nStderr: {proc.stderr}")
         return proc
 
     def test_scenario_01_reconcile_sync(self):
@@ -250,7 +250,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
             log_path = tmp_root / "trusted.log"
             marker_path = tmp_root / "malicious.log"
 
-            trusted_bin.joinpath("sot").write_text(
+            trusted_bin.joinpath("sotgraph").write_text(
                 f"#!{sys.executable}\n"
                 "import os, sys\n"
                 f"with open({json.dumps(str(log_path))}, 'a', encoding='utf-8') as handle:\n"
@@ -260,28 +260,28 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
                 "print('trusted')\n",
                 encoding="utf-8",
             )
-            trusted_bin.joinpath("sot").chmod(0o755)
-            windows_trusted_bin.joinpath("sot.EXE").write_text(
-                trusted_bin.joinpath("sot").read_text(encoding="utf-8"),
+            trusted_bin.joinpath("sotgraph").chmod(0o755)
+            windows_trusted_bin.joinpath("sotgraph.EXE").write_text(
+                trusted_bin.joinpath("sotgraph").read_text(encoding="utf-8"),
                 encoding="utf-8",
             )
-            windows_trusted_bin.joinpath("sot.EXE").chmod(0o755)
+            windows_trusted_bin.joinpath("sotgraph.EXE").chmod(0o755)
             malicious = (
                 f"#!{sys.executable}\n"
                 f"with open({json.dumps(str(marker_path))}, 'a', encoding='utf-8') as handle:\n"
                 "    handle.write('malicious\\n')\n"
             )
             for malicious_bin in (
-                workspace / "sot",
-                workspace / "sot.exe",
-                local_bin / "sot",
-                node_bin / "sot",
-                nested_bin / "sot",
+                workspace / "sotgraph",
+                workspace / "sotgraph.exe",
+                local_bin / "sotgraph",
+                node_bin / "sotgraph",
+                nested_bin / "sotgraph",
             ):
                 malicious_bin.write_text(malicious, encoding="utf-8")
                 malicious_bin.chmod(0o755)
-            alias_bin.joinpath("sot").symlink_to(node_bin / "sot")
-            windows_alias_bin.joinpath("sot.EXE").symlink_to(workspace / "sot.exe")
+            alias_bin.joinpath("sotgraph").symlink_to(node_bin / "sotgraph")
+            windows_alias_bin.joinpath("sotgraph.EXE").symlink_to(workspace / "sotgraph.exe")
             workspace_alias_bin.symlink_to(trusted_bin, target_is_directory=True)
 
             harness = """
@@ -324,7 +324,7 @@ const assert = (condition, message) => {
 };
 
 const fs = await import("node:fs");
-const canonicalTrustedBinary = fs.realpathSync(`${trustedBin}/sot`);
+const canonicalTrustedBinary = fs.realpathSync(`${trustedBin}/sotgraph`);
 assert(resolveSotBinary(workspace) === canonicalTrustedBinary, "POSIX resolver must return the canonical PATH executable");
 
 const mockedWindowsPath = [
@@ -339,7 +339,7 @@ const mockedWindowsPath = [
 process.env.PATH = mockedWindowsPath;
 process.env.Path = mockedWindowsPath;
 process.env.PATHEXT = ".EXE;.CMD";
-const canonicalWindowsBinary = fs.realpathSync(`${windowsTrustedBin}/sot.EXE`);
+const canonicalWindowsBinary = fs.realpathSync(`${windowsTrustedBin}/sotgraph.EXE`);
 assert(
   resolveSotBinary(workspace, "win32") === canonicalWindowsBinary,
   "Windows resolver must honor PATHEXT and return an absolute canonical executable",

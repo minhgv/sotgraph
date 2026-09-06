@@ -90,7 +90,7 @@ def test_persisted_failures_have_fixed_safe_remediation(trusted_lab, failure, re
     assert result['status'] == 'refused'
     assert result['reason'] == reason
     assert result['enabled'] is False
-    assert result['remediation'] == ['sot engine ' + op for op in operations]
+    assert result['remediation'] == ['sotgraph engine ' + op for op in operations]
     assert 'UNTRUSTED' not in json.dumps(result)
     with pytest.raises(config.TrustedConfigError):
         config.load_managed_installation(lab.repo, config_path=lab.path)
@@ -108,7 +108,7 @@ def test_artifact_resolver_exceptions_are_sanitized(trusted_lab, monkeypatch, ca
     result = observe(lab)
     assert result['status'] == 'refused'
     assert result['reason'] == 'artifact_refused'
-    assert result['remediation'] == ['sot engine promote', 'sot engine rollback', 'sot engine disable']
+    assert result['remediation'] == ['sotgraph engine promote', 'sotgraph engine rollback', 'sotgraph engine disable']
     assert secret not in json.dumps(result)
     parser = argparse.ArgumentParser()
     admin.add_parser(parser.add_subparsers(dest='command'))
@@ -137,7 +137,7 @@ def test_installation_and_profile_runtime_errors_are_sanitized(trusted_lab, monk
     assert result['status'] == 'refused'
     assert result['reason'] == reason
     assert result['enabled'] is False
-    assert result['remediation'] == ['sot engine ' + op for op in operations]
+    assert result['remediation'] == ['sotgraph engine ' + op for op in operations]
     assert secret not in json.dumps(result)
     parser = argparse.ArgumentParser()
     admin.add_parser(parser.add_subparsers(dest='command'))
@@ -162,7 +162,7 @@ def test_unsupported_platform_diagnostics_refuse_but_default_loader_stays_off(tr
     assert result['reason'] == 'unsupported_platform'
     assert result['ready'] is False
     assert result['runtime_status'] == 'NOT_ASSESSED'
-    assert result['remediation'] == ['sot engine config-status']
+    assert result['remediation'] == ['sotgraph engine config-status']
     parser = argparse.ArgumentParser()
     admin.add_parser(parser.add_subparsers(dest='command'))
     for action in ('config-status', 'config-doctor'):
@@ -190,7 +190,7 @@ def test_synthetic_foreign_profile_is_quarantined_without_native_schema_claim(tr
     assert result['status'] == 'refused'
     assert result['runtime_status'] == 'QUARANTINED'
     assert result['reason'] == 'runtime_quarantined'
-    assert result['remediation'] == ['sot engine runtime-status', 'sot engine register', 'sot engine disable']
+    assert result['remediation'] == ['sotgraph engine runtime-status', 'sotgraph engine register', 'sotgraph engine disable']
     assert 'UNTRUSTED' not in json.dumps(result)
 
 
@@ -230,7 +230,7 @@ def test_different_digest_refuses_then_verified_old_artifact_rollback_restores_b
     assert refused['reason'] == 'artifact_mismatch'
     assert refused['artifact_digest'] == lab.artifact.digest
     assert refused['current_artifact_digest'] == replacement.digest
-    assert refused['remediation'] == ['sot engine register', 'sot engine rollback', 'sot engine disable']
+    assert refused['remediation'] == ['sotgraph engine register', 'sotgraph engine rollback', 'sotgraph engine disable']
     assert lab.path.read_bytes() == persisted  # Never silently re-register.
     lab.store.promote(lab.artifact.name, lab.artifact.digest)
     restored = config.load_managed_installation(lab.repo, config_path=lab.path)

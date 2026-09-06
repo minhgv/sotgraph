@@ -44,7 +44,7 @@ jobs:
         run: uv python install 3.12
 
       - name: Install project
-        run: uv sync --all-extras --dev
+        run: uv sync --locked --all-extras --dev
 
       - name: Oracle unit tests (import independence + planted corpus)
         run: uv run pytest tests/test_holdout_oracle.py -q

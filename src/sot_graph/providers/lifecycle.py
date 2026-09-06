@@ -26,13 +26,13 @@ UPDATE_PROCESS: List[Dict[str, Any]] = [
      "detail": "stop trusting federated verdicts: set provider_policy "
                "builtin_only for new queries; ledger keeps existing rows"},
     {"step": 2, "action": "record pre-state",
-     "detail": "sot providers detect --format json > pre.json (versions, "
+     "detail": "sotgraph providers detect --format json > pre.json (versions, "
                "health, contract version)"},
     {"step": 3, "action": "upgrade the provider binary",
      "detail": "install the new version out of band; nothing in sot-graph "
                "auto-updates providers"},
     {"step": 4, "action": "re-probe",
-     "detail": "sot providers detect: confirm installed+healthy and note "
+     "detail": "sotgraph providers detect: confirm installed+healthy and note "
                "the new version"},
     {"step": 5, "action": "contract check",
      "detail": "adapter compares provider version against the "
@@ -42,7 +42,7 @@ UPDATE_PROCESS: List[Dict[str, Any]] = [
      "detail": "run one federated query via CLI; inspect schema_drift / "
                "abstain outcomes before widening"},
     {"step": 7, "action": "re-index explicitly",
-     "detail": "sot providers sync --provider <name> under the write "
+     "detail": "sotgraph providers sync --provider <name> under the write "
                "lock; ledger records the new run + snapshot binding"},
     {"step": 8, "action": "restore policy + audit ledger",
      "detail": "re-enable the provider policy; receipt_from_ledger to "

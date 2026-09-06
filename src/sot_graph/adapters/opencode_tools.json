@@ -3,7 +3,7 @@
     {
       "name": "sot_search",
       "description": "Search verified Source-of-Truth knowledge graph with Trust Verdicts ([STRONG], [WEAK], [REBUILT]) to locate existing code and prevent rebuilding duplicate work.",
-      "command": "sot search \"{query}\" -n {limit} --scope \"{scope}\" --json",
+      "command": "sotgraph search \"{query}\" -n {limit} --scope \"{scope}\" --json",
       "parameters": {
         "type": "object",
         "properties": {
@@ -17,7 +17,7 @@
     {
       "name": "sot_explore",
       "description": "Explore cross-file dependencies, callers, and callees for any AST function, class, or symbol.",
-      "command": "sot explore \"{target}\" --depth {depth}",
+      "command": "sotgraph explore \"{target}\" --depth {depth}",
       "parameters": {
         "type": "object",
         "properties": {
@@ -30,7 +30,7 @@
     {
       "name": "sot_reconcile",
       "description": "Idempotently synchronize the knowledge graph with disk files. Call after heavy edits.",
-      "command": "sot reconcile",
+      "command": "sotgraph reconcile",
       "parameters": {
         "type": "object",
         "properties": {}

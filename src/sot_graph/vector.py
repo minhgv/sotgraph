@@ -143,7 +143,7 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
     Staleness contract: reconcile only prunes orphaned vector rows (see
     :func:`prune_orphans`); it deliberately does NOT re-embed, because
     auto-embedding on every reconcile would balloon reconcile latency.
-    Embedding refresh stays explicit via ``sot embed`` — which this
+    Embedding refresh stays explicit via ``sotgraph embed`` — which this
     incremental path makes cheap: after a small change, re-running embed
     costs O(changed) embedder calls instead of a full DELETE+INSERT
     rebuild.
@@ -209,7 +209,7 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
             )
     if truncated:
         print(
-            f"sot embed: vector index truncated to {len(rows)} of "
+            f"sotgraph embed: vector index truncated to {len(rows)} of "
             f"{total_nodes} nodes (newest kept by updated_at); raise the "
             "cap to cover the rest",
             file=sys.stderr,

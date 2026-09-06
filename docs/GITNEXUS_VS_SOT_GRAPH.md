@@ -47,7 +47,7 @@
 | **5. Query, Traversal & Graph Analytics** | Expressive **Cypher queries**, execution flow tracing, call hierarchies, **Leiden clustering**, dynamic impact assessment. | **FTS5 BM25** candidate lookup (< 1.2ms), BFS traversal, **Louvain / Modularity Q**, **God Node** (μ + 1.5σ), and 2-hop Blast Radius. | GitNexus is optimized for **deep recursive graph queries**. sot-graph is optimized for **sub-millisecond lexical search and shallow boundary diagnostics**. |
 | **6. Agent Integration & MCP Protocol** | Full MCP tools (`query`, `explore`, `impact`, `context`). Provides `PreToolUse` / `PostToolUse` hooks to enrich agent context. | MCP Stdio Server in **Strictly Read-Only Mode** (5 tools, 2 resources). Enforces hard timeouts and payload caps (256KB, depth 4). | GitNexus provides **automated prompt hook enrichment**. sot-graph enforces **deterministic, non-blocking operational boundaries**. |
 | **7. Multi-Language & Visualization** | Comprehensive Tree-sitter grammars (12+ languages: TS/JS, Python, Go, Rust, Java, C/C++, C#, Ruby, PHP, Swift...). Interactive WASM Web UI. | In-process AST parsers for major language families (Python, Go, Rust, TS/JS, Java, C/C++...). Multi-format export: **HTML D3.js, GraphRAG JSON, Obsidian, GraphML**. | GitNexus provides **broader native Tree-sitter grammar coverage**. sot-graph provides **multi-format open export capabilities (HTML, GraphRAG, Obsidian, GraphML)**. |
-| **8. Fault Tolerance & Failure Modes** | Potential file lock contention between MCP Server and Hooks (`#1492`). Native WAL crash risks during multi-repo loads (`#1480`). Requires Node.js bindings. | SQLite single-writer constraint. Disk I/O overhead on massive monorepos. Full rebuild recovery by deleting DB and re-running `sot reconcile`. | sot-graph has a **smaller failure blast radius** due to disposable index design. GitNexus provides higher expressiveness with higher process runtime requirements. |
+| **8. Fault Tolerance & Failure Modes** | Potential file lock contention between MCP Server and Hooks (`#1492`). Native WAL crash risks during multi-repo loads (`#1480`). Requires Node.js bindings. | SQLite single-writer constraint. Disk I/O overhead on massive monorepos. Full rebuild recovery by deleting DB and re-running `sotgraph reconcile`. | sot-graph has a **smaller failure blast radius** due to disposable index design. GitNexus provides higher expressiveness with higher process runtime requirements. |
 
 ---
 
@@ -119,7 +119,7 @@
 • Complex Cypher graph queries.                             • Risk of agents referencing stale/dead paths.
 • Tracing deep recursive call flows.                        • Frequent refactoring, renames, and moves.
 • Polyglot monorepos (C#, Ruby, Swift...).                  • Zero-daemon architecture (< 25MB RAM).
-• In-browser interactive WASM visualization.                • Storing ADRs & bug notes (`sot insert`).
+• In-browser interactive WASM visualization.                • Storing ADRs & bug notes (`sotgraph insert`).
         │                                                           │
         ▼                                                           ▼
  USE GITNEXUS                                                USE SOT-GRAPH

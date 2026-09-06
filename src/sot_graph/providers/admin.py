@@ -44,7 +44,7 @@ def verified_search(outcome, root, limit):
     from sot_graph.assurance.orchestrator import cbm_candidates_from_outcome
     payload = outcome.payload
     failure = {'status': 'abstained', 'freshness': 'unknown', 'results': [],
-               'next_action': 'Use sot search for builtin results or explicit sot engine sync.'}
+               'next_action': 'Use sotgraph search for builtin results or explicit sotgraph engine sync.'}
     if not outcome.ok or not isinstance(payload, dict):
         return failure
     if payload.get('cols') != ['qn', 'label', 'file', 'lines', 'rank'] or not isinstance(payload.get('rows'), list):
@@ -184,7 +184,7 @@ def run(args, root):
             'compatibility': 'not_assessed_by_artifact_administration',
             'lifecycle': 'not_started', 'platform_support': 'experimental',
             'snapshot': 'not_assessed',
-            'next_action': 'Use sot engine import then sot engine promote for explicit local installation.' if not descriptor else None,
+            'next_action': 'Use sotgraph engine import then sotgraph engine promote for explicit local installation.' if not descriptor else None,
             'limitations': ['Artifact selection does not enable query dispatch.',
                             'Rollback preserves runtime namespaces, notes and evidence; it does not downgrade an index.'],
         }, default=str, sort_keys=True))
@@ -192,5 +192,5 @@ def run(args, root):
     except (ArtifactError, ManagedRuntimeError, LockBusy, sqlite3.Error, OSError, ValueError, TypeError, KeyError):
         # Never turn native or untrusted manifest text into executable remediation.
         print(json.dumps({'schema_version': 1, 'status': 'refused',
-                          'next_action': 'Use sot engine doctor with a trusted private store; verify local manifest and digest.'}))
+                          'next_action': 'Use sotgraph engine doctor with a trusted private store; verify local manifest and digest.'}))
         return 2

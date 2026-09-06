@@ -97,26 +97,26 @@ Agents MUST extract output from `.data` while checking `.completeness` and `.pro
 ```mermaid
 flowchart TD
     subgraph S1 [Stage 1: Orientation & Discovery]
-        A["sot map --tokens 1024"] --> B["sot search &lt;keyword&gt; [--json]"]
+        A["sotgraph map --tokens 1024"] --> B["sotgraph search &lt;keyword&gt; [--json]"]
     end
     
     subgraph S2 [Stage 2: Compiler Indexing]
-        B --> C["sot import-scip &lt;index.scip&gt; (Optional; compiler-exact when imported)"]
+        B --> C["sotgraph import-scip &lt;index.scip&gt; (Optional; compiler-exact when imported)"]
     end
     
     subgraph S3 [Stage 3: Tracing & Context Packaging]
-        C --> D["sot explore &lt;symbol&gt; / sot usages"]
-        D --> E["sot pack &lt;symbol&gt; --tokens 1500 --json"]
+        C --> D["sotgraph explore &lt;symbol&gt; / sotgraph usages"]
+        D --> E["sotgraph pack &lt;symbol&gt; --tokens 1500 --json"]
     end
     
     subgraph S4 [Stage 4: Implementation & Refactoring]
-        E --> F["sot implementations / sot rename"]
+        E --> F["sotgraph implementations / sotgraph rename"]
         F --> G["Perform surgical code edits via Range Selectors"]
     end
     
     subgraph S5 [Stage 5: Self-Healing & Verification]
-        G --> H["sot reconcile --force"]
-        H --> I["sot verify --deep / sot doctor"]
+        G --> H["sotgraph reconcile --force"]
+        H --> I["sotgraph verify --deep / sotgraph doctor"]
     end
 ```
 
@@ -126,58 +126,58 @@ flowchart TD
 1. **Top-Down Repository Mapping:**
    Run PageRank-based repository mapping to identify top architectural landmark symbols:
    ```bash
-   sot map --focus "auth,billing" --tokens 2000
+   sotgraph map --focus "auth,billing" --tokens 2000
    ```
 2. **Ground Truth Symbol Search:**
    Search for targeted classes, methods, or database models:
    ```bash
-   sot search "PaymentProcessor" -n 5 --json
+   sotgraph search "PaymentProcessor" -n 5 --json
    ```
 
 ### Stage 2: Compiler Indexing & SCIP Ingestion
 When working with complex cross-package types (TypeScript, Go, Java, Rust, Python):
 ```bash
-sot import-scip index.scip --provider-version "v1.0.0"
+sotgraph import-scip index.scip --provider-version "v1.0.0"
 ```
 
 ### Stage 3: Dependency Tracing & Context Packaging
 1. **Call Graph & Blast Radius Audit:**
    ```bash
-   sot explore "PaymentProcessor.charge" --depth 2 --json
+   sotgraph explore "PaymentProcessor.charge" --depth 2 --json
    ```
 2. **Call-Site Precision Audit:**
    ```bash
-   sot usages "PaymentProcessor.charge" --json
+   sotgraph usages "PaymentProcessor.charge" --json
    ```
-3. **Hard-Budget Subgraph Packaging (`sot pack`):**
+3. **Hard-Budget Subgraph Packaging (`sotgraph pack`):**
    Extract a self-contained, token-efficient YAML or JSON context bundle:
    ```bash
-   sot pack "PaymentProcessor" --tokens 1500 --json
+   sotgraph pack "PaymentProcessor" --tokens 1500 --json
    ```
 
 ### Stage 4: Safe Implementation & Refactoring
 1. **Polymorphic & Interface Tracking:**
    ```bash
-   sot implementations "IPaymentGateway"
+   sotgraph implementations "IPaymentGateway"
    ```
 2. **Safe Multi-File Symbol Renaming:**
    ```bash
-   sot rename "oldMethodName" --to "newMethodName"
+   sotgraph rename "oldMethodName" --to "newMethodName"
    ```
 
 ### Stage 5: Self-Healing, Note Retention & Verification
 1. **Incremental Database Reconciliation:**
    ```bash
-   sot reconcile --workers 4
+   sotgraph reconcile --workers 4
    ```
 2. **Database Health & Note Preservation:**
    ```bash
-   sot doctor --json
-   sot clean --all  # Purges disposable index while preserving kind == 'note'
+   sotgraph doctor --json
+   sotgraph clean --all  # Purges disposable index while preserving kind == 'note'
    ```
 3. **Knowledge Retention (ADR):**
    ```bash
-   sot insert --title "Postpaid Limit Check Bypass" \
+   sotgraph insert --title "Postpaid Limit Check Bypass" \
               --body "Route credit limit checks to BCCS DataSource instead of local Ledger DB." \
               --keywords "bccs,postpaid,credit-limit"
    ```
@@ -206,33 +206,33 @@ When assigned an enterprise task, follow this standard 5-step analysis pattern:
 
 | Category | CLI Command | Native MCP Tool | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Discovery** | `sot search "<query>" [-n 5] [--json]` | `sot_search` | Pure-read verified AST symbol & knowledge search with North-Star envelope. |
-| **Orientation** | `sot map [--focus <areas>] [--tokens 2000]` | `sot_map` | PageRank-weighted architectural repo map. |
-| **Call Graph** | `sot explore "<symbol>" [--depth 2] [--json]` | `sot_explore` | 2-way incoming callers and outgoing dependencies with 2-Hop collapse. |
-| **Call-Sites** | `sot usages "<symbol>" [--json]` | `sot_usages` | Exact line-anchored invocations across codebase with pending candidate semantics. |
-| **SCIP Ingestion**| `sot import-scip <path> [--provider-version v1]` | CLI | Ingest compiler-backed SCIP index into multi-provider evidence ledger. |
-| **Polymorphism**| `sot implementations "<interface>"` | `sot_implementations` | Concrete classes implementing an interface/trait. |
-| **Refactoring** | `sot rename "<old>" --to "<new>"` | `sot_rename` | Structural symbol renaming blast radius analysis. |
-| **Packaging** | `sot pack "<symbol>" [--tokens 1500] [--json]`| `sot_pack` | Extracts k-hop subgraph into token-efficient ContextBundle with hard token ceiling. |
-| **Fact Bundle** | `sot bundle [--module <m>] [-o <dir>]` | `sot_bundle` | Generates 5 fact markdown/json bundle files for reports (confined path). |
-| **Communities** | `sot cluster [--scope <path>]` | `sot_cluster` | Louvain / Label Propagation modularity analysis with Newman-Girvan Q. |
-| **Diagnostics** | `sot report [-o <path>]` | `sot_report` | Detects God Nodes, 2-hop Blast Radius, and layer violations. |
-| **Visualizer** | `sot viz [-o graph.html]` | `sot_viz` | Interactive standalone HTML force-directed graph. |
-| **Export** | `sot export -f <obsidian\|graphrag\|scip>` | `sot_export` | Exports graph to Obsidian Vault, GraphRAG JSON, or SCIP. |
-| **Sync** | `sot reconcile [--workers 4] [--force]` | `sot_reconcile` | Incremental AST sync with SHA-256 dirty checking and atomic rehoming. |
-| **Drift Audit** | `sot verify [--deep]` | `sot_verify` | Audits physical existence and detects phantom nodes. |
-| **Knowledge** | `sot insert --title "..." --body "..."` | `sot_insert` | Persists Architecture Decision Records into SQLite (preserved on reset). |
-| **Health** | `sot doctor [--json]` | `sot_doctor` | SQLite page count, freelist, journal mode, schema v8 health. |
-| **Clean** | `sot clean [--all] [--include-notes]` | `sot_clean` | Purges stale records and deleted file nodes. |
-| **Vacuum** | `sot vacuum [--analyze]` | `sot_vacuum` | Reclaims unallocated SQLite freelist pages under maintenance lock. |
-| **Provision** | `sot setup [--harness omp\|claude\|all]` | CLI | Installs skills, rules, and MCP configurations. |
+| **Discovery** | `sotgraph search "<query>" [-n 5] [--json]` | `sot_search` | Pure-read verified AST symbol & knowledge search with North-Star envelope. |
+| **Orientation** | `sotgraph map [--focus <areas>] [--tokens 2000]` | `sot_map` | PageRank-weighted architectural repo map. |
+| **Call Graph** | `sotgraph explore "<symbol>" [--depth 2] [--json]` | `sot_explore` | 2-way incoming callers and outgoing dependencies with 2-Hop collapse. |
+| **Call-Sites** | `sotgraph usages "<symbol>" [--json]` | `sot_usages` | Exact line-anchored invocations across codebase with pending candidate semantics. |
+| **SCIP Ingestion**| `sotgraph import-scip <path> [--provider-version v1]` | CLI | Ingest compiler-backed SCIP index into multi-provider evidence ledger. |
+| **Polymorphism**| `sotgraph implementations "<interface>"` | `sot_implementations` | Concrete classes implementing an interface/trait. |
+| **Refactoring** | `sotgraph rename "<old>" --to "<new>"` | `sot_rename` | Structural symbol renaming blast radius analysis. |
+| **Packaging** | `sotgraph pack "<symbol>" [--tokens 1500] [--json]`| `sot_pack` | Extracts k-hop subgraph into token-efficient ContextBundle with hard token ceiling. |
+| **Fact Bundle** | `sotgraph bundle [--module <m>] [-o <dir>]` | `sot_bundle` | Generates 5 fact markdown/json bundle files for reports (confined path). |
+| **Communities** | `sotgraph cluster [--scope <path>]` | `sot_cluster` | Louvain / Label Propagation modularity analysis with Newman-Girvan Q. |
+| **Diagnostics** | `sotgraph report [-o <path>]` | `sot_report` | Detects God Nodes, 2-hop Blast Radius, and layer violations. |
+| **Visualizer** | `sotgraph viz [-o graph.html]` | `sot_viz` | Interactive standalone HTML force-directed graph. |
+| **Export** | `sotgraph export -f <obsidian\|graphrag\|scip>` | `sot_export` | Exports graph to Obsidian Vault, GraphRAG JSON, or SCIP. |
+| **Sync** | `sotgraph reconcile [--workers 4] [--force]` | `sot_reconcile` | Incremental AST sync with SHA-256 dirty checking and atomic rehoming. |
+| **Drift Audit** | `sotgraph verify [--deep]` | `sot_verify` | Audits physical existence and detects phantom nodes. |
+| **Knowledge** | `sotgraph insert --title "..." --body "..."` | `sot_insert` | Persists Architecture Decision Records into SQLite (preserved on reset). |
+| **Health** | `sotgraph doctor [--json]` | `sot_doctor` | SQLite page count, freelist, journal mode, schema v8 health. |
+| **Clean** | `sotgraph clean [--all] [--include-notes]` | `sot_clean` | Purges stale records and deleted file nodes. |
+| **Vacuum** | `sotgraph vacuum [--analyze]` | `sot_vacuum` | Reclaims unallocated SQLite freelist pages under maintenance lock. |
+| **Provision** | `sotgraph setup [--harness omp\|claude\|all]` | CLI | Installs skills, rules, and MCP configurations. |
 
 ---
 
 ## 7. Multi-Harness Configuration Directives
 
 ### Oh My Pi (OMP) Rules & Skills
-Install configurations via `sot setup --harness omp`.
+Install configurations via `sotgraph setup --harness omp`.
 
 ### Claude Code, OpenCode & Gemini Directives
 Configure MCP in `~/.claude/mcp.json` or `.cursor/mcp.json`:
@@ -241,7 +241,7 @@ Configure MCP in `~/.claude/mcp.json` or `.cursor/mcp.json`:
 {
   "mcpServers": {
     "sot-graph": {
-      "command": "sot",
+      "command": "sotgraph",
       "args": ["mcp"],
       "env": {}
     }
@@ -254,14 +254,14 @@ Configure MCP in `~/.claude/mcp.json` or `.cursor/mcp.json`:
 ## 8. Best Practices & Anti-Patterns
 
 ### ❌ Anti-Patterns to Avoid
-1. **Sequential Raw File Ingestion:** DO NOT sequentially read 10+ raw files (>100 lines) with generic file read tools. Use `sot map` -> `sot search` -> `sot pack`.
-2. **Text Grep for Symbol Navigation:** DO NOT rely solely on regex grep for symbol renames or references. Grep misses aliased imports and matches dead comments. Use `sot usages` and `sot rename`.
-3. **Blind Assumptions on Renamed Files:** DO NOT assume a file path exists based on historical prompt memory. Verify with `sot verify` or `sot search`.
+1. **Sequential Raw File Ingestion:** DO NOT sequentially read 10+ raw files (>100 lines) with generic file read tools. Use `sotgraph map` -> `sotgraph search` -> `sotgraph pack`.
+2. **Text Grep for Symbol Navigation:** DO NOT rely solely on regex grep for symbol renames or references. Grep misses aliased imports and matches dead comments. Use `sotgraph usages` and `sotgraph rename`.
+3. **Blind Assumptions on Renamed Files:** DO NOT assume a file path exists based on historical prompt memory. Verify with `sotgraph verify` or `sotgraph search`.
 
 ### ✅ Best Practices
 1. **Always Check Trust Verdicts & Providers:** Prioritize `[STRONG]` results; inspect `[WEAK]` results; verify provider capability (`AST_HEURISTIC_PARSER` vs `COMPILER_SCIP_INDEX`).
-2. **Pack Before Slicing:** Extract subgraphs via `sot pack "<symbol>" --tokens 1500 --json` when delegating tasks to worker subagents.
-3. **Reconcile on Exit:** Always run `sot reconcile` after completing code generation to ensure the next session inherits a clean, synchronized state.
+2. **Pack Before Slicing:** Extract subgraphs via `sotgraph pack "<symbol>" --tokens 1500 --json` when delegating tasks to worker subagents.
+3. **Reconcile on Exit:** Always run `sotgraph reconcile` after completing code generation to ensure the next session inherits a clean, synchronized state.
 
 ---
 

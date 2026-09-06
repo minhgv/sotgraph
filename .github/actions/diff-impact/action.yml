@@ -1,6 +1,6 @@
 name: 'SOT-Graph Diff Impact'
 description: >
-  CI-native blast-radius bot: runs `sot reconcile` + `sot diff-impact <target>`
+  CI-native blast-radius bot: runs `sotgraph reconcile` + `sotgraph diff-impact <target>`
   and posts/updates one idempotent PR comment (GitHub format, collapsed
   sections). Outside a pull_request context it writes the report to
   $GITHUB_STEP_SUMMARY instead. Checkout is the caller's job; ensure the
@@ -21,13 +21,13 @@ inputs:
     required: false
     default: 'HEAD~1'
   format:
-    description: 'Renderer format passed to sot diff-impact (github | markdown)'
+    description: 'Renderer format passed to sotgraph diff-impact (github | markdown)'
     required: false
     default: 'github'
   mode:
     description: >
       advisory (default): report only, the job stays green. gate: maps to
-      `sot diff-impact --gate` and fails the job (exit 1) unless the
+      `sotgraph diff-impact --gate` and fails the job (exit 1) unless the
       receipt assurance status is in the ASSURED set. The comment is
       still posted in gate mode before the job fails.
     required: false
@@ -36,7 +36,7 @@ inputs:
     description: >
       Where sot-graph is installed from (SG-102 dogfood): auto (default;
       `pip install .` from the workspace checkout when running in
-      minhgv/sot-graph, else PyPI) | checkout (force workspace install;
+      minhgv/sotgraph, else PyPI) | checkout (force workspace install;
       only valid when the workspace IS the sot-graph source) | pypi
       (force PyPI).
     required: false
@@ -53,7 +53,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: 'Install sot-graph (dogfood checkout in minhgv/sot-graph, else PyPI)'
+    - name: 'Install sot-graph (dogfood checkout in minhgv/sotgraph, else PyPI)'
       id: install
       env:
         TOOL_SOURCE: ${{ inputs.tool-source }}
@@ -69,7 +69,7 @@ runs:
         # release. The old `git+<this-repo>` fallback is gone on purpose:
         # it resolved to the CONSUMER's repository and installed the wrong
         # project as sot-graph.
-        if [ "$SOURCE" = "auto" ] && [ "${{ github.repository }}" = "minhgv/sot-graph" ]; then
+        if [ "$SOURCE" = "auto" ] && [ "${{ github.repository }}" = "minhgv/sotgraph" ]; then
           SOURCE="checkout"
         fi
         if [ "$SOURCE" = "checkout" ]; then
@@ -91,7 +91,7 @@ runs:
         set -euo pipefail
         # The engine only trusts a reconciled index; the Action is the write
         # path, the report generation below stays read-only.
-        sot reconcile --workers 4
+        sotgraph reconcile --workers 4
 
     - name: 'Render diff-impact report'
       id: analyze
@@ -120,7 +120,7 @@ runs:
         if [ "$MODE" = "gate" ]; then GATE_FLAG="--gate"; fi
         set +e
         # shellcheck disable=SC2086
-        sot diff-impact "$TARGET" --format "${{ inputs.format }}" $GATE_FLAG > sot-diff-impact-comment.md
+        sotgraph diff-impact "$TARGET" --format "${{ inputs.format }}" $GATE_FLAG > sot-diff-impact-comment.md
         RC=$?
         set -e
         echo "rc=$RC" >> "$GITHUB_OUTPUT"
@@ -128,7 +128,7 @@ runs:
         if [ "${{ steps.install.outputs.source }}" = "checkout" ]; then
           TOOL_VER="$(git rev-parse --short HEAD)"
         else
-          TOOL_VER="$(sot --version 2>/dev/null | awk '{print $NF}' || pip show sot-graph 2>/dev/null | awk '/^Version:/ {print $2}')"
+          TOOL_VER="$(sotgraph --version 2>/dev/null | awk '{print $NF}' || pip show sot-graph 2>/dev/null | awk '/^Version:/ {print $2}')"
         fi
         printf '\n---\n<sub>Tool: %s @ %s</sub>\n' \
           "${{ steps.install.outputs.source }}" "${TOOL_VER:-unknown}" >> sot-diff-impact-comment.md
@@ -180,7 +180,7 @@ runs:
         set -euo pipefail
         RC="${{ steps.analyze.outputs.rc }}"
         if [ "$RC" != "0" ]; then
-          echo "::error::sot diff-impact --gate failed (exit ${RC}): receipt assurance status is not in the ASSURED set."
+          echo "::error::sotgraph diff-impact --gate failed (exit ${RC}): receipt assurance status is not in the ASSURED set."
           exit "$RC"
         fi
         echo "Gate passed: receipt assurance status is assured within scope."

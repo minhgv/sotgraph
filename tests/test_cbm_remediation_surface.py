@@ -5,12 +5,12 @@ Verifies that the public error path of
 into operational instructions:
 
 - every public ``next_action`` is drawn from the SOT-only allowlist
-  (sot commands verified against the CLI parser, or explicit
-  "unavailable via sot" markers);
+  (sotgraph commands verified against the CLI parser, or explicit
+  "unavailable via sotgraph" markers);
 - hostile native stderr/stdout/envelope text that actively recommends CBM
   commands never reaches the public error at all — public errors carry a
   fixed generic operation + classification ("native diagnostic withheld");
-  raw native text is withheld everywhere — including the `sot providers
+  raw native text is withheld everywhere — including the `sotgraph providers
   sync` record detail, which is a public CLI/MCP surface, not a debug mode;
 - error classification, fail-closed behavior, and CBM provenance names are
   preserved (no blunt erasure, no unknown-to-success conversion).
@@ -140,29 +140,29 @@ class TestNextActionAllowlist:
         }
 
     def test_sync_references_verified_cli_command(self):
-        # `sot providers sync <provider_name>` exists in the CLI parser
+        # `sotgraph providers sync <provider_name>` exists in the CLI parser
         # (src/sot_graph/cli.py: prov_subs.add_parser("sync")).
-        assert NEXT_ACTION_SYNC == "run sot providers sync codebase-memory"
+        assert NEXT_ACTION_SYNC == "run sotgraph providers sync codebase-memory"
 
     def test_version_pin_is_explicit_unavailable_not_invented(self):
-        assert "unavailable via sot" in NEXT_ACTION_VERSION_PIN
+        assert "unavailable via sotgraph" in NEXT_ACTION_VERSION_PIN
         # No invented upgrade/pin/install/cancel command and no imperative
         # to operate the CBM binary on the public surface.
         assert "pin codebase-memory-mcp" not in NEXT_ACTION_VERSION_PIN
-        assert "sot upgrade" not in NEXT_ACTION_VERSION_PIN
-        assert "sot install" not in NEXT_ACTION_VERSION_PIN
-        assert "sot cancel" not in NEXT_ACTION_VERSION_PIN
+        assert "sotgraph upgrade" not in NEXT_ACTION_VERSION_PIN
+        assert "sotgraph install" not in NEXT_ACTION_VERSION_PIN
+        assert "sotgraph cancel" not in NEXT_ACTION_VERSION_PIN
         # Golden version kept as provenance only.
         assert TESTED_CBM_VERSION in NEXT_ACTION_VERSION_PIN
 
     def test_explicit_project_guidance_reports_unavailable(self):
         # No native command, no actionable pass-project workaround: the
-        # public guidance honestly reports sot cannot resolve ambiguity.
+        # public guidance honestly reports sotgraph cannot resolve ambiguity.
         for forbidden in ("codebase-memory-mcp", "list_projects", "cli ",
                           "pass the project", "pass project"):
             assert forbidden not in NEXT_ACTION_EXPLICIT_PROJECT
         assert "cannot currently resolve" in NEXT_ACTION_EXPLICIT_PROJECT
-        assert "no sot command applies" in NEXT_ACTION_EXPLICIT_PROJECT
+        assert "no sotgraph command applies" in NEXT_ACTION_EXPLICIT_PROJECT
 
     @pytest.mark.parametrize("value", list(NEXT_ACTION_ALLOWLIST) + [None])
     def test_allowlisted_values_pass_through(self, value):
@@ -378,12 +378,12 @@ class TestConflictingProjectResolution:
         assert outcome.next_action == NEXT_ACTION_EXPLICIT_PROJECT
         assert outcome.next_action in NEXT_ACTION_ALLOWLIST
         # No native command and no actionable pass-project workaround: the
-        # guidance honestly reports sot cannot resolve the ambiguity.
+        # guidance honestly reports sotgraph cannot resolve the ambiguity.
         assert "list_projects" not in (outcome.next_action or "")
         assert "codebase-memory-mcp" not in (outcome.next_action or "")
         assert "pass the project" not in (outcome.next_action or "")
         assert "cannot currently resolve" in (outcome.next_action or "")
-        assert "no sot command applies" in (outcome.next_action or "")
+        assert "no sotgraph command applies" in (outcome.next_action or "")
         # Provenance (classification) kept; raw project NAMES are not
         # echoed — count only, so hostile names cannot inject text.
         assert "ambiguous" in (outcome.error or "")
@@ -443,7 +443,7 @@ class TestProvenanceAndSuccessPathPreserved:
         assert outcome.metadata["wire_status"] == "provider_error"
 
     def test_sync_public_record_withholds_hostile_text(self, tmp_path, monkeypatch):
-        # `sot providers sync` is a public CLI/MCP surface, not a debug
+        # `sotgraph providers sync` is a public CLI/MCP surface, not a debug
         # mode: its record detail carries no native text either.
         _patch_runner(monkeypatch, FakeRunner(
             _run(stderr=HOSTILE_CBM_PITCH, returncode=1),

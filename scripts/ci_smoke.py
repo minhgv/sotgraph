@@ -4,7 +4,7 @@ Subcommands (run from the repo root after `uv build`):
 
     mcp       Install the built wheel into an isolated environment and verify
               that the MCP server initializes with the expected version.
-    template  Install the built wheel and run `sot setup --harness omp`.
+    template  Install the built wheel and run `sotgraph setup --harness omp`.
 
 Replaces the previous inline `python -c "..."` steps in ci.yml: PowerShell on
 windows-latest does not treat backslash-escaped quotes as Bash does, which
@@ -58,8 +58,8 @@ def _run(args: list[str]) -> None:
 def mcp() -> None:
     _run(
         [
-            "uv", "run", "--isolated",
-            "--with", "mcp>=1.3",
+            "uv", "run", "--no-project", "--isolated",
+            "--with", "mcp>=1.3,<2",
             "--with", _wheel(),
             "python", "-c", MCP_VERIFY_CODE,
         ]
@@ -70,9 +70,9 @@ def template() -> None:
     with tempfile.TemporaryDirectory() as root:
         _run(
             [
-                "uv", "run", "--isolated",
+                "uv", "run", "--no-project", "--isolated",
                 "--with", _wheel(),
-                "sot", "--root", root,
+                "sotgraph", "--root", root,
                 "setup", "--harness", "omp", "--workspace-only",
             ]
         )

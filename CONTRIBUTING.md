@@ -15,13 +15,15 @@ Requirements: git, [uv](https://docs.astral.sh/uv/), Python >= 3.10
 (CI exercises 3.12 and newer).
 
 ```bash
-git clone https://github.com/minhgv/sot-graph.git
-cd sot-graph
-uv sync --all-extras --dev
+git clone https://github.com/minhgv/sotgraph.git
+cd sotgraph
+uv sync --locked --all-extras --dev
 ```
 
 `--all-extras --dev` matches what CI installs and pulls in the tree-sitter
 grammar extras used by polyglot tests.
+
+See [independent development readiness](docs/DEVELOPMENT_READINESS.md) for private native access, historical evidence, and operator prerequisites.
 
 ## Running tests
 
@@ -66,7 +68,7 @@ sot-graph makes verified trust claims about itself, tracked in two places:
 
 - `claims/registry.yaml` — every public trust claim, with a same-commit
   artifact trace (benchmark JSON or enforcing test) and a stated ceiling.
-- `uv run sot claims lint` — validates artifact/provenance consistency,
+- `uv run sotgraph claims lint` — validates artifact/provenance consistency,
   docs <-> registry drift, and scans `README.md`, `AGENTS.md`, and
   `docs/*.md` for unhedged absolute phrases ("100%", "guarantee",
   "authoritative") that no registry entry covers.
@@ -113,8 +115,9 @@ There is no separate `CHANGELOG.md`; the convention lives in
 
 - The version lives in `__version__` in `src/sot_graph/__init__.py`
   (pyproject reads it dynamically) — that is the single place to bump.
-- Releases are cut by pushing an annotated `vX.Y.Z` tag, which triggers the
-  release/publish pipeline in CI.
+- Release tags conventionally use annotated `vX.Y.Z` tags. Actions are currently
+  disabled in this private repository; a tag alone does not establish publishing
+  readiness. See the operator prerequisites in the development readiness guide.
 - User-visible changes are documented in a `docs/RELEASE_NOTES_vX.Y.Z.md`
   file per release (see v0.3.0–v0.3.2 for the format).
 

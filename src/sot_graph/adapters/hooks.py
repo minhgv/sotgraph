@@ -1,6 +1,6 @@
 """Git hook provisioning: event-driven reconcile for the no-daemon model.
 
-`sot setup --hooks` appends a guarded reconcile invocation to post-merge
+`sotgraph setup --hooks` appends a guarded reconcile invocation to post-merge
 and post-checkout so the graph syncs exactly when branches change — no
 polling, no resident process. Idempotent: a hook carrying our marker is
 never duplicated.

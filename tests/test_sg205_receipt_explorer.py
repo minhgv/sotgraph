@@ -272,7 +272,7 @@ def test_module_surface_has_no_db_or_io_dependencies() -> None:
 
 
 # --------------------------------------------------------------------------
-# CLI: sot receipt show / diff
+# CLI: sotgraph receipt show / diff
 # --------------------------------------------------------------------------
 def _run_cli(*args: str, cwd: Path = REPO) -> subprocess.CompletedProcess:
     # Global --root must precede the subcommand (argparse convention).

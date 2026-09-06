@@ -1,11 +1,11 @@
 # Provider Lifecycle (roadmap §8.1 / §8.2)
 
-Mọi evidence provider đều có **lifecycle manifest** sống — sinh trực tiếp từ registry probe (`sot providers lifecycle`), không bao giờ hand-maintained — khai báo: health, version, capability, contract version của adapter, tình trạng tương thích wire, chính sách upgrade/rollback.
+Mọi evidence provider đều có **lifecycle manifest** sống — sinh trực tiếp từ registry probe (`sotgraph providers lifecycle`), không bao giờ hand-maintained — khai báo: health, version, capability, contract version của adapter, tình trạng tương thích wire, chính sách upgrade/rollback.
 
 ## §8.1 Manifest
 
 ```bash
-sot providers lifecycle --format json
+sotgraph providers lifecycle --format json
 ```
 
 Mỗi entry:
@@ -29,12 +29,12 @@ Bất biến:
 ## §8.2 Quy trình update 8 bước
 
 1. **Freeze evidence** — chuyển `provider_policy` sang `builtin_only` cho query mới; ledger giữ nguyên rows cũ.
-2. **Record pre-state** — `sot providers detect --format json > pre.json`.
+2. **Record pre-state** — `sotgraph providers detect --format json > pre.json`.
 3. **Upgrade binary** — cài version mới ngoài sot-graph; không có auto-update.
-4. **Re-probe** — `sot providers detect`: installed + healthy + version mới.
+4. **Re-probe** — `sotgraph providers detect`: installed + healthy + version mới.
 5. **Contract check** — adapter so version với `contract_version`; lệch → abstain.
 6. **Shadow one query** — chạy đúng MỘT federated query qua CLI; soát `schema_drift`/`abstain` trước khi mở rộng.
-7. **Re-index explicitly** — `sot providers sync --provider <name>` dưới write lock; ledger ghi run + snapshot binding.
+7. **Re-index explicitly** — `sotgraph providers sync --provider <name>` dưới write lock; ledger ghi run + snapshot binding.
 8. **Restore policy + audit ledger** — bật lại policy; `receipt_from_ledger` để audit runs/evidence và xử conflict.
 
 **Rollback** = lặp bước 4–7 với version cũ (ledger append-only giữ evidence pre-upgrade; `purge_provider_run` là đường xóa duy nhất).

@@ -209,7 +209,7 @@ def run_watch(
 ) -> None:
     """Run the watch daemon until interrupted or stop_event is set."""
     resolved = pick_backend(backend)
-    log = log or (lambda message: print(f"[sot watch:{resolved}] {message}", flush=True))
+    log = log or (lambda message: print(f"[sotgraph watch:{resolved}] {message}", flush=True))
     log(f"watching {root} (backend={resolved}, debounce={debounce_ms}ms)")
     if resolved == "watchfiles":
         _run_watchfiles(reconciler, root, debounce_ms, log, stop_event=stop_event)
@@ -270,7 +270,7 @@ def run_watch_multi(
     from sot_graph.reconciler import Reconciler
 
     resolved = pick_backend(backend)
-    log = log or (lambda message: print(f"[sot watch-multi:{resolved}] {message}", flush=True))
+    log = log or (lambda message: print(f"[sotgraph watch-multi:{resolved}] {message}", flush=True))
 
     if not roots:
         log("No initialized SOT projects found to watch.")
@@ -869,7 +869,7 @@ WantedBy=default.target
         except Exception as e:
             return f"⚠️ Service written to {service_path}, error: {e}"
 
-    return f"Unsupported OS platform for auto-service: {system}. Use 'sot watch --all --daemon' instead."
+    return f"Unsupported OS platform for auto-service: {system}. Use 'sotgraph watch --all --daemon' instead."
 
 
 def uninstall_service() -> str:

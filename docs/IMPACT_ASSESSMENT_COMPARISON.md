@@ -68,7 +68,7 @@ flowchart TD
 
 SOT-Graph (Single Source of Truth Knowledge Graph) triển khai cơ chế CIA theo 3 cơ chế độc lập nhưng tương hỗ (được định nghĩa chi tiết tại `docs/SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md`):
 
-#### A. Tiền kiểm Mã Nguồn (`sot diff-impact` / `xd://mcp__sot_graph_sot_diff_impact`)
+#### A. Tiền kiểm Mã Nguồn (`sotgraph diff-impact` / `xd://mcp__sot_graph_sot_diff_impact`)
 - **Đầu vào:** Working tree chưa commit, staged diff, hoặc commit range (`git diff`).
 - **Quy trình 4 bước:**
   1. *Git Delta Extraction:* Tách các diff hunks và khoảng dòng thay đổi `[start_line, end_line]`.
@@ -86,7 +86,7 @@ SOT-Graph (Single Source of Truth Knowledge Graph) triển khai cơ chế CIA th
   - 🟡 **MEDIUM:** `Risk Score ≥ 25` HOẶC `total_callers ≥ 3` HOẶC `total_apis ≥ 1`. Yêu cầu chạy targeted unit tests.
   - 🟢 **LOW:** `Risk Score < 25`, `total_callers < 3`, `total_apis = 0`. Cho phép merge nhanh.
 
-#### B. Hồi cứu Lịch sử Commit (`sot log` / `sot_git_history`)
+#### B. Hồi cứu Lịch sử Commit (`sotgraph log` / `sot_git_history`)
 - Đánh giá độ rủi ro của từng commit trong lịch sử dựa trên thang Heuristic tích lũy (0 – 15+ điểm):
   - Kích thước commit (File Blast Radius): > 5 files (+1), > 15 files (+2).
   - Biến động mã nguồn (Code Churn): > 250 dòng (+1), > 800 dòng (+2).
@@ -94,7 +94,7 @@ SOT-Graph (Single Source of Truth Knowledge Graph) triển khai cơ chế CIA th
   - Symbol trọng yếu: Sửa hàm/lớp có In-Degree ≥ 5 (+2).
 - **Phân loại:** 🟢 LOW (< 2 điểm) \| 🟡 MEDIUM (2 – 4 điểm) \| 🔴 HIGH (≥ 5 điểm).
 
-#### C. Chẩn đoán Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sot report`)
+#### C. Chẩn đoán Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sotgraph report`)
 - Sử dụng phân phối chuẩn Gaussian bậc liên kết (`d = in + out`), tính ngưỡng cắt `Cutoff = max(4, μ + 1.5σ)` và đo bán kính nổ 2 bước (`k ≤ 2`).
 - **Phân loại:**
   - 🟢 **MEDIUM:** `d ≥ Cutoff`, bán kính nổ < 15%.
@@ -138,7 +138,7 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
 5. **Điểm Khuyết Thiếu:**
    - **Hoàn toàn KHÔNG có hệ thống chấm điểm rủi ro (Risk Scoring Engine)**.
    - **Hoàn toàn KHÔNG phân cấp rủi ro (No Risk Tiers: LOW/MED/HIGH/CRITICAL)**.
-   - Không hỗ trợ kiểm tra lịch sử commit (`sot log`), không kiểm tra vỡ hợp đồng API, và không tính toán độ tập trung mã nguồn (God Nodes qua Gaussian).
+   - Không hỗ trợ kiểm tra lịch sử commit (`sotgraph log`), không kiểm tra vỡ hợp đồng API, và không tính toán độ tập trung mã nguồn (God Nodes qua Gaussian).
 
 ---
 
@@ -167,8 +167,8 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
 | # | Chiều Kỹ Thuật (Dimension) | **SOT-Graph** | **GitNexus** | **CodeGraph** | **Codebase-Memory-MCP** |
 | :---: | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Ngôn ngữ & Runtime Engine** | Python 3.10+ / Embedded SQLite WAL | TypeScript / Node.js + WASM | TypeScript / Node.js (100% Local) | Single Static Binary (C / Go) |
-| **2** | **Phân tích Diff Chưa Commit (Pre-merge CIA)** | **CÓ** (`sot diff-impact` / `xd://mcp__...`) | **CÓ** (`gitnexus detect-changes`) | **CÓ** (`codegraph affected / impact`) | **CÓ** (`detect_changes`) |
-| **3** | **Đánh giá Lịch sử Commit (Post-commit CIA)** | **CÓ** (`sot log` - Churn, NIST paths, Core in-degree) | **KHÔNG** (Chỉ kiểm tra commit-staleness) | **KHÔNG** | **KHÔNG** |
+| **2** | **Phân tích Diff Chưa Commit (Pre-merge CIA)** | **CÓ** (`sotgraph diff-impact` / `xd://mcp__...`) | **CÓ** (`gitnexus detect-changes`) | **CÓ** (`codegraph affected / impact`) | **CÓ** (`detect_changes`) |
+| **3** | **Đánh giá Lịch sử Commit (Post-commit CIA)** | **CÓ** (`sotgraph log` - Churn, NIST paths, Core in-degree) | **KHÔNG** (Chỉ kiểm tra commit-staleness) | **KHÔNG** | **KHÔNG** |
 | **4** | **Chẩn đoán Rủi ro Kiến trúc Vĩ mô** | **CÓ** (Phân phối chuẩn Gaussian μ + 2σ, 3σ) | **CÓ** (Leiden Community Clustering) | **KHÔNG** | **CÓ** (Hotspots Detection) |
 | **5** | **Thang Điểm Rủi Ro (Scoring Engine)** | **Công thức chuẩn hóa toán học (0 - 100)** | **Ma trận Rủi ro định tính** (Dựa trên Depth + Process) | **KHÔNG CÓ** (Chỉ xuất số lượng raw metrics) | **Thang Heuristic Phân cấp** (Dựa trên Depth + Hotspot) |
 | **6** | **Phân Loại Mức Độ Rủi Ro (Risk Tiers)** | 🟢 LOW / 🟡 MEDIUM / 🔴 HIGH / 🟣 CRITICAL | LOW / MEDIUM / HIGH (theo độ sâu d = 1, 2, 3) | **KHÔNG CÓ** | 🟢 LOW / 🟡 MEDIUM / 🔴 HIGH / 🔴 CRITICAL |
@@ -212,7 +212,7 @@ flowchart TD
     Q1 -->|"Cần tốc độ cực nhanh < 1ms, Binary nhẹ không phụ thuộc runtime"| CBM_Choice["Lựa chọn: Codebase-Memory-MCP"]
     Q1 -->|"Dự án đa ngôn ngữ React Native/Swift, Cần quan hệ chính xác Honest Edges"| CG_Choice["Lựa chọn: CodeGraph"]
 
-    SG_Choice --> SG_Use["- sot diff-impact trước khi commit<br/>- Scope Receipts P8 chặn agent yield sai<br/>- sot log kiểm tra lịch sử release"]
+    SG_Choice --> SG_Use["- sotgraph diff-impact trước khi commit<br/>- Scope Receipts P8 chặn agent yield sai<br/>- sotgraph log kiểm tra lịch sử release"]
     GN_Choice --> GN_Use["- gitnexus impact khảo sát callers<br/>- gitnexus detect-changes xem affected processes<br/>- Visual web UI cho kiến trúc sư"]
     CBM_Choice --> CBM_Use["- detect_changes quét diff uncommitted<br/>- trace_call_path với risk_labels<br/>- Tích hợp nhanh vào mọi IDE client"]
     CG_Choice --> CG_Use["- codegraph impact xem blast radius 3 hops<br/>- codegraph affected tìm test suites"]
@@ -225,7 +225,7 @@ Trong một dự án quy mô lớn, các công cụ trên có thể phối hợp
 2. **Giai đoạn Thực thi & Sửa mã (Active Coding Loop):**
    - Sử dụng **`codebase-memory-mcp`** để truy vấn ký hiệu tức thời (< 1ms) với lượng tiêu thụ token tối thiểu.
 3. **Giai đoạn Nghiệm thu, Kiểm soát Rủi ro & Gatekeeper (Verification & Pre-merge Gate):**
-   - Bắt buộc kích hoạt **`sot-graph` (`sot diff-impact`)** để tính điểm rủi ro 0 – 100, khóa hợp đồng API Frontend-Backend, phát hiện toàn bộ test suites cần chạy, và phát hành Scope Receipt đảm bảo AI Agent không bỏ sót lỗi tiềm ẩn.
+   - Bắt buộc kích hoạt **`sot-graph` (`sotgraph diff-impact`)** để tính điểm rủi ro 0 – 100, khóa hợp đồng API Frontend-Backend, phát hiện toàn bộ test suites cần chạy, và phát hành Scope Receipt đảm bảo AI Agent không bỏ sót lỗi tiềm ẩn.
 
 ---
 

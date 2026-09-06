@@ -76,18 +76,18 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - Primitive `grep`/`find` scans flood the LLM context window with thousands of irrelevant lines, burning tokens and degrading reasoning depth.
 
 #### How `sot-graph` Solves It
-1. **Rapid Verified Search (`sot search` / MCP `sot_search`):**
+1. **Rapid Verified Search (`sotgraph search` / MCP `sot_search`):**
    The agent queries the entire codebase via SQLite FTS5 (BM25 ranking) in a single command:
    ```bash
-   ./bin/sot search "jwt token validation role"
+   ./bin/sotgraph search "jwt token validation role"
    ```
    The engine responds in milliseconds with advisory **Trust Verdicts**:
    - `[STRONG]`: File physically exists on disk and contains ≥ 50% query keyword coverage (Agent can immediately use/import).
    - `[WEAK]`: Semantic or header match (Agent should inspect before implementing).
-2. **Architecture Scoping via Louvain Communities (`sot cluster` / `sot report`):**
+2. **Architecture Scoping via Louvain Communities (`sotgraph cluster` / `sotgraph report`):**
    The agent discovers the modular structure without reading raw files:
    ```bash
-   ./bin/sot cluster --min-size 3
+   ./bin/sotgraph cluster --min-size 3
    ```
    The response enumerates functional clusters (Auth, Billing, Notifications...) along with the global Modularity score Q, ensuring new files are placed in their proper architectural domain.
 
@@ -105,7 +105,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 2. **Two-Way Pending Edge Resolution (`db.resolve_pending_edges`):**
    Unresolved imports/calls are staged in `pending_edges`. The moment the target file is parsed, a single atomic SQL transaction promotes them into fully resolved `graph_edges`.
 3. **Microsecond Reconciliation (Fast Dirty Check):**
-   During active coding, calling `sot reconcile` takes only **~24.1ms**. The reconciler performs an O(1) comparison of `(size, mtime_ms)`, re-parsing only the single file that actually changed.
+   During active coding, calling `sotgraph reconcile` takes only **~24.1ms**. The reconciler performs an O(1) comparison of `(size, mtime_ms)`, re-parsing only the single file that actually changed.
 
 ---
 
@@ -116,10 +116,10 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - Dozens of indirect callers across other packages are overlooked, creating silent regressions in staging.
 
 #### How `sot-graph` Solves It
-1. **2-hop Blast Radius Analysis (`sot explore` / MCP `sot_explore`):**
+1. **2-hop Blast Radius Analysis (`sotgraph explore` / MCP `sot_explore`):**
    Before touching the function, the agent runs:
    ```bash
-   ./bin/sot explore "PaymentService.process_payment" --depth 2
+   ./bin/sotgraph explore "PaymentService.process_payment" --depth 2
    ```
    The engine performs a bounded 2-step BFS traversal, listing:
    - Direct callers (Incoming Edges - Hop 1).
@@ -142,16 +142,16 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - When multiple developers and agents merge PRs into `main`, files get deleted but architectural knowledge remains stale, resulting in **Architectural Drift**.
 
 #### How `sot-graph` Solves It
-1. **Deep Drift Auditing (`sot verify --deep` / MCP `sot_verify_drift`):**
+1. **Deep Drift Auditing (`sotgraph verify --deep` / MCP `sot_verify_drift`):**
    In CI/CD pipelines or pre-commit checks, execute:
    ```bash
-   ./bin/sot verify --deep
+   ./bin/sotgraph verify --deep
    ```
    The system verifies every physical file's SHA-256 hash against the journal:
    - Automatically purges permanently deleted paths (`[REMOVED]`).
    - Reports exact drift percentages and anomalous files.
 2. **CI/CD Quality Gate:**
-   If drift exceeds allowable thresholds, CI can automatically invoke `sot reconcile` to restore database-to-disk consistency for indexed paths before deployment.
+   If drift exceeds allowable thresholds, CI can automatically invoke `sotgraph reconcile` to restore database-to-disk consistency for indexed paths before deployment.
 
 ---
 
@@ -161,10 +161,10 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - **Context Reset**: Every new chat session wipes agent memory. A hard-fought lesson regarding PostgreSQL deadlock handling resolved yesterday is repeated as a bug by another agent today.
 
 #### How `sot-graph` Solves It
-1. **Virtual Knowledge Anchors (`sot insert` & `[NOPATH]`):**
+1. **Virtual Knowledge Anchors (`sotgraph insert` & `[NOPATH]`):**
    Upon solving a complex bug or agreeing on an architectural standard, the agent persists an ADR directly into SQLite:
    ```bash
-   ./bin/sot insert \
+   ./bin/sotgraph insert \
      --title "Postgres Deadlock Prevention in Order Processing" \
      --body "Always acquire row locks in deterministic ID ascending order (SELECT FOR UPDATE ORDER BY id ASC)." \
      --keywords "postgres,deadlock,locking,order_service"
@@ -172,7 +172,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 2. **Cross-Session Persistence Without Re-reading Code:**
    In future sessions, when any agent searches:
    ```bash
-   ./bin/sot search "deadlock order locking"
+   ./bin/sotgraph search "deadlock order locking"
    ```
    The `[NOPATH]` virtual anchor appears at the top of the search results, instantly enforcing architectural compliance.
 
@@ -184,19 +184,19 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - Over months of active development with thousands of file mutations, graph databases can accumulate orphaned nodes, fragmented B-Trees, and degraded FTS index speed.
 
 #### How `sot-graph` Solves It
-1. **Safe Database Pruning (`sot clean`):**
+1. **Safe Database Pruning (`sotgraph clean`):**
    - Supports `--dry-run` to preview deleted records safely without modifying disk:
      ```bash
-     ./bin/sot clean --dry-run
+     ./bin/sotgraph clean --dry-run
      ```
    - Prunes all dead paths and orphaned edges:
      ```bash
-     ./bin/sot clean --all --yes
+     ./bin/sotgraph clean --all --yes
      ```
-2. **B-Tree Optimization & WAL Checkpointing (`sot vacuum`):**
+2. **B-Tree Optimization & WAL Checkpointing (`sotgraph vacuum`):**
    - Restructures SQLite FTS5 storage and defragments pages to keep bounded-query latency low (measured p50 ≈ 49 ms on a 5,000-file corpus; artifact `benchmarks/performance_baseline.json`):
      ```bash
-     ./bin/sot vacuum
+     ./bin/sotgraph vacuum
      ```
 3. **Non-Blocking WAL Concurrency:**
    - During maintenance, agents can still execute concurrent `search` and `explore` commands via `WAL` mode and `mode=ro` (Read-Only) connections without lock contention.
@@ -208,7 +208,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 | Evaluation Criterion | Traditional AI SDLC (Without sot-graph) | AI SDLC with sot-graph |
 | :--- | :--- | :--- |
 | **Path Grounding Accuracy** | **Poor (Prone to Hallucinations)**: Agents guess stale paths or write code against deleted files. | **High (Span-Verified)**: Every returned node is physically verified on disk by `TrustVerifier`; verdicts are advisory and scope-bounded. |
-| **Code Reuse Capability** | **Low**: Frequently reinvents existing utilities (Cold Start Redundancy). | **High**: `sot search` with FTS5 BM25 locates existing utilities in milliseconds (in-process SQLite; measured p50 ≈ 49 ms at 5,000 files). |
+| **Code Reuse Capability** | **Low**: Frequently reinvents existing utilities (Cold Start Redundancy). | **High**: `sotgraph search` with FTS5 BM25 locates existing utilities in milliseconds (in-process SQLite; measured p50 ≈ 49 ms at 5,000 files). |
 | **Refactoring Control** | **Blind Edits**: Modifies only local files, unaware of broken indirect callers. | **Comprehensive**: Analyzes **2-hop Blast Radius** and flags **God Nodes** prior to edits. |
 | **Context Retrieval Latency** | **Slow (10s - 30s)**: Requires reading entire files or querying remote Vector DBs. | **Fast (measured p95 ≈ 50 ms at 5,000 files)**: Queries local in-process SQLite FTS5 directly. |
 | **Infrastructure Overhead** | **Heavy**: Demands Docker, Vector DBs, background daemons consuming 1-2GB RAM. | **Zero-Daemon (< 25MB RAM)**: Embedded in-process Python/SQLite CLI & MCP server. |
@@ -225,10 +225,10 @@ Automatically reconciles the knowledge graph and prevents commits when drift is 
 #!/bin/bash
 # .git/hooks/pre-commit
 echo "[sot-graph] Reconciling knowledge graph before commit..."
-./bin/sot reconcile --batch-size 64
+./bin/sotgraph reconcile --batch-size 64
 
 # Integrity verification
-./bin/sot verify
+./bin/sotgraph verify
 if [ $? -ne 0 ]; then
   echo "[sot-graph] ❌ Verification failed. Please resolve discrepancies."
   exit 1
@@ -266,12 +266,12 @@ jobs:
 
       - name: Deep Verify Knowledge Graph
         run: |
-          ./bin/sot reconcile
-          ./bin/sot verify --deep
+          ./bin/sotgraph reconcile
+          ./bin/sotgraph verify --deep
 
       - name: Generate Architecture Report
         run: |
-          ./bin/sot report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md
+          ./bin/sotgraph report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md
 
       - name: Upload Architecture Artifact
         uses: actions/upload-artifact@v4
@@ -292,22 +292,22 @@ Add the following protocol to `AGENTS.md` or `.cursorrules` in your project root
 Before implementing any code changes, new features, or refactoring:
 
 1. **Check for existing reusable logic (Prevent Cold Start Redundancy):**
-   Run: `sot search "<feature_or_keyword>"`
+   Run: `sotgraph search "<feature_or_keyword>"`
    - `[STRONG]`: High confidence - reuse the class/function at the reported file:line.
    - `[WEAK]`: Semantic match - inspect the file before implementing from scratch.
    - `[REBUILT]`: File was automatically relocated after renaming - use the updated path.
 
 2. **Analyze blast radius before modifying core symbols (Blast Radius Check):**
-   Run: `sot explore "<function_or_class_name>" --depth 2`
+   Run: `sotgraph explore "<function_or_class_name>" --depth 2`
    - Review direct callers (Hop 1) and indirect callers (Hop 2) to update all call sites.
    - If the symbol is marked as `GOD NODE`, verify and update all associated unit test cases.
 
 3. **Reconcile after completing changes:**
-   Run: `sot reconcile` to synchronize the knowledge graph with disk.
+   Run: `sotgraph reconcile` to synchronize the knowledge graph with disk.
 
 4. **Persist important architectural decisions (Knowledge Retention):**
    After resolving a non-trivial bug or establishing a project pattern, persist it:
-   `sot insert --title "<Title>" --body "<Detailed solution explanation>" --keywords "k1,k2"`
+   `sotgraph insert --title "<Title>" --body "<Detailed solution explanation>" --keywords "k1,k2"`
 ```
 
 ---
@@ -337,11 +337,11 @@ When agents interact with `sot-graph` via CLI or MCP Stdio protocol, payloads in
 
 | CLI Command / MCP Tool | Returned Data Payload | Context Tokens Ingested |
 | :--- | :--- | :---: |
-| **`sot search`** / `sot_search` | 3–5 candidate nodes with `[STRONG]` labels, exact file paths, and line numbers. | **~150 – 350 tokens** |
-| **`sot explore`** / `sot_explore` | 2-hop relationship tree (direct callers, upstream dependencies, call sites). | **~300 – 700 tokens** |
-| **`sot cluster`** / `sot_communities` | List of functional clusters and Modularity score Q. | **~200 – 450 tokens** |
-| **`sot verify`** / `sot_verify_drift` | SHA-256 drift report and list of anomalous files. | **~80 – 200 tokens** |
-| **`sot insert`** | Virtual knowledge anchor confirmation (ADR / Bug note). | **~50 – 100 tokens** |
+| **`sotgraph search`** / `sot_search` | 3–5 candidate nodes with `[STRONG]` labels, exact file paths, and line numbers. | **~150 – 350 tokens** |
+| **`sotgraph explore`** / `sot_explore` | 2-hop relationship tree (direct callers, upstream dependencies, call sites). | **~300 – 700 tokens** |
+| **`sotgraph cluster`** / `sot_communities` | List of functional clusters and Modularity score Q. | **~200 – 450 tokens** |
+| **`sotgraph verify`** / `sot_verify_drift` | SHA-256 drift report and list of anomalous files. | **~80 – 200 tokens** |
+| **`sotgraph insert`** | Virtual knowledge anchor confirmation (ADR / Bug note). | **~50 – 100 tokens** |
 
 ---
 
@@ -355,14 +355,14 @@ Consider a typical real-world development task: **"Add Role-Based Access Control
 ├─────────────────────────────────────────────┬──────────────────────────────────────────┤
 │    WITHOUT SOT-GRAPH (TRADITIONAL)          │           WITH SOT-GRAPH                 │
 ├─────────────────────────────────────────────┼──────────────────────────────────────────┤
-│ 1. Agent runs grep/find, gets 40 matches    │ 1. Agent runs `sot search`               │
+│ 1. Agent runs grep/find, gets 40 matches    │ 1. Agent runs `sotgraph search`               │
 │    -> Ingests 4,000 tokens of raw output.   │    -> Ingests 250 tokens of FTS5 hits.   │
 │                                             │                                          │
 │ 2. Reads 15 files to understand context     │ 2. Agent locates exact `auth.py` via     │
 │    (each file 400 lines ~ 2,500 tokens)     │    [STRONG] verdict; reads only 60 lines │
 │    -> Consumes 37,500 tokens in context.    │    -> Consumes 400 tokens.               │
 │                                             │                                          │
-│ 3. Edits function, silently breaks 4 callers│ 3. Runs `sot explore AuthService`, sees  │
+│ 3. Edits function, silently breaks 4 callers│ 3. Runs `sotgraph explore AuthService`, sees  │
 │    due to unknown dependencies.             │    all 4 dependent modules immediately   │
 │    -> Tests fail, 3 debug loops required    │    -> Synchronously updates all callers  │
 │    -> Consumes 45,000 tokens reading logs.  │    -> Consumes 600 tokens.               │

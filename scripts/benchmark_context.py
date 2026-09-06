@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic context-cost benchmark: `sot pack` vs naive whole-file reads.
+"""Deterministic context-cost benchmark: `sotgraph pack` vs naive whole-file reads.
 
 For each target symbol this measures the two retrieval protocols an agent
 could use for a deep-dive task:
@@ -80,7 +80,7 @@ def main(argv: list[str] | None = None) -> int:
 
     db_path = default_db_path(args.root)
     if not os.path.isfile(db_path):
-        print(f"❌ No index at {db_path} — run `sot reconcile` first.", file=sys.stderr)
+        print(f"❌ No index at {db_path} — run `sotgraph reconcile` first.", file=sys.stderr)
         return 2
     db = Database(db_path)
     try:

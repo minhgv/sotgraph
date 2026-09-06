@@ -162,7 +162,7 @@ class LegacyResetHealingTests(TempProject):
         from io import StringIO
         from sot_graph import cli
         saved = sys.argv
-        sys.argv = ["sot", *argv]
+        sys.argv = ["sotgraph", *argv]
         out = StringIO()
         try:
             with redirect_stdout(out):
@@ -190,7 +190,7 @@ class LegacyResetHealingTests(TempProject):
         code, out = self.run_cli("--root", str(self.root), "clean", "--dry-run")
         self.assertEqual(code, 0)
         self.assertIn("LEGACY SCHEMA RESET", out)
-        self.assertIn("Run `sot reconcile`", out)
+        self.assertIn("Run `sotgraph reconcile`", out)
         with sqlite3.connect(str(db_path)) as conn:
             rows = conn.execute(
                 "SELECT COUNT(*) FROM graph_nodes").fetchone()[0]

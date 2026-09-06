@@ -28,7 +28,7 @@ def test_cli_register_status_disable_persist_without_native(trusted_lab, capsys)
         assert status["reason"] == "runtime_uninitialized"
         assert status["ready"] is False
         assert status["query_permission"] == "not_assessed"
-        assert status["remediation"] == ["sot engine prepare", "sot engine probe", "sot engine sync"]
+        assert status["remediation"] == ["sotgraph engine prepare", "sotgraph engine probe", "sotgraph engine sync"]
     assert main(prefix + ["disable"]) == 0
     assert config.load_managed_installation(lab.repo, config_path=lab.path) is None
     assert not lab.runtime.exists()

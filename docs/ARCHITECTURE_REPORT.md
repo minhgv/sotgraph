@@ -26,7 +26,7 @@ graph TD
         OMP[Oh My Pi - OMP Native Extension]
         OPENCODE[OpenCode Plugin]
         CLAUDE[Claude Code / Cursor / Windsurf MCP]
-        CLI_USER[Terminal Developer CLI /bin/sot]
+        CLI_USER[Terminal Developer CLI /bin/sotgraphgraph]
     end
 
     subgraph Interface_Adapters_Layer [Tầng Giao Diện & Điều Phối Giao Thức]
@@ -116,18 +116,18 @@ Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sot-graph`,
 ### CỤM 1: TẦNG GIAO DIỆN & TÍCH HỢP AI HARNESS (INTERFACE & ADAPTERS)
 
 #### Module 1.1: `CLI Dispatcher & Command Parsers`
-* **Thư mục mã nguồn:** `src/sot_graph/cli.py`, `bin/sot`
+* **Thư mục mã nguồn:** `src/sot_graph/cli.py`, `bin/sotgraph`
 * **User Roles:** Developer (CLI), Shell Scripts, Subprocesses
 * **Entities / Models chính:** `CleanPlan`, `Database`, `Reconciler`, `TrustVerifier`, `ArchitectureBundler`
 * **Entrypoints / Handlers:** `build_parser()`, `main()`, `cmd_search()`, `cmd_explore()`, `cmd_reconcile()`, `cmd_verify()`, `cmd_doctor()`, `cmd_bundle()`, `cmd_setup()`
 * **Chức năng chi tiết:**
-  1. **`sot search` (Verified Code Search):** Tìm kiếm mã nguồn qua FTS5 kết hợp Trust Verdicts (`[STRONG]`, `[WEAK]`, `[REBUILT]`).
-  2. **`sot explore` (AST Dependency Traversal):** Duyệt cây phụ thuộc đa tầng (Outward Calls và Incoming Callers) theo độ sâu `--depth`.
-  3. **`sot reconcile` (Incremental Graph Sync):** Đồng bộ hóa đồ thị tri thức với ổ đĩa hỗ trợ đa tiến trình (`--workers`).
-  4. **`sot verify` (Drift & Ghost Path Audit):** Kiểm tra sai lệch giữa DB và ổ đĩa mà không làm thay đổi trạng thái dữ liệu (Non-mutating).
-  5. **`sot bundle` (2-Stage Fact Bundle Generator):** Trích xuất 5 file fact markdown/json phục vụ LLM viết báo cáo kiến trúc.
-  6. **`sot setup` (Zero-Config Harness Auto-Installer):** Tự động cấu hình MCP và Native Tools cho 4 môi trường agent (OMP, OpenCode, Claude, Antigravity).
-  7. **`sot doctor / clean / vacuum` (DB Health Maintenance):** Kiểm tra toàn vẹn SQLite, dọn dẹp node mồ côi và tối ưu hóa file DB.
+  1. **`sotgraph search` (Verified Code Search):** Tìm kiếm mã nguồn qua FTS5 kết hợp Trust Verdicts (`[STRONG]`, `[WEAK]`, `[REBUILT]`).
+  2. **`sotgraph explore` (AST Dependency Traversal):** Duyệt cây phụ thuộc đa tầng (Outward Calls và Incoming Callers) theo độ sâu `--depth`.
+  3. **`sotgraph reconcile` (Incremental Graph Sync):** Đồng bộ hóa đồ thị tri thức với ổ đĩa hỗ trợ đa tiến trình (`--workers`).
+  4. **`sotgraph verify` (Drift & Ghost Path Audit):** Kiểm tra sai lệch giữa DB và ổ đĩa mà không làm thay đổi trạng thái dữ liệu (Non-mutating).
+  5. **`sotgraph bundle` (2-Stage Fact Bundle Generator):** Trích xuất 5 file fact markdown/json phục vụ LLM viết báo cáo kiến trúc.
+  6. **`sotgraph setup` (Zero-Config Harness Auto-Installer):** Tự động cấu hình MCP và Native Tools cho 4 môi trường agent (OMP, OpenCode, Claude, Antigravity).
+  7. **`sotgraph doctor / clean / vacuum` (DB Health Maintenance):** Kiểm tra toàn vẹn SQLite, dọn dẹp node mồ côi và tối ưu hóa file DB.
 
 #### Module 1.2: `MCP Stdio Server & Read-Only Service`
 * **Thư mục mã nguồn:** `src/sot_graph/mcp_server.py`, `src/sot_graph/mcp_service.py`
@@ -222,14 +222,14 @@ Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sot-graph`,
 
 ## 3. MA TRẬN PHÂN QUYỀN & TƯƠNG TÁC THEO VAI TRÒ (USER / AGENT ROLE MATRIX)
 
-| Phân hệ / Khả năng | Developer (CLI `/bin/sot`) | AI Coding Agent (OMP / OpenCode) | MCP Client (Claude / Cursor) | Background Reconciler | DB Maintenance (`clean/vacuum`) |
+| Phân hệ / Khả năng | Developer (CLI `/bin/sotgraphgraph`) | AI Coding Agent (OMP / OpenCode) | MCP Client (Claude / Cursor) | Background Reconciler | DB Maintenance (`clean/vacuum`) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Tìm kiếm Tri thức (`sot search`)** | ✅ Toàn quyền + Auto-heal | ✅ Toàn quyền + Auto-heal | ✅ Read-only (`mode=ro`) | ❌ Không gọi | ❌ Không |
-| **Duyệt Cây Gọi (`sot explore`)** | ✅ Toàn quyền | ✅ Toàn quyền | ✅ Bounded Depth/Bytes | ❌ Không gọi | ❌ Không |
-| **Đồng bộ Đồ thị (`sot reconcile`)** | ✅ Toàn quyền (`--workers`) | ✅ Background non-blocking | ❌ Bị chặn (Read-Only) | ✅ **Chủ thể duy nhất** | ❌ Không |
-| **Kiểm tra Sai lệch (`sot verify`)** | ✅ Non-mutating audit | ✅ Non-mutating audit | ✅ Read-only audit | ❌ Không gọi | ❌ Không |
-| **Ghi chú Tri thức (`sot insert`)** | ✅ Ghi nhận ghi chú mới | ✅ Lưu ADR / Bug fixes | ❌ Bị chặn (Read-Only) | ❌ Không | ❌ Không |
-| **Trích xuất Fact (`sot bundle`)** | ✅ Xuất `.sot/bundle/` | ✅ Tự động nạp kiến trúc | ✅ Xuất JSON payload | ❌ Không | ❌ Không |
+| **Tìm kiếm Tri thức (`sotgraph search`)** | ✅ Toàn quyền + Auto-heal | ✅ Toàn quyền + Auto-heal | ✅ Read-only (`mode=ro`) | ❌ Không gọi | ❌ Không |
+| **Duyệt Cây Gọi (`sotgraph explore`)** | ✅ Toàn quyền | ✅ Toàn quyền | ✅ Bounded Depth/Bytes | ❌ Không gọi | ❌ Không |
+| **Đồng bộ Đồ thị (`sotgraph reconcile`)** | ✅ Toàn quyền (`--workers`) | ✅ Background non-blocking | ❌ Bị chặn (Read-Only) | ✅ **Chủ thể duy nhất** | ❌ Không |
+| **Kiểm tra Sai lệch (`sotgraph verify`)** | ✅ Non-mutating audit | ✅ Non-mutating audit | ✅ Read-only audit | ❌ Không gọi | ❌ Không |
+| **Ghi chú Tri thức (`sotgraph insert`)** | ✅ Ghi nhận ghi chú mới | ✅ Lưu ADR / Bug fixes | ❌ Bị chặn (Read-Only) | ❌ Không | ❌ Không |
+| **Trích xuất Fact (`sotgraph bundle`)** | ✅ Xuất `.sot/bundle/` | ✅ Tự động nạp kiến trúc | ✅ Xuất JSON payload | ❌ Không | ❌ Không |
 | **Bảo trì DB (`clean / vacuum`)** | ✅ Độc quyền ghi | ❌ Bị chặn | ❌ Bị chặn | ❌ Bị chặn | ✅ **Độc quyền ghi** |
 
 ---
@@ -284,7 +284,7 @@ stateDiagram-v2
 sequenceDiagram
     autonumber
     actor User as Developer / AI Agent
-    participant CLI as CLI / MCP Layer (bin/sot)
+    participant CLI as CLI / MCP Layer (bin/sotgraph)
     participant Reconciler as Level-Triggered Reconciler
     participant DB as SQLite Storage Engine
     participant Bundler as ArchitectureBundler

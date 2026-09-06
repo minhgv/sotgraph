@@ -491,7 +491,7 @@ class Database:
             if self._user_version() != SCHEMA_VERSION:
                 self.conn.close()
                 raise RuntimeError(
-                    "database schema is outdated; run `sot reconcile` once to rebuild"
+                    "database schema is outdated; run `sotgraph reconcile` once to rebuild"
                 )
             # Reader profile: bounded caches keep 50 concurrent agents well
             # under 250MB RSS instead of relying on per-connection defaults.
@@ -2529,7 +2529,7 @@ class Database:
         if unresolved_count > 0:
             next_steps = [
                 "Inspect the pending edge candidates listed in risk/unresolved",
-                "Run 'sot reconcile' if workspace files were recently updated",
+                "Run 'sotgraph reconcile' if workspace files were recently updated",
                 "Inspect dynamic callers in source code via LSP or grep",
             ]
         return {

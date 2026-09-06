@@ -1,4 +1,4 @@
-"""Tests for SQLite Storage Integrity, PRAGMA checks, and sot doctor diagnostics."""
+"""Tests for SQLite Storage Integrity, PRAGMA checks, and sotgraph doctor diagnostics."""
 import json
 import threading
 import time

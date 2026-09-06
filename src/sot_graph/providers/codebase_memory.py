@@ -12,7 +12,7 @@ Wire contract (verified against Codebase Memory source @010569f, v0.10.8):
 
 P1 boundaries (honest abstention):
 - The adapter NEVER invokes ``index_repository``. A missing/stale index is
-  reported as a failed outcome with ``next_action="run sot providers sync
+  reported as a failed outcome with ``next_action="run sotgraph providers sync
   codebase-memory"`` so the caller can fall back truthfully.
 - Evidence normalization/trust ceilings live in ``normalization`` and are
   applied by callers; this module extracts payloads verbatim.
@@ -98,30 +98,30 @@ logger = logging.getLogger(__name__)
 PROVIDER_NAME = "codebase-memory"
 
 #: Actionable fix attached to every index-missing/stale abstention (P1).
-#: Verified against the CLI parser: ``sot providers sync <provider_name>``
+#: Verified against the CLI parser: ``sotgraph providers sync <provider_name>``
 #: exists (src/sot_graph/cli.py, ``prov_subs.add_parser("sync")``).
-NEXT_ACTION_SYNC = "run sot providers sync codebase-memory"
+NEXT_ACTION_SYNC = "run sotgraph providers sync codebase-memory"
 
-#: Wire-incompatible fail-close (G1.5): explicitly unavailable via sot (no
+#: Wire-incompatible fail-close (G1.5): explicitly unavailable via sotgraph (no
 #: pin/upgrade/install command exists); golden version is provenance only.
 NEXT_ACTION_VERSION_PIN = (
-    "unavailable via sot: no command can pin, upgrade, or install the "
+    "unavailable via sotgraph: no command can pin, upgrade, or install the "
     "codebase-memory binary; queries fail closed on this wire "
     f"(golden-tested {TESTED_CBM_VERSION})"
 )
 
-#: Ambiguous or unresolvable project match: sot currently exposes no public
+#: Ambiguous or unresolvable project match: sotgraph currently exposes no public
 #: way to state a provider project (and no dedupe command), so the outcome
 #: honestly reports the resolution as unresolvable — no workaround offered.
 NEXT_ACTION_EXPLICIT_PROJECT = (
-    "sot cannot currently resolve ambiguous codebase-memory projects; "
-    "no sot command applies"
+    "sotgraph cannot currently resolve ambiguous codebase-memory projects; "
+    "no sotgraph command applies"
 )
 
-#: Adapter schema drift: no sot command fixes a wire format change; rerun
+#: Adapter schema drift: no sotgraph command fixes a wire format change; rerun
 #: once the adapter itself is updated. Ledger-receipt guidance only.
 NEXT_ACTION_ADAPTER_UPDATE = (
-    "rerun after a sot provider adapter update; no sot command fixes "
+    "rerun after a sotgraph provider adapter update; no sotgraph command fixes "
     "provider schema drift"
 )
 
@@ -131,8 +131,8 @@ NEXT_ACTION_ADAPTER_UPDATE = (
 PROBE_OPERATION = "--version"
 
 #: Public remediation allowlist. ``next_action`` on public outcomes may ONLY
-#: carry one of these values (or None): sot commands verified against the
-#: CLI parser, explicit "unavailable via sot" markers, or the neutral
+#: carry one of these values (or None): sotgraph commands verified against the
+#: CLI parser, explicit "unavailable via sotgraph" markers, or the neutral
 #: adapter-update note. Native provider output must never be echoed here.
 NEXT_ACTION_ALLOWLIST = frozenset({
     NEXT_ACTION_SYNC,
@@ -782,7 +782,7 @@ class CodebaseMemoryProvider:
             duration_ms=0,
             arguments_redacted=(tool,),
             # Reviewed remediation surface stays frozen: compatibility
-            # fail-close reuses the allowlisted "unavailable via sot" pin.
+            # fail-close reuses the allowlisted "unavailable via sotgraph" pin.
             next_action=NEXT_ACTION_VERSION_PIN,
             detail=detail,
         )
@@ -1638,7 +1638,7 @@ class CodebaseMemoryProvider:
         Never guesses: exactly one ``list_projects`` entry whose canonicalized
         ``root_path`` equals ``realpath(repo_root)`` wins; zero matches or two
         or more matches abstain with an SOT-only ``next_action`` (sync, or
-        explicit-project since sot has no command to disambiguate). Results
+        explicit-project since sotgraph has no command to disambiguate). Results
         are cached per repo root for the lifetime of this instance.
         """
         target = os.path.realpath(repo_root)
@@ -1711,7 +1711,7 @@ class CodebaseMemoryProvider:
             return (
                 None,
                 "list_projects pagination incomplete (loop=%s, cap=%s); "
-                "sot cannot currently resolve ambiguous provider projects"
+                "sotgraph cannot currently resolve ambiguous provider projects"
                 % (loop_abort, cap_exhausted),
                 NEXT_ACTION_EXPLICIT_PROJECT,
             )
@@ -1734,7 +1734,7 @@ class CodebaseMemoryProvider:
             resolved = (
                 None,
                 # Count only: raw project names are never echoed publicly.
-                "ambiguous: %d indexed projects cover %s; sot cannot "
+                "ambiguous: %d indexed projects cover %s; sotgraph cannot "
                 "currently disambiguate provider projects"
                 % (len(matches), target),
                 NEXT_ACTION_EXPLICIT_PROJECT,
@@ -1896,7 +1896,7 @@ class CodebaseMemoryProvider:
     def ensure_index(self, request: IndexRequest) -> ProviderRunRecord:
         """Implicit-path abstention: queries NEVER trigger indexing.
 
-        The explicit admin path is :meth:`index` (``sot providers sync``);
+        The explicit admin path is :meth:`index` (``sotgraph providers sync``);
         keeping this hook abstaining preserves the no-implicit-index
         invariant for every read-side caller.
         """
@@ -1912,7 +1912,7 @@ class CodebaseMemoryProvider:
                 "ensure_index", request.repo_root, f"force={request.force}",
             ),
             next_action=NEXT_ACTION_SYNC,
-            detail="implicit indexing refused; run 'sot providers sync "
+            detail="implicit indexing refused; run 'sotgraph providers sync "
                    "codebase-memory' for the explicit index path",
         )
         logger.info("cbm ensure_index abstained: %s", NEXT_ACTION_SYNC)
@@ -1992,7 +1992,7 @@ class CodebaseMemoryProvider:
         if result.timed_out:
             status, detail = "timeout", (
                 "index_repository exceeded its time budget and was killed; "
-                "re-run 'sot providers sync codebase-memory' to resume"
+                "re-run 'sotgraph providers sync codebase-memory' to resume"
             )
         elif result.error is not None:
             status, detail = "spawn_failed", result.error

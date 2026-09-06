@@ -697,7 +697,7 @@ flowchart TD
 
     subgraph INTERFACE["Giao Diện Truy Xuất"]
         MCP["MCP Server (stdio / 2025-06-18)<br/>21+ Tools & Resource Links"]
-        CLI["CLI Command Dispatcher<br/>sot search, map, trace, diff..."]
+        CLI["CLI Command Dispatcher<br/>sotgraph search, map, trace, diff..."]
     end
 
     subgraph CONSUMER["Tác Tử & Kỹ Sư"]
@@ -1105,15 +1105,15 @@ sot-graph_sot_map({
         <pre class="mermaid">
 flowchart TD
     subgraph S1["Giai đoạn 1: Feature Discovery"]
-        INV["sot solution inventory [module]"] --> INV_MD["Feature_Inventory.md<br/>(Theo User Role & 10 Loại tính năng)"]
+        INV["sotgraph solution inventory [module]"] --> INV_MD["Feature_Inventory.md<br/>(Theo User Role & 10 Loại tính năng)"]
     end
 
     subgraph S2["Giai đoạn 2: Micro-Steps Decomposition"]
-        STEPS["sot solution steps [method]"] --> STEPS_TBL["Bảng 4 cột chuẩn Manpower<br/>(Bước | Thao tác | Đối tượng | Code AST)"]
+        STEPS["sotgraph solution steps [method]"] --> STEPS_TBL["Bảng 4 cột chuẩn Manpower<br/>(Bước | Thao tác | Đối tượng | Code AST)"]
     end
 
     subgraph S3["Giai đoạn 3: Context Bundling"]
-        BUN["sot solution bundle [module]"] --> BUNDLE_MD["ContextBundle.md<br/>(Forms UI, Replayed Schema, APIs)"]
+        BUN["sotgraph solution bundle [module]"] --> BUNDLE_MD["ContextBundle.md<br/>(Forms UI, Replayed Schema, APIs)"]
     end
 
     subgraph DOWNSTREAM["Hạ Tầng Tác Tử Không Đọc Source Code"]
@@ -1235,7 +1235,7 @@ sequenceDiagram
     SOT->>Git: git diff (unified hunks)
     SOT->>SOT: AST Intersection & Reverse Call Graph
     SOT-->>Agent: Diff Impact Receipt (Closure Decision: APPROVED)
-    Agent->>SOT: sot reconcile
+    Agent->>SOT: sotgraph reconcile
         </pre>
         <div class="diagram-caption">Sơ đồ 4: Chu trình refactor 4 bước an toàn với giao thức bảo đảm P7</div>
       </div>
@@ -1273,163 +1273,163 @@ sequenceDiagram
         4. Chi Tiết Hệ Thống Câu Lệnh CLI
       </h2>
       <p>
-        Bộ công cụ dòng lệnh (CLI) của SOT-Graph được thực thi qua lệnh <code>sot</code>. Đây là công cụ chủ lực cho lập trình viên trên Terminal, kịch bản tự động hóa (Bash scripts) và CI/CD Pipelines.
+        Bộ công cụ dòng lệnh (CLI) của SOT-Graph được thực thi qua lệnh <code>sotgraph</code>. Đây là công cụ chủ lực cho lập trình viên trên Terminal, kịch bản tự động hóa (Bash scripts) và CI/CD Pipelines.
       </p>
 
       <h3 id="cli-vong-doi">Nhóm Lệnh Vòng Đời & Đồng Bộ CSDL</h3>
       
-      <h4><code>sot reconcile</code></h4>
+      <h4><code>sotgraph reconcile</code></h4>
       <p>Đồng bộ hóa đồ thị với tệp trên đĩa một cách lũy kế (idempotent), tự động bỏ qua file không đổi nhờ bảng journal.</p>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Đồng bộ toàn bộ codebase
-sot reconcile
+sotgraph reconcile
 
 # Đồng bộ chỉ một file hoặc một module cụ thể
-sot reconcile Modules/Api/Services/ContractService.php
+sotgraph reconcile Modules/Api/Services/ContractService.php
 
 # Ép quét lại toàn bộ (bỏ qua journal hash)
-sot reconcile --force
+sotgraph reconcile --force
 
 # Chỉ định 4 luồng worker song song và kích thước batch
-sot reconcile --workers 4 --batch-size 128
+sotgraph reconcile --workers 4 --batch-size 128
 
 # Xuất biên lai xác thực (Assurance Receipt) dạng JSON
-sot reconcile --receipt --json</code></pre>
+sotgraph reconcile --receipt --json</code></pre>
 
-      <h4><code>sot watch</code></h4>
+      <h4><code>sotgraph watch</code></h4>
       <p>Theo dõi sự thay đổi file trên đĩa cứng theo thời gian thực và tự động reconcile ngay lập tức.</p>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Chạy watcher tương tác trực tiếp
-sot watch --debounce-ms 200
+sotgraph watch --debounce-ms 200
 
 # Khởi chạy chạy nền dưới dạng Daemon
-sot watch -d
+sotgraph watch -d
 
 # Kiểm tra trạng thái Daemon
-sot watch --status
+sotgraph watch --status
 
 # Dừng Watcher Daemon
-sot watch --stop
+sotgraph watch --stop
 
 # Cài đặt thành service chạy cùng hệ điều hành (systemd / LaunchAgent)
-sot watch --service install</code></pre>
+sotgraph watch --service install</code></pre>
 
-      <h4><code>sot verify</code> & <code>sot doctor</code></h4>
+      <h4><code>sotgraph verify</code> & <code>sotgraph doctor</code></h4>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Kiểm tra độ lệch (drift) giữa đĩa và CSDL
-sot verify
-sot verify --deep   # Băm sâu SHA-256 toàn bộ file
+sotgraph verify
+sotgraph verify --deep   # Băm sâu SHA-256 toàn bộ file
 
 # Kiểm tra sức khỏe toàn diện của CSDL SQLite
-sot doctor
-sot doctor --receipt --json</code></pre>
+sotgraph doctor
+sotgraph doctor --receipt --json</code></pre>
 
       <h3 id="cli-truy-van">Nhóm Lệnh Truy Vấn, Map & Pack</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Tìm kiếm symbol kèm nhãn niềm tin
-sot search "ContractCrosscheck" -n 5 --scope "Modules/Api"
+sotgraph search "ContractCrosscheck" -n 5 --scope "Modules/Api"
 
 # Tìm kiếm Hybrid (kết hợp văn bản và vector similarity)
-sot search "tính toán công nợ" --hybrid
+sotgraph search "tính toán công nợ" --hybrid
 
 # Lập bản đồ repo theo ngân sách token (Personalized PageRank)
-sot map --tokens 1024 --focus "ContractService,PartnerController"
+sotgraph map --tokens 1024 --focus "ContractService,PartnerController"
 
 # Khảo sát quan hệ AST xung quanh một symbol
-sot explore "App\\Services\\PaymentService" --depth 2
+sotgraph explore "App\\Services\\PaymentService" --depth 2
 
 # Tìm toàn bộ nơi gọi hàm (Find All References)
-sot usages "approveContract"
+sotgraph usages "approveContract"
 
 # Xem các lớp con hiện thực hóa interface
-sot implementations "PaymentGatewayInterface"
+sotgraph implementations "PaymentGatewayInterface"
 
 # Đóng gói k-hop ContextBundle YAML làm context cho AI Agent
-sot pack "OrderService" --max-hops 2 --tokens 1500 -o order_bundle.yaml
+sotgraph pack "OrderService" --max-hops 2 --tokens 1500 -o order_bundle.yaml
 
 # Lưu ghi chú tri thức hoặc quyết định kỹ thuật quan trọng
-sot insert --title "Lưu ý kết nối Oracle DB" \
+sotgraph insert --title "Lưu ý kết nối Oracle DB" \
            --body "Không dùng raw SQL thiếu schema prefix. Dùng DB::connection('oracle')->..." \
            --keywords "oracle,db,connection"</code></pre>
 
       <h3 id="cli-kien-truc">Nhóm Lệnh Báo Cáo Kiến Trúc & Trực Quan Hóa</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Sinh báo cáo kiến trúc Markdown hoàn chỉnh (God Nodes, vi phạm tầng)
-sot report -o Docs/ARCHITECTURE_REPORT.md
+sotgraph report -o Docs/ARCHITECTURE_REPORT.md
 
 # Phân cụm kiến trúc bằng thuật toán Louvain
-sot cluster --min-size 3 --json
+sotgraph cluster --min-size 3 --json
 
 # Mở trình trực quan hóa đồ thị tương tác HTML trên trình duyệt
-sot viz -o graph.html --open
+sotgraph viz -o graph.html --open
 
 # Trích xuất 5 file Fact Bundle mật độ cao
-sot bundle -o .sot/bundle/
+sotgraph bundle -o .sot/bundle/
 
 # Xuất đồ thị sang Obsidian vault, Microsoft GraphRAG, hoặc SCIP
-sot export -f obsidian -o ~/Documents/ObsidianVault/CodebaseGraph/
-sot export -f graphrag -o graphrag_dump.json
-sot export -f scip     -o index.scip</code></pre>
+sotgraph export -f obsidian -o ~/Documents/ObsidianVault/CodebaseGraph/
+sotgraph export -f graphrag -o graphrag_dump.json
+sotgraph export -f scip     -o index.scip</code></pre>
 
       <h3 id="cli-solution">Nhóm Lệnh Solution Engine & Trace Full-Stack</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Trace luồng Full-Stack từ UI -> Route -> Service -> DB (sinh Mermaid)
-sot trace "CRMCM-107" --depth 3 -o Docs/CRMCM-107_Trace.md
+sotgraph trace "CRMCM-107" --depth 3 -o Docs/CRMCM-107_Trace.md
 
 # Bóc tách cây giao diện Frontend UI
-sot ui-tree "lib/screens/contract/contract_detail_screen.dart"
+sotgraph ui-tree "lib/screens/contract/contract_detail_screen.dart"
 
 # Bóc tách vi bước xử lý Backend
-sot be-flow "ContractService"
+sotgraph be-flow "ContractService"
 
 # Giai đoạn 1: Khám phá danh mục tính năng theo User Role
-sot solution inventory "Contract" -o Feature_Inventory.md
+sotgraph solution inventory "Contract" -o Feature_Inventory.md
 
 # Giai đoạn 2: Bóc tách vi bước tính Manpower (bảng 4 cột chuẩn NVJ1/2/3)
-sot solution steps "ContractService::createContract" --format table
+sotgraph solution steps "ContractService::createContract" --format table
 
 # Tổng hợp bối cảnh giải pháp hoàn chỉnh cho downstream subagents
-sot solution bundle "Contract" -o .sot/bundle/ContextBundle.md</code></pre>
+sotgraph solution bundle "Contract" -o .sot/bundle/ContextBundle.md</code></pre>
 
       <h3 id="cli-git">Nhóm Lệnh Phân Tích Tác Động Thay Đổi (Git Diff)</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Phân tích bán kính tác động của git diff (HEAD~1)
-sot diff-impact
+sotgraph diff-impact
 
 # Phân tích thay đổi đang staged hoặc unstaged
-sot diff-impact --staged
-sot diff-impact --working-tree --depth 3 -o Diff_Impact_Report.md
+sotgraph diff-impact --staged
+sotgraph diff-impact --working-tree --depth 3 -o Diff_Impact_Report.md
 
 # Lập biên lai phạm vi trước khi sửa code (P7.1 Scope Receipt)
-sot scope-receipt "ContractService::approveContract" --change-kind "public-api" --auth --json
+sotgraph scope-receipt "ContractService::approveContract" --change-kind "public-api" --auth --json
 
 # Kiểm toán lịch sử commit Git và chấm điểm rủi ro
-sot log -n 15 --author "giapminh" -o Commit_Risk_Report.md</code></pre>
+sotgraph log -n 15 --author "giapminh" -o Commit_Risk_Report.md</code></pre>
 
       <h3 id="cli-providers">Nhóm Lệnh Multi-Provider & SCIP</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Phát hiện các công cụ provider bên ngoài trên hệ thống
-sot providers detect
+sotgraph providers detect
 
 # Đánh giá sức khỏe và năng lực của các provider
-sot providers doctor
+sotgraph providers doctor
 
 # Kích hoạt đồng bộ hóa chỉ mục từ provider bên ngoài
-sot providers sync codebase-memory
+sotgraph providers sync codebase-memory
 
 # Nạp chỉ mục SCIP từ compiler vào CSDL SOT
-sot import-scip index.scip --provider scip-typescript</code></pre>
+sotgraph import-scip index.scip --provider scip-typescript</code></pre>
 
       <h3 id="cli-bao-tri">Nhóm Lệnh Bảo Trì & Thiết Lập Harness</h3>
       <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code># Xem trước các bản ghi rác sẽ bị xóa (dry-run)
-sot clean --dry-run
+sotgraph clean --dry-run
 
 # Dọn dẹp bản ghi tệp không còn tồn tại
-sot clean
+sotgraph clean
 
 # Thu gọn kích thước file SQLite và tối ưu hóa index
-sot vacuum --analyze
+sotgraph vacuum --analyze
 
 # Cấu hình tự động kết nối AI Coding Harnesses (Pi, OpenCode, Claude...)
-sot setup --harness all
+sotgraph setup --harness all
 
 # Cài đặt hook Git tự động reconcile sau mỗi lần git pull/merge
-sot setup --hooks
+sotgraph setup --hooks
 
 # Khởi chạy MCP stdio server
-sot mcp</code></pre>
+sotgraph mcp</code></pre>
     </section>
 
     <!-- SECTION 5: SO SÁNH -->
@@ -1452,67 +1452,67 @@ sot mcp</code></pre>
             <tr>
               <td><strong>Tìm kiếm hàm/class có nhãn niềm tin</strong></td>
               <td><code>sot_search(query="...")</code></td>
-              <td><code>sot search "..."</code></td>
+              <td><code>sotgraph search "..."</code></td>
             </tr>
             <tr>
               <td><strong>Lấy bản đồ repo theo token budget</strong></td>
               <td><code>sot_map(max_tokens=1024)</code></td>
-              <td><code>sot map --tokens 1024</code></td>
+              <td><code>sotgraph map --tokens 1024</code></td>
             </tr>
             <tr>
               <td><strong>Tra cứu nơi gọi hàm (References)</strong></td>
               <td><code>sot_usages(target="...")</code></td>
-              <td><code>sot usages "..."</code></td>
+              <td><code>sotgraph usages "..."</code></td>
             </tr>
             <tr>
               <td><strong>Xem cây kế thừa interface/class</strong></td>
               <td><code>sot_implementations(target="...")</code></td>
-              <td><code>sot implementations "..."</code></td>
+              <td><code>sotgraph implementations "..."</code></td>
             </tr>
             <tr>
               <td><strong>Đóng gói ContextBundle YAML</strong></td>
               <td><code>sot_pack(target="...")</code></td>
-              <td><code>sot pack "..." -o bundle.yaml</code></td>
+              <td><code>sotgraph pack "..." -o bundle.yaml</code></td>
             </tr>
             <tr>
               <td><strong>Truy vết Full-Stack (sinh Mermaid)</strong></td>
               <td><code>sot_trace(target="...")</code></td>
-              <td><code>sot trace "..." -o trace.md</code></td>
+              <td><code>sotgraph trace "..." -o trace.md</code></td>
             </tr>
             <tr>
               <td><strong>Bóc tách cây giao diện Frontend</strong></td>
               <td><code>sot_ui_tree(component="...")</code></td>
-              <td><code>sot ui-tree "..."</code></td>
+              <td><code>sotgraph ui-tree "..."</code></td>
             </tr>
             <tr>
               <td><strong>Bóc tách vi bước xử lý Backend</strong></td>
               <td><code>sot_backend_flow(service="...")</code></td>
-              <td><code>sot be-flow "..."</code></td>
+              <td><code>sotgraph be-flow "..."</code></td>
             </tr>
             <tr>
               <td><strong>Discovery tính năng theo Role (Stage 1)</strong></td>
               <td><code>sot_solution_inventory(module="...")</code></td>
-              <td><code>sot solution inventory "..."</code></td>
+              <td><code>sotgraph solution inventory "..."</code></td>
             </tr>
             <tr>
               <td><strong>Bóc tách bảng vi bước Manpower (Stage 2)</strong></td>
               <td><code>sot_solution_steps(method="...")</code></td>
-              <td><code>sot solution steps "..."</code></td>
+              <td><code>sotgraph solution steps "..."</code></td>
             </tr>
             <tr>
               <td><strong>Trích xuất bộ 5 Fact Bundle files</strong></td>
               <td><code>sot_bundle(output_dir="...")</code></td>
-              <td><code>sot bundle -o ...</code></td>
+              <td><code>sotgraph bundle -o ...</code></td>
             </tr>
             <tr>
               <td><strong>Bán kính ảnh hưởng Git Diff</strong></td>
               <td><code>sot_diff_impact(target="HEAD~1")</code></td>
-              <td><code>sot diff-impact HEAD~1</code></td>
+              <td><code>sotgraph diff-impact HEAD~1</code></td>
             </tr>
             <tr>
               <td><strong>Biên lai PRE-change Scope Receipt</strong></td>
               <td><code>sot_scope_receipt(target="...")</code></td>
-              <td><code>sot scope-receipt "..."</code></td>
+              <td><code>sotgraph scope-receipt "..."</code></td>
             </tr>
             <tr>
               <td><strong>Biên lai POST-change Diff Impact</strong></td>
@@ -1522,27 +1522,27 @@ sot mcp</code></pre>
             <tr>
               <td><strong>Kiểm tra lệch CSDL và đĩa (Drift)</strong></td>
               <td><code>sot_verify_drift(deep=false)</code></td>
-              <td><code>sot verify [--deep]</code></td>
+              <td><code>sotgraph verify [--deep]</code></td>
             </tr>
             <tr>
               <td><strong>Đồng bộ CSDL đồ thị</strong></td>
               <td><em>(Tự động chạy JIT trong MCP read)</em></td>
-              <td><code>sot reconcile [--force]</code></td>
+              <td><code>sotgraph reconcile [--force]</code></td>
             </tr>
             <tr>
               <td><strong>Watcher chạy nền thời gian thực</strong></td>
               <td><em>(Lắng nghe qua Subscriptions)</em></td>
-              <td><code>sot watch -d</code></td>
+              <td><code>sotgraph watch -d</code></td>
             </tr>
             <tr>
               <td><strong>Dọn rác, thu gọn CSDL (Vacuum)</strong></td>
               <td><em>(Read-only, không mở qua MCP)</em></td>
-              <td><code>sot clean</code>, <code>sot vacuum</code></td>
+              <td><code>sotgraph clean</code>, <code>sotgraph vacuum</code></td>
             </tr>
             <tr>
               <td><strong>Trực quan hóa đồ thị HTML</strong></td>
               <td><em>(Không phù hợp context text)</em></td>
-              <td><code>sot viz --open</code></td>
+              <td><code>sotgraph viz --open</code></td>
             </tr>
           </tbody>
         </table>
@@ -1558,10 +1558,10 @@ sot mcp</code></pre>
 
       <h4>Quy trình 1: Onboarding nhanh vào codebase lạ (Zero Token Waste)</h4>
       <ol style="padding-left: 20px; color: var(--text-secondary); margin-bottom: 20px;">
-        <li>Chạy <code>sot reconcile --workers 4</code> để trích xuất đồ thị CSDL chỉ trong vài giây.</li>
+        <li>Chạy <code>sotgraph reconcile --workers 4</code> để trích xuất đồ thị CSDL chỉ trong vài giây.</li>
         <li>Agent gọi <code>sot_map(max_tokens=1024)</code> để nắm ngay các Class/Service nắm giữ nhiều liên kết nhất.</li>
-        <li>Kỹ sư chạy <code>sot viz --open</code> mở đồ thị tương tác để xem sự phân bố cụm modules trên trình duyệt.</li>
-        <li>Chạy <code>sot report</code> để kiểm tra danh sách God Nodes và vi phạm kiến trúc cần chú ý.</li>
+        <li>Kỹ sư chạy <code>sotgraph viz --open</code> mở đồ thị tương tác để xem sự phân bố cụm modules trên trình duyệt.</li>
+        <li>Chạy <code>sotgraph report</code> để kiểm tra danh sách God Nodes và vi phạm kiến trúc cần chú ý.</li>
       </ol>
 
       <h4>Quy trình 2: Refactor mã nguồn an toàn theo chuẩn 4 bước</h4>
@@ -1569,21 +1569,21 @@ sot mcp</code></pre>
         <li><strong>Định vị:</strong> Agent gọi <code>sot_search("processPayment")</code> nhận nhãn <span class="badge badge-strong">[STRONG]</span>.</li>
         <li><strong>Biên lai Trước (P7.1):</strong> Gọi <code>sot_scope_receipt("processPayment")</code> để khóa chặt danh sách callers và candidate tests.</li>
         <li><strong>Chỉnh sửa:</strong> Dùng edit tool sửa chính xác trong phạm vi dòng (<code>file:start-end</code>).</li>
-        <li><strong>Biên lai Sau (P7.2):</strong> Gọi <code>sot_diff_impact_receipt()</code> để xác nhận zero regression và cập nhật đồ thị bằng <code>sot reconcile</code>.</li>
+        <li><strong>Biên lai Sau (P7.2):</strong> Gọi <code>sot_diff_impact_receipt()</code> để xác nhận zero regression và cập nhật đồ thị bằng <code>sotgraph reconcile</code>.</li>
       </ol>
 
       <h4>Quy trình 3: Tự động hóa Tài Liệu Giải Pháp (TLGP) & Manpower</h4>
       <ol style="padding-left: 20px; color: var(--text-secondary); margin-bottom: 20px;">
-        <li>Chạy <code>sot solution inventory</code> để phát hiện và phân loại toàn bộ tính năng theo User Role.</li>
-        <li>Chạy <code>sot solution steps</code> để sinh bảng 4 cột có code AST thật phục vụ điền file Excel nhân công.</li>
-        <li>Chạy <code>sot solution bundle</code> để sinh <code>ContextBundle.md</code> làm dữ liệu duy nhất cho toàn bộ các subagent hạ tầng.</li>
+        <li>Chạy <code>sotgraph solution inventory</code> để phát hiện và phân loại toàn bộ tính năng theo User Role.</li>
+        <li>Chạy <code>sotgraph solution steps</code> để sinh bảng 4 cột có code AST thật phục vụ điền file Excel nhân công.</li>
+        <li>Chạy <code>sotgraph solution bundle</code> để sinh <code>ContextBundle.md</code> làm dữ liệu duy nhất cho toàn bộ các subagent hạ tầng.</li>
       </ol>
 
       <h4>Quy trình 4: Tự động hóa Git Hooks & CI/CD</h4>
       <ol style="padding-left: 20px; color: var(--text-secondary); margin-bottom: 20px;">
-        <li>Chạy <code>sot setup --hooks</code> để cài đặt git post-merge và post-checkout hook.</li>
+        <li>Chạy <code>sotgraph setup --hooks</code> để cài đặt git post-merge và post-checkout hook.</li>
         <li>Mỗi lần lập trình viên <code>git pull</code> hoặc đổi nhánh, đồ thị tự động được cập nhật trong nền.</li>
-        <li>Trong CI/CD pipeline, chạy <code>sot verify --deep</code> để đảm bảo mã nguồn và đồ thị luôn đồng nhất.</li>
+        <li>Trong CI/CD pipeline, chạy <code>sotgraph verify --deep</code> để đảm bảo mã nguồn và đồ thị luôn đồng nhất.</li>
       </ol>
     </section>
 

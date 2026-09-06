@@ -7,17 +7,18 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PY=".venv/bin/python"
+"$PY" scripts/check_repository_identity.py
 fail() { echo "❌ gate failed: $1" >&2; exit 1; }
 
 echo "== ruff (core modules)"
-uv run ruff check src/sot_graph/assurance/ src/sot_graph/providers/ \
+uv run --locked ruff check src/sot_graph/assurance/ src/sot_graph/providers/ \
     src/sot_graph/diff_impact.py src/sot_graph/db.py src/sot_graph/snapshot.py \
     src/sot_graph/providers_registry.py src/sot_graph/mcp_service.py src/sot_graph/mcp_server.py \
     src/sot_graph/claims.py \
     || fail "ruff"
 
 echo "== pyright (core modules)"
-uv run pyright src/sot_graph/assurance/ src/sot_graph/providers/ \
+uv run --locked pyright src/sot_graph/assurance/ src/sot_graph/providers/ \
     src/sot_graph/diff_impact.py src/sot_graph/db.py src/sot_graph/snapshot.py \
     src/sot_graph/providers_registry.py src/sot_graph/mcp_service.py src/sot_graph/mcp_server.py \
     src/sot_graph/claims.py \
@@ -26,11 +27,11 @@ uv run pyright src/sot_graph/assurance/ src/sot_graph/providers/ \
 echo "== coverage floor (core >= 85%, receipts >= 90%)"
 COVERAGE_INCLUDES="src/sot_graph/assurance/*,src/sot_graph/providers/*,src/sot_graph/diff_impact.py,src/sot_graph/db.py,src/sot_graph/snapshot.py,src/sot_graph/providers_registry.py,src/sot_graph/mcp_service.py,src/sot_graph/mcp_server.py"
 
-uv run coverage run --source=src/sot_graph \
+uv run --locked coverage run --source=src/sot_graph \
     --include="$COVERAGE_INCLUDES" \
     -m pytest tests/ -q >/dev/null 2>&1
 
-REPORT=$(uv run coverage report --include="$COVERAGE_INCLUDES")
+REPORT=$(uv run --locked coverage report --include="$COVERAGE_INCLUDES")
 echo "$REPORT"
 
 for f in "assurance/receipts.py" "assurance/coverage.py" "assurance/state.py" "assurance/routing.py" "assurance/orchestrator.py" "providers/scip.py" "diff_impact.py" "db.py" "snapshot.py" "providers_registry.py" "mcp_service.py" "mcp_server.py"; do
@@ -46,6 +47,7 @@ echo "== bandit (reviewed config: bandit.yaml)"
 uvx bandit -q -c bandit.yaml -r src/sot_graph || fail "bandit"
 
 echo "== pip-audit"
-uvx pip-audit --skip-editable || fail "pip-audit"
+SITE_PACKAGES=$("$PY" -c 'import sysconfig; print(sysconfig.get_path("purelib"))')
+uvx pip-audit --path "$SITE_PACKAGES" --skip-editable || fail "pip-audit"
 
 echo "✅ all quality gates passed"

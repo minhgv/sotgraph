@@ -1,4 +1,4 @@
-"""R4: PR-safe GitHub renderer for sot diff-impact.
+"""R4: PR-safe GitHub renderer for sotgraph diff-impact.
 
 Verifies the renderer contract: top-line risk verdict, collapsed
 <details> sections, zero ANSI escapes, repo-relative paths only, and

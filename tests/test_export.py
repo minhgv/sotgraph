@@ -169,7 +169,7 @@ class ExportTests(unittest.TestCase):
     def test_cli_viz_and_export_commands(self) -> None:
         parser = build_parser()
 
-        # Test sot viz
+        # Test sotgraph viz
         html_out = str(self.project_dir / "test_viz.html")
         args_viz = parser.parse_args(["--root", str(self.project_dir), "viz", "-o", html_out])
         buf = io.StringIO()
@@ -178,7 +178,7 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(ret, 0)
         self.assertTrue(Path(html_out).exists())
 
-        # Test sot export --format graphrag
+        # Test sotgraph export --format graphrag
         rag_out = str(self.project_dir / "rag_cli.json")
         args_rag = parser.parse_args(["export", "-f", "graphrag", "-o", rag_out])
         buf = io.StringIO()
@@ -187,7 +187,7 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(ret, 0)
         self.assertTrue(Path(rag_out).exists())
 
-        # Test sot export --format obsidian
+        # Test sotgraph export --format obsidian
         obs_out = str(self.project_dir / "obs_cli")
         args_obs = parser.parse_args(["export", "-f", "obsidian", "-o", obs_out])
         buf = io.StringIO()
@@ -196,7 +196,7 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(ret, 0)
         self.assertTrue(Path(obs_out).is_dir())
 
-        # Test sot export --format graphml
+        # Test sotgraph export --format graphml
         gml_out = str(self.project_dir / "gml_cli.graphml")
         args_gml = parser.parse_args(["export", "-f", "graphml", "-o", gml_out])
         buf = io.StringIO()

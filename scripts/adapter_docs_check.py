@@ -5,14 +5,14 @@ Adapter docs (the zcode/claude/omp/opencode/antigravity markdown constants,
 their slash-command payloads, and adapters/AGENTS.md) hand-maintain a
 "Quick CLI & MCP Tool Reference". Audit finding P2 surfaces-20 caught them
 drifting from reality: flags and MCP tool names that do not exist
-(`--max-hops` on `sot explore`, `sot clean --purge-missing`,
+(`--max-hops` on `sotgraph explore`, `sotgraph clean --purge-missing`,
 unregistered `sot_rename`...). Hand-maintained tables WILL drift again.
 
 Ground truth is derived from the code that defines reality:
   - CLI commands/flags  <- cli.build_parser()
   - MCP tool names      <- `types.Tool(name="sot_...")` in mcp_server.py
 
-Every backticked `sot <cmd> [--flag ...]` usage and every `sot_*` tool
+Every backticked `sotgraph <cmd> [--flag ...]` usage and every `sot_*` tool
 mention in the doc corpus is validated against that truth.
 
 Modes:
@@ -102,20 +102,20 @@ def collect_doc_sources() -> List[Tuple[str, str, str]]:
             if attr.startswith("_"):
                 continue
             for text in _iter_strings(value):
-                if "`sot " in text or re.search(r"\bsot_[a-z_]+\b", text):
+                if "`sotgraph " in text or re.search(r"\bsot_[a-z_]+\b", text):
                     sources.append(
                         (f"adapters/{mod_name}.py:{attr}", text, mod_name)
                     )
     agents_md = ADAPTERS_DIR / "AGENTS.md"
     if agents_md.exists():
         text = agents_md.read_text(encoding="utf-8")
-        if "`sot " in text or re.search(r"\bsot_[a-z_]+\b", text):
+        if "`sotgraph " in text or re.search(r"\bsot_[a-z_]+\b", text):
             sources.append(("adapters/AGENTS.md", text, "mcp"))
     for name, harness in STANDALONE_DOC_FILES.items():
         path = REPO_ROOT / name
         if path.exists():
             text = path.read_text(encoding="utf-8")
-            if "`sot " in text or re.search(r"\bsot_[a-z_]+\b", text):
+            if "`sotgraph " in text or re.search(r"\bsot_[a-z_]+\b", text):
                 sources.append((name, text, harness))
     return sources
 
@@ -183,9 +183,9 @@ def _claimed_flag(token: str) -> Optional[str]:
 def check_cli_claim(
     claim: str, truth: CliTruth
 ) -> List[str]:
-    """Validate one backticked `sot ...` usage string."""
+    """Validate one backticked `sotgraph ...` usage string."""
     tokens = claim.strip("`").split()
-    if tokens and tokens[0] == "sot":
+    if tokens and tokens[0] == "sotgraph":
         tokens = tokens[1:]
     if not tokens:
         return []
@@ -194,7 +194,7 @@ def check_cli_claim(
     if not command_path:
         first = _strip_syntax(tokens[0])
         if first.startswith("-"):
-            return []  # `sot --db X` style global usage; nothing claimed here
+            return []  # `sotgraph --db X` style global usage; nothing claimed here
         return [f"unknown subcommand '{first}'"]
     rest = tokens[len(command_path):]
     allowed = truth.allowed_flags(leaf)
@@ -202,7 +202,7 @@ def check_cli_claim(
         flag = _claimed_flag(token)
         if flag is not None and flag not in allowed:
             errors.append(
-                f"'sot {' '.join(command_path)}' has no flag '{flag}' "
+                f"'sotgraph {' '.join(command_path)}' has no flag '{flag}' "
                 f"(registered: {', '.join(sorted(allowed)) or 'none'})"
             )
     return errors
@@ -252,7 +252,7 @@ def check() -> List[str]:
     violations: List[str] = []
     for label, text, harness in collect_doc_sources():
         tools = allowed_tools(harness)
-        for claim in set(re.findall(r"`sot [^`]*`", text)):
+        for claim in set(re.findall(r"`sotgraph [^`]*`", text)):
             for error in check_cli_claim(claim, truth):
                 violations.append(f"{label}: `{claim}` — {error}")
         for mention in set(re.findall(r"\bsot_[a-z_]+\b", text)):
@@ -289,7 +289,7 @@ def emit_table() -> str:
             f for f in _parser_flags(parser) if f.startswith("--")
         )
         nested = sorted(_subparser_choices(parser))
-        command = f"`sot {name}`"
+        command = f"`sotgraph {name}`"
         if nested:
             for sub in nested:
                 sub_flags = sorted(

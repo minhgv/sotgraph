@@ -414,7 +414,7 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
         print()
 
     if has_stale:
-        print("  💡 Tip: Some files have changed on disk. Run 'sot reconcile' to synchronize the graph.")
+        print("  💡 Tip: Some files have changed on disk. Run 'sotgraph reconcile' to synchronize the graph.")
 
     return 0
 
@@ -461,7 +461,7 @@ def cmd_providers_sync(args: argparse.Namespace, root: str,
     """Explicit index sync with its own budget, lock, progress, and receipt.
 
     Wraps the provider's ``index_repository`` (P3.1): never triggered from a
-    read path, guarded by the project write lock so concurrent sot writes
+    read path, guarded by the project write lock so concurrent sotgraph writes
     cannot interleave with an external reindex, and always emits a receipt
     (JSON or text) recording what ran and how it ended.
     """
@@ -510,8 +510,8 @@ def cmd_providers_sync(args: argparse.Namespace, root: str,
                 db.close()
     except LockBusy:
         print(
-            "❌ another sot writer holds the project lock; "
-            "retry 'sot providers sync' once it finishes"
+            "❌ another sotgraph writer holds the project lock; "
+            "retry 'sotgraph providers sync' once it finishes"
         )
         return 1
 
@@ -520,7 +520,7 @@ def cmd_providers_sync(args: argparse.Namespace, root: str,
         print(json.dumps({"providers_sync": receipt}, indent=2))
     else:
         status_icon = "✅" if record.status == "ok" else "⚠️ "
-        print(f"{status_icon} sot providers sync {name}: {record.status}")
+        print(f"{status_icon} sotgraph providers sync {name}: {record.status}")
         print(f"   capability   : {record.capability}")
         print(f"   exit_code    : {record.exit_code}")
         print(f"   duration_ms  : {record.duration_ms}")
@@ -799,7 +799,7 @@ def cmd_map(args: argparse.Namespace, db: Database, root: str) -> int:
         print(f"❌ {exc}", file=sys.stderr)
         return 2
     if not result["rendered"]:
-        print("❌ No code symbols indexed yet — run `sot reconcile` first.")
+        print("❌ No code symbols indexed yet — run `sotgraph reconcile` first.")
         return 1
     print(result["rendered"])
     filters = result["filters"]
@@ -1150,7 +1150,7 @@ def cmd_watch(args: argparse.Namespace, reconciler: Reconciler, root: str) -> in
                 interval_ms=args.interval_ms,
             )
         except KeyboardInterrupt:
-            print("\n👋 sot watch --all stopped.")
+            print("\n👋 sotgraph watch --all stopped.")
             return 0
         except RuntimeError as exc:
             print(f"❌ {exc}")
@@ -1166,7 +1166,7 @@ def cmd_watch(args: argparse.Namespace, reconciler: Reconciler, root: str) -> in
             interval_ms=args.interval_ms,
         )
     except KeyboardInterrupt:
-        print("\n👋 sot watch stopped.")
+        print("\n👋 sotgraph watch stopped.")
         return 0
     except RuntimeError as exc:
         print(f"❌ {exc}")
@@ -1181,7 +1181,7 @@ def cmd_verify(args: argparse.Namespace, reconciler: Reconciler) -> int:
         print(f"⚠️  DRIFT DETECTED: {len(drift)} files out of sync with disk:")
         for d in drift:
             print(f"   [{d['why']}] {d['path']}")
-        print("\nRun 'sot reconcile' to synchronize graph.")
+        print("\nRun 'sotgraph reconcile' to synchronize graph.")
         return 1
 
     print("✅ ZERO DRIFT: All recorded nodes and files match disk state exactly.")
@@ -1284,7 +1284,7 @@ def cmd_providers(args: argparse.Namespace, root: str,
         try:
             xc_db = Database(db_path, read_only=True)
         except FileNotFoundError:
-            print(f"❌ No index database at {db_path}; run `sot reconcile` first.", file=sys.stderr)
+            print(f"❌ No index database at {db_path}; run `sotgraph reconcile` first.", file=sys.stderr)
             return 1
         try:
             if getattr(args, "receipt", False):
@@ -2169,7 +2169,7 @@ def cmd_setup(args: argparse.Namespace, root: str) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="sot",
+        prog="sotgraph",
         description="sot-graph: Verified, self-healing knowledge graph for AI coding agents."
     )
     try:
@@ -2190,7 +2190,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_search.add_argument("-n", "--limit", type=int, default=6, help="Maximum results (default: 6)")
     p_search.add_argument("--scope", default=None, help="Filter by path or keyword substring")
     p_search.add_argument("--threshold", type=float, default=0.5, help="Coverage threshold for STRONG verdict")
-    p_search.add_argument("--hybrid", action="store_true", help="Fuse BM25 with vector similarity (needs [vector] extra + `sot embed`)")
+    p_search.add_argument("--hybrid", action="store_true", help="Fuse BM25 with vector similarity (needs [vector] extra + `sotgraph embed`)")
     p_search.add_argument("--jit", dest="jit", action="store_true", default=True, help="Enable JIT Micro-Reconciliation for modified files (default: True)")
     p_search.add_argument("--no-jit", dest="jit", action="store_false", help="Disable JIT Micro-Reconciliation")
     p_search.add_argument("--json", action="store_true", help="Output JSON format")
@@ -2591,7 +2591,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         try:
             db = Database(db_path, read_only=True)
         except (OSError, sqlite3.Error, LockBusy, RuntimeError):
-            message = "Builtin index unavailable; run 'sot reconcile' explicitly before querying."
+            message = "Builtin index unavailable; run 'sotgraph reconcile' explicitly before querying."
             if getattr(args, "json", False):
                 print(json.dumps({"error": message,
                                   "policy": _managed_policy_metadata(managed),
@@ -2620,7 +2620,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if args.command in ("reconcile", "clean"):
                 # `reconcile` is about to refill the graph itself, and `clean` was
                 # explicitly asked to prune/reset — auto-refilling would undo it.
-                print("   Run `sot reconcile` to repopulate the graph.")
+                print("   Run `sotgraph reconcile` to repopulate the graph.")
             else:
                 print("   Rebuilding the index automatically (one-time)…")
                 try:
@@ -2628,7 +2628,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     print(f"   ✅ Auto-reconciled: {summary.updated} indexed/updated, "
                           f"{summary.failed} failed.")
                 except (OSError, sqlite3.Error) as exc:
-                    print(f"   ⚠ Auto-reconcile failed: {exc}; run `sot reconcile` manually.")
+                    print(f"   ⚠ Auto-reconcile failed: {exc}; run `sotgraph reconcile` manually.")
 
         if args.command == "search":
             return cmd_search(args, db, root)

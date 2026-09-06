@@ -324,7 +324,7 @@ def build_repo_map(
     }
 
     if not symbols:
-        # An empty index keeps rendered empty (callers prompt for `sot
+        # An empty index keeps rendered empty (callers prompt for `sotgraph
         # reconcile`); a filter that hides everything still echoes its scope.
         rendered = footer if indexed_count else ""
         return {"files": [], "rendered": rendered,

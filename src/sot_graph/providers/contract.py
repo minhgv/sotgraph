@@ -15,7 +15,7 @@ contract instead of orchestrator changes:
 The entry-point loader (:func:`validate_entry_point_provider`) enforces
 the same rules for adapters discovered via the ``sot_graph.providers``
 entry-point group. Loading never installs anything and never issues a
-query — installation is the explicit ``sot providers sync`` path only.
+query — installation is the explicit ``sotgraph providers sync`` path only.
 """
 
 from __future__ import annotations

@@ -282,7 +282,7 @@ SOT-Graph MCP Server cung cấp các MCP Resources trực tiếp:
 
 ## 4. Chi Tiết Hệ Thống Câu Lệnh CLI
 
-Lệnh CLI thực thi qua binary `sot`. Hỗ trợ toàn diện cờ toàn cục:
+Lệnh CLI thực thi qua binary `sotgraph`. Hỗ trợ toàn diện cờ toàn cục:
 * `--root <PATH>`: Thiết lập thư mục gốc dự án (mặc định: thư mục hiện tại).
 * `--db <PATH>`: Thiết lập đường dẫn SQLite DB tùy chỉnh (mặc định: `.sot/sot.db`).
 * `-V, --version`: Hiển thị phiên bản SOT-Graph.
@@ -291,136 +291,136 @@ Lệnh CLI thực thi qua binary `sot`. Hỗ trợ toàn diện cờ toàn cục
 
 ### Nhóm Lệnh Vòng Đời & Đồng Bộ CSDL
 
-#### `sot reconcile`
+#### `sotgraph reconcile`
 Đồng bộ hóa đồ thị tri thức với hệ thống tệp đĩa cứng một cách lũy kế (idempotent). Tự động bỏ qua các file không đổi nhờ bảng nhật ký thay đổi (journal).
 ```bash
 # Đồng bộ toàn bộ dự án
-sot reconcile
+sotgraph reconcile
 
 # Đồng bộ một thư mục hoặc tệp cụ thể
-sot reconcile Modules/Api/Services/ContractService.php
+sotgraph reconcile Modules/Api/Services/ContractService.php
 
 # Ép quét lại toàn bộ (bỏ qua journal hash)
-sot reconcile --force
+sotgraph reconcile --force
 
 # Chỉ định số tiến trình worker song song (tối đa 8)
-sot reconcile --workers 4 --batch-size 128
+sotgraph reconcile --workers 4 --batch-size 128
 
 # Xuất biên lai xác thực (Assurance Receipt) dưới dạng JSON
-sot reconcile --receipt --json
+sotgraph reconcile --receipt --json
 ```
 
-#### `sot batch-reconcile`
+#### `sotgraph batch-reconcile`
 Đồng bộ hóa hàng loạt nhiều repositories cùng lúc trong một thư mục cha.
 ```bash
-sot batch-reconcile ~/code/GitHub/ --workers 4
+sotgraph batch-reconcile ~/code/GitHub/ --workers 4
 ```
 
-#### `sot watch`
+#### `sotgraph watch`
 Chạy watcher theo dõi thay đổi tệp tin theo thời gian thực và tự động reconcile ngay lập tức.
 ```bash
 # Chạy tương tác trực tiếp
-sot watch --debounce-ms 200
+sotgraph watch --debounce-ms 200
 
 # Khởi động chạy nền dưới dạng Daemon
-sot watch -d
+sotgraph watch -d
 
 # Kiểm tra trạng thái watcher daemon
-sot watch --status
+sotgraph watch --status
 
 # Dừng daemon đang chạy
-sot watch --stop
+sotgraph watch --stop
 
 # Cài đặt thành background service hệ thống (macOS LaunchAgent hoặc Linux systemd)
-sot watch --service install
+sotgraph watch --service install
 ```
 
-#### `sot verify`
+#### `sotgraph verify`
 Kiểm tra độ lệch (drift) giữa CSDL đồ thị và đĩa cứng mà không thực hiện ghi đè. Rất thích hợp cho CI/CD pipeline.
 ```bash
-sot verify
-sot verify --deep   # Kiểm tra băm SHA-256 sâu toàn bộ file
+sotgraph verify
+sotgraph verify --deep   # Kiểm tra băm SHA-256 sâu toàn bộ file
 ```
 
-#### `sot doctor`
+#### `sotgraph doctor`
 Kiểm tra sức khỏe CSDL SQLite, tính toàn vẹn của chỉ mục FTS5, độ gắn kết đồ thị và thông số hiệu năng.
 ```bash
-sot doctor
-sot doctor --receipt --json   # Xuất báo cáo kiểm toán hệ thống
+sotgraph doctor
+sotgraph doctor --receipt --json   # Xuất báo cáo kiểm toán hệ thống
 ```
 
 ---
 
 ### Nhóm Lệnh Truy Vấn, Tìm Kiếm & Bản Đồ Mã Nguồn
 
-#### `sot search`
+#### `sotgraph search`
 Tìm kiếm symbol có xếp hạng và gắn nhãn niềm tin (`[STRONG]`, `[WEAK]`, v.v.).
 ```bash
 # Tìm kiếm cơ bản
-sot search "ContractService"
+sotgraph search "ContractService"
 
 # Tìm kiếm giới hạn số lượng và phạm vi thư mục
-sot search "calculateFee" -n 5 --scope "Modules/Api"
+sotgraph search "calculateFee" -n 5 --scope "Modules/Api"
 
 # Tìm kiếm Hybrid (kết hợp BM25 văn bản và Vector Similarity)
-sot search "thanh toán hóa đơn" --hybrid
+sotgraph search "thanh toán hóa đơn" --hybrid
 
 # Xuất dạng JSON để các script khác xử lý
-sot search "User" --json
+sotgraph search "User" --json
 ```
 
-#### `sot embed`
+#### `sotgraph embed`
 Xây dựng chỉ mục vector embeddings (yêu cầu cài đặt extra `pip install 'sot-graph[vector]'`).
 ```bash
-sot embed --limit 5000
+sotgraph embed --limit 5000
 ```
 
-#### `sot map`
+#### `sotgraph map`
 Sinh bản đồ mã nguồn thu gọn theo ngân sách token dựa trên Personalized PageRank.
 ```bash
 # Bản đồ mặc định 1024 tokens
-sot map
+sotgraph map
 
 # Bản đồ 2048 tokens tập trung vào module Hợp đồng và Đối tác
-sot map --tokens 2048 --focus "ContractController,PartnerService"
+sotgraph map --tokens 2048 --focus "ContractController,PartnerService"
 ```
 
-#### `sot explore`
+#### `sotgraph explore`
 Duyệt đồ thị các mối quan hệ AST (calls, called_by, imports) của một symbol.
 ```bash
-sot explore "App\\Services\\PaymentService" --depth 2
-sot explore "approveContract" --all --json
+sotgraph explore "App\\Services\\PaymentService" --depth 2
+sotgraph explore "approveContract" --all --json
 ```
 
-#### `sot usages`
+#### `sotgraph usages`
 Tìm kiếm các vị trí gọi/sử dụng đã được đánh chỉ mục (indexed) của một symbol trong phạm vi kết quả báo cáo.
 ```bash
-sot usages "changeStatus"
-sot usages "UserModel" --json
+sotgraph usages "changeStatus"
+sotgraph usages "UserModel" --json
 ```
 
-#### `sot implementations`
+#### `sotgraph implementations`
 Xem toàn bộ cây kế thừa hoặc các lớp hiện thực hóa interface.
 ```bash
-sot implementations "PaymentGatewayInterface"
+sotgraph implementations "PaymentGatewayInterface"
 ```
 
-#### `sot rename`
+#### `sotgraph rename`
 Lập kế hoạch phân tích tác động (Impact Plan) trước khi đổi tên một symbol trên toàn bộ dự án (chế độ report-only, không sửa file bừa bãi).
 ```bash
-sot rename "oldFunctionName" --to "newFunctionName"
+sotgraph rename "oldFunctionName" --to "newFunctionName"
 ```
 
-#### `sot pack`
+#### `sotgraph pack`
 Đóng gói một ContextBundle YAML k-hop tối ưu token quanh một symbol để làm prompt context cho Agent.
 ```bash
-sot pack "OrderService" --max-hops 2 --tokens 1500 -o order_context.yaml
+sotgraph pack "OrderService" --max-hops 2 --tokens 1500 -o order_context.yaml
 ```
 
-#### `sot insert`
+#### `sotgraph insert`
 Lưu trữ một ghi chú kiến trúc, quyết định kỹ thuật hoặc giải pháp sửa lỗi quan trọng vào CSDL SOT để các agent/developer khác tái sử dụng.
 ```bash
-sot insert --title "Lưu ý kết nối Oracle DB" \
+sotgraph insert --title "Lưu ý kết nối Oracle DB" \
            --body "Không sử dụng raw query thiếu schema prefix. Phải dùng DB::connection('oracle')->..." \
            --keywords "oracle,db,connection,bug"
 ```
@@ -429,166 +429,166 @@ sot insert --title "Lưu ý kết nối Oracle DB" \
 
 ### Nhóm Lệnh Báo Cáo Kiến Trúc & Trực Quan Hóa Đồ Thị
 
-#### `sot report`
+#### `sotgraph report`
 Sinh báo cáo phân tích kiến trúc hoàn chỉnh dưới dạng Markdown (bao gồm sơ đồ C4 Mermaid, các God Node, vi phạm tầng kiến trúc).
 ```bash
-sot report -o Docs/ARCHITECTURE_REPORT.md
-sot report --sigma 2.0 --scope "Modules/Web"
+sotgraph report -o Docs/ARCHITECTURE_REPORT.md
+sotgraph report --sigma 2.0 --scope "Modules/Web"
 ```
 
-#### `sot cluster`
+#### `sotgraph cluster`
 Phân cụm đồ thị bằng thuật toán Louvain và hiển thị các ranh giới kiến trúc tự nhiên.
 ```bash
-sot cluster --min-size 3
-sot cluster --json
+sotgraph cluster --min-size 3
+sotgraph cluster --json
 ```
 
-#### `sot viz`
+#### `sotgraph viz`
 Sinh file HTML độc lập chứa trình trực quan hóa đồ thị tương tác (sử dụng Vis.js / Force-directed layout), cho phép zoom, pan, click xem node.
 ```bash
 # Sinh file graph.html và tự động mở trình duyệt
-sot viz -o graph.html --open
+sotgraph viz -o graph.html --open
 ```
 
-#### `sot export`
+#### `sotgraph export`
 Xuất đồ thị tri thức sang các định dạng chuẩn khác để phục vụ nghiên cứu hoặc công cụ ngoài.
 ```bash
-sot export -f obsidian -o ~/Documents/ObsidianVault/CodeGraph/  # Xuất thành vault Markdown cho Obsidian
-sot export -f graphrag -o graphrag_dump.json                  # Xuất cho GraphRAG của Microsoft
-sot export -f graphml  -o graph.graphml                       # Xuất định dạng Gephi / GraphML
-sot export -f scip     -o index.scip                          # Xuất chỉ mục SCIP
+sotgraph export -f obsidian -o ~/Documents/ObsidianVault/CodeGraph/  # Xuất thành vault Markdown cho Obsidian
+sotgraph export -f graphrag -o graphrag_dump.json                  # Xuất cho GraphRAG của Microsoft
+sotgraph export -f graphml  -o graph.graphml                       # Xuất định dạng Gephi / GraphML
+sotgraph export -f scip     -o index.scip                          # Xuất chỉ mục SCIP
 ```
 
-#### `sot bundle`
+#### `sotgraph bundle`
 Trích xuất bộ 5 file Fact Bundle mật độ cao phục vụ tổng hợp tài liệu tự động.
 ```bash
-sot bundle -o .sot/bundle/
+sotgraph bundle -o .sot/bundle/
 ```
 
 ---
 
 ### Nhóm Lệnh Động Cơ Solution & Trace Full-Stack
 
-#### `sot trace`
+#### `sotgraph trace`
 Truy vết luồng thực thi Full-Stack từ Frontend UI -> Route -> Controller -> Service -> Database, tự động render sơ đồ Mermaid.
 ```bash
-sot trace "CRMCM-107" --depth 3 -o Docs/CRMCM-107_Trace.md
-sot trace "ContractController::approve" --json
+sotgraph trace "CRMCM-107" --depth 3 -o Docs/CRMCM-107_Trace.md
+sotgraph trace "ContractController::approve" --json
 ```
 
-#### `sot ui-tree`
+#### `sotgraph ui-tree`
 Bóc tách cây quyết định UI, validation, modal và button trigger của màn hình giao diện.
 ```bash
-sot ui-tree "lib/screens/contract/contract_detail_screen.dart"
+sotgraph ui-tree "lib/screens/contract/contract_detail_screen.dart"
 ```
 
-#### `sot be-flow`
+#### `sotgraph be-flow`
 Bóc tách các vi bước xử lý nghiệp vụ của Service/Controller phía backend.
 ```bash
-sot be-flow "ContractService"
+sotgraph be-flow "ContractService"
 ```
 
-#### `sot solution`
+#### `sotgraph solution`
 Động cơ tự động hóa phục vụ viết Tài liệu Giải pháp (TLGP) và ước lượng nhân lực Manpower:
 ```bash
 # Giai đoạn 1: Khám phá danh mục tính năng theo vai trò người dùng (Feature Discovery)
-sot solution inventory "Contract" -o Feature_Inventory.md
+sotgraph solution inventory "Contract" -o Feature_Inventory.md
 
 # Giai đoạn 2: Bóc tách vi bước xử lý thành bảng 4 cột phục vụ tính Manpower (NVJ1/2/3)
-sot solution steps "ContractService::createContract" --format table
+sotgraph solution steps "ContractService::createContract" --format table
 
 # Tổng hợp toàn bộ context bundle phục vụ các subagent viết Solution.md
-sot solution bundle "Contract" -o .sot/bundle/ContextBundle.md
+sotgraph solution bundle "Contract" -o .sot/bundle/ContextBundle.md
 ```
 
 ---
 
 ### Nhóm Lệnh Phân Tích Tác Động Thay Đổi (Diff Impact & Git)
 
-#### `sot diff-impact`
+#### `sotgraph diff-impact`
 Phân tích bán kính ảnh hưởng từ thay đổi mã nguồn git, chỉ ra các hàm gọi ngược (inward callers) bị ảnh hưởng và danh sách test suites cần chạy.
 ```bash
 # Phân tích commit gần nhất so với HEAD~1
-sot diff-impact
+sotgraph diff-impact
 
 # Phân tích các thay đổi đang staged trong Git
-sot diff-impact --staged
+sotgraph diff-impact --staged
 
 # Phân tích các thay đổi chưa staged trong working tree
-sot diff-impact --working-tree
+sotgraph diff-impact --working-tree
 
 # Tự động đồng bộ đồ thị trước khi phân tích và xuất file Markdown
-sot diff-impact HEAD~1 --depth 3 --auto-reconcile -o Diff_Impact_Report.md
+sotgraph diff-impact HEAD~1 --depth 3 --auto-reconcile -o Diff_Impact_Report.md
 ```
 
-#### `sot scope-receipt`
+#### `sotgraph scope-receipt`
 Tạo biên lai phạm vi trước khi chỉnh sửa mã nguồn (P7.1 PRE-change Scope Receipt).
 ```bash
-sot scope-receipt "ContractService::approveContract" --change-kind "public-api" --auth --json
+sotgraph scope-receipt "ContractService::approveContract" --change-kind "public-api" --auth --json
 ```
 
-#### `sot log` (alias: `sot commits`)
+#### `sotgraph log` (alias: `sotgraph commits`)
 Quét lịch sử git commit kèm chấm điểm rủi ro tự động và đối soát các symbol bị sửa với đồ thị SOT.
 ```bash
-sot log -n 15
-sot log --since "2.weeks" --author "giapminh" -o Commit_Risk_Report.md
+sotgraph log -n 15
+sotgraph log --since "2.weeks" --author "giapminh" -o Commit_Risk_Report.md
 ```
 
 ---
 
 ### Nhóm Lệnh Multi-Provider & Trình Nhập SCIP
 
-#### `sot providers`
+#### `sotgraph providers`
 Quản lý, phát hiện và kiểm tra sức khỏe các nhà cung cấp bằng chứng bên ngoài:
 ```bash
-sot providers detect      # Kiểm tra các công cụ SCIP / external provider trên máy
-sot providers list        # Liệt kê các provider đã cấu hình và năng lực
-sot providers doctor      # Đánh giá sức khỏe và gợi ý hành động cải thiện
-sot providers resolve --capability impact   # Tìm provider tốt nhất cho tính năng impact
-sot providers sync codebase-memory          # Kích hoạt đồng bộ hóa dữ liệu từ provider
+sotgraph providers detect      # Kiểm tra các công cụ SCIP / external provider trên máy
+sotgraph providers list        # Liệt kê các provider đã cấu hình và năng lực
+sotgraph providers doctor      # Đánh giá sức khỏe và gợi ý hành động cải thiện
+sotgraph providers resolve --capability impact   # Tìm provider tốt nhất cho tính năng impact
+sotgraph providers sync codebase-memory          # Kích hoạt đồng bộ hóa dữ liệu từ provider
 ```
 
-#### `sot import-scip`
+#### `sotgraph import-scip`
 Nạp trực tiếp chỉ mục SCIP từ compiler vào CSDL SOT-Graph.
 ```bash
-sot import-scip index.scip --provider scip-typescript
+sotgraph import-scip index.scip --provider scip-typescript
 ```
 
 ---
 
 ### Nhóm Lệnh Bảo Trì CSDL & Thiết Lập Harness
 
-#### `sot clean`
+#### `sotgraph clean`
 Dọn dẹp các bản ghi rác, bản ghi mồ côi hoặc reset toàn bộ dữ liệu đồ thị một cách an toàn.
 ```bash
 # Xem trước các node/edge rác sẽ bị xóa (dry-run)
-sot clean --dry-run
+sotgraph clean --dry-run
 
 # Dọn dẹp bản ghi tệp không còn tồn tại
-sot clean
+sotgraph clean
 
 # Reset toàn bộ dữ liệu đồ thị (giữ lại ghi chú notes)
-sot clean --all --yes
+sotgraph clean --all --yes
 ```
 
-#### `sot vacuum`
+#### `sotgraph vacuum`
 Thu gọn kích thước tệp CSDL SQLite, giải phóng dung lượng trống trên đĩa và tối ưu hóa index (`PRAGMA optimize`).
 ```bash
-sot vacuum --analyze
-sot vacuum --dry-run
+sotgraph vacuum --analyze
+sotgraph vacuum --dry-run
 ```
 
-#### `sot setup`
+#### `sotgraph setup`
 Tự động cấu hình các AI Coding Harness (Pi/OMP, OpenCode, Antigravity, Claude, ZCode) để kết nối trực tiếp với SOT-Graph, đồng thời cài đặt git post-merge hooks để tự động reconcile.
 ```bash
-sot setup --harness all
-sot setup --hooks    # Cài đặt hook git tự động sync đồ thị sau mỗi lần git pull/merge
+sotgraph setup --harness all
+sotgraph setup --hooks    # Cài đặt hook git tự động sync đồ thị sau mỗi lần git pull/merge
 ```
 
-#### `sot mcp`
+#### `sotgraph mcp`
 Khởi chạy MCP stdio server để kết nối với Claude Desktop, Cursor, OpenCode hoặc Antigravity qua giao thức MCP.
 ```bash
-sot mcp
+sotgraph mcp
 ```
 
 ---
@@ -597,26 +597,26 @@ sot mcp
 
 | Nhu Cầu Nghiệp Vụ | Gọi Qua MCP Tool (AI Agent Tự Động) | Chạy Qua CLI (Terminal / Script / Makefile) |
 | :--- | :--- | :--- |
-| **Tìm kiếm hàm / class có xác thực** | `sot_search(query="...")` | `sot search "..."` |
-| **Lấy bản đồ repo theo token** | `sot_map(tokens=1024)` | `sot map --tokens 1024` |
-| **Xem ai gọi hàm này (References)** | `sot_usages(target="...")` | `sot usages "..."` |
-| **Xem cây kế thừa interface/class** | `sot_implementations(target="...")` | `sot implementations "..."` |
-| **Đóng gói ContextBundle YAML** | `sot_pack(target="...")` | `sot pack "..." -o context.yaml` |
-| **Truy vết luồng Full-Stack & Mermaid**| `sot_trace(target="...")` | `sot trace "..." -o trace.md` |
-| **Bóc tách cây giao diện Frontend UI** | `sot_ui_tree(component="...")` | `sot ui-tree "..."` |
-| **Bóc tách vi bước xử lý Backend** | `sot_backend_flow(service="...")` | `sot be-flow "..."` |
-| **Khám phá danh mục tính năng (Stage 1)**| `sot_solution_inventory(module="...")` | `sot solution inventory "..."` |
-| **Bóc tách vi bước tính Manpower (Stage 2)**| `sot_solution_steps(method="...")` | `sot solution steps "..."` |
-| **Trích xuất 5 Fact Bundle files** | `sot_bundle(output_dir="...")` | `sot bundle -o ...` |
-| **Phân tích Bán kính tác động Git Diff**| `sot_diff_impact(target="HEAD~1")` | `sot diff-impact HEAD~1` |
-| **Biên lai P7.1 trước khi sửa code** | `sot_scope_receipt(target="...")` | `sot scope-receipt "..."` |
+| **Tìm kiếm hàm / class có xác thực** | `sot_search(query="...")` | `sotgraph search "..."` |
+| **Lấy bản đồ repo theo token** | `sot_map(tokens=1024)` | `sotgraph map --tokens 1024` |
+| **Xem ai gọi hàm này (References)** | `sot_usages(target="...")` | `sotgraph usages "..."` |
+| **Xem cây kế thừa interface/class** | `sot_implementations(target="...")` | `sotgraph implementations "..."` |
+| **Đóng gói ContextBundle YAML** | `sot_pack(target="...")` | `sotgraph pack "..." -o context.yaml` |
+| **Truy vết luồng Full-Stack & Mermaid**| `sot_trace(target="...")` | `sotgraph trace "..." -o trace.md` |
+| **Bóc tách cây giao diện Frontend UI** | `sot_ui_tree(component="...")` | `sotgraph ui-tree "..."` |
+| **Bóc tách vi bước xử lý Backend** | `sot_backend_flow(service="...")` | `sotgraph be-flow "..."` |
+| **Khám phá danh mục tính năng (Stage 1)**| `sot_solution_inventory(module="...")` | `sotgraph solution inventory "..."` |
+| **Bóc tách vi bước tính Manpower (Stage 2)**| `sot_solution_steps(method="...")` | `sotgraph solution steps "..."` |
+| **Trích xuất 5 Fact Bundle files** | `sot_bundle(output_dir="...")` | `sotgraph bundle -o ...` |
+| **Phân tích Bán kính tác động Git Diff**| `sot_diff_impact(target="HEAD~1")` | `sotgraph diff-impact HEAD~1` |
+| **Biên lai P7.1 trước khi sửa code** | `sot_scope_receipt(target="...")` | `sotgraph scope-receipt "..."` |
 | **Biên lai P7.2 sau khi sửa code** | `sot_diff_impact_receipt()` | *(API/MCP Protocol chuyên dụng)* |
-| **Đánh giá rủi ro commit Git** | `sot_git_history(limit=10)` | `sot log -n 10` |
-| **Kiểm tra lệch CSDL và đĩa (Drift)** | `sot_verify_drift(deep=False)` | `sot verify [--deep]` |
-| **Đồng bộ CSDL đồ thị từ mã nguồn** | *(Tự động chạy JIT trong MCP read)* | `sot reconcile [--force]` |
-| **Watcher chạy nền thời gian thực** | *(Lắng nghe qua Resource Subscriptions)* | `sot watch -d` |
-| **Bảo trì, Vacuum, Clean CSDL** | *(Read-only, không mở qua MCP)* | `sot clean`, `sot vacuum`, `sot doctor` |
-| **Xem đồ thị tương tác HTML** | *(Không phù hợp giao tiếp Agent)* | `sot viz --open` |
+| **Đánh giá rủi ro commit Git** | `sot_git_history(limit=10)` | `sotgraph log -n 10` |
+| **Kiểm tra lệch CSDL và đĩa (Drift)** | `sot_verify_drift(deep=False)` | `sotgraph verify [--deep]` |
+| **Đồng bộ CSDL đồ thị từ mã nguồn** | *(Tự động chạy JIT trong MCP read)* | `sotgraph reconcile [--force]` |
+| **Watcher chạy nền thời gian thực** | *(Lắng nghe qua Resource Subscriptions)* | `sotgraph watch -d` |
+| **Bảo trì, Vacuum, Clean CSDL** | *(Read-only, không mở qua MCP)* | `sotgraph clean`, `sotgraph vacuum`, `sotgraph doctor` |
+| **Xem đồ thị tương tác HTML** | *(Không phù hợp giao tiếp Agent)* | `sotgraph viz --open` |
 
 ---
 
@@ -624,13 +624,13 @@ sot mcp
 
 ### Kịch Bản 1: Tiếp nhận Dự án mới (Onboarding không tốn Token)
 1. **Lập chỉ mục ban đầu:**  
-   Chạy `sot reconcile --workers 4` trên terminal để nạp toàn bộ cấu trúc AST vào `.sot/sot.db`.
+   Chạy `sotgraph reconcile --workers 4` trên terminal để nạp toàn bộ cấu trúc AST vào `.sot/sot.db`.
 2. **Khảo sát bản đồ tổng thể:**  
    AI Agent gọi `sot_map(tokens=1024)` để nắm các điểm nút trung tâm của dự án.
 3. **Trực quan hóa cấu trúc:**  
-   Developer chạy `sot viz --open` để xem sơ đồ phân cụm tương tác trên trình duyệt.
+   Developer chạy `sotgraph viz --open` để xem sơ đồ phân cụm tương tác trên trình duyệt.
 4. **Đánh giá sức khỏe kiến trúc:**  
-   Chạy `sot report -o Docs/ARCHITECTURE_REPORT.md` để xem danh sách God Nodes và các chu trình phụ thuộc vòng.
+   Chạy `sotgraph report -o Docs/ARCHITECTURE_REPORT.md` để xem danh sách God Nodes và các chu trình phụ thuộc vòng.
 
 ### Kịch Bản 2: Sửa đổi / Refactor Mã Nguồn An Toàn (Chuẩn 4 Bước)
 1. **Bước 1 - Định vị & Khảo sát:**  
@@ -640,7 +640,7 @@ sot mcp
 3. **Bước 3 - Tiến hành Chỉnh sửa Mã nguồn:**  
    Áp dụng các thay đổi cục bộ có giới hạn dòng (`file:start-end`).
 4. **Bước 4 - Xác minh Tác động & Lập Biên lai Đóng (P7.2 Diff Impact Receipt):**  
-   Agent gọi `sot_diff_impact_receipt(working_tree=True)` để kiểm tra git diff, đảm bảo không có tác động ngoài ý muốn và chạy đúng các unit tests đã được chỉ định. Chạy `sot reconcile` để cập nhật lại đồ thị.
+   Agent gọi `sot_diff_impact_receipt(working_tree=True)` để kiểm tra git diff, đảm bảo không có tác động ngoài ý muốn và chạy đúng các unit tests đã được chỉ định. Chạy `sotgraph reconcile` để cập nhật lại đồ thị.
 
 ### Kịch Bản 3: Viết Bộ Tài Liệu Giải Pháp (TLGP) & Tính Toán Manpower
 1. **Giai đoạn 1 (Discovery):**  
@@ -652,9 +652,9 @@ sot mcp
 
 ### Kịch Bản 4: Thiết Lập Git Hooks Tự Động Đồng Bộ
 1. **Cài đặt Git Hook:**  
-   Chạy `sot setup --hooks`. Hệ thống sẽ tạo hook `post-merge` và `post-checkout` trong `.git/hooks/`.
+   Chạy `sotgraph setup --hooks`. Hệ thống sẽ tạo hook `post-merge` và `post-checkout` trong `.git/hooks/`.
 2. **Vận hành:**  
-   Mỗi khi lập trình viên `git pull` hoặc đổi branch, SOT-Graph sẽ tự động chạy `sot reconcile` đồng bộ lại các file vừa thay đổi trong chưa đầy 1 giây mà không cần can thiệp thủ công.
+   Mỗi khi lập trình viên `git pull` hoặc đổi branch, SOT-Graph sẽ tự động chạy `sotgraph reconcile` đồng bộ lại các file vừa thay đổi trong chưa đầy 1 giây mà không cần can thiệp thủ công.
 
 ---
 *Tài liệu được tổng hợp và biên soạn theo kiến trúc SOT-Graph v0.3.0.*

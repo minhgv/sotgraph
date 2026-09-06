@@ -60,7 +60,7 @@ def discover_plugin_providers() -> list[ProviderStatus]:
     class against the versioned plugin contract (static checks only),
     and returns one ProviderStatus per plugin. Never installs anything,
     never issues a query — plugin index work belongs to the explicit
-    ``sot providers sync`` path. Contract violations surface as an
+    ``sotgraph providers sync`` path. Contract violations surface as an
     unhealthy status with the problem list, not an exception: detection
     must stay read-only and bounded.
     """

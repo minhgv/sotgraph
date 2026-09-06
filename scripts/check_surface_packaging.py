@@ -39,7 +39,7 @@ def audit_wheel(wheel: Path) -> dict[str, object]:
         parser.read_string(archive.read(entries[0]).decode())
         if not parser.has_section('console_scripts'):
             raise ValueError('missing public console entry points')
-        if dict(parser['console_scripts']) != {'sot': 'sot_graph.cli:main'}:
+        if dict(parser['console_scripts']) != {'sotgraph': 'sot_graph.cli:main'}:
             raise ValueError('unexpected public console entry points')
         forbidden = [n for n in names if (
             n.startswith('engines/') or '.data/scripts/' in n
@@ -120,12 +120,12 @@ def run_audit(wheel: Path, output: Path, dependencies: list[Path]) -> dict[str, 
         run([str(python), '-c',
              'import importlib.metadata as m; d=m.distribution("sot-graph"); '
              'print(d.read_text("RECORD"))'], output)
-        run([str(bindir / ('sot.exe' if os.name == 'nt' else 'sot')), '--help'], output)
+        run([str(bindir / ('sotgraph.exe' if os.name == 'nt' else 'sotgraph')), '--help'], output)
         report['bin_added'] = sorted(added)
         for harness in ('omp', 'opencode', 'antigravity', 'claude', 'zcode'):
             root = output / 'workspaces' / harness
             root.mkdir(parents=True)
-            command = [str(bindir / ('sot.exe' if os.name == 'nt' else 'sot')),
+            command = [str(bindir / ('sotgraph.exe' if os.name == 'nt' else 'sotgraph')),
                        'setup', '--harness', harness, '--workspace-only']
             run(command, root)
             first = snapshot(root)
@@ -135,7 +135,7 @@ def run_audit(wheel: Path, output: Path, dependencies: list[Path]) -> dict[str, 
         assert snapshot(home) == before, 'workspace setup mutated HOME/config'
         run([str(python), '-m', 'pip', 'uninstall', '--yes', 'sot-graph'], output)
         assert snapshot(home) == before, 'uninstall mutated user HOME/config'
-        assert not (bindir / ('sot.exe' if os.name == 'nt' else 'sot')).exists()
+        assert not (bindir / ('sotgraph.exe' if os.name == 'nt' else 'sotgraph')).exists()
         report['result'] = 'PASS_SCOPED'
     except Exception as exc:
         report['result'] = 'BLOCKED'

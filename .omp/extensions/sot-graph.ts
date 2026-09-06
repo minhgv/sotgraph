@@ -79,7 +79,7 @@ const commandEnvironment = (cwd: string, platform: NodeJS.Platform = process.pla
       .flatMap((entry) => {
         const originalEntryPath = resolve(cwd, entry || ".");
         const canonicalEntryPath = canonicalPath(originalEntryPath);
-        const originalSotPath = join(originalEntryPath, "sot");
+        const originalSotPath = join(originalEntryPath, "sotgraph");
         const canonicalSotPath = canonicalPath(originalSotPath);
         const pathsToCheck = [
           originalEntryPath,
@@ -136,7 +136,7 @@ interface ExtensionAPI {
 const runCmd = (bin: string | undefined, args: string[], cwd?: string): Promise<{ ok: boolean; output: string }> => {
   const commandCwd = cwd || process.cwd();
   if (bin === undefined || !isAbsolute(bin)) {
-    return Promise.resolve({ ok: false, output: "Error: sot executable not found on trusted PATH" });
+    return Promise.resolve({ ok: false, output: "Error: sotgraph executable not found on trusted PATH" });
   }
 
   const { promise, resolve: resolvePromise } = Promise.withResolvers<{ ok: boolean; output: string }>();
@@ -168,7 +168,7 @@ export function resolveSotBinary(cwd: string = process.cwd(), platform: NodeJS.P
 
   const workspaceRoot = canonicalPath(resolve(commandCwd));
   const candidateNames =
-    platform === "win32" ? windowsPathSuffixes(env).map((suffix) => `sot${suffix}`) : ["sot"];
+    platform === "win32" ? windowsPathSuffixes(env).map((suffix) => `sotgraph${suffix}`) : ["sotgraph"];
   for (const pathEntry of pathValue.split(pathDelimiter(platform))) {
     if (!pathEntry) continue;
     const canonicalDirectory = canonicalExistingPath(pathEntry);

@@ -6,7 +6,7 @@ flagged that search quality was measured with ~20 probes and ambiguous Hit@5
 of 44.4%. This benchmark closes that gap with a planted, offline corpus where
 every probe has EXACTLY ONE known-correct node (ground truth by construction),
 runs the REAL end-to-end search path (Database.search_fts -> TrustVerifier
-per-hit verification -> P4 ranking, identical to `sot search`), and scores
+per-hit verification -> P4 ranking, identical to `sotgraph search`), and scores
 per-class Hit@1/5/10 plus MRR at top-k=10.
 
 Probe classes (12 probes each, 48 total):

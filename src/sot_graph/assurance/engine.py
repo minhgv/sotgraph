@@ -118,5 +118,5 @@ def stale_files_warning(stale: list) -> Optional[str]:
     shown = ", ".join(stale[:5]) + ("…" if len(stale) > 5 else "")
     return (
         f"{len(stale)} cited file(s) changed since last reconcile ({shown}); "
-        "run 'sot reconcile' — evidence for these paths is UNVERIFIABLE until then"
+        "run 'sotgraph reconcile' — evidence for these paths is UNVERIFIABLE until then"
     )

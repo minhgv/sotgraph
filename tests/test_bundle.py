@@ -1,4 +1,4 @@
-"""Unit tests for ArchitectureBundler, CLI sot bundle, and MCP integration."""
+"""Unit tests for ArchitectureBundler, CLI sotgraph bundle, and MCP integration."""
 
 import asyncio
 import json

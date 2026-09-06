@@ -233,7 +233,7 @@ class McpService:
     def providers_sync(self, provider_name: str = "codebase-memory") -> Dict[str, Any]:
         """P6: explicit provider index sync over MCP (a write path).
 
-        Mirrors ``sot providers sync``: guarded by the project write
+        Mirrors ``sotgraph providers sync``: guarded by the project write
         lock, ledger connection opened only for the sync, receipt
         returned (run id + snapshot + evidence rows). Read tools stay
         read-only; this is the one explicitly-write MCP surface.
@@ -269,7 +269,7 @@ class McpService:
         except LockBusy:
             raise McpServiceError(
                 "ledger_locked",
-                "another sot writer holds the project lock; retry sync later",
+                "another sotgraph writer holds the project lock; retry sync later",
             )
         from dataclasses import asdict
 

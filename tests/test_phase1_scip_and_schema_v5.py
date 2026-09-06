@@ -303,7 +303,7 @@ class Phase1SchemaV5AndScipTests(unittest.TestCase):
     # -------------------------------------------------------------------------
 
     def test_cli_import_scip_command(self):
-        """Verify `sot import-scip` command execution with stdout and JSON envelope."""
+        """Verify `sotgraph import-scip` command execution with stdout and JSON envelope."""
         self.write("lib/util.py", "def greet(name):\n    return f'Hello, {name}'\n")
 
         db = Database(self.db_path)
@@ -384,7 +384,7 @@ class Phase1SchemaV5AndScipTests(unittest.TestCase):
 
         db.close()
     def test_cli_pack_json_envelope(self):
-        """Verify `sot pack` with --json returns a valid North-Star response envelope."""
+        """Verify `sotgraph pack` with --json returns a valid North-Star response envelope."""
         from sot_graph.cli import cmd_pack
         self.write("pkg/calc.py", "def compute_total(price: float, tax: float) -> float:\n    return price + tax\n")
 

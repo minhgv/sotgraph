@@ -607,12 +607,12 @@
       <div class="metric-box" style="background: rgba(88, 166, 255, 0.05); border-color: rgba(88, 166, 255, 0.2);">
         <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">QUICK CLI REFERENCE</div>
         <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
-          • <code>sot reconcile</code>: Sync graph with disk<br>
-          • <code>sot search &lt;q&gt;</code>: Verified search<br>
-          • <code>sot explore &lt;s&gt;</code>: 2-hop blast radius<br>
-          • <code>sot cluster</code>: Louvain communities<br>
-          • <code>sot viz</code>: Interactive HTML<br>
-          • <code>sot verify</code>: Non-mutating audit
+          • <code>sotgraph reconcile</code>: Sync graph with disk<br>
+          • <code>sotgraph search &lt;q&gt;</code>: Verified search<br>
+          • <code>sotgraph explore &lt;s&gt;</code>: 2-hop blast radius<br>
+          • <code>sotgraph cluster</code>: Louvain communities<br>
+          • <code>sotgraph viz</code>: Interactive HTML<br>
+          • <code>sotgraph verify</code>: Non-mutating audit
         </div>
       </div>
     </aside>
@@ -661,7 +661,7 @@
             </ol>
             <div class="code-box">
               <div class="code-header"><span>Trigger manual reconciliation CLI</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>./bin/sot reconcile --workers 4</code></pre>
+              <pre><code>./bin/sotgraph reconcile --workers 4</code></pre>
             </div>
           </div>
         </article>
@@ -698,7 +698,7 @@
             </table>
             <div class="code-box">
               <div class="code-header"><span>Search with authoritative trust verification</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>./bin/sot search "PaymentGateway" --scope "src/billing"</code></pre>
+              <pre><code>./bin/sotgraph search "PaymentGateway" --scope "src/billing"</code></pre>
             </div>
           </div>
         </article>
@@ -887,7 +887,7 @@ DELETE FROM pending_edges WHERE dst_symbol IN (SELECT symbol FROM graph_nodes);<
                 <strong>Claude Code &amp; Cursor (AGENTS.md):</strong> Inject <code>src/sot_graph/adapters/AGENTS.md</code> into system prompts to mandate verified search before editing.
               </li>
               <li>
-                <strong>MCP Stdio Server:</strong> Add the <code>sot mcp</code> command to <code>claude_desktop_config.json</code> or Cursor MCP settings.
+                <strong>MCP Stdio Server:</strong> Add the <code>sotgraph mcp</code> command to <code>claude_desktop_config.json</code> or Cursor MCP settings.
               </li>
             </ol>
           </div>
@@ -914,7 +914,7 @@ DELETE FROM pending_edges WHERE dst_symbol IN (SELECT symbol FROM graph_nodes);<
             <div class="code-box">
               <div class="code-header"><span>The 4-Step Knowledge Reuse Protocol</span></div>
               <pre><code>Step 1: Check existing work across codebase:
-        sot search "&lt;feature_or_utility_name&gt;" --scope &lt;dir&gt;
+        sotgraph search "&lt;feature_or_utility_name&gt;" --scope &lt;dir&gt;
 
 Step 2: Follow Trust Verdict Guidance:
         • [STRONG]  ➔ High confidence; inspect physical line.
@@ -922,10 +922,10 @@ Step 2: Follow Trust Verdict Guidance:
         • [REBUILT] ➔ Use updated path.
 
 Step 3: Trace architectural blast radius:
-        sot explore "&lt;target_symbol_or_function&gt;"
+        sotgraph explore "&lt;target_symbol_or_function&gt;"
 
 Step 4: Persist complex architecture decisions & tricky bug fixes:
-        sot insert --title "JWT Refresh Strategy" --body "Always rotate refresh tokens..." --keywords "jwt,auth"</code></pre>
+        sotgraph insert --title "JWT Refresh Strategy" --body "Always rotate refresh tokens..." --keywords "jwt,auth"</code></pre>
             </div>
           </div>
         </article>
@@ -947,7 +947,7 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
             <span class="qa-toggle-btn">▼</span>
           </div>
           <div class="qa-body">
-            <p><code>sot mcp</code> exposes 5 read-only tools over JSON-RPC stdio without holding database write locks:</p>
+            <p><code>sotgraph mcp</code> exposes 5 read-only tools over JSON-RPC stdio without holding database write locks:</p>
             <ul>
               <li><code>sot_search</code>: Verified candidate search with trust labels.</li>
               <li><code>sot_explore</code>: 2-hop blast radius relationship graph.</li>
@@ -1004,7 +1004,7 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
             </ol>
             <div class="code-box">
               <div class="code-header"><span>Generate God Node &amp; Architecture Report</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>./bin/sot report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md</code></pre>
+              <pre><code>./bin/sotgraph report --sigma 1.5 --min-size 2 -o ARCHITECTURE_REPORT.md</code></pre>
             </div>
           </div>
         </article>
@@ -1043,12 +1043,12 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
         </article>
 
         <!-- Q13 -->
-        <article class="qa-card" data-search="visualization d3.js sot viz export graphrag json obsidian vault graphml gephi">
+        <article class="qa-card" data-search="visualization d3.js sotgraph viz export graphrag json obsidian vault graphml gephi">
           <div class="qa-header">
             <div class="qa-title-group">
               <span class="qa-number">Q13</span>
               <div>
-                <div class="qa-question-text">How do you generate and export the interactive HTML visualizer (<code>sot viz</code>), GraphRAG JSON, Obsidian Vault, and GraphML?</div>
+                <div class="qa-question-text">How do you generate and export the interactive HTML visualizer (<code>sotgraph viz</code>), GraphRAG JSON, Obsidian Vault, and GraphML?</div>
                 <div class="qa-tags">
                   <span class="badge badge-ops">EXPORT</span>
                   <span class="badge badge-ops">HTML-D3</span>
@@ -1063,18 +1063,18 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
             <p><code>sot-graph</code> includes built-in multi-format exporters requiring zero external dependencies:</p>
             <div class="code-box">
               <div class="code-header"><span>Generate Standalone D3.js HTML Visualizer</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>./bin/sot viz -o graph_visualizer.html --open</code></pre>
+              <pre><code>./bin/sotgraph viz -o graph_visualizer.html --open</code></pre>
             </div>
             <div class="code-box">
               <div class="code-header"><span>Export GraphRAG, Obsidian Vault, and GraphML</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre><code># GraphRAG JSON Schema format
-./bin/sot export -f graphrag -o graphrag_payload.json
+./bin/sotgraph export -f graphrag -o graphrag_payload.json
 
 # Complete Obsidian Markdown Vault with [[Wikilinks]]
-./bin/sot export -f obsidian -o ./obsidian_vault
+./bin/sotgraph export -f obsidian -o ./obsidian_vault
 
 # GraphML XML for Gephi, Cytoscape, and NetworkX
-./bin/sot export -f graphml -o graph_export.graphml</code></pre>
+./bin/sotgraph export -f graphml -o graph_export.graphml</code></pre>
             </div>
           </div>
         </article>
@@ -1113,12 +1113,12 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
         </article>
 
         <!-- Q15 -->
-        <article class="qa-card" data-search="maintenance sot clean sot vacuum dry-run defragmentation freelist pages">
+        <article class="qa-card" data-search="maintenance sotgraph clean sotgraph vacuum dry-run defragmentation freelist pages">
           <div class="qa-header">
             <div class="qa-title-group">
               <span class="qa-number">Q15</span>
               <div>
-                <div class="qa-question-text">How do <code>sot clean</code> and <code>sot vacuum</code> work, and why do they include <code>--dry-run</code> modes?</div>
+                <div class="qa-question-text">How do <code>sotgraph clean</code> and <code>sotgraph vacuum</code> work, and why do they include <code>--dry-run</code> modes?</div>
                 <div class="qa-tags">
                   <span class="badge badge-ops">MAINTENANCE</span>
                   <span class="badge badge-ops">SOT-CLEAN</span>
@@ -1131,23 +1131,23 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
           <div class="qa-body">
             <p>Maintenance commands keep the SQLite database compact and healthy:</p>
             <ul>
-              <li><strong><code>sot clean</code>:</strong> Scans for database paths absent from disk and cleans orphan edges without affecting live nodes.</li>
-              <li><strong><code>sot vacuum</code>:</strong> Rebuilds database pages, defragments B-Trees, and releases unused disk space to the OS.</li>
+              <li><strong><code>sotgraph clean</code>:</strong> Scans for database paths absent from disk and cleans orphan edges without affecting live nodes.</li>
+              <li><strong><code>sotgraph vacuum</code>:</strong> Rebuilds database pages, defragments B-Trees, and releases unused disk space to the OS.</li>
             </ul>
             <div class="code-box">
               <div class="code-header"><span>Safe Maintenance Execution with Dry-Run</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre><code># Preview cleanup without mutating database
-./bin/sot clean --dry-run
+./bin/sotgraph clean --dry-run
 
 # Execute clean and vacuum with optimization analysis
-./bin/sot clean
-./bin/sot vacuum --analyze</code></pre>
+./bin/sotgraph clean
+./bin/sotgraph vacuum --analyze</code></pre>
             </div>
           </div>
         </article>
 
         <!-- Q16 -->
-        <article class="qa-card" data-search="ci cd git hooks drift audit sot verify deep non-mutating exit code">
+        <article class="qa-card" data-search="ci cd git hooks drift audit sotgraph verify deep non-mutating exit code">
           <div class="qa-header">
             <div class="qa-title-group">
               <span class="qa-number">Q16</span>
@@ -1163,17 +1163,17 @@ Step 4: Persist complex architecture decisions & tricky bug fixes:
             <span class="qa-toggle-btn">▼</span>
           </div>
           <div class="qa-body">
-            <p><code>sot verify</code> provides a strictly read-only, non-mutating integrity audit ideal for CI/CD gates and pre-commit hooks:</p>
+            <p><code>sotgraph verify</code> provides a strictly read-only, non-mutating integrity audit ideal for CI/CD gates and pre-commit hooks:</p>
             <div class="code-box">
               <div class="code-header"><span>CI/CD Pipeline Integration Script</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre><code># Execute deep SHA-256 drift check
-./bin/sot verify --deep
+./bin/sotgraph verify --deep
 
 # Returns exit code 0 on clean state, non-zero on drift
 if [ $? -eq 0 ]; then
   echo "✅ Knowledge graph is 100% in sync with disk."
 else
-  echo "❌ Drift detected! Run 'sot reconcile' before committing."
+  echo "❌ Drift detected! Run 'sotgraph reconcile' before committing."
   exit 1
 fi</code></pre>
             </div>
@@ -1238,7 +1238,7 @@ fi</code></pre>
         </article>
 
         <!-- Q19 -->
-        <article class="qa-card" data-search="sot insert adr architectural decision record bug fix note virtual knowledge anchor nopath">
+        <article class="qa-card" data-search="sotgraph insert adr architectural decision record bug fix note virtual knowledge anchor nopath">
           <div class="qa-header">
             <div class="qa-title-group">
               <span class="qa-number">Q19</span>
@@ -1254,10 +1254,10 @@ fi</code></pre>
             <span class="qa-toggle-btn">▼</span>
           </div>
           <div class="qa-body">
-            <p>Agents can persist decisions and guidelines as virtual knowledge anchors using <code>sot insert</code>:</p>
+            <p>Agents can persist decisions and guidelines as virtual knowledge anchors using <code>sotgraph insert</code>:</p>
             <div class="code-box">
               <div class="code-header"><span>Persist Architectural Decision Record (ADR)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>./bin/sot insert \
+              <pre><code>./bin/sotgraph insert \
   --title "Database Concurrency Policy" \
   --body "All transaction queries touching balance tables must use SELECT FOR UPDATE to prevent race conditions." \
   --keywords "database,concurrency,locking,balance"</code></pre>

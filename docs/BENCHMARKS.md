@@ -45,10 +45,10 @@ Evaluates cold and warm query latency for FTS5 full-text indexing, BM25 rank sco
 
 | Query Type | Median (ms) | P95 (ms) | P99 (ms) | Memory RSS |
 | :--- | :---: | :---: | :---: | :---: |
-| **Exact Symbol Search** (`sot search "Database"`) | 0.82 | 1.15 | 1.34 | < 18 MB |
-| **Multi-token Fuzzy Query** (`sot search "reconcile file"`) | 0.95 | 1.22 | 1.48 | < 20 MB |
+| **Exact Symbol Search** (`sotgraph search "Database"`) | 0.82 | 1.15 | 1.34 | < 18 MB |
+| **Multi-token Fuzzy Query** (`sotgraph search "reconcile file"`) | 0.95 | 1.22 | 1.48 | < 20 MB |
 | **Scoped Path Query** (`--scope src/sot_graph`) | 0.78 | 1.08 | 1.25 | < 18 MB |
-| **Call Graph Traversal** (`sot explore "Reconciler" --depth 2`) | 1.10 | 1.45 | 1.80 | < 22 MB |
+| **Call Graph Traversal** (`sotgraph explore "Reconciler" --depth 2`) | 1.10 | 1.45 | 1.80 | < 22 MB |
 
 > **Scope of these numbers**: retrieval-only (FTS5 + BM25 ranking) on the 100-file corpus — per-hit trust verification and JIT reconcile are excluded. End-to-end verified search on 5,000 files is p50 ≈ 49 ms (`benchmarks/performance_baseline.json`).
 
@@ -82,10 +82,10 @@ PYTHONPATH=".:src" python3 -m benchmarks.bench_query --files 500 --repeat 5 --js
 
 1. **Keep Database on Local SSD**: SQLite WAL mode thrives on NVMe / SSD random I/O.
 2. **Periodic Maintenance**:
-   - Run `sot clean --all` to purge stale paths from renamed/deleted files.
-   - Run `sot vacuum --analyze` to checkpoint WAL logs and update SQLite query planner statistics.
+   - Run `sotgraph clean --all` to purge stale paths from renamed/deleted files.
+   - Run `sotgraph vacuum --analyze` to checkpoint WAL logs and update SQLite query planner statistics.
 3. **Use Scoped Searches for Massive Repositories**:
-   - `sot search "query" --scope <subfolder>` restricts FTS candidate generation to relevant modules.
+   - `sotgraph search "query" --scope <subfolder>` restricts FTS candidate generation to relevant modules.
 
 ---
 
@@ -181,7 +181,7 @@ python3 scripts/benchmark_context.py            # defaults to 3 core targets
 python3 scripts/benchmark_context.py --targets build_bundle,parse_file_graph --json
 ```
 
-Method: for each target, compare `sot pack` YAML tokens (k-hop slice: source span
+Method: for each target, compare `sotgraph pack` YAML tokens (k-hop slice: source span
 + caller/callee contracts + signature stubs) against the naive protocol of reading
 every whole file in the same k-hop neighbourhood (the grep-then-read baseline).
 Tokens estimated as bytes/4. No LLM, no network — numbers are stable across runs.

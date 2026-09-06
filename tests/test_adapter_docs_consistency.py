@@ -36,10 +36,10 @@ class AdapterDocsConsistencyTests(unittest.TestCase):
         truth = adapter_docs_check.CliTruth()
         names = sorted(adapter_docs_check._subparser_choices(truth.main))
         self.assertTrue(names, "build_parser() exposed no subcommands")
-        # Leaf commands render as `sot <name>`; parents of nested
+        # Leaf commands render as `sotgraph <name>`; parents of nested
         # subcommands (solution, providers) render as `solution inventory`.
         missing = [
             n for n in names
-            if f"`sot {n}`" not in table and f"`{n} " not in table
+            if f"`sotgraph {n}`" not in table and f"`{n} " not in table
         ]
         self.assertEqual(missing, [])

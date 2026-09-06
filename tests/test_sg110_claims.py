@@ -4,7 +4,7 @@ Three layers:
   - registry parsing/structural validation on broken YAML fixtures;
   - claim validation inside a real (temporary) git repo — artifact traces,
     provenance ancestry, metric mismatches, docs<->registry drift;
-  - the live repo tripwire: `sot claims lint` must be green at HEAD, the
+  - the live repo tripwire: `sotgraph claims lint` must be green at HEAD, the
     registry must keep a sanity floor of entries, and every banned-phrase
     hit in the real corpus must be classified (registered/hedged/allowed).
 """

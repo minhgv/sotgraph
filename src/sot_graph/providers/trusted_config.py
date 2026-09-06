@@ -312,7 +312,7 @@ def managed_config_status(repo_path, *, config_path=None) -> dict:
 
     def refuse(reason, *operations):
         result.update(status='refused', enabled=False, ready=False, reason=reason,
-                      remediation=['sot engine ' + operation for operation in operations])
+                      remediation=['sotgraph engine ' + operation for operation in operations])
         return result
 
     if not _supported_platform():
@@ -327,7 +327,7 @@ def managed_config_status(repo_path, *, config_path=None) -> dict:
     if entry is None or not entry['enabled']:
         result.update(registration='missing' if entry is None else 'disabled',
                       reason='registration_missing' if entry is None else 'registration_disabled',
-                      remediation=['sot engine register'])
+                      remediation=['sotgraph engine register'])
         return result
     result.update(registration='enabled', artifact_digest=entry['artifact_digest'])
     if entry['project_path'] != project:
@@ -367,7 +367,7 @@ def managed_config_status(repo_path, *, config_path=None) -> dict:
     result.update(status='enabled', enabled=True, ready=state == 'READY',
                   reason={'READY': 'runtime_ready', 'UNINITIALIZED': 'runtime_uninitialized',
                           'SYNCING': 'runtime_syncing'}[state],
-                  remediation=['sot engine ' + operation for operation in
+                  remediation=['sotgraph engine ' + operation for operation in
                                ({'READY': ('probe', 'sync'),
                                  'UNINITIALIZED': ('prepare', 'probe', 'sync'),
                                  'SYNCING': ('runtime-status', 'disable')}[state])])

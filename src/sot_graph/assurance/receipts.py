@@ -684,7 +684,7 @@ def _post_change_stale_files(
 ) -> List[str]:
     """Changed files whose disk bytes still differ from the journal.
 
-    Post-change staleness is measured, not assumed: once ``sot reconcile``
+    Post-change staleness is measured, not assumed: once ``sotgraph reconcile``
     (or diff-impact's --auto-reconcile) has re-indexed the change, the
     journal matches disk and nothing is stale — which is exactly what
     lets ``closure_decision`` reach "closed" instead of being dead logic.
@@ -947,7 +947,7 @@ def diff_impact_receipt(
             else post_snapshot.as_dict()
         ),
         "reconcile": {"required": True,
-                      "note": "run `sot reconcile` to bind the post-change "
+                      "note": "run `sotgraph reconcile` to bind the post-change "
                               "snapshot to a fresh index generation"},
         "summary": summary_dict,
         "pre_receipt_digest": (pre_receipt or {}).get("digest"),

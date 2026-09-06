@@ -114,7 +114,7 @@ def _preview_budget() -> int:
 
     Default 4KB covers most source files entirely; SOT_PREVIEW_BYTES raises
     or lowers it (0..1MB) for repos that need deep content search — pair a
-    raise with `sot reconcile --force` to refresh existing indexes.
+    raise with `sotgraph reconcile --force` to refresh existing indexes.
     """
     try:
         raw = int(os.environ.get("SOT_PREVIEW_BYTES", "4096"))

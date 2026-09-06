@@ -269,7 +269,7 @@ def _probe_repo_map_dead_helper() -> Tuple[str, str]:
 
 
 def _probe_cli_hybrid_scope_ignored() -> Tuple[str, str]:
-    """P1 cli.py:210 — `sot search --hybrid` silently drops --scope."""
+    """P1 cli.py:210 — `sotgraph search --hybrid` silently drops --scope."""
     from sot_graph.cli import build_parser
     from sot_graph.vector import hybrid_search
     parser = build_parser()

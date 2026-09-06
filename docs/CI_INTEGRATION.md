@@ -1,6 +1,6 @@
 # CI Integration: PR-Native Blast Radius Bot (R4)
 
-`sot diff-impact --format github` renders a PR-comment-optimized report:
+`sotgraph diff-impact --format github` renders a PR-comment-optimized report:
 a top-line risk verdict, collapsed `<details>` sections for blast radius,
 callers and affected tests, zero ANSI escapes, repo-relative paths only,
 and deterministic row ordering. The composite action in this repository
@@ -41,8 +41,8 @@ Behavior:
 
 - Installs `sot-graph` from PyPI (`uv tool install`, then `pip`), falling
   back to `pip install git+<this repo>` when PyPI is unavailable/lagging.
-- Runs `sot reconcile --workers 4`, then
-  `sot diff-impact <base> --format github` (engine steps fail the job).
+- Runs `sotgraph reconcile --workers 4`, then
+  `sotgraph diff-impact <base> --format github` (engine steps fail the job).
 - Posts one idempotent PR comment (anchored on the
   `<!-- sot-diff-impact -->` marker) and edits it on subsequent pushes
   (comment step is tolerant: `continue-on-error: true`).
@@ -67,6 +67,6 @@ step tolerates failure, so a broken index still blocks the PR signal.
 ## Rendering locally
 
 ```bash
-sot diff-impact HEAD~1 --format github | pbcopy   # paste into a PR comment
-sot diff-impact main...HEAD --format github -o comment.md
+sotgraph diff-impact HEAD~1 --format github | pbcopy   # paste into a PR comment
+sotgraph diff-impact main...HEAD --format github -o comment.md
 ```

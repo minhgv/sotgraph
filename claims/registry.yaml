@@ -1,7 +1,7 @@
 # SOT-Graph trust-claim registry (SG-110).
 #
 # Every public trust claim the project makes lives here with its same-commit
-# artifact trace. `sot claims lint` validates three invariants:
+# artifact trace. `sotgraph claims lint` validates three invariants:
 #   1. artifact exists, is git-tracked, provenance commit is an ancestor of
 #      HEAD, and the cited metric still matches the artifact;
 #   2. each `pattern` still appears in every listed doc (docs <-> registry
@@ -172,7 +172,7 @@ allow:
     reason: "design rationale for the single-writer reconciler architecture, not an output-trust claim"
   - file: docs/QA_GUIDE.md
     contains: "to guarantee ACID compliance"
-    reason: "example `sot insert` payload embedded in documentation text"
+    reason: "example `sotgraph insert` payload embedded in documentation text"
   - file: docs/QA_GUIDE.md
     contains: "authoritative engineering guideline"
     reason: "guidance on reading user-authored knowledge notes, not engine output trust"

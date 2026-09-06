@@ -1,5 +1,5 @@
 """Tests for the P1 CLI query wiring: --provider on explore/usages/diff-impact
-and the `sot providers sync` admin command.
+and the `sotgraph providers sync` admin command.
 
 The real codebase-memory-mcp binary is never invoked: every executable is a
 fake script placed on a private PATH (same pattern as tests/test_cbm_adapter).
@@ -48,7 +48,7 @@ def make_exe(directory: Path, name: str, body: str) -> str:
 def make_cbm_fake(bin_dir: Path, *, version: str | None = "0.10.8",
                   projects: str = "cwd", search_report: str | None = None,
                   trace_report: str | None = None, changes=None) -> None:
-    """Install a fake `codebase-memory-mcp` handling the tools sot calls.
+    """Install a fake `codebase-memory-mcp` handling the tools sotgraph calls.
 
     ``projects="cwd"`` answers list_projects with one project whose root_path
     is os.getcwd() (run_command always cwd's to realpath(repo_root)), so the

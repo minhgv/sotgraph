@@ -13,18 +13,18 @@ description: Single Source of Truth (SOT) verified knowledge graph for AI coding
 # /sot-graph (Single Source of Truth Knowledge Layer)
 
 When to use:
-- **Top-down orientation**: Map repository architecture without token waste (`sot map` / `sot_map`).
-- **Before writing or implementing code**: Search if utilities or existing solutions already exist (`sot search` / `sot_search`).
-- **Before modifying core functions or classes**: Trace upstream/downstream dependencies (`sot explore` / `sot_explore`) and exact call-sites (`sot usages` / `sot_usages`).
-- **Polymorphism & interface inspection**: Inspect concrete implementations (`sot implementations` / `sot_implementations`).
-- **Safe symbol refactoring**: Plan or execute multi-file renames (`sot rename`).
-- **Token-efficient context packaging**: Extract k-hop subgraphs into YAML ContextBundles (`sot pack` / `sot_pack`).
-- **Verifying disk consistency**: Audit phantom anchors and drift (`sot verify` / `sot_verify_drift`).
-- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sot insert` / `sot_notes`).
-- **Architecture analysis & reports**: Extract 5 fact bundle files (`sot bundle` / `sot_bundle`), generate visual graphs, community clustering, or health reports (`sot cluster`, `sot report`, `sot viz`, `sot export`).
-- **Git diff & revision blast radius**: Trace upstream callers, breaking API impacts, and affected tests across commits or working tree changes (`sot diff-impact` / `sot_diff_impact`).
-- **Git commit risk analysis**: Inspect commit history with automated risk scoring and impacted symbol tracking (`sot log` / `sot_git_history`).
-- **Database maintenance**: Purge stale records and vacuum freelists (`sot clean`, `sot vacuum`, `sot doctor`).
+- **Top-down orientation**: Map repository architecture without token waste (`sotgraph map` / `sot_map`).
+- **Before writing or implementing code**: Search if utilities or existing solutions already exist (`sotgraph search` / `sot_search`).
+- **Before modifying core functions or classes**: Trace upstream/downstream dependencies (`sotgraph explore` / `sot_explore`) and exact call-sites (`sotgraph usages` / `sot_usages`).
+- **Polymorphism & interface inspection**: Inspect concrete implementations (`sotgraph implementations` / `sot_implementations`).
+- **Safe symbol refactoring**: Plan or execute multi-file renames (`sotgraph rename`).
+- **Token-efficient context packaging**: Extract k-hop subgraphs into YAML ContextBundles (`sotgraph pack` / `sot_pack`).
+- **Verifying disk consistency**: Audit phantom anchors and drift (`sotgraph verify` / `sot_verify_drift`).
+- **Recording knowledge**: Record non-obvious architecture choices or critical bug solutions (`sotgraph insert` / `sot_notes`).
+- **Architecture analysis & reports**: Extract 5 fact bundle files (`sotgraph bundle` / `sot_bundle`), generate visual graphs, community clustering, or health reports (`sotgraph cluster`, `sotgraph report`, `sotgraph viz`, `sotgraph export`).
+- **Git diff & revision blast radius**: Trace upstream callers, breaking API impacts, and affected tests across commits or working tree changes (`sotgraph diff-impact` / `sot_diff_impact`).
+- **Git commit risk analysis**: Inspect commit history with automated risk scoring and impacted symbol tracking (`sotgraph log` / `sot_git_history`).
+- **Database maintenance**: Purge stale records and vacuum freelists (`sotgraph clean`, `sotgraph vacuum`, `sotgraph doctor`).
 
 ## Trust Verdicts
 - `[STRONG]`: hash-verified against disk reality (high confidence, not absolute). File exists, symbol exists, token coverage matches.
@@ -36,36 +36,36 @@ When to use:
 ## Quick CLI & Native Tool Device Reference
 | Category | CLI Command | Native Tool Device |
 | :--- | :--- | :--- |
-| **Search Codebase** | `sot search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
-| **Repository Map** | `sot map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
-| **Trace Call Graph** | `sot explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
-| **Inspect Usages** | `sot usages "<symbol>"` | `xd://sot_usages` |
-| **Implementations** | `sot implementations "<interface>"` | `xd://sot_implementations` |
-| **Rename Impact** | `sot rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
-| **Pack Subgraph** | `sot pack "<symbol>" [--max-hops 2] [-o <file>]`| `xd://sot_pack` |
-| **Synchronize DB** | `sot reconcile [--workers 4]` | `xd://sot_reconcile` |
-| **Batch Reconcile** | `sot batch-reconcile <dir> [--workers 4]` | CLI |
-| **Audit Drift** | `sot verify [--deep]` | `xd://sot_verify` |
-| **Database Doctor** | `sot doctor` | `xd://sot_doctor` |
-| **Clean Stale Data**| `sot clean [--all] [--include-notes]` | `xd://sot_clean` |
-| **Vacuum Database** | `sot vacuum [--analyze]` | `xd://sot_vacuum` |
-| **Store Note** | `sot insert --title "..." --body "..."` | `xd://sot_insert` |
-| **Cluster Graph** | `sot cluster [--scope <path>]` | `xd://sot_cluster` |
-| **Architecture Report** | `sot report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
-| **Interactive Viz** | `sot viz [-o graph.html]` | `xd://sot_viz` |
-| **Export Graph** | `sot export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
-| **Fact Bundler** | `sot bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
-| **Full-Stack Trace** | `sot trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
-| **UI Decision Tree** | `sot ui-tree "<component>"` | `xd://sot_ui_tree` |
-| **Backend Flow** | `sot be-flow "<service>"` | `xd://sot_backend_flow` |
-| **Feature Inventory** | `sot solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
-| **Micro-steps Decompose** | `sot solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
-| **Solution Bundle** | `sot solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
-| **Diff Impact** | `sot diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
-| **Commit History** | `sot log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
-| **Embed Index** | `sot embed [--limit 5000]` | CLI |
-| **File Watcher** | `sot watch [--debounce-ms 200]` | CLI (Daemon) |
-| **Harness Setup** | `sot setup [--harness <name>]` | CLI |
+| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
+| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
+| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
+| **Inspect Usages** | `sotgraph usages "<symbol>"` | `xd://sot_usages` |
+| **Implementations** | `sotgraph implementations "<interface>"` | `xd://sot_implementations` |
+| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `xd://sot_pack` |
+| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `xd://sot_reconcile` |
+| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
+| **Audit Drift** | `sotgraph verify [--deep]` | `xd://sot_verify` |
+| **Database Doctor** | `sotgraph doctor` | `xd://sot_doctor` |
+| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `xd://sot_clean` |
+| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `xd://sot_vacuum` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `xd://sot_insert` |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `xd://sot_cluster` |
+| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
+| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `xd://sot_viz` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
+| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
+| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
+| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `xd://sot_ui_tree` |
+| **Backend Flow** | `sotgraph be-flow "<service>"` | `xd://sot_backend_flow` |
+| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
+| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
+| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
+| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
+| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
+| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
+| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |
 """
 
 RULES_MARKDOWN = """# SOT-Graph Project Rules for OMP (Oh My Pi)
@@ -76,7 +76,7 @@ RULES_MARKDOWN = """# SOT-Graph Project Rules for OMP (Oh My Pi)
 
 ## 2. Knowledge Reuse Protocol (Mandatory Before Implementation)
 Before writing any new utility, helper function, or class:
-1. Run `sot search "<keyword>"` or use the `sot_search` tool (Pure-Read Search; never mutates SQLite).
+1. Run `sotgraph search "<keyword>"` or use the `sot_search` tool (Pure-Read Search; never mutates SQLite).
 2. Check Multi-Provider Trust Verdicts:
    - `[STRONG]`: Code physically exists and is verified on disk (`confidence ≥ 0.9`).
    - `[WEAK]`: Semantic match only; inspect the file.
@@ -87,33 +87,33 @@ Before writing any new utility, helper function, or class:
 
 ## 3. Pre-Edit Scope Receipt Gate (P8)
 Before editing core/public symbols (anything outside a leaf function body):
-1. Run `sot scope-receipt <symbol> --change-kind <kind> [--auth] [--dynamic] [--json]`.
+1. Run `sotgraph scope-receipt <symbol> --change-kind <kind> [--auth] [--dynamic] [--json]`.
 2. If the receipt status is BLOCKED (e.g. rename gate: caller coverage insufficient), resolve the blocker first — do not edit.
 3. Track each `omp_confirmations` item as its own todo node referencing the receipt digest (`receipt <digest12>`).
 4. Stop-time rule: do NOT mark the task complete while receipt confirmations remain pending.
-5. After the edit: run `sot diff-impact` (post-change receipt binds its own snapshot), run `sot reconcile`, then re-verify. A pre-change receipt (`proof_scope: pre_change_only`) is NEVER post-change proof.
+5. After the edit: run `sotgraph diff-impact` (post-change receipt binds its own snapshot), run `sotgraph reconcile`, then re-verify. A pre-change receipt (`proof_scope: pre_change_only`) is NEVER post-change proof.
 
 ## 4. Dependency Impact & Safe Refactoring Protocol (Honest Usages)
 Before modifying, refactoring, or renaming core functions/classes:
-1. Run `sot explore "<symbol>"` or `sot usages "<symbol>"` to inspect both Outward Calls and Incoming References.
-2. When working with interfaces or abstract classes, run `sot implementations "<interface>"` to identify all concrete implementations.
+1. Run `sotgraph explore "<symbol>"` or `sotgraph usages "<symbol>"` to inspect both Outward Calls and Incoming References.
+2. When working with interfaces or abstract classes, run `sotgraph implementations "<interface>"` to identify all concrete implementations.
 3. Ensure you understand all upstream callers before changing signatures.
-4. Before finalizing changes or submitting PRs, run `sot diff-impact` (or `xd://sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
-5. Inspect commit risk history via `sot log` (or `xd://sot_git_history`).
+4. Before finalizing changes or submitting PRs, run `sotgraph diff-impact` (or `xd://sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
+5. Inspect commit risk history via `sotgraph log` (or `xd://sot_git_history`).
 
 ## 5. Context Isolation & Hard-Budget Subgraph Packaging Protocol
 - When modifying multi-module features, avoid reading dozens of raw source files sequentially.
-- Run `sot pack "<symbol>" --tokens 1500 --json` (or `xd://sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
+- Run `sotgraph pack "<symbol>" --tokens 1500 --json` (or `xd://sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
 
 ## 6. Self-Healing & Drift Reconciliation
 - If you create, move, or delete files, run:
-  `sot reconcile` tool (or `sot batch-reconcile` for monorepo roots).
+  `sotgraph reconcile` tool (or `sotgraph batch-reconcile` for monorepo roots).
 - After completing tricky bugs or complex architectural designs, record knowledge:
-  `sot insert --title "..." --body "..." --keywords "..."`.
+  `sotgraph insert --title "..." --body "..." --keywords "..."`.
 
 ## 7. Architecture Analysis & Fact Bundle Protocol
 When requested to review or synthesize comprehensive architecture documentation for a repository:
-1. Run `sot bundle` (or tool `sot_bundle`) to generate 5 high-density fact files in `.sot/bundle/`.
+1. Run `sotgraph bundle` (or tool `sot_bundle`) to generate 5 high-density fact files in `.sot/bundle/`.
 2. Ingest the 5 fact files (`01_module_inventory.md`, `02_routing_endpoints.md`, `03_workflows_states.md`, `04_dependencies_violations.md`, `05_system_metrics.json`) along with `src/sot_graph/templates/ARCHITECTURE_TEMPLATE.md`.
 3. Output the 6-section report in Vietnamese with facts grounded ONLY in the generated bundle files (mark anything beyond them as `[INFERENCE]`), valid ASCII/Mermaid diagrams, and prioritized recommendations.
 
@@ -122,14 +122,14 @@ When requested to review or synthesize comprehensive architecture documentation 
 ### Tier 1: SOT-Graph First (Code Intelligence & Navigation)
 1. **Zero Raw-Code Discovery**:
    - NEVER run sequential full-file reads or blind `grep`/`glob` across repositories when `.sot/sot.db` or SOT tools exist.
-   - Use SOT-Graph (`sot search`, `sot explore`, `sot usages`, `sot implementations`, `sot pack`) to locate symbols, class hierarchies, caller chains, and dependencies in sub-second time.
+   - Use SOT-Graph (`sotgraph search`, `sotgraph explore`, `sotgraph usages`, `sotgraph implementations`, `sotgraph pack`) to locate symbols, class hierarchies, caller chains, and dependencies in sub-second time.
    - (Note: codebase-memory and graphify are strictly backend extractors; do NOT configure or invoke them as direct agent skills/MCPs to prevent context bloat).
 2. **AST Range-Bounded Reading**:
    - Inspect source code strictly using line-anchored range selectors (`file:start-end`) pinpointed by SOT-Graph coordinates or AST signatures.
 3. **Reverse Call-Graph Blast Radius**:
-   - Prior to modifying or refactoring any method/function/class, run `sot usages` / `sot explore` / `sot diff-impact` to audit all upstream callers and incoming references.
+   - Prior to modifying or refactoring any method/function/class, run `sotgraph usages` / `sotgraph explore` / `sotgraph diff-impact` to audit all upstream callers and incoming references.
 4. **Targeted Test Target Selection**:
-   - Run only the specific affected unit tests identified by the dependency graph blast radius (`sot diff-impact`) instead of full-suite testing during iteration.
+   - Run only the specific affected unit tests identified by the dependency graph blast radius (`sotgraph diff-impact`) instead of full-suite testing during iteration.
 
 ### Tier 2: Context-Mode Sandboxing (High-Volume Output & Large File Isolation)
 1. **Sandboxed Command Execution & Large File Processing**:

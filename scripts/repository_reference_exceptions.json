@@ -1,0 +1,438 @@
+{
+  "benchmarks/exit_gates/external/sg201_external_corpus.json": {
+    "sha256": "51e5de7207a236b4f5d4e166f5c1b48b7a2fca33914582ea8c52dd7cd84c8b8e",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "benchmarks/exit_gates/external/sg201_external_corpus.md": {
+    "sha256": "72ae937c6e8a087690155f3d8e6025a71887fe8f013452b140b90dffc84cfd3f",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "benchmarks/exit_gates/external/sg201_external_corpus_superseded_head_only_pin_check.json": {
+    "sha256": "2dc481af9fbdb30c337d5d399347c271b834ac3b97e2a4eb3e93454bd32cb29e",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "benchmarks/exit_gates/external/sg201_external_corpus_superseded_head_only_pin_check.md": {
+    "sha256": "d8f73edc9b50b6f7a95de20cceccb69695248f1c0fca333d3b6d136c47345ce0",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "benchmarks/exit_gates/sg202_followup/replay.json": {
+    "sha256": "aed8e959b469753bb44290c5697ee6f22be87aef0ff0671c30a8005a4bea3517",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "benchmarks/search-quality.json": {
+    "sha256": "55b834a91ef9244f65f8e562d81e4ff48e8e2773051a014244997c3f1d0f8d10",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "docs/RELEASE_NOTES_v0.3.2.md": {
+    "sha256": "51095bc1988f278924381f93d96e10565a4283f9669b81d30a5f1828f085bc51",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log": {
+    "sha256": "224b84fb92cb8cc6f72d226214cb43b8b8549483e4815200871c6cb41908ed98",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log": {
+    "sha256": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log": {
+    "sha256": "f72f3d8ce3896055d8a9a0878491435a0c65ad914927be69e2746414b3b41609",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log": {
+    "sha256": "d3be2dce9e6ae8e3ca88143d8f561630afa93453469f2b162897887233e7e863",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/final-scoped.log": {
+    "sha256": "cce9f63415d944b7f425ceb40598d40a9fdfa2b06fbb9f010fec85a99ca58785",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/manifest.json": {
+    "sha256": "3b6f86c6f65c06382652178d8ba8a4359f2281648d766fad9d9f8824aced4a10",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement-exit.json": {
+    "sha256": "9c0fe73ca293da376e50cb8217bca34833c325048ca879983d99d5caf6d73c6d",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement-run.log": {
+    "sha256": "befb54952e034363b02a1de94337925b7442f6f59db880c5017255a45644a6fa",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement/diagnostic-result.json": {
+    "sha256": "531856d58ed6055dae1d27da46c094bf3b43fd59cd7016948e8c8c02c023f611",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/preflight.json": {
+    "sha256": "318e22226cbe073f71dbb7ad1da785f39d6b5bdde2134ec7cf51aa1314b91ae0",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/summary.json": {
+    "sha256": "f37a2639b77b3d1115c23b83400483e0b1acb73df49bf784c1a7d3baaffb7616",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3a/20260906-trusted-config-v1/full-pytest.log": {
+    "sha256": "5cc60e97df71f117eb1153a45d8c5cc6981708b8afa2bb689c3a94002bb46b6c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3a/20260906-trusted-config-v1/impact.log": {
+    "sha256": "8515674f2889c57d8b87da86d7dfc143c4c8bcffdc15d5774c00a09c658b565a",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3a/20260906-trusted-config-v1/quality.log": {
+    "sha256": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3a/20260906-trusted-config-v1/scoped-types.log": {
+    "sha256": "f16631e33c8b576a46f3038d792227bc805a70b53feec6aacbba83446c29aacd",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3b/20260906-managed-dispatch-v1/final-full-pytest.log": {
+    "sha256": "0547b9a4b45633f3b00e4a23e73b393590ccb1966b641890f588c7a573730cbe",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3b/20260906-managed-dispatch-v1/final-impact.log": {
+    "sha256": "6d69f5dcd96e080b74f00b504b341484dd72c459fd35c598e65e67d3d82ba585",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3b/20260906-managed-dispatch-v1/full-pytest.log": {
+    "sha256": "aab304e0c7b9595833bbe1c2ef760b4e0a38fd960cf5252b19872dc4bf336d9d",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3b/20260906-managed-dispatch-v1/impact.log": {
+    "sha256": "8055a23e4b5b29cffc5f7f67d9c35b1be31110aff305d7dc8eb8f426049c8e5c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3b/20260906-managed-dispatch-v1/quality.log": {
+    "sha256": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3c/20260906-recovery-v1/full-pytest.log": {
+    "sha256": "debd98ed450621233ed48cbe3da9a284dca19b612f1f474fcea00527af413f5d",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3c/20260906-recovery-v1/impact.log": {
+    "sha256": "2027478a6cb069647006ce41c991dafd4a96c810bb41fa70db85c29488702842",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M3c/20260906-recovery-v1/quality.log": {
+    "sha256": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-impact.json": {
+    "sha256": "d363a7130553b02bc8b4407ca9fec58995b992c4c18c141c402020670186013c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests-offline.log": {
+    "sha256": "c4b67245129019321e7f135a8e3114bf5c6687fcc13209052b5c78957fd49661",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests.log": {
+    "sha256": "cd718ca6341df591dd7cee5650d0e6d9622b581f9e6b6f3b602f0b1ae90887f2",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log": {
+    "sha256": "f5697201f4a0ee60fe464b451b112a1167b4f83cfbd5009453274eed31f60f2b",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log": {
+    "sha256": "eed0eb7600d189a59c2e356217a770fbbf49ab0c1aeeeabb7a1d5af81bb26f13",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-exit.json": {
+    "sha256": "0499b76e3dee3a5b80b167a561afed81d8c9fcea457f0acc2992d08b91700c52",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v2/03.stderr": {
+    "sha256": "9984956ef280b4b83967f5c288232836097289dbcfd4ee20909871c24b9d58d3",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v2/receipt.json": {
+    "sha256": "b10d7ee4396cbe2c6bb24d5e1e93f39ee1313129bc6d521b803baa89e910a5a8",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v3/03.stderr": {
+    "sha256": "f9c79713be133415305f6ba6d37a47d6df9fca66badd24e7ef9f76f5ee1e4a1c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v3/receipt.json": {
+    "sha256": "c2f554c30a3ddf97aa8e858ece74924312bcc889250973a0605f1bbc4d4a27e9",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v4/receipt.json": {
+    "sha256": "2ee2b46e6734f233782fd53758f6fcaa451db5b5b61415e1d38b046e5bafe458",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v5/receipt.json": {
+    "sha256": "801e21db110cd850701801cf529c9ccf73068adb9253d8bccdc5b459d9884ac7",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live-v6/receipt.json": {
+    "sha256": "5d541f5a50030067d147c6a3360ac854733693da7857f90013e89a0688c77178",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live/03.stderr": {
+    "sha256": "be14616bae192f6d40cb2928c34eb87eb684a6fe51a4ba3dc497c267e46ddf54",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live/receipt.json": {
+    "sha256": "5c3b010a175335443a6012117e8ed837ad3efc90a0db00ae98febd2219ec2444",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v2.json": {
+    "sha256": "3146ac3c950c45740878db823fce55a0c47f90bd86b83fbb87c9b699278ca6fc",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v3.json": {
+    "sha256": "3bb289d7bbf9404c5ce6a3f241cfd0ed5c75113a007641e24f42c39b4cc62426",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v4.json": {
+    "sha256": "0aba17508af6fee63b30e6be7d446f119f7c53aa35e09cf4e6de87e6b66583bb",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v5.json": {
+    "sha256": "c574508eedc65315fd4e5cda96316cff412cc75d4e35e63aff2759acbdf146db",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest-v6.json": {
+    "sha256": "78fdcf4a97943b329460343464334cb1e427bab147a18f63b7fffc5c4eb62ccf",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/live-manifest.json": {
+    "sha256": "d2018e5c5e78b9e7a4dde81f96a45a65f4785fa8cfeeee0437ecb94fdf2b095c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/local-completion-v7/full-offline.log": {
+    "sha256": "2eefa4d82a1c2bfdec64cda3e6da61e4dbc1e6c451726ceb9ecd5d3a6c532932",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/local-completion-v7/full-tests.log": {
+    "sha256": "cf7f6449de0e97d6a9915802cfc2bd358606c6a904a51e1c6deb73b57d1533e4",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/local-completion-v7/fullscope-impact.json": {
+    "sha256": "13a7244449dd8db51ec211b21deda90b3a6c613d6e66bd434c7a5d0ec2b478e1",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/local-completion-v7/impact-final.json": {
+    "sha256": "e5f841f9158abb2036e941d4d63d39b00c48925ddeb46e74daf78ab94c999dea",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/local-completion-v7/integration-tests.log": {
+    "sha256": "74544767622ed900fc1392440d726d37d2d064763e68e2f028f95b38f095aac8",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-exit.json": {
+    "sha256": "ad43eb8e6e60cae821aa86ba77fe831b0793e5cd691190a110e27416818a24f4",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/receipt.json": {
+    "sha256": "80cbc52effcca6ab8f38949b17152e0ce9061ba73d57b26eefce874bdbe82b13",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log": {
+    "sha256": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-doctor.log": {
+    "sha256": "de9ee9d8569acf306c9f931e2a9cd5094ae0aa88e0bbbf26f29a432c2fd60502",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-explore.json": {
+    "sha256": "0f61f2fc54af538d0bd8079055e1f00011f77cf1f0499ddd506c60fa4e1ba98b",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-impact.log": {
+    "sha256": "943fa9f15d60427f7448b93ddad1d4256acc3e0c73c3260c8f219afce51072c4",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-search.json": {
+    "sha256": "917f5cd4a5e1e38465d8958ae379caa7ea88d7c756e3de698c920fff3de767ce",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-types.log": {
+    "sha256": "d2030d79684b1aa834649fdb964e369d0f3bfccd448ae695722aaf18cc49c4e2",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v2-usages.json": {
+    "sha256": "a546ffbfd6808d5ffb427c0ddaf65af8a23bd571e207fc96802ea5bbeaab6738",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v4-doctor.log": {
+    "sha256": "a3afd23aab0e515b3701d9850f5a0c8d132ed45d002422c205ecf2f9ccd46515",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v4-explore.json": {
+    "sha256": "b78587c8c298cd54b1cda50bf449a0a33997eecd45c3bc77486554d3bd6076c1",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v4-reuse.json": {
+    "sha256": "cca4dccb9bcf2e6cb7abe54d02524f4496b0823c5ad13952efde9680fa5ea3eb",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v4-tests.log": {
+    "sha256": "f355dae6c045245ab7f112abd1176dca78382d13af9b8f900ba6750fe1d6974c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/v4-usages.json": {
+    "sha256": "079fe166c3e98706c774a50b633ec65b73faab635422af7ee01773ccb1f43890",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-diff-impact.log": {
+    "sha256": "fc861e992bb7f14e4862a3cd02cb7cb0ef551bffbfd719e55798770fadf22a33",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/administration-tests-exit.json": {
+    "sha256": "aeb32537cb0e124c765cb21156e804a2e8277513cdd2b7d3b6edae76ee997a0a",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/administration-tests.log": {
+    "sha256": "58218965dddece8ec59b666a11a9b9ea66858a812679f274b45a0ac6086e56fc",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/closure-diff-impact.log": {
+    "sha256": "5f90374b5dd535f400b0b48880cdac471c4b9a5f40428bd55a832597602b4ef3",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/closure-suite-exit.json": {
+    "sha256": "7848268425ed768e6950602cbd3355753b76e480a77b166358d115def44321d3",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/closure-suite.log": {
+    "sha256": "1c785775a3a3dbac415a9489fb47e15b48fb8342b6ed83149ee5eedc004225be",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/extended-admin-tests.log": {
+    "sha256": "aa5435cc3df8d920f83da2b1c5e5aba2461fbfc4544e61a3b21134df562ba065",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/extended-final-suite.log": {
+    "sha256": "93cfc25dd6a18a154c851d3acbba233d7c742c29420990a2b8d05238dd3aad6f",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/final-diff-impact.log": {
+    "sha256": "42fb1ec7b46a7730e280c591c00967a5f1c8e426a8352abf6cbe983080463efc",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/final-review-repairs.log": {
+    "sha256": "6c953ed60cb4455b09f417d30102db53e5548001790604782b9577ecf9a0c2d8",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/final-suite-exit.json": {
+    "sha256": "c5058e1a83c6fee5561803572958ad130539040d76b6f8424672765c497db59b",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/final-suite.log": {
+    "sha256": "b9704bb077e0994f22b7565b89966a688acc5a3da2866c38f3e33758feeb306c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/final-suite.xml": {
+    "sha256": "e687170d54b8165623e168a6aadc1bac381a4aae1d5f09477b9f307782f97458",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/four-corpus-raw.json": {
+    "sha256": "801cc35aa110057f2aace8e01eec25f06bab0c6b13d559a4a6fb46f1b6d66cc5",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/reviewer-regressions-final.log": {
+    "sha256": "853640a7bddbf0aa0fbcb72b2b978895194e956f06a5cf1958226d7efe3277d4",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/reviewer-regressions.log": {
+    "sha256": "a5cd9ce36555df08379b981a3ccd145dba77e0e52214472b7403454d94623489",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/surface-behavior-tests-exit.json": {
+    "sha256": "fd098d2074deceed851de3db245fa98aeeac8dc1e359ad0dd20672165a48af5c",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-native/surface-behavior-tests.log": {
+    "sha256": "de542a3546cfb55264604c191bfbcdb1900a6ffb3b6c7bb8d5e738444c4cb255",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-tests-receipt.json": {
+    "sha256": "78229522b13fe8fa4040c839f38abf90d3dbd33a0b0348741c6021d382f69d2a",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-tests.log": {
+    "sha256": "bb4259edc18393cf09ba6bdfd8ea339217d9e283cadfae11ed506a37afbc6766",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/continuation-tests.xml": {
+    "sha256": "3174899200e250d01dbbf835f533c091d1a49813237e105875414f2df574a968",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/diff-impact-docs.log": {
+    "sha256": "09bd2d51144d83db41ee7b9e3bd115a396caba99024647f5b386642f1defe6c9",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/diff-impact.log": {
+    "sha256": "417759b0c077af70194ee8fa6229203932add0c19f8ede36cf7c045113ead67a",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/final-exits.json": {
+    "sha256": "761a848f514a74825096474b04c795916070d66f02405cbe063f92ba2196ff85",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/final-pytest.log": {
+    "sha256": "9c115c540f7dd7ec5ed3d8317a9880d318c5decf98f382f4d08d66adbc580826",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/final-pytest.xml": {
+    "sha256": "c9371fd43fce7e390499684381b1fda7a915003724d2bca17f9b494b6c2a6dec",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/pytest-exit.json": {
+    "sha256": "33131f94b02b80abf15d7b968b6954942afa65fcd3d717edf9d0fe55ac38c356",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/pytest.log": {
+    "sha256": "57fec91a1ae36d921252d77e309d353bb4f6354450cd94df0d42743e342c5a4e",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-integration/pytest.xml": {
+    "sha256": "0fbd04d51572e9eb935f88f42f66bb3495387a4ddc331b52f7ea3214989b1152",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-latency/diagnostic-result.json": {
+    "sha256": "e0dc206ac7f2d64659175b55db7042e789a54e5e6d93d412ecb07b76133f07e9",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-latency/run.log": {
+    "sha256": "7d316c0e97b422ebf80658311d1013ac5579fce7115983cfa1c175ed7bbe60ed",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-source-verifier-receipt.md": {
+    "sha256": "76f8ba6271eac7edd033fe66a7f935dee23095d05ecb0c3e732b949d91d99a05",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/parallel-surface-receipt.md": {
+    "sha256": "7f9ccb7f299a3a8bf6207b2ec919681de5b42b399201124c8034727e41fc2f43",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/python-package-initial-failure.json": {
+    "sha256": "52642d84ed711f76a7e00a485f681e6d90993bc19924b64495bd0c588874ad02",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/python-package-receipt.json": {
+    "sha256": "58b3c84672bcb991ebc6c5e55e93c8f313871a9b9af16bba611f49075c3da7b7",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/sot-doctor.log": {
+    "sha256": "2cd9448c0de5ecd32464ebd2a48282560516c45b2f8501ad1529d36ec58960e7",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/python-c-monorepo/evidence/test-run-mocked-golden.log": {
+    "sha256": "49cca4ceffe4dfea79369aa35af3ea13f992b151e362f0ef1573dfbbfba9a9d7",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/sot-graph-reassessment-roadmap-523e9cf-2026-09-04.md": {
+    "sha256": "0bb6da32278bcf26528829383f56da7a3b90e5f6b88d03a6a25e10521f603fd0",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  },
+  "plan/sot-graph-reassessment-vs-roadmap-2026-08-28.md": {
+    "sha256": "e47af59c19d1f29b89b8ac0448e5308d4bab7c96845b5381640e66596ccddad8",
+    "reason": "Immutable historical measurement/provenance; not a development dependency."
+  }
+}

@@ -9,9 +9,9 @@
 
 ## 📑 Mục Lục
 1. [Tóm tắt Điều hành (Executive Summary)](#1-tóm-tắt-điều-hành-executive-summary)
-2. [Cơ chế 1: Đánh giá Rủi ro Lịch sử Commit (`sot log` / `sot_git_history`)](#2-cơ-chế-1-đánh-giá-rủi-ro-lịch-sử-commit-sot-log--sot_git_history)
-3. [Cơ chế 2: Đánh giá Tác động Mã Tiền Kiểm (`sot diff-impact` / `sot_diff_impact`)](#3-cơ-chế-2-đánh-giá-tác-động-mã-tiền-kiểm-sot-diff-impact--sot_diff_impact)
-4. [Cơ chế 3: Đánh giá Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sot report`)](#4-cơ-chế-3-đánh-giá-rủi-ro-kiến-trúc-vĩ-mô-god-node-risk-trong-sot-report)
+2. [Cơ chế 1: Đánh giá Rủi ro Lịch sử Commit (`sotgraph log` / `sot_git_history`)](#2-cơ-chế-1-đánh-giá-rủi-ro-lịch-sử-commit-sot-log--sot_git_history)
+3. [Cơ chế 2: Đánh giá Tác động Mã Tiền Kiểm (`sotgraph diff-impact` / `sot_diff_impact`)](#3-cơ-chế-2-đánh-giá-tác-động-mã-tiền-kiểm-sot-diff-impact--sot_diff_impact)
+4. [Cơ chế 3: Đánh giá Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sotgraph report`)](#4-cơ-chế-3-đánh-giá-rủi-ro-kiến-trúc-vĩ-mô-god-node-risk-trong-sot-report)
 5. [Phân tích Sự Tương Hỗ & Tính Nhất Quán Giữa Tiền Kiểm và Hậu Kiểm](#5-phân-tích-sự-tương-hỗ--tính-nhất-quán-giữa-tiền-kiểm-và-hậu-kiểm)
 6. [Cơ sở Khoa học & Tiêu chuẩn Nghiên cứu Quốc tế](#6-cơ-sở-khoa-học--tiêu-chuẩn-nghiên-cứu-quốc-tế)
 7. [Khuyến nghị Ứng dụng Thực tế trong CI/CD & AI Coding Agent Workflow](#7-khuyến-nghị-ứng-dụng-thực-tế-trong-cicd--ai-coding-agent-workflow)
@@ -32,13 +32,13 @@ flowchart TD
         direction TB
         
         subgraph Tier1["Tầng 1: Hồi cứu Nhanh (Fast Retrospective)"]
-            CommitLog["Lịch sử Commit (sot log)"] --> Engine1["CommitHistoryEngine"]
+            CommitLog["Lịch sử Commit (sotgraph log)"] --> Engine1["CommitHistoryEngine"]
             Engine1 --> HeuristicScore["Thang điểm Heuristic (0 - 15+)"]
             HeuristicScore --> RiskTier1["LOW / MEDIUM / HIGH"]
         end
 
         subgraph Tier2["Tầng 2: Tiền kiểm Sâu (Deep Pre-merge Guardrail)"]
-            DiffWorktree["Working Tree Diff / PR (sot diff-impact)"] --> Engine2["DiffImpactEngine"]
+            DiffWorktree["Working Tree Diff / PR (sotgraph diff-impact)"] --> Engine2["DiffImpactEngine"]
             Engine2 --> ASTMapping["Ánh xạ AST Hunk & Reverse Call Graph"]
             ASTMapping --> NormalizedScore["Thang điểm Chuẩn hóa (0 - 100)"]
             NormalizedScore --> RiskTier2["LOW / MEDIUM / HIGH"]
@@ -61,7 +61,7 @@ flowchart TD
 
 ---
 
-## 2. Cơ chế 1: Đánh giá Rủi ro Lịch sử Commit (`sot log` / `sot_git_history`)
+## 2. Cơ chế 1: Đánh giá Rủi ro Lịch sử Commit (`sotgraph log` / `sot_git_history`)
 
 ### 2.1. Mục đích & Bản chất
 - **Bản chất:** Kiểm toán hồi cứu (*Retrospective Audit*).
@@ -90,7 +90,7 @@ Hệ thống tính điểm cộng dồn (`score = 0`) dựa trên 5 chiều phâ
 
 ---
 
-## 3. Cơ chế 2: Đánh giá Tác động Mã Tiền Kiểm (`sot diff-impact` / `sot_diff_impact`)
+## 3. Cơ chế 2: Đánh giá Tác động Mã Tiền Kiểm (`sotgraph diff-impact` / `sot_diff_impact`)
 
 ### 3.1. Mục đích & Bản chất
 - **Bản chất:** Rào chắn bảo vệ tiền sát nhập (*Pre-merge Guardrail & Deep Blast Radius Analysis*).
@@ -142,7 +142,7 @@ def calculate_risk_score(total_files: int, total_direct_nodes: int, total_caller
 
 ---
 
-## 4. Cơ chế 3: Đánh giá Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sot report`)
+## 4. Cơ chế 3: Đánh giá Rủi ro Kiến trúc Vĩ mô ("God Node Risk" trong `sotgraph report`)
 
 ### 4.1. Mục đích & Bản chất
 - **Bản chất:** Phân tích Chẩn đoán Cấu trúc Phần mềm (*Architectural Health Diagnostics*).
@@ -181,16 +181,16 @@ Người dùng thường đặt câu hỏi: *Liệu có mâu thuẫn giữa Cơ 
 graph LR
     subgraph Funnel["Mô Hình Phễu Đảm Bảo Chất Lượng SOT-Graph"]
         direction LR
-        Dev["Lập trình viên / AI"] -->|Code Diff| P2["Cơ chế 2: sot diff-impact\n(Kính hiển vi AST)"]
+        Dev["Lập trình viên / AI"] -->|Code Diff| P2["Cơ chế 2: sotgraph diff-impact\n(Kính hiển vi AST)"]
         P2 -->|An toàn: Merge| Repo["Kho lưu trữ Git"]
-        Repo -->|Lịch sử Commit| P1["Cơ chế 1: sot log\n(Ống nhòm Viễn vọng)"]
-        Repo -->|Toàn bộ Kiến trúc| P3["Cơ chế 3: sot report\n(Bản đồ Toàn cảnh)"]
+        Repo -->|Lịch sử Commit| P1["Cơ chế 1: sotgraph log\n(Ống nhòm Viễn vọng)"]
+        Repo -->|Toàn bộ Kiến trúc| P3["Cơ chế 3: sotgraph report\n(Bản đồ Toàn cảnh)"]
     end
 ```
 
 ### Bảng Đối chiếu Kỹ thuật So sánh Hai Cơ chế
 
-| Tiêu chí | Cơ chế 1: `sot log` (Commit History) | Cơ chế 2: `sot diff-impact` (Diff Impact) |
+| Tiêu chí | Cơ chế 1: `sotgraph log` (Commit History) | Cơ chế 2: `sotgraph diff-impact` (Diff Impact) |
 | :--- | :--- | :--- |
 | **Giai đoạn áp dụng** | **Hậu kiểm / Hồi cứu (Post-commit / Audit)** | **Tiền kiểm (Pre-commit / Pre-merge)** |
 | **Độ sâu phân tích** | Metadata Git + Heuristic + Tra cứu In-degree nhanh | Full AST Hunk Mapping + Tra cứu Reverse Call Graph sâu |
@@ -253,7 +253,7 @@ Cài đặt script kiểm tra tự động trước khi kỹ sư hoặc AI Agent
 #!/usr/bin/env bash
 # .git/hooks/pre-push
 echo "🔍 Đang chạy SOT-Graph Diff Impact Audit..."
-sot diff-impact --json > /tmp/sot_diff.json
+sotgraph diff-impact --json > /tmp/sot_diff.json
 
 RISK_LEVEL=$(jq -r '.summary.risk_level' /tmp/sot_diff.json)
 if [ "$RISK_LEVEL" == "HIGH" ]; then
@@ -275,7 +275,7 @@ Trong các môi trường Agent tự trị (như Oh My Pi, OpenCode, Claude Code
 ---
 
 > **Tài liệu tham chiếu nội bộ:**  
-> - `sot-graph`: Core AST Engine & CLI (`~/.local/bin/sot`)  
+> - `sot-graph`: Core AST Engine & CLI (`~/.local/bin/sotgraph`)
 > - SQLite Schema: `.sot/sot.db` (`graph_nodes`, `graph_edges`, `file_journal`)  
 > - MCP Tool Specifications: `xd://mcp__sot_graph_sot_diff_impact`, `xd://mcp__sot_graph_sot_git_history`  
 > - Đối chiếu với GitNexus, CodeGraph, Codebase-Memory-MCP: [`docs/IMPACT_ASSESSMENT_COMPARISON.md`](IMPACT_ASSESSMENT_COMPARISON.md)

@@ -84,7 +84,7 @@ def _dominant_candidate(db, row):
 
     A candidate dominates when it is the only one with inbound edges, or has
     at least twice the inbound edge count of the runner-up. Keeps ambiguous
-    ``sot pack`` targets resolvable without a FQN when evidence is decisive.
+    ``sotgraph pack`` targets resolvable without a FQN when evidence is decisive.
     """
     counts = {
         r[0]: int(
@@ -291,7 +291,7 @@ def build_bundle(
     if journal is None:
         raise PackError(
             "TARGET_MISSING",
-            f"target file is not reconciled: {node['path']}; run `sot reconcile`",
+            f"target file is not reconciled: {node['path']}; run `sotgraph reconcile`",
         )
     indexed_sha, base_generation = journal[0], int(journal[1] or 1)
     # Global staleness binding (same mechanism as envelopes/receipts): a caller
@@ -324,7 +324,7 @@ def build_bundle(
         raise PackError(
             "STALE_SNAPSHOT",
             f"target changed on disk since last reconcile: {node['path']}; "
-            "run `sot reconcile` and re-pack",
+            "run `sotgraph reconcile` and re-pack",
         )
 
     full_source, warnings = _slice_source_from_bytes(

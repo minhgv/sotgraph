@@ -60,8 +60,8 @@ In advanced software engineering teams, `sot-graph` and `graphify` / `gitnexus` 
 1. **Tier 1 (Inner Loop - Fast Agent Execution)**:
    - `sot-graph` runs on every file change, providing verified symbols, call graphs, and preventing agent hallucinations in real-time.
 2. **Tier 2 (Outer Loop - High-Level Architecture & Onboarding)**:
-   - `sot bundle` feeds structured 5-fact bundles to LLM agents for standardized architecture reports (`ARCHITECTURE_REPORT.md`).
-   - `gitnexus` or `sot viz` provides visual diagrams for developer onboarding and design reviews.
+   - `sotgraph bundle` feeds structured 5-fact bundles to LLM agents for standardized architecture reports (`ARCHITECTURE_REPORT.md`).
+   - `gitnexus` or `sotgraph viz` provides visual diagrams for developer onboarding and design reviews.
 
 ---
 

@@ -196,7 +196,7 @@ def test_sur09_upgrade_between_uninstall_checks_preserves_new_owner(tmp_path, mo
     assert all(path.read_bytes() == content for path, content in preserved.items())
 
 
-def _wheel(tmp_path, entry='sot = sot_graph.cli:main', extra=None):
+def _wheel(tmp_path, entry='sotgraph = sot_graph.cli:main', extra=None):
     wheel = tmp_path / 'sot_graph-0.3.2-py3-none-any.whl'
     with zipfile.ZipFile(wheel, 'w') as archive:
         archive.writestr('sot_graph-0.3.2.dist-info/entry_points.txt',
@@ -229,7 +229,7 @@ def test_sur09_timeout_receipt_retains_command_and_partial_output(tmp_path, monk
     assert receipt['commands'][0]['stderr'] == 'deadline'
 
 
-@pytest.mark.parametrize('text', ['[other]\nsot = sot_graph.cli:main\n',
+@pytest.mark.parametrize('text', ['[other]\nsotgraph = sot_graph.cli:main\n',
                                   '[console_scripts]\nSOT = sot_graph.cli:main\n'])
 def test_sur03_missing_or_case_changed_console_manifest_refused(tmp_path, text):
     wheel = tmp_path / 'invalid.whl'
@@ -241,7 +241,7 @@ def test_sur03_missing_or_case_changed_console_manifest_refused(tmp_path, text):
 
 def test_sur03_wheel_audit_requires_sot_only_entrypoints(tmp_path):
     wheel = _wheel(tmp_path)
-    assert PACKAGING.audit_wheel(wheel)['entries'] == {'sot': 'sot_graph.cli:main'}
+    assert PACKAGING.audit_wheel(wheel)['entries'] == {'sotgraph': 'sot_graph.cli:main'}
     wheel = _wheel(tmp_path, 'codebase-memory-mcp = sot_graph.cli:main')
     with pytest.raises(ValueError, match='public console'):
         PACKAGING.audit_wheel(wheel)

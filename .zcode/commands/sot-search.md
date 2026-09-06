@@ -6,7 +6,7 @@ Run the SOT-Graph verified search and report the ranked results with their
 Trust Verdicts:
 
 ```bash
-sot search "$ARGUMENTS"
+sotgraph search "$ARGUMENTS"
 ```
 
 - Add `-n <count>` to limit results, `--scope <dir>` to narrow the search space.

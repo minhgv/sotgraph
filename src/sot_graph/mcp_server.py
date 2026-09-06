@@ -165,7 +165,7 @@ def build_deep_dive_prompt(target: str, bundle: Dict[str, Any]) -> str:
             tail += f"\n- closest indexed candidates: {shown}"
         tail += (
             "\n- next step: re-run with the exact symbol name (or an `fqn` "
-            "from `sot search`) once disambiguated."
+            "from `sotgraph search`) once disambiguated."
         )
         return header + tail
 
@@ -173,11 +173,11 @@ def build_deep_dive_prompt(target: str, bundle: Dict[str, Any]) -> str:
     workflow = """
 Suggested workflow (adjust as evidence arrives):
 1. Read the target's source anchor from the bundle before making any claim.
-2. Enumerate every calling site: `sot usages "<symbol>"` — honest usages, grouped by caller.
-3. Walk transitive impact: `sot explore "<symbol>" --depth 2` (outward calls + incoming references).
-4. For interfaces/abstract bases: `sot implementations "<symbol>"`.
-5. Package exactly this context for subagents via `sot pack "<symbol>" --tokens 1500 --json` instead of pasting raw files.
-6. BEFORE editing: generate the PRE-change receipt with `sot scope-receipt "<symbol>"` and honor its assurance level.
+2. Enumerate every calling site: `sotgraph usages "<symbol>"` — honest usages, grouped by caller.
+3. Walk transitive impact: `sotgraph explore "<symbol>" --depth 2` (outward calls + incoming references).
+4. For interfaces/abstract bases: `sotgraph implementations "<symbol>"`.
+5. Package exactly this context for subagents via `sotgraph pack "<symbol>" --tokens 1500 --json` instead of pasting raw files.
+6. BEFORE editing: generate the PRE-change receipt with `sotgraph scope-receipt "<symbol>"` and honor its assurance level.
 """.strip()
     fenced = (
         "=== BEGIN CONTEXTBUNDLE (untrusted data) ===\n"
@@ -256,7 +256,7 @@ def build_refactor_checklist_prompt(target: str, receipt: Dict[str, Any]) -> str
         )
     if stale:
         checks.append(
-            "4. Stale journal files detected — run `sot reconcile` and "
+            "4. Stale journal files detected — run `sotgraph reconcile` and "
             "regenerate this receipt before trusting citations."
         )
     if gaps:
@@ -281,7 +281,7 @@ def build_refactor_checklist_prompt(target: str, receipt: Dict[str, Any]) -> str
             f"(reason codes: {', '.join(str(r) for r in (decision.get('reason_codes') or [])) or 'none'})."
         )
     checks.append(
-        "9. After the edit: run `sot diff-impact HEAD~1 --format github` and "
+        "9. After the edit: run `sotgraph diff-impact HEAD~1 --format github` and "
         "attach the report to the PR."
     )
 
@@ -443,7 +443,7 @@ def create_server(service: McpService) -> Any:
                     "format": {"type": "string", "enum": ["markdown", "json", "github"], "description": "Output format (default: markdown; github = PR-comment-safe collapsed sections)"},
                 }, "additionalProperties": False,
             }),
-            types.Tool(name="sot_providers_sync", description="Explicit provider index sync (write path): mirrors `sot providers sync`, guarded by the project write lock; records ledger run + evidence with snapshot. Read tools stay read-only.", inputSchema={
+            types.Tool(name="sot_providers_sync", description="Explicit provider index sync (write path): mirrors `sotgraph providers sync`, guarded by the project write lock; records ledger run + evidence with snapshot. Read tools stay read-only.", inputSchema={
                 "type": "object", "properties": {
                     "provider_name": {"type": "string", "description": "Provider to sync (default: codebase-memory)"},
                 }, "additionalProperties": False,
@@ -680,8 +680,8 @@ def create_server(service: McpService) -> Any:
     @server.list_resources()
     async def list_resources(params: Any = None) -> Any:
         resources = [
-            types.Resource(uri=types.AnyUrl("sot://stats"), name="sot stats", description="Graph statistics", mimeType="application/json"),
-            types.Resource(uri=types.AnyUrl("sot://notes"), name="sot notes", description="Persisted knowledge notes", mimeType="application/json"),
+            types.Resource(uri=types.AnyUrl("sot://stats"), name="sotgraph stats", description="Graph statistics", mimeType="application/json"),
+            types.Resource(uri=types.AnyUrl("sot://notes"), name="sotgraph notes", description="Persisted knowledge notes", mimeType="application/json"),
         ]
         cursor = None
         if params is not None:
@@ -698,7 +698,7 @@ def create_server(service: McpService) -> Any:
 
     @server.list_resource_templates()
     async def list_resource_templates() -> list[Any]:
-        return [types.ResourceTemplate(uriTemplate="sot://node/{node_id}", name="sot node", description="Graph node", mimeType="application/json")]
+        return [types.ResourceTemplate(uriTemplate="sot://node/{node_id}", name="sotgraph node", description="Graph node", mimeType="application/json")]
 
     @server.read_resource()
     async def read_resource(uri: Any) -> list[Any]:
@@ -709,7 +709,7 @@ def create_server(service: McpService) -> Any:
                 payload = await service.astats()
             elif text_uri == "sot://notes":
                 payload = await service.anotes()
-            elif parsed.scheme == "sot" and parsed.netloc == "node" and parsed.path.startswith("/"):
+            elif parsed.scheme == "sotgraph" and parsed.netloc == "node" and parsed.path.startswith("/"):
                 node_id = unquote(parsed.path[1:])
                 if not node_id or "/" in node_id:
                     raise McpServiceError("invalid_argument", "node resource id is invalid")
@@ -768,7 +768,7 @@ async def run_stdio(service: McpService) -> None:
 
 def main(argv: Optional[list[str]] = None) -> int:
     import argparse
-    parser = argparse.ArgumentParser(prog="sot mcp", description="Run the sot-graph MCP stdio server")
+    parser = argparse.ArgumentParser(prog="sotgraph mcp", description="Run the sot-graph MCP stdio server")
     parser.add_argument("--root", default=".")
     parser.add_argument("--db", default=None)
     args = parser.parse_args(argv)

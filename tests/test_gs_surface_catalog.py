@@ -173,7 +173,7 @@ def test_sur07_self_index_policy_excludes_native_subtree(tmp_path):
 
 def test_sur03_sur04_entry_points_and_help_are_sot_only(tmp_path, capsys):
     metadata = tomllib.loads((ROOT / 'pyproject.toml').read_text())
-    assert set(metadata['project']['scripts']) == {'sot'}
+    assert set(metadata['project']['scripts']) == {'sotgraph'}
     for args in (['--help'], ['engine', '--help'], ['setup', '--help']):
         with pytest.raises(SystemExit) as exited:
             main(['--root', str(tmp_path), *args])
