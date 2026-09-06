@@ -1,6 +1,6 @@
 """Optional hybrid retrieval: FTS5 BM25 fused with sqlite-vec vectors.
 
-Installed via the ``[vector]`` extra (``pip install 'sot-graph[vector]'``).
+Installed via the ``[vector]`` extra (``pip install 'sotgraph[vector]'``).
 The zero-dependency core keeps FTS5 BM25 as the always-available floor;
 when the extension and an embedder are present, :func:`hybrid_search` fuses
 both rankings with Reciprocal Rank Fusion. Trust verdicts remain orthogonal

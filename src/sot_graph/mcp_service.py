@@ -1,4 +1,4 @@
-"""Read-only, protocol-independent service for the sot-graph MCP surface.
+"""Read-only, protocol-independent service for the sotgraph MCP surface.
 
 The service deliberately does not import the MCP SDK.  It owns short-lived
 read-only SQLite connections and returns plain JSON-compatible values so it is

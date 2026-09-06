@@ -23,7 +23,7 @@ during busy periods.
 
 ## Scope and trust model
 
-sot-graph is a local developer tool: it indexes repositories on your machine
+sotgraph is a local developer tool: it indexes repositories on your machine
 and stores the knowledge graph in a local SQLite database (`.sot/sot.db`).
 Indexed source code should be treated as untrusted input, and trust verdicts
 about that code are advisory, bounded by documented limitations.

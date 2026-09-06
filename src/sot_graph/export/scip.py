@@ -57,7 +57,7 @@ def _tool_version() -> str:
     try:
         import importlib.metadata
 
-        return importlib.metadata.version("sot-graph")
+        return importlib.metadata.version("sotgraph")
     except Exception:
         return "dev"
 
@@ -67,7 +67,7 @@ def scip_symbol(language: str, project_root: str, rel_path: str,
     """SCIP symbol string: scheme language root path `package`.descriptor."""
     suffix = f"{symbol}#" if kind in _TYPE_KINDS else f"{symbol}()"
     package = f"`{module or 'package'}`."
-    return f"sot-graph {language} {project_root} {rel_path} {package}{suffix}"
+    return f"sotgraph {language} {project_root} {rel_path} {package}{suffix}"
 
 
 def _single_line_range(line: int, start: int, end: int) -> bytes:
@@ -143,7 +143,7 @@ def build_scip_index(db, project_root: str) -> bytes:
             _message(8, _single_line_range(line0, 0, 1))
             + _string(2, sym_strings[dst]) + _varint_field(3, roles))
 
-    tool_info = _string(1, "sot-graph") + _string(2, _tool_version())
+    tool_info = _string(1, "sotgraph") + _string(2, _tool_version())
     metadata = (_message(2, tool_info) + _string(3, root_uri)
                 + _varint_field(4, 1))  # TextEncoding.UTF8
 

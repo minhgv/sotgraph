@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-06",
+  "policy": "Trusted bootstrap (master plan D1): fetch ONLY these pinned sources, verify sha256 + size before staging, promote via ArtifactStore. Never download-on-query.",
+  "pins": [
+    {
+      "name": "codebase-memory",
+      "platform": "darwin-arm64",
+      "engine_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+      "protocol": "artifacts-v1",
+      "version": "dev",
+      "source": "https://github.com/minhgv/sotgraph-cbm/releases/download/engine-v2026.09.06/codebase-memory-mcp-darwin-arm64",
+      "sha256": "8953ad08b2815817d3cc3704fddc88611e4d1678ebc4e4b45c4dd0e122b72c13",
+      "size_bytes": 296408656
+    }
+  ]
+}

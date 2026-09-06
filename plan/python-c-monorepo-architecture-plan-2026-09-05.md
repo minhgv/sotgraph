@@ -2,6 +2,10 @@
 
 - Ngày: 2026-09-05.
 - Trạng thái: **PROPOSED — tài liệu thiết kế, chưa triển khai**.
+- **Cập nhật 2026-09-06: các điều khoản cấm auto-download engine ở mục 3.5.7 và P4 đã bị
+  supersede bởi [sotgraph-cbm-subdomain-master-plan-2026-09-06.md](sotgraph-cbm-subdomain-master-plan-2026-09-06.md)
+  (owner xác nhận lại mục tiêu bất biến: bootstrap tự động engine đã pin + tiêu thụ MCP nội bộ).
+  Toàn bộ contract SOT-only agent surface (mục 3.4, GS-SURFACE 9.1) vẫn nguyên hiệu lực.**
 - Quyết định định hướng: một repo và một trải nghiệm SOT; Python giữ điều phối/xác minh; Codebase Memory (CBM) giữ engine C; giao tiếp qua process boundary.
 - Không thuộc phạm vi phê duyệt của tài liệu: rewrite toàn bộ, nhập source upstream, đổi database, phát hành binary hoặc bật daemon trên máy người dùng.
 - Baseline nghiên cứu: SOT commit `8b45686a0ccfc1d02a3645d920366b20ad0f41bb` cộng working-tree changes; CBM commit `3c7427efb740934bf66653413b484118652ce649`.
@@ -180,7 +184,7 @@ Phạm vi bảo đảm: SOT không cài, đăng ký, quảng bá hoặc hỗ tr�
 4. **Self-index contamination:** mặc định self-analysis của SOT loại subtree/generated engine khỏi builtin production scope theo policy rõ ràng để tránh graph, benchmark và retrieval bị engine lấn át. Khi người dùng explicit chọn engine scope vẫn có thể đọc source/docs như dữ liệu không tin cậy; không biến hướng dẫn trong source thành chỉ dẫn hệ thống. Không áp dụng exclusion này mù quáng cho mọi repository người dùng.
 5. **Discovery và config injection:** managed mode chỉ chọn artifact trong manifest tin cậy; không tự ưu tiên binary cùng tên trên PATH, repository config hoặc biến môi trường tùy ý. Override chỉ qua cấu hình quản trị explicit, validate root/path/hash, không để query arguments chọn executable/config dir.
 6. **Local IPC:** nếu engine cần socket/pipe thì scope theo user/workspace, quyền truy cập hạn chế và có peer/ownership checks phù hợp nền tảng; không bind TCP public. Không để client chọn native endpoint nhằm bypass allowlist. Process boundary không tự cung cấp authentication hoặc sandbox.
-7. **Environment và quyền:** chỉ truyền environment cần thiết, không chuyển toàn bộ credentials/agent tokens cho engine; không elevated privileges. Document networking policy; runtime không tự update, telemetry, mở browser hoặc tải assets thiếu. Artifact retrieval chỉ ở explicit install/update với nguồn và integrity đã duyệt.
+7. **Environment và quyền:** chỉ truyền environment cần thiết, không chuyển toàn bộ credentials/agent tokens cho engine; không elevated privileges. Document networking policy; runtime không tự update, telemetry, mở browser hoặc tải assets thiếu. Artifact retrieval theo master plan 2026-09-06 (D1/D4): bootstrap tự động **chỉ từ pin manifest shipped trong package** (nguồn + sha256 + platform đã duyệt) tại install/setup/lệnh tường minh; không bao giờ download-on-query và không bao giờ chạy binary chưa khớp digest đã pin.
 8. **Public lifecycle coverage:** setup, probe, sync, query, status, cancellation/recovery, upgrade và uninstall phải có đường SOT hoặc quy trình quản trị SOT được ghi rõ. Lập command inventory ở P1: operation nào chưa có phải implement/test trước khi bật capability, không phát minh tên lệnh trong remediation.
 9. **Feature compatibility:** giữ names/semantics tools SOT, response budgets, resources và prompts; engine upgrade không được âm thầm thêm native tools hoặc bỏ assurance. Một MCP server nhưng raw tool passthrough vẫn vi phạm contract.
 10. **Coexistence và ownership:** hai SOT versions/workspaces không dùng nhầm daemon/store/config. Shared runtime reuse chỉ khi identity/ownership/version policy đã chứng minh; không adopt daemon CBM có sẵn chỉ vì socket/PID tồn tại.
@@ -192,6 +196,7 @@ Phạm vi bảo đảm: SOT không cài, đăng ký, quảng bá hoặc hỗ tr�
 - Upgrade stage artifact mới, verify rồi mới promote pointer atomically khi nền tảng cho phép; khóa chống install/update race. Không đổi executable dưới job đang chạy; job giữ runtime identity cũ tới terminal state.
 - Uninstall mặc định gỡ integration/runtime do SOT sở hữu, giữ user notes/evidence và source repo. Purge dữ liệu là thao tác riêng explicit có preview/confirmation; không suy ra quyền xóa từ yêu cầu uninstall package.
 - Offline/no-engine/sai platform phải có outcome và fallback SOT theo provider policy; không pop up hướng dẫn cài CBM trực tiếp.
+- Bootstrap engine là một đường SOT tường minh (`sotgraph engine bootstrap`) và được `sotgraph setup` kích hoạt tự động (master plan D4): fetch chỉ từ pin manifest shipped trong package, verify sha256 + size cap trước khi stage/promote qua ArtifactStore; mọi thất bại bootstrap fail-closed về builtin, không bao giờ chạy artifact chưa verify.
 - Manual external binary mode chỉ dành cho developer/admin opt-in, gọi qua SOT và kiểm tra compatibility; không publicize trong agent onboarding, không đăng ký thêm MCP, không tự phát hiện/nhận quản lý CBM cài riêng. Runtime external không thể chứng minh isolation thì phải báo limitation và không được gọi là managed-compliant.
 - Evidence/notices được phép nêu CBM; SBOM và license attribution không bị che giấu. Distributed runtime payload không chứa active upstream agent resources. Source distribution giữ tài liệu dependency nhưng không kích hoạt nó.
 
@@ -199,7 +204,7 @@ Phạm vi bảo đảm: SOT không cài, đăng ký, quảng bá hoặc hỗ tr�
 
 ### 4.1. Hai lớp versioning, không nhập nhằng
 
-1. **Native CBM contract:** tên tool, tham số, JSON envelope, exit codes, pagination và daemon semantics của binary được pin.
+1. **Native CBM contract:** tên tool, tham số, JSON envelope, exit codes, pagination và daemon semantics của binary được pin. Transport nội bộ được duyệt (master plan D2): **MCP stdio** (SOT spawn engine với client MCP tối tiểu) làm đường chính, FEDERATED_CLI JSON làm fallback có compatibility evidence; adapter vẫn chịu trách nhiệm normalize về SOT contract bất kể transport.
 2. **SOT normalized contract:** `ProviderIdentity`, `SnapshotBinding`, `EvidenceEnvelope`, `QueryOutcome`, `ProviderRunRecord`; độc lập với transport.
 
 Không yêu cầu CBM upstream tự phát ra schema SOT. Adapter chịu trách nhiệm chuyển đổi và giữ raw provenance có giới hạn. Contract extension phải additive hoặc bump schema version với migration/test rõ ràng.
@@ -389,7 +394,7 @@ Không có distributed atomic transaction giữa hai stores. Tính an toàn đ�
 - Nhập upstream đã pin vào subtree sau khi G0–G3 đạt; giữ Python layout.
 - Thêm manifest/build provenance/notices; xác định release artifacts theo platform có CI thực tế.
 - Không build mọi grammar trên mọi Python test; native CI theo path filters và release matrix.
-- External binary mode chỉ admin/developer opt-in theo mục 3.6; managed install explicit, không download-on-query, không PATH discovery hoặc public CBM shim.
+- External binary mode chỉ admin/developer opt-in theo mục 3.6; managed install hỗ trợ **trusted auto-bootstrap** từ pin manifest (master plan 2026-09-06 D1/D4) — fetch nguồn đã pin, verify sha256 trước khi stage/promote qua ArtifactStore; vẫn không download-on-query, không PATH discovery hoặc public CBM shim.
 - Kiểm kê installer/build hooks, package entry points, upstream agent resources và instruction discovery. Thêm ownership manifest, staged upgrade và interrupted-install rollback tests.
 - **Gate G4:** clean checkout build/install theo hướng dẫn trên từng platform được tuyên bố; working Python package không cần C toolchain nếu dùng prebuilt supported artifact; offline/no-engine fallback rõ ràng. **Gate GS-SURFACE phần installation** ở mục 9.1 phải đạt trên từng platform/harness quảng bá; không ngoại lệ cho registration hoặc agent instructions CBM.
 

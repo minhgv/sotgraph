@@ -34,26 +34,26 @@ inputs:
     default: 'advisory'
   tool-source:
     description: >
-      Where sot-graph is installed from (SG-102 dogfood): auto (default;
+      Where sotgraph is installed from (SG-102 dogfood): auto (default;
       `pip install .` from the workspace checkout when running in
       minhgv/sotgraph, else PyPI) | checkout (force workspace install;
-      only valid when the workspace IS the sot-graph source) | pypi
+      only valid when the workspace IS the sotgraph source) | pypi
       (force PyPI).
     required: false
     default: 'auto'
   pypi-version:
-    description: 'Optional sot-graph version pin for PyPI installs (e.g. "0.5.1"). Ignored for checkout installs.'
+    description: 'Optional sotgraph version pin for PyPI installs (e.g. "0.5.1"). Ignored for checkout installs.'
     required: false
     default: ''
 outputs:
   source:
     description: 'Resolved tool source: checkout | pypi-uv | pypi-pip'
   tool-source-args:
-    description: 'The exact install command arguments used for sot-graph'
+    description: 'The exact install command arguments used for sotgraph'
 runs:
   using: composite
   steps:
-    - name: 'Install sot-graph (dogfood checkout in minhgv/sotgraph, else PyPI)'
+    - name: 'Install sotgraph (dogfood checkout in minhgv/sotgraph, else PyPI)'
       id: install
       env:
         TOOL_SOURCE: ${{ inputs.tool-source }}
@@ -64,11 +64,11 @@ runs:
         PIN=""
         if [ -n "$PYPI_VERSION" ]; then PIN="==${PYPI_VERSION}"; fi
         SOURCE="${TOOL_SOURCE:-auto}"
-        # SG-102 dogfood: inside the sot-graph repo itself, `auto` installs
+        # SG-102 dogfood: inside the sotgraph repo itself, `auto` installs
         # the PR checkout so CI reviews PR code instead of the last PyPI
         # release. The old `git+<this-repo>` fallback is gone on purpose:
         # it resolved to the CONSUMER's repository and installed the wrong
-        # project as sot-graph.
+        # project as sotgraph.
         if [ "$SOURCE" = "auto" ] && [ "${{ github.repository }}" = "minhgv/sotgraph" ]; then
           SOURCE="checkout"
         fi
@@ -76,13 +76,13 @@ runs:
           pip install --quiet .
           echo "source=checkout" >> "$GITHUB_OUTPUT"
           echo "tool-source-args=pip install ." >> "$GITHUB_OUTPUT"
-        elif command -v uv >/dev/null 2>&1 && uv tool install "sot-graph${PIN}" >/dev/null 2>&1; then
+        elif command -v uv >/dev/null 2>&1 && uv tool install "sotgraph${PIN}" >/dev/null 2>&1; then
           echo "source=pypi-uv" >> "$GITHUB_OUTPUT"
-          echo "tool-source-args=uv tool install sot-graph${PIN}" >> "$GITHUB_OUTPUT"
+          echo "tool-source-args=uv tool install sotgraph${PIN}" >> "$GITHUB_OUTPUT"
         else
-          pip install --quiet "sot-graph${PIN}"
+          pip install --quiet "sotgraph${PIN}"
           echo "source=pypi-pip" >> "$GITHUB_OUTPUT"
-          echo "tool-source-args=pip install sot-graph${PIN}" >> "$GITHUB_OUTPUT"
+          echo "tool-source-args=pip install sotgraph${PIN}" >> "$GITHUB_OUTPUT"
         fi
 
     - name: 'Reconcile graph index'
@@ -128,7 +128,7 @@ runs:
         if [ "${{ steps.install.outputs.source }}" = "checkout" ]; then
           TOOL_VER="$(git rev-parse --short HEAD)"
         else
-          TOOL_VER="$(sotgraph --version 2>/dev/null | awk '{print $NF}' || pip show sot-graph 2>/dev/null | awk '/^Version:/ {print $2}')"
+          TOOL_VER="$(sotgraph --version 2>/dev/null | awk '{print $NF}' || pip show sotgraph 2>/dev/null | awk '/^Version:/ {print $2}')"
         fi
         printf '\n---\n<sub>Tool: %s @ %s</sub>\n' \
           "${{ steps.install.outputs.source }}" "${TOOL_VER:-unknown}" >> sot-diff-impact-comment.md

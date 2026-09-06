@@ -120,7 +120,7 @@ def export_obsidian_vault(
     # Create an Index MOC (Map of Content)
     moc_lines = [
         "---",
-        "tags: [sot-graph, moc, architecture]",
+        "tags: [sotgraph, moc, architecture]",
         "---",
         "# Knowledge Graph Index (Map of Content)",
         "",

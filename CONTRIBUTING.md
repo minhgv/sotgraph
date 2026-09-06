@@ -1,6 +1,6 @@
-# Contributing to sot-graph
+# Contributing to sotgraph
 
-Thanks for your interest in contributing. sot-graph is a single-maintainer
+Thanks for your interest in contributing. sotgraph is a single-maintainer
 project today; outside PRs are welcome. This document describes how the
 project is actually built and gated — it mirrors the CI workflows and the
 `scripts/quality_gates.sh` entry point rather than a generic template.
@@ -64,7 +64,7 @@ bash scripts/quality_gates.sh
 
 ## Claims discipline
 
-sot-graph makes verified trust claims about itself, tracked in two places:
+sotgraph makes verified trust claims about itself, tracked in two places:
 
 - `claims/registry.yaml` — every public trust claim, with a same-commit
   artifact trace (benchmark JSON or enforcing test) and a stated ceiling.

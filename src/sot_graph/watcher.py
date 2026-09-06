@@ -61,7 +61,7 @@ def pick_backend(requested: str) -> str:
         if _WATCHFILES is None:
             raise RuntimeError(
                 "watchfiles backend requested but not installed; "
-                "pip install sot-graph[watch] or use --backend poll"
+                "pip install sotgraph[watch] or use --backend poll"
             )
         return "watchfiles"
     if requested == "poll":

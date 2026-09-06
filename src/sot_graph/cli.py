@@ -1,5 +1,5 @@
 """
-sot_graph.cli — CLI Dispatcher for sot-graph commands.
+sot_graph.cli — CLI Dispatcher for sotgraph commands.
 Commands: search, insert, reconcile, explore, verify, doctor.
 """
 
@@ -283,7 +283,7 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
     if hybrid:
         from sot_graph.vector import available as vec_available, hybrid_search
         if not vec_available():
-            print("⚠ sqlite-vec not installed — install with `pip install 'sot-graph[vector]'`; "
+            print("⚠ sqlite-vec not installed — install with `pip install 'sotgraph[vector]'`; "
                   "falling back to BM25.",
                   file=sys.stderr if managed is not None and args.json else sys.stdout)
         res = hybrid_search(db, args.query, limit=args.limit * 2,
@@ -820,7 +820,7 @@ def cmd_embed(args: argparse.Namespace, db: Database) -> int:
     from sot_graph.locking import LockBusy
 
     if not vec_available():
-        print("❌ sqlite-vec is not installed. Install with: pip install 'sot-graph[vector]'")
+        print("❌ sqlite-vec is not installed. Install with: pip install 'sotgraph[vector]'")
         return 2
     try:
         with db.write_lock():
@@ -2123,6 +2123,26 @@ def cmd_import_scip(args: argparse.Namespace, db: Database, root: str) -> int:
         print(f"   Relationships: {summary['relationships_count']}")
         print(f"   Evidence Recorded: {summary['evidence_recorded']} in {summary['duration_ms']}ms")
     return 0
+def _maybe_bootstrap_engine(root: str) -> None:
+    """Trusted engine bootstrap at setup time (master plan D4); never fatal."""
+    import os
+
+    if os.environ.get("SOT_ENGINE_BOOTSTRAP", "").strip().lower() in {"off", "0", "false", "no"}:
+        print("ℹ Engine auto-bootstrap disabled (SOT_ENGINE_BOOTSTRAP=off); builtin extraction stays active.")
+        return
+    try:
+        from sot_graph.providers.bootstrap import auto_bootstrap_allowed, bootstrap_engine
+
+        if not auto_bootstrap_allowed():  # defensive: same policy, re-checked
+            return
+        receipt = bootstrap_engine(repo_path=root)
+        print(f"⚙ Engine {receipt['status']} (digest {receipt['sha256'][:12]}…) "
+              f"— internal component, consumed over MCP; never agent-facing.")
+    except Exception as exc:  # fail-closed: setup must not break on engine issues
+        print(f"⚠ Engine bootstrap skipped ({exc}); builtin extraction stays active. "
+              f"Retry later with: sotgraph engine bootstrap")
+
+
 def cmd_setup(args: argparse.Namespace, root: str) -> int:
     from pathlib import Path
     from sot_graph.adapters.installer import install_harnesses, list_supported_harnesses
@@ -2163,6 +2183,8 @@ def cmd_setup(args: argparse.Namespace, root: str) -> int:
         print(f"\n[{h_name.upper()}] ({len(files)} files)")
         for f in files:
             print(f"  ✓ {f}")
+
+    _maybe_bootstrap_engine(root)
     return 0
 
 
@@ -2170,11 +2192,11 @@ def cmd_setup(args: argparse.Namespace, root: str) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="sotgraph",
-        description="sot-graph: Verified, self-healing knowledge graph for AI coding agents."
+        description="sotgraph: Verified, self-healing knowledge graph for AI coding agents."
     )
     try:
         import importlib.metadata
-        __version__ = importlib.metadata.version("sot-graph")
+        __version__ = importlib.metadata.version("sotgraph")
     except Exception:
         from sot_graph import __version__ as __version__
     parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {__version__}")
@@ -2470,7 +2492,7 @@ def build_parser() -> argparse.ArgumentParser:
         "sync",
         help="Explicit index sync for one provider (own timeout, lock, receipt)",
     )
-    p_prov_sync.add_argument("provider_name", help="Provider name (e.g. codebase-memory)")
+    p_prov_sync.add_argument("provider_name", help="Provider name (see `sotgraph providers list`)")
     p_prov_sync.add_argument("--json", action="store_true", help="Emit the run receipt as JSON")
     p_prov_sync.add_argument("--progress", action="store_true", help="Forward the provider's progress stream")
     p_prov_sync.add_argument("--timeout", type=float, default=0, help="Index budget in seconds (0 = adapter default)")

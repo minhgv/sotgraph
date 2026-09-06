@@ -174,3 +174,19 @@ OS/arch, `capture_command_digest` (sha256 over canonical `captures[]`), and
 `fixture_repo_digest` (sha256 over the git-tracked sample repo) with the exact recomputation
 recipe, so any future drift of either the commands or the fixture repo is detectable from a
 clean clone.
+
+## 4. Addendum (2026-09-06) — superseding retrieval & transport policy
+
+Per the binding [master plan](../../plan/sotgraph-cbm-subdomain-master-plan-2026-09-06.md):
+
+- **Trusted auto-bootstrap (D1/D4):** installing/configuring sotgraph automatically fetches
+  the pinned engine artifact (source URL + sha256 + platform shipped in
+  `sot_graph/providers/engine_pins.json`), verifies the digest and size cap, then stages and
+  promotes it through the existing `ArtifactStore` path. This supersedes the earlier
+  "explicit install/update only" retrieval stance. `allow_external` (PATH-discovery opt-in)
+  remains **False** by default — bootstrap is NOT PATH discovery; it only fetches pinned
+  digests from pinned sources. No download-on-query, ever.
+- **MCP stdio internal transport (D2):** sotgraph spawns the engine in MCP stdio mode and
+  consumes it through a minimal internal MCP client (`sot_graph/providers/engine_mcp.py`).
+  FEDERATED_CLI (this ADR's original mode) remains the compatibility-evidenced fallback.
+  Either way the engine is never registered as an agent-facing MCP server.

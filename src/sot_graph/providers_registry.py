@@ -141,7 +141,7 @@ class ProviderStatus:
 
 def _package_version() -> str:
     try:
-        return importlib.metadata.version("sot-graph")
+        return importlib.metadata.version("sotgraph")
     except Exception:  # pragma: no cover - only when package metadata is stripped
         from sot_graph import __version__
         return __version__

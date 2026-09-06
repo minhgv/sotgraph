@@ -29,6 +29,7 @@ htmlcov/
 graphify-out/
 .graphify*
 *.json
+!src/sot_graph/providers/engine_pins.json
 !tests/fixtures/**/*.json
 !benchmarks/oracle/*.json
 !benchmarks/*.json

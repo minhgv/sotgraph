@@ -1,7 +1,12 @@
-"""Explicit local SOT artifact administration; no discovery, download or spawn."""
+"""Explicit local SOT artifact administration; pinned trusted bootstrap only.
+
+No PATH discovery, no unpinned downloads, no spawn. Bootstrap delegates to
+``providers.bootstrap`` which fetches ONLY pin-manifest sources (master plan D1).
+"""
 from __future__ import annotations
 
 import json
+import os
 import re
 import sqlite3
 from dataclasses import asdict
@@ -14,12 +19,15 @@ from sot_graph.locking import LockBusy
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('engine', help='Explicit local engine artifact administration (experimental)')
-    parser.add_argument('--store', help='Private absolute store outside the repository (required except disable/config-status/config-doctor)')
+    parser.add_argument('--store', help='Private absolute store outside the repository (defaults to ~/.sotgraph/engine-store for bootstrap/mcp-probe)')
     parser.add_argument('--name', default='codebase-memory')
     operations = parser.add_subparsers(dest='engine_action', required=True)
     install = operations.add_parser('import', help='Verify and stage an explicit local artifact; never activate automatically')
     install.add_argument('--source', required=True)
     install.add_argument('--manifest', required=True)
+    boot = operations.add_parser('bootstrap', help='Fetch, verify, and promote the pinned engine artifact (trusted bootstrap)')
+    boot.add_argument('--source', help='Override pin source with a local artifact file or https URL (digest must still match the pin)')
+    operations.add_parser('mcp-probe', help='MCP stdio handshake probe against the promoted engine artifact')
     for action in ('promote', 'rollback', 'uninstall'):
         operation = operations.add_parser(action, help='Select an already verified digest; preserve all data')
         operation.add_argument('--digest', required=True)
@@ -96,6 +104,23 @@ def run(args, root):
                     return 2
                 return 0 if response['status'] == 'disabled' or response['ready'] else 1
             return 0
+        if action in ('bootstrap', 'mcp-probe'):
+            from .bootstrap import bootstrap_engine, default_store_root
+            store_root = args.store or os.fspath(default_store_root())
+            if action == 'bootstrap':
+                receipt = bootstrap_engine(
+                    repo_path=root, store_root=store_root,
+                    source_override=getattr(args, 'source', None))
+                print(json.dumps(receipt, sort_keys=True))
+                return 0 if receipt['status'] in ('promoted', 'already') else 2
+            from .engine_mcp import probe_engine_mcp
+            probe_store = ArtifactStore(store_root, repo_path=root)
+            descriptor = probe_store.resolve(args.name)
+            if descriptor is None:
+                raise ValueError('no promoted artifact; run engine bootstrap first')
+            probe = probe_engine_mcp(descriptor.executable)
+            print(json.dumps(probe, sort_keys=True))
+            return 0 if probe.get('status') == 'ok' else 2
         if not args.store:
             raise ValueError('engine operation requires --store')
         store = ArtifactStore(args.store, repo_path=root)

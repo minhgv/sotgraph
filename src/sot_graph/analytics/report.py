@@ -1,6 +1,6 @@
 """
 src/sot_graph/analytics/report.py
-Professional, comprehensive Architectural Report generator for sot-graph v3.0.
+Professional, comprehensive Architectural Report generator for sotgraph v3.0.
 Dual-Target format: Rich visual diagrams & human-readable breakdown + AI machine-readable JSON-LD.
 """
 from __future__ import annotations
@@ -145,7 +145,7 @@ def generate_jsonld_schema(
         "@context": "https://schema.org/",
         "@type": "SoftwareApplicationArchitecture",
         "name": project_name,
-        "engine": "sot-graph v3.0 Architectural Intelligence",
+        "engine": "sotgraph v3.0 Architectural Intelligence",
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "primaryPattern": pattern["pattern_name"],
         "primaryPatternNote": pattern["pattern_inference"],
@@ -229,7 +229,7 @@ def generate_markdown_report(
     lines = [
         f"# Architectural Knowledge Graph Report: {project_name}",
         "",
-        f"> **Generated on:** `{now}` by `sot-graph`"
+        f"> **Generated on:** `{now}` by `sotgraph`"
         + (f" | **Scope:** `{scope}`" if scope else "")
         + " | **Engine:** `v3.0 Architectural Intelligence (Dual-Target: Human & AI)`",
         "",

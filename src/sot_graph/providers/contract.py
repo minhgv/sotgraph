@@ -1,6 +1,6 @@
 """sot_graph.providers.contract — versioned plugin contract (P3.4).
 
-A federated evidence provider joins sot-graph through a VERSIONED
+A federated evidence provider joins sotgraph through a VERSIONED
 contract instead of orchestrator changes:
 
 1. The adapter class declares ``contract_version`` (must equal

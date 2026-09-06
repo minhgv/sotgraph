@@ -40,7 +40,7 @@ def test_native_credentials_are_explicit_and_ephemeral():
 
 def test_metadata_and_action_use_new_repository():
     metadata = (ROOT / 'pyproject.toml').read_text()
-    assert 'name = "sot-graph"' in metadata
+    assert 'name = "sotgraph"' in metadata
     assert 'sotgraph = "sot_graph.cli:main"' in metadata
     assert metadata.count('https://github.com/minhgv/sotgraph') == 4
     action = (ROOT / '.github/actions/diff-impact/action.yml').read_text()
@@ -63,7 +63,7 @@ def test_new_console_contract_and_old_usage_detection():
     import subprocess
     import sys
 
-    entries = importlib.metadata.distribution('sot-graph').entry_points
+    entries = importlib.metadata.distribution('sotgraph').entry_points
     assert {e.name: e.value for e in entries if e.group == 'console_scripts'} == {
         'sotgraph': 'sot_graph.cli:main'
     }

@@ -2,7 +2,7 @@
 
 Aider proved that a PageRank-ranked, token-budgeted symbol map gives coding
 agents cheap orientation (https://aider.chat/docs/repomap.html). This module
-applies the same recipe to the sot-graph database: rank code symbols by
+applies the same recipe to the sotgraph database: rank code symbols by
 graph centrality, personalize on the caller's focus set when given, then
 binary-search the symbol count until the rendered tree fits the budget.
 

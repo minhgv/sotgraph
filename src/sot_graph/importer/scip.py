@@ -553,7 +553,7 @@ def parse_scip_symbol(symbol_str: str) -> Dict[str, Any]:
     
     Format: <scheme> ' ' <package_manager> ' ' <package_name> ' ' <version> ' ' <descriptors>
     Example: 'scip-python python package 0.1.0 core/service/PaymentProcessor#process_charge().'
-    Example: 'sot-graph python /root pkg/core/math_ops.py math_ops.add().'
+    Example: 'sotgraph python /root pkg/core/math_ops.py math_ops.add().'
     Example: 'scip-typescript npm @types/node 18.0.0 fs/readFileSync().'
     Example: 'local 1'
     """

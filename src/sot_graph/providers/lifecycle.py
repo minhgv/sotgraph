@@ -29,7 +29,7 @@ UPDATE_PROCESS: List[Dict[str, Any]] = [
      "detail": "sotgraph providers detect --format json > pre.json (versions, "
                "health, contract version)"},
     {"step": 3, "action": "upgrade the provider binary",
-     "detail": "install the new version out of band; nothing in sot-graph "
+     "detail": "install the new version out of band; nothing in sotgraph "
                "auto-updates providers"},
     {"step": 4, "action": "re-probe",
      "detail": "sotgraph providers detect: confirm installed+healthy and note "

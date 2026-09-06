@@ -1,4 +1,4 @@
-# sot-graph (Single Source of Truth Knowledge Graph)
+# sotgraph (Single Source of Truth Knowledge Graph)
 
 > **Verified, self-healing knowledge layer for AI coding agents and engineering teams.**
 > *Filesystem is the Single Source of Truth — The knowledge graph is a verified, bounded evidence index: every returned anchor is span-verified on disk; verdicts are advisory and scope-bounded. Zero external daemons required.*
@@ -34,7 +34,7 @@ with the same URL. After pulling a changed native pin, run
 `git submodule update --init --recursive` again. The native source checkout is
 approximately 1.33 GB; building it requires the toolchain documented in
 `engines/codebase-memory-mcp/README.md`. No installer is run by Python setup.
-The CLI remains `sotgraph`, the distribution `sot-graph`, and imports `sot_graph`.
+The CLI remains `sotgraph`, the distribution `sotgraph`, and imports `sot_graph`.
 
 The native submodule is the private standalone controlled mirror
 [ minhgv/sotgraph-cbm ](https://github.com/minhgv/sotgraph-cbm), **not a GitHub fork**.
@@ -48,9 +48,9 @@ native workflow, configure `NATIVE_SOURCE_READ_TOKEN` with read-only contents
 access to both private repositories; the default parent token cannot read the
 private submodule. Native build checks are experimental, not release certification.
 
-## What is sot-graph?
+## What is sotgraph?
 
-`sot-graph` is an ultra-fast, zero-daemon knowledge graph and symbol intelligence engine designed specifically for **Autonomous AI Coding Agents** (Oh My Pi / OMP, Claude Code, Cursor, OpenCode, Google Antigravity / Gemini CLI, ZCode IDE).
+`sotgraph` is an ultra-fast, zero-daemon knowledge graph and symbol intelligence engine designed specifically for **Autonomous AI Coding Agents** (Oh My Pi / OMP, Claude Code, Cursor, OpenCode, Google Antigravity / Gemini CLI, ZCode IDE).
 
 It replaces slow, blind, and hallucination-prone text grepping with an incremental, AST-verified structural graph stored in SQLite (WAL mode + FTS5 full-text indexing + Schema v8 Multi-Provider Provenance Ledger).
 
@@ -67,7 +67,7 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ## Polyglot AST Engine (Tree-sitter Grammars)
 
-`sot-graph` includes native concrete syntax tree extractors across 10+ major programming languages:
+`sotgraph` includes native concrete syntax tree extractors across 10+ major programming languages:
 
 | Language | Extractor Engine | Key AST Constructs |
 | :--- | :--- | :--- |
@@ -88,7 +88,7 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ## 1-Command AI Agent Harness Provisioning (`sotgraph setup`)
 
-`sot-graph` automatically provisions MCP tools, extensions, and SSOT agent rules across all major AI coding harnesses:
+`sotgraph` automatically provisions MCP tools, extensions, and SSOT agent rules across all major AI coding harnesses:
 
 ```bash
 # Provision all supported harnesses at once (Global + Workspace)
@@ -306,7 +306,7 @@ sotgraph diff-impact HEAD~1 --format github
 
 ## Model Context Protocol (MCP) Server
 
-`sot-graph` exposes 22 structured MCP tools, 2 reusable prompts, and resources over standard I/O for AI coding agents:
+`sotgraph` exposes 22 structured MCP tools, 2 reusable prompts, and resources over standard I/O for AI coding agents:
 
 ```bash
 # Start MCP server over stdio
@@ -366,8 +366,8 @@ sotgraph mcp
 
 ### From PyPI
 ```bash
-pip install sot-graph            # zero-dependency core
-pip install "sot-graph[all]"     # with MCP, analytics, watch, vector, tree-sitter extras
+pip install sotgraph            # zero-dependency core
+pip install "sotgraph[all]"     # with MCP, analytics, watch, vector, tree-sitter extras
 ```
 
 ### From Source / Git
@@ -377,15 +377,25 @@ cd sotgraph
 pip install -e ".[all,dev]"
 ```
 
+### Extraction Engine (automatic, trusted)
+Running `sotgraph setup` — or the explicit `sotgraph engine bootstrap` — automatically
+fetches the pinned native extraction engine into `~/.sotgraph/engine-store`, verifies its
+SHA-256 against the pin manifest shipped inside this package, and promotes it through the
+managed artifact store. The engine is an **internal component**: sotgraph talks to it over
+MCP stdio and it is never exposed as a separate CLI or agent-facing MCP server. Private
+release sources honor `SOT_ENGINE_TOKEN`/`GH_TOKEN`. Use `SOT_ENGINE_BOOTSTRAP=off` to
+disable automatic fetch, or `sotgraph engine bootstrap --source <file>` for offline
+machines. sotgraph remains fully functional without the engine (builtin AST extraction).
+
 ### Optional Dependency Extras
-- `sot-graph[mcp]`: MCP server and JSON-RPC stdio protocol (`mcp>=1.3,<2`).
-- `sot-graph[analytics]`: Graph community detection and modularity analysis (`networkx>=3.0`, `scipy>=1.10`).
-- `sot-graph[tokens]`: Fast Rust BPE tokenizer for prompt budgeting (`tiktoken>=0.7`).
-- `sot-graph[watch]`: Real-time filesystem watcher daemon (`watchfiles>=0.21`).
-- `sot-graph[vector]`: Hybrid FTS5 + vector retrieval (`sotgraph search --hybrid`) (`sqlite-vec>=0.1.6`).
-- `sot-graph[scip]`: Compiler-backed SCIP index importer (`protobuf>=4.21`).
-- `sot-graph[tree-sitter]`: Polyglot Tree-sitter grammars (Go, Rust, Java, Kotlin, Swift, PHP, TS/JS, C/C++, Dart, Lua, Scala, SQL, Zig, ...).
-- `sot-graph[all]`: All optional dependencies and polyglot Tree-sitter parsers.
+- `sotgraph[mcp]`: MCP server and JSON-RPC stdio protocol (`mcp>=1.3,<2`).
+- `sotgraph[analytics]`: Graph community detection and modularity analysis (`networkx>=3.0`, `scipy>=1.10`).
+- `sotgraph[tokens]`: Fast Rust BPE tokenizer for prompt budgeting (`tiktoken>=0.7`).
+- `sotgraph[watch]`: Real-time filesystem watcher daemon (`watchfiles>=0.21`).
+- `sotgraph[vector]`: Hybrid FTS5 + vector retrieval (`sotgraph search --hybrid`) (`sqlite-vec>=0.1.6`).
+- `sotgraph[scip]`: Compiler-backed SCIP index importer (`protobuf>=4.21`).
+- `sotgraph[tree-sitter]`: Polyglot Tree-sitter grammars (Go, Rust, Java, Kotlin, Swift, PHP, TS/JS, C/C++, Dart, Lua, Scala, SQL, Zig, ...).
+- `sotgraph[all]`: All optional dependencies and polyglot Tree-sitter parsers.
 
 ---
 
@@ -414,7 +424,7 @@ pytest tests/property/test_invariants.py -v
 
 ## Open-Source Acknowledgments & Third-Party Licenses
 
-`sot-graph` acknowledges and credits the following open-source projects:
+`sotgraph` acknowledges and credits the following open-source projects:
 
 1. **[Graphify](https://github.com/voidshard/graphify)** (MIT License): AST extraction logic foundation and multi-language tokenizers (`src/sot_graph/_vendor/graphify/`).
 2. **[Tree-sitter](https://tree-sitter.github.io/tree-sitter/)** (MIT License): Incremental concrete syntax tree parsing system for polyglot AST extractors.
