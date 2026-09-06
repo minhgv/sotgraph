@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-c",
+    "from setuptools.build_meta import build_sdist, build_wheel; build_sdist('dist'); build_wheel('dist')"
+  ],
+  "exit_code": 1,
+  "scratch": "/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/sot-p4-package-_fox6g9g",
+  "artifacts": [],
+  "network": "No dependency installation; existing local build backend",
+  "toolchain": "CC/CXX nonexistent"
+}

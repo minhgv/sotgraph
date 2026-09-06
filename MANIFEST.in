@@ -1,0 +1,3 @@
+# Native source is versioned separately, never bundled into Python distributions.
+prune engines
+prune plan

@@ -153,7 +153,7 @@ sot_graph = [
 ]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-norecursedirs = [".git", ".sot", "scripts", "build", "dist", "node_modules", "tests/fixtures"]
+norecursedirs = [".git", ".sot", "scripts", "build", "dist", "node_modules", "tests/fixtures", "engines"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]

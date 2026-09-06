@@ -1,0 +1,16 @@
+{
+  "command": [
+    "make",
+    "-f",
+    "Makefile.cbm",
+    "-j2",
+    "cbm"
+  ],
+  "scratch": "/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/sot-p4-build-qy4nnm70",
+  "exit_code": 0,
+  "wall_seconds": 133.32573387492448,
+  "build_bytes": 593302728,
+  "cache_bytes": 0,
+  "source_bytes_excluding_build": 1332757072,
+  "host": "Darwin arm64"
+}

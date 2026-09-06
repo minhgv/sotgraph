@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-c",
+    "from setuptools.build_meta import build_sdist, build_wheel; build_sdist('dist'); build_wheel('dist')"
+  ],
+  "exit_code": 0,
+  "scratch": "/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/sot-p4-package-_fox6g9g",
+  "artifacts": [
+    {
+      "name": "sot_graph-0.3.2-py3-none-any.whl",
+      "bytes": 640131,
+      "native_source_absent": true
+    },
+    {
+      "name": "sot_graph-0.3.2.tar.gz",
+      "bytes": 598321,
+      "native_source_absent": true
+    }
+  ],
+  "network": "No dependency installation; existing local build backend",
+  "toolchain": "CC/CXX nonexistent",
+  "cached_backend": "/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u"
+}

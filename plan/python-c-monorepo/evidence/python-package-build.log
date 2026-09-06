@@ -1,0 +1,534 @@
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  dist._finalize_license_expression()
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  self._finalize_license_expression()
+running sdist
+running egg_info
+creating src/sot_graph.egg-info
+writing src/sot_graph.egg-info/PKG-INFO
+writing dependency_links to src/sot_graph.egg-info/dependency_links.txt
+writing entry points to src/sot_graph.egg-info/entry_points.txt
+writing requirements to src/sot_graph.egg-info/requires.txt
+writing top-level names to src/sot_graph.egg-info/top_level.txt
+writing manifest file 'src/sot_graph.egg-info/SOURCES.txt'
+reading manifest file 'src/sot_graph.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'engines'
+no previously-included directories found matching 'plan'
+adding license file 'LICENSE'
+writing manifest file 'src/sot_graph.egg-info/SOURCES.txt'
+running check
+creating sot_graph-0.3.2
+creating sot_graph-0.3.2/src/sot_graph
+creating sot_graph-0.3.2/src/sot_graph.egg-info
+creating sot_graph-0.3.2/src/sot_graph/_vendor
+creating sot_graph-0.3.2/src/sot_graph/_vendor/graphify
+creating sot_graph-0.3.2/src/sot_graph/adapters
+creating sot_graph-0.3.2/src/sot_graph/analytics
+creating sot_graph-0.3.2/src/sot_graph/assurance
+creating sot_graph-0.3.2/src/sot_graph/export
+creating sot_graph-0.3.2/src/sot_graph/holdout
+creating sot_graph-0.3.2/src/sot_graph/importer
+creating sot_graph-0.3.2/src/sot_graph/providers
+creating sot_graph-0.3.2/src/sot_graph/templates
+copying files to sot_graph-0.3.2...
+copying LICENSE -> sot_graph-0.3.2
+copying MANIFEST.in -> sot_graph-0.3.2
+copying README.md -> sot_graph-0.3.2
+copying pyproject.toml -> sot_graph-0.3.2
+copying src/sot_graph/__init__.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/claims.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/cli.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/config.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/db.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/diff_impact.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/envelope.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/evidence.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/extractor.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/ignore.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/locking.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/mcp_server.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/mcp_service.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/modutil.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/pack.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/parser_outcome.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/proc.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/provider_contract.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/providers_registry.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/receipt_explorer.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/reconciler.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/repo_map.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/snapshot.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/solution.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/tokenizer.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/trace.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/ts_extract.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/vector.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/verifier.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph/watcher.py -> sot_graph-0.3.2/src/sot_graph
+copying src/sot_graph.egg-info/PKG-INFO -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph.egg-info/SOURCES.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph.egg-info/dependency_links.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph.egg-info/entry_points.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph.egg-info/requires.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph.egg-info/top_level.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+copying src/sot_graph/_vendor/__init__.py -> sot_graph-0.3.2/src/sot_graph/_vendor
+copying src/sot_graph/_vendor/graphify/__init__.py -> sot_graph-0.3.2/src/sot_graph/_vendor/graphify
+copying src/sot_graph/_vendor/graphify/extract.py -> sot_graph-0.3.2/src/sot_graph/_vendor/graphify
+copying src/sot_graph/adapters/AGENTS.md -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/__init__.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/antigravity.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/claude.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/hooks.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/installer.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/omp.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/omp_extension.ts -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/opencode.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/opencode_plugin.ts -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/adapters/zcode.py -> sot_graph-0.3.2/src/sot_graph/adapters
+copying src/sot_graph/analytics/__init__.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/architecture.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/bundle.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/conformance.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/diagnostics.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/graph.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/analytics/report.py -> sot_graph-0.3.2/src/sot_graph/analytics
+copying src/sot_graph/assurance/__init__.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/accounting.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/coverage.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/engine.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/identity.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/impact_pipeline.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/ledger.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/orchestrator.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/receipts.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/routing.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/assurance/state.py -> sot_graph-0.3.2/src/sot_graph/assurance
+copying src/sot_graph/export/__init__.py -> sot_graph-0.3.2/src/sot_graph/export
+copying src/sot_graph/export/d3.v7.min.js -> sot_graph-0.3.2/src/sot_graph/export
+copying src/sot_graph/export/exporter.py -> sot_graph-0.3.2/src/sot_graph/export
+copying src/sot_graph/export/html.py -> sot_graph-0.3.2/src/sot_graph/export
+copying src/sot_graph/export/scip.py -> sot_graph-0.3.2/src/sot_graph/export
+copying src/sot_graph/holdout/__init__.py -> sot_graph-0.3.2/src/sot_graph/holdout
+copying src/sot_graph/holdout/evaluator.py -> sot_graph-0.3.2/src/sot_graph/holdout
+copying src/sot_graph/holdout/splits.py -> sot_graph-0.3.2/src/sot_graph/holdout
+copying src/sot_graph/importer/__init__.py -> sot_graph-0.3.2/src/sot_graph/importer
+copying src/sot_graph/importer/scip.py -> sot_graph-0.3.2/src/sot_graph/importer
+copying src/sot_graph/providers/__init__.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/artifacts.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/base.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/codebase_memory.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/compatibility.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/contract.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/cross_check.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/identity_join.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/installation.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/lifecycle.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/managed.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/normalization.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/runtime.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/scip.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/providers/verification.py -> sot_graph-0.3.2/src/sot_graph/providers
+copying src/sot_graph/templates/ARCHITECTURE_TEMPLATE.md -> sot_graph-0.3.2/src/sot_graph/templates
+copying src/sot_graph.egg-info/SOURCES.txt -> sot_graph-0.3.2/src/sot_graph.egg-info
+Writing sot_graph-0.3.2/setup.cfg
+Creating tar archive
+removing 'sot_graph-0.3.2' (and everything under it)
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  dist._finalize_license_expression()
+/Users/giapminh79/.cache/uv/archive-v0/I7ulBHc0cENUs8qWEo_7u/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  self._finalize_license_expression()
+running bdist_wheel
+running build
+running build_py
+creating build/lib/sot_graph
+copying src/sot_graph/pack.py -> build/lib/sot_graph
+copying src/sot_graph/ts_extract.py -> build/lib/sot_graph
+copying src/sot_graph/parser_outcome.py -> build/lib/sot_graph
+copying src/sot_graph/db.py -> build/lib/sot_graph
+copying src/sot_graph/trace.py -> build/lib/sot_graph
+copying src/sot_graph/mcp_service.py -> build/lib/sot_graph
+copying src/sot_graph/repo_map.py -> build/lib/sot_graph
+copying src/sot_graph/vector.py -> build/lib/sot_graph
+copying src/sot_graph/reconciler.py -> build/lib/sot_graph
+copying src/sot_graph/config.py -> build/lib/sot_graph
+copying src/sot_graph/proc.py -> build/lib/sot_graph
+copying src/sot_graph/receipt_explorer.py -> build/lib/sot_graph
+copying src/sot_graph/solution.py -> build/lib/sot_graph
+copying src/sot_graph/providers_registry.py -> build/lib/sot_graph
+copying src/sot_graph/claims.py -> build/lib/sot_graph
+copying src/sot_graph/__init__.py -> build/lib/sot_graph
+copying src/sot_graph/provider_contract.py -> build/lib/sot_graph
+copying src/sot_graph/extractor.py -> build/lib/sot_graph
+copying src/sot_graph/diff_impact.py -> build/lib/sot_graph
+copying src/sot_graph/tokenizer.py -> build/lib/sot_graph
+copying src/sot_graph/ignore.py -> build/lib/sot_graph
+copying src/sot_graph/cli.py -> build/lib/sot_graph
+copying src/sot_graph/locking.py -> build/lib/sot_graph
+copying src/sot_graph/watcher.py -> build/lib/sot_graph
+copying src/sot_graph/evidence.py -> build/lib/sot_graph
+copying src/sot_graph/modutil.py -> build/lib/sot_graph
+copying src/sot_graph/verifier.py -> build/lib/sot_graph
+copying src/sot_graph/snapshot.py -> build/lib/sot_graph
+copying src/sot_graph/envelope.py -> build/lib/sot_graph
+copying src/sot_graph/mcp_server.py -> build/lib/sot_graph
+creating build/lib/sot_graph/importer
+copying src/sot_graph/importer/__init__.py -> build/lib/sot_graph/importer
+copying src/sot_graph/importer/scip.py -> build/lib/sot_graph/importer
+creating build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/receipts.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/accounting.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/ledger.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/__init__.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/coverage.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/engine.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/routing.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/orchestrator.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/identity.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/impact_pipeline.py -> build/lib/sot_graph/assurance
+copying src/sot_graph/assurance/state.py -> build/lib/sot_graph/assurance
+creating build/lib/sot_graph/_vendor
+copying src/sot_graph/_vendor/__init__.py -> build/lib/sot_graph/_vendor
+creating build/lib/sot_graph/holdout
+copying src/sot_graph/holdout/__init__.py -> build/lib/sot_graph/holdout
+copying src/sot_graph/holdout/splits.py -> build/lib/sot_graph/holdout
+copying src/sot_graph/holdout/evaluator.py -> build/lib/sot_graph/holdout
+creating build/lib/sot_graph/providers
+copying src/sot_graph/providers/codebase_memory.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/compatibility.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/verification.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/installation.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/identity_join.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/__init__.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/runtime.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/lifecycle.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/managed.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/scip.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/artifacts.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/normalization.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/contract.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/base.py -> build/lib/sot_graph/providers
+copying src/sot_graph/providers/cross_check.py -> build/lib/sot_graph/providers
+creating build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/zcode.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/hooks.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/claude.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/__init__.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/opencode.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/installer.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/omp.py -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/antigravity.py -> build/lib/sot_graph/adapters
+creating build/lib/sot_graph/export
+copying src/sot_graph/export/exporter.py -> build/lib/sot_graph/export
+copying src/sot_graph/export/html.py -> build/lib/sot_graph/export
+copying src/sot_graph/export/__init__.py -> build/lib/sot_graph/export
+copying src/sot_graph/export/scip.py -> build/lib/sot_graph/export
+creating build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/bundle.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/diagnostics.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/graph.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/__init__.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/architecture.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/conformance.py -> build/lib/sot_graph/analytics
+copying src/sot_graph/analytics/report.py -> build/lib/sot_graph/analytics
+creating build/lib/sot_graph/_vendor/graphify
+copying src/sot_graph/_vendor/graphify/__init__.py -> build/lib/sot_graph/_vendor/graphify
+copying src/sot_graph/_vendor/graphify/extract.py -> build/lib/sot_graph/_vendor/graphify
+running egg_info
+writing src/sot_graph.egg-info/PKG-INFO
+writing dependency_links to src/sot_graph.egg-info/dependency_links.txt
+writing entry points to src/sot_graph.egg-info/entry_points.txt
+writing requirements to src/sot_graph.egg-info/requires.txt
+writing top-level names to src/sot_graph.egg-info/top_level.txt
+reading manifest file 'src/sot_graph.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'engines'
+no previously-included directories found matching 'plan'
+adding license file 'LICENSE'
+writing manifest file 'src/sot_graph.egg-info/SOURCES.txt'
+creating build/lib/sot_graph/templates
+copying src/sot_graph/templates/ARCHITECTURE_TEMPLATE.md -> build/lib/sot_graph/templates
+copying src/sot_graph/adapters/AGENTS.md -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/opencode_plugin.ts -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/omp_extension.ts -> build/lib/sot_graph/adapters
+copying src/sot_graph/export/d3.v7.min.js -> build/lib/sot_graph/export
+copying src/sot_graph/adapters/AGENTS.md -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/omp_extension.ts -> build/lib/sot_graph/adapters
+copying src/sot_graph/adapters/opencode_plugin.ts -> build/lib/sot_graph/adapters
+copying src/sot_graph/templates/ARCHITECTURE_TEMPLATE.md -> build/lib/sot_graph/templates
+copying src/sot_graph/export/d3.v7.min.js -> build/lib/sot_graph/export
+installing to build/bdist.macosx-26.0-arm64/wheel
+running install
+running install_lib
+creating build/bdist.macosx-26.0-arm64/wheel
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph
+copying build/lib/sot_graph/pack.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/ts_extract.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/parser_outcome.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/db.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/trace.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/mcp_service.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/repo_map.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/vector.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/importer
+copying build/lib/sot_graph/importer/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/importer
+copying build/lib/sot_graph/importer/scip.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/importer
+copying build/lib/sot_graph/reconciler.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/config.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/proc.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/assurance
+copying build/lib/sot_graph/assurance/receipts.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/accounting.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/ledger.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/coverage.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/engine.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/routing.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/orchestrator.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/identity.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/impact_pipeline.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+copying build/lib/sot_graph/assurance/state.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/assurance
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/_vendor
+copying build/lib/sot_graph/_vendor/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/_vendor
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/_vendor/graphify
+copying build/lib/sot_graph/_vendor/graphify/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/_vendor/graphify
+copying build/lib/sot_graph/_vendor/graphify/extract.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/_vendor/graphify
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/holdout
+copying build/lib/sot_graph/holdout/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/holdout
+copying build/lib/sot_graph/holdout/splits.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/holdout
+copying build/lib/sot_graph/holdout/evaluator.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/holdout
+copying build/lib/sot_graph/receipt_explorer.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/solution.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/providers_registry.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/providers
+copying build/lib/sot_graph/providers/codebase_memory.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/compatibility.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/verification.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/installation.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/identity_join.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/runtime.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/lifecycle.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/managed.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/scip.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/artifacts.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/normalization.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/contract.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/base.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/providers/cross_check.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/providers
+copying build/lib/sot_graph/claims.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/provider_contract.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/extractor.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/diff_impact.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/adapters
+copying build/lib/sot_graph/adapters/zcode.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/hooks.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/claude.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/opencode.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/installer.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/opencode_plugin.ts -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/omp.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/antigravity.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/AGENTS.md -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/adapters/omp_extension.ts -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/adapters
+copying build/lib/sot_graph/tokenizer.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/ignore.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/cli.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/locking.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/templates
+copying build/lib/sot_graph/templates/ARCHITECTURE_TEMPLATE.md -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/templates
+copying build/lib/sot_graph/watcher.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/export
+copying build/lib/sot_graph/export/exporter.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/export
+copying build/lib/sot_graph/export/html.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/export
+copying build/lib/sot_graph/export/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/export
+copying build/lib/sot_graph/export/scip.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/export
+copying build/lib/sot_graph/export/d3.v7.min.js -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/export
+copying build/lib/sot_graph/evidence.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/modutil.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/verifier.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/snapshot.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/envelope.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+copying build/lib/sot_graph/mcp_server.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph/analytics
+copying build/lib/sot_graph/analytics/bundle.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/diagnostics.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/graph.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/__init__.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/architecture.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/conformance.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+copying build/lib/sot_graph/analytics/report.py -> build/bdist.macosx-26.0-arm64/wheel/./sot_graph/analytics
+running install_egg_info
+Copying src/sot_graph.egg-info to build/bdist.macosx-26.0-arm64/wheel/./sot_graph-0.3.2-py3.14.egg-info
+running install_scripts
+creating build/bdist.macosx-26.0-arm64/wheel/sot_graph-0.3.2.dist-info/WHEEL
+creating '/private/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/sot-p4-package-_fox6g9g/source/dist/.tmp-uggl8vs5/sot_graph-0.3.2-py3-none-any.whl' and adding 'build/bdist.macosx-26.0-arm64/wheel' to it
+adding 'sot_graph/__init__.py'
+adding 'sot_graph/claims.py'
+adding 'sot_graph/cli.py'
+adding 'sot_graph/config.py'
+adding 'sot_graph/db.py'
+adding 'sot_graph/diff_impact.py'
+adding 'sot_graph/envelope.py'
+adding 'sot_graph/evidence.py'
+adding 'sot_graph/extractor.py'
+adding 'sot_graph/ignore.py'
+adding 'sot_graph/locking.py'
+adding 'sot_graph/mcp_server.py'
+adding 'sot_graph/mcp_service.py'
+adding 'sot_graph/modutil.py'
+adding 'sot_graph/pack.py'
+adding 'sot_graph/parser_outcome.py'
+adding 'sot_graph/proc.py'
+adding 'sot_graph/provider_contract.py'
+adding 'sot_graph/providers_registry.py'
+adding 'sot_graph/receipt_explorer.py'
+adding 'sot_graph/reconciler.py'
+adding 'sot_graph/repo_map.py'
+adding 'sot_graph/snapshot.py'
+adding 'sot_graph/solution.py'
+adding 'sot_graph/tokenizer.py'
+adding 'sot_graph/trace.py'
+adding 'sot_graph/ts_extract.py'
+adding 'sot_graph/vector.py'
+adding 'sot_graph/verifier.py'
+adding 'sot_graph/watcher.py'
+adding 'sot_graph/_vendor/__init__.py'
+adding 'sot_graph/_vendor/graphify/__init__.py'
+adding 'sot_graph/_vendor/graphify/extract.py'
+adding 'sot_graph/adapters/AGENTS.md'
+adding 'sot_graph/adapters/__init__.py'
+adding 'sot_graph/adapters/antigravity.py'
+adding 'sot_graph/adapters/claude.py'
+adding 'sot_graph/adapters/hooks.py'
+adding 'sot_graph/adapters/installer.py'
+adding 'sot_graph/adapters/omp.py'
+adding 'sot_graph/adapters/omp_extension.ts'
+adding 'sot_graph/adapters/opencode.py'
+adding 'sot_graph/adapters/opencode_plugin.ts'
+adding 'sot_graph/adapters/zcode.py'
+adding 'sot_graph/analytics/__init__.py'
+adding 'sot_graph/analytics/architecture.py'
+adding 'sot_graph/analytics/bundle.py'
+adding 'sot_graph/analytics/conformance.py'
+adding 'sot_graph/analytics/diagnostics.py'
+adding 'sot_graph/analytics/graph.py'
+adding 'sot_graph/analytics/report.py'
+adding 'sot_graph/assurance/__init__.py'
+adding 'sot_graph/assurance/accounting.py'
+adding 'sot_graph/assurance/coverage.py'
+adding 'sot_graph/assurance/engine.py'
+adding 'sot_graph/assurance/identity.py'
+adding 'sot_graph/assurance/impact_pipeline.py'
+adding 'sot_graph/assurance/ledger.py'
+adding 'sot_graph/assurance/orchestrator.py'
+adding 'sot_graph/assurance/receipts.py'
+adding 'sot_graph/assurance/routing.py'
+adding 'sot_graph/assurance/state.py'
+adding 'sot_graph/export/__init__.py'
+adding 'sot_graph/export/d3.v7.min.js'
+adding 'sot_graph/export/exporter.py'
+adding 'sot_graph/export/html.py'
+adding 'sot_graph/export/scip.py'
+adding 'sot_graph/holdout/__init__.py'
+adding 'sot_graph/holdout/evaluator.py'
+adding 'sot_graph/holdout/splits.py'
+adding 'sot_graph/importer/__init__.py'
+adding 'sot_graph/importer/scip.py'
+adding 'sot_graph/providers/__init__.py'
+adding 'sot_graph/providers/artifacts.py'
+adding 'sot_graph/providers/base.py'
+adding 'sot_graph/providers/codebase_memory.py'
+adding 'sot_graph/providers/compatibility.py'
+adding 'sot_graph/providers/contract.py'
+adding 'sot_graph/providers/cross_check.py'
+adding 'sot_graph/providers/identity_join.py'
+adding 'sot_graph/providers/installation.py'
+adding 'sot_graph/providers/lifecycle.py'
+adding 'sot_graph/providers/managed.py'
+adding 'sot_graph/providers/normalization.py'
+adding 'sot_graph/providers/runtime.py'
+adding 'sot_graph/providers/scip.py'
+adding 'sot_graph/providers/verification.py'
+adding 'sot_graph/templates/ARCHITECTURE_TEMPLATE.md'
+adding 'sot_graph-0.3.2.dist-info/licenses/LICENSE'
+adding 'sot_graph-0.3.2.dist-info/METADATA'
+adding 'sot_graph-0.3.2.dist-info/WHEEL'
+adding 'sot_graph-0.3.2.dist-info/entry_points.txt'
+adding 'sot_graph-0.3.2.dist-info/top_level.txt'
+adding 'sot_graph-0.3.2.dist-info/RECORD'
+removing build/bdist.macosx-26.0-arm64/wheel
