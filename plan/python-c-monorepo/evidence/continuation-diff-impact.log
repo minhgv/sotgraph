@@ -1,0 +1,331 @@
+receipt stored: .sot/receipts/62bc3106f67300b806875c09774f5d807195f18bd05be8797b76a3a98f8c8e49.json
+⚠️  measured closure covers 200 of 2073 changed files; closure evidence is partial
+_Snapshot: pre sha256:87d8beedeade (dirty=True) → post sha256:c45f65046633 (dirty=True)_
+# SOT-Graph Diff Impact Analysis Report
+
+**Target:** `HEAD` | **Risk Level:** 🟡 **MEDIUM** (Score: 55/100) | **Execution Time:** 5914.23ms
+
+## 📊 Summary Metrics
+
+| Metric | Count |
+| :--- | :--- |
+| Changed Files | **2073** |
+| Diff Hunks | **2073** |
+| Directly Modified Symbols | **12** |
+| Blast Radius Callers (In-Degree) | **0** |
+| Impacted API Endpoints | **0** |
+| Tests to Re-Run | **283** |
+
+## 🎯 1. Directly Modified AST Symbols
+
+| Symbol | Kind | File | Lines | Change Type |
+| :--- | :--- | :--- | :--- | :--- |
+| `native-experimental.yml` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/.github/workflows/native-experimental.yml` | L1-L33 | **modified** |
+| `continuation-2026-09-06.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/continuation-2026-09-06.md` | L1-L21 | **modified** |
+| `continuation-tests-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-tests-receipt.json` | L1-L16 | **modified** |
+| `native-build-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/native-build-receipt.json` | L1-L17 | **modified** |
+| `python-package-initial-failure.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/python-package-initial-failure.json` | L1-L13 | **modified** |
+| `python-package-receipt.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/python-package-receipt.json` | L1-L25 | **modified** |
+| `source-budget-license-inventory.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/source-budget-license-inventory.json` | L1-L1321 | **modified** |
+| `source-import-manifest.json` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/source-import-manifest.json` | L1-L14359 | **modified** |
+| `remaining-work-phased-plan-2026-09-05.md` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md` | L1-L149 | **modified** |
+| `pyproject.toml` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/pyproject.toml` | L1-L164 | **modified** |
+| `verify_native_source.py` | `file` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/verify_native_source.py` | L1-L49 | **modified** |
+| `main` | `function` | `/Users/giapminh79/code/GitHub/sot-graph/scripts/verify_native_source.py` | L14-L44 | **modified** |
+
+## 💥 2. Blast Radius: Upstream Inward Callers
+
+_Zero inward caller dependencies detected (low ripple effect)._
+
+## 🌐 3. Affected Cross-Stack API Endpoints
+
+_No direct or indirect API contract bindings affected._
+
+## 🧪 4. Recommended Test Coverage Verification
+
+| Test Target | Kind | File | Reason |
+| :--- | :--- | :--- | :--- |
+| `engines/codebase-memory-mcp/.github/workflows/_test.yml` | `file` | `engines/codebase-memory-mcp/.github/workflows/_test.yml` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphScene.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphScene.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.deadcode.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.deadcode.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.filters.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.filters.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/GraphTab.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/NodeDetailPanel.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/NodeDetailPanel.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/components/StatsTab.test.tsx` | `file` | `engines/codebase-memory-mcp/graph-ui/src/components/StatsTab.test.tsx` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/hooks/useGraphData.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/hooks/useGraphData.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/lib/density.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/lib/density.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/graph-ui/src/lib/i18n.test.ts` | `file` | `engines/codebase-memory-mcp/graph-ui/src/lib/i18n.test.ts` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/main_test.go` | `file` | `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/main_test.go` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/runtime_lock_windows_test.go` | `file` | `engines/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp/runtime_lock_windows_test.go` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/install-failure.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/install-failure.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/package-publication.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/package-publication.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/npm/test/windows-launcher.test.js` | `file` | `engines/codebase-memory-mcp/pkg/npm/test/windows-launcher.test.js` | `direct_test_file` |
+| `engines/codebase-memory-mcp/pkg/pypi/tests/test_cli.py` | `file` | `engines/codebase-memory-mcp/pkg/pypi/tests/test_cli.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/scripts/test_mcp_interactive.py` | `file` | `engines/codebase-memory-mcp/scripts/test_mcp_interactive.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/scripts/test_mcp_rapid_init.py` | `file` | `engines/codebase-memory-mcp/scripts/test_mcp_rapid_init.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/src/pipeline/pass_tests.c` | `file` | `engines/codebase-memory-mcp/src/pipeline/pass_tests.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.h` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/NodeController.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.h` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/SystemController.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/cpp_include/main.cpp` | `file` | `engines/codebase-memory-mcp/tests/fixtures/cpp_include/main.cpp` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/fixtures/ui-readiness/index.html` | `file` | `engines/codebase-memory-mcp/tests/fixtures/ui-readiness/index.html` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/grammar_cases.h` | `file` | `engines/codebase-memory-mcp/tests/grammar_cases.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/issue832_rss.py` | `file` | `engines/codebase-memory-mcp/tests/repro/issue832_rss.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_a.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_a.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_b.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_matrix_b.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_argument_usages.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_argument_usages.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_node_behaviors.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_node_behaviors.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_node_manifest.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_node_manifest.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_call_scope_usages.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_call_scope_usages.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_extraction.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_extraction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_build.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_build.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_config.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_config.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_core.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_core.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_functional.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_functional.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_markup.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_markup.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_misc.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_misc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_scientific.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_scientific.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_scripting.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_scripting.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_shells.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_shells.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_systems.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_systems.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_grammar_web.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_grammar_web.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_harness.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_harness.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_harness_cleanup.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_harness_cleanup.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_breadth.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_breadth.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_calls.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_calls.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_discovery_fqn.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_discovery_fqn.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_enclosing_parity.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_enclosing_parity.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_graph.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_graph.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_lib.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_lib.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_invariant_lsp_rescue.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_invariant_lsp_rescue.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue221.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue221.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue333.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue333.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue363.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue363.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue382.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue382.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue403.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue403.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue408.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue408.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue409.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue409.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue431.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue431.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue434.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue434.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue471.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue471.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue480.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue480.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue495.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue495.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue510.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue510.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue514.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue514.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue520.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue520.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue521.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue521.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue523.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue523.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue546.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue546.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue548.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue548.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue557.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue557.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue56.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue56.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue570.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue570.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue571.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue571.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue581.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue581.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue607.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue607.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue627.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue627.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue787.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue787.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue842.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue842.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_issue964.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_issue964.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_language_registry.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_language_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lexical_binding_precision.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lexical_binding_precision.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_c_cpp.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_c_cpp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_go_py.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_go_py.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_java_cs.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_java_cs.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_kt_php_rust.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_kt_php_rust.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_local.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_local.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_signatures.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ordered_signatures.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_lsp_ts.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_lsp_ts.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_main.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_main.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_make_tracks_headers.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_make_tracks_headers.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_cypher_limit_zero.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_cypher_limit_zero.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_py_tuple_unpack.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_py_tuple_unpack.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_new_ts_class_field_arrow.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_new_ts_class_field_arrow.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_parallel_determinism.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_parallel_determinism.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_reference_precision.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_reference_precision.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner.h` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_filter.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_filter.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_passing_semantics.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_passing_semantics.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_runner_zero_selection.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_runner_zero_selection.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_missing_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_missing_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_no_workspace_artifact.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_no_workspace_artifact.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_skipped_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_skipped_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_stderr_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_stderr_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_summary.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_summary.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_script_zero_selection.sh` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_script_zero_selection.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_ts_inherited_method.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_ts_inherited_method.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/repro/repro_ts_overload_return_chains.c` | `file` | `engines/codebase-memory-mcp/tests/repro/repro_ts_overload_return_chains.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/scale_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/scale_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/smoke_guard.sh` | `file` | `engines/codebase-memory-mcp/tests/smoke_guard.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ac.c` | `file` | `engines/codebase-memory-mcp/tests/test_ac.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_activation_transaction.c` | `file` | `engines/codebase-memory-mcp/tests/test_activation_transaction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_agent_clients.c` | `file` | `engines/codebase-memory-mcp/tests/test_agent_clients.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_agent_profiles.c` | `file` | `engines/codebase-memory-mcp/tests/test_agent_profiles.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_arena.c` | `file` | `engines/codebase-memory-mcp/tests/test_arena.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_artifact.c` | `file` | `engines/codebase-memory-mcp/tests/test_artifact.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ast_profile.c` | `file` | `engines/codebase-memory-mcp/tests/test_ast_profile.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_build_dir_safety.sh` | `file` | `engines/codebase-memory-mcp/tests/test_build_dir_safety.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_c_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_c_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_call_reference_contract.c` | `file` | `engines/codebase-memory-mcp/tests/test_call_reference_contract.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cli.c` | `file` | `engines/codebase-memory-mcp/tests/test_cli.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_complexity.c` | `file` | `engines/codebase-memory-mcp/tests/test_complexity.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_json_like.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_json_like.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_text_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_text_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_toml_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_toml_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_config_yaml_edit.c` | `file` | `engines/codebase-memory-mcp/tests/test_config_yaml_edit.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_configlink.c` | `file` | `engines/codebase-memory-mcp/tests/test_configlink.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_convergence_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_convergence_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cpp_index_hang.sh` | `file` | `engines/codebase-memory-mcp/tests/test_cpp_index_hang.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cross_repo.c` | `file` | `engines/codebase-memory-mcp/tests/test_cross_repo.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cs_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_cs_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cs_lsp_bench.c` | `file` | `engines/codebase-memory-mcp/tests/test_cs_lsp_bench.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_cypher.c` | `file` | `engines/codebase-memory-mcp/tests/test_cypher.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_application.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_application.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_bootstrap.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_bootstrap.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_frontend.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_frontend.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_ipc.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_ipc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_open_readiness.py` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_open_readiness.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_runtime.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_runtime.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_runtime_contract.h` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_runtime_contract.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_smoke.py` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_smoke.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_daemon_version.c` | `file` | `engines/codebase-memory-mcp/tests/test_daemon_version.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_destructive_ordering_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_destructive_ordering_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_diagnostics.c` | `file` | `engines/codebase-memory-mcp/tests/test_diagnostics.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_discover.c` | `file` | `engines/codebase-memory-mcp/tests/test_discover.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dump_verify.c` | `file` | `engines/codebase-memory-mcp/tests/test_dump_verify.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dump_verify_io.c` | `file` | `engines/codebase-memory-mcp/tests/test_dump_verify_io.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_dyn_array.c` | `file` | `engines/codebase-memory-mcp/tests/test_dyn_array.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_structural.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_structural.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_edge_types_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_edge_types_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_extraction_inheritance.c` | `file` | `engines/codebase-memory-mcp/tests/test_extraction_inheritance.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_fqn.c` | `file` | `engines/codebase-memory-mcp/tests/test_fqn.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_framework.h` | `file` | `engines/codebase-memory-mcp/tests/test_framework.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_git_context.c` | `file` | `engines/codebase-memory-mcp/tests/test_git_context.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_gitignore.c` | `file` | `engines/codebase-memory-mcp/tests/test_gitignore.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_go_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_go_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_imports.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_imports.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_labels.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_labels.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_a.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_a.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_b.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_b.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_c.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_c.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_d.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_d.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_e.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_e.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_f.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_f.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_probe_g.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_probe_g.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_grammar_regression.c` | `file` | `engines/codebase-memory-mcp/tests/test_grammar_regression.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_graph_buffer.c` | `file` | `engines/codebase-memory-mcp/tests/test_graph_buffer.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_hash_table.c` | `file` | `engines/codebase-memory-mcp/tests/test_hash_table.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_helpers.h` | `file` | `engines/codebase-memory-mcp/tests/test_helpers.h` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_hook_conflict_notice.sh` | `file` | `engines/codebase-memory-mcp/tests/test_hook_conflict_notice.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_httpd.c` | `file` | `engines/codebase-memory-mcp/tests/test_httpd.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_incremental.c` | `file` | `engines/codebase-memory-mcp/tests/test_incremental.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_index_resilience.c` | `file` | `engines/codebase-memory-mcp/tests/test_index_resilience.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_index_supervisor.c` | `file` | `engines/codebase-memory-mcp/tests/test_index_supervisor.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_infrascan.c` | `file` | `engines/codebase-memory-mcp/tests/test_infrascan.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_integration.c` | `file` | `engines/codebase-memory-mcp/tests/test_integration.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_java_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_java_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_java_lsp_coverage.c` | `file` | `engines/codebase-memory-mcp/tests/test_java_lsp_coverage.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_kotlin_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_kotlin_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lang_contract.c` | `file` | `engines/codebase-memory-mcp/tests/test_lang_contract.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_language.c` | `file` | `engines/codebase-memory-mcp/tests/test_language.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lock_registry.c` | `file` | `engines/codebase-memory-mcp/tests/test_lock_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_log.c` | `file` | `engines/codebase-memory-mcp/tests/test_log.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lsp_resolution_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_lsp_resolution_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_lz4.c` | `file` | `engines/codebase-memory-mcp/tests/test_lz4.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_main.c` | `file` | `engines/codebase-memory-mcp/tests/test_main.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_makefile_ts_runtime_dependencies.sh` | `file` | `engines/codebase-memory-mcp/tests/test_makefile_ts_runtime_dependencies.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_matrix_known_classes.c` | `file` | `engines/codebase-memory-mcp/tests/test_matrix_known_classes.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_matrix_new_constructs.c` | `file` | `engines/codebase-memory-mcp/tests/test_matrix_new_constructs.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcp.c` | `file` | `engines/codebase-memory-mcp/tests/test_mcp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcpb_bundle_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_mcpb_bundle_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mcpb_registry_entries_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_mcpb_registry_entries_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_mem.c` | `file` | `engines/codebase-memory-mcp/tests/test_mem.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_node_creation_probe.c` | `file` | `engines/codebase-memory-mcp/tests/test_node_creation_probe.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parallel.c` | `file` | `engines/codebase-memory-mcp/tests/test_parallel.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parallel_harness_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_parallel_harness_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parent_watchdog.sh` | `file` | `engines/codebase-memory-mcp/tests/test_parent_watchdog.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_parse_coverage.c` | `file` | `engines/codebase-memory-mcp/tests/test_parse_coverage.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_path_alias.c` | `file` | `engines/codebase-memory-mcp/tests/test_path_alias.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_perl_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_perl_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_php_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_php_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_pipeline.c` | `file` | `engines/codebase-memory-mcp/tests/test_pipeline.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_platform.c` | `file` | `engines/codebase-memory-mcp/tests/test_platform.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_private_file_lock.c` | `file` | `engines/codebase-memory-mcp/tests/test_private_file_lock.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_project_lock.c` | `file` | `engines/codebase-memory-mcp/tests/test_project_lock.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_bench.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_bench.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_scale.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_scale.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_py_lsp_stress.c` | `file` | `engines/codebase-memory-mcp/tests/test_py_lsp_stress.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_registry.c` | `file` | `engines/codebase-memory-mcp/tests/test_registry.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_archive_extractor_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_archive_extractor_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_candidate_derivation_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_candidate_derivation_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_release_gate_chain_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_release_gate_chain_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_route_canon.c` | `file` | `engines/codebase-memory-mcp/tests/test_route_canon.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_runtime_isolation_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_runtime_isolation_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_rust_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_rust_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_scope.c` | `file` | `engines/codebase-memory-mcp/tests/test_scope.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_script_exec_bit_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_script_exec_bit_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security.c` | `file` | `engines/codebase-memory-mcp/tests/test_security.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security_fuzz_harness.sh` | `file` | `engines/codebase-memory-mcp/tests/test_security_fuzz_harness.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_security_strings_allowlist.sh` | `file` | `engines/codebase-memory-mcp/tests/test_security_strings_allowlist.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_semantic.c` | `file` | `engines/codebase-memory-mcp/tests/test_semantic.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_shell_line_endings.sh` | `file` | `engines/codebase-memory-mcp/tests/test_shell_line_endings.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_simhash.c` | `file` | `engines/codebase-memory-mcp/tests/test_simhash.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_slab_alloc.c` | `file` | `engines/codebase-memory-mcp/tests/test_slab_alloc.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_smoke_fixture_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_smoke_fixture_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_soak_daemon_recovery_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_soak_daemon_recovery_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_spawn_no_window_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_spawn_no_window_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_sqlite_writer.c` | `file` | `engines/codebase-memory-mcp/tests/test_sqlite_writer.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_stack_overflow.c` | `file` | `engines/codebase-memory-mcp/tests/test_stack_overflow.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_arch.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_arch.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_bulk.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_bulk.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_checkpoint.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_checkpoint.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_edges.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_edges.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_nodes.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_nodes.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_pragmas.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_pragmas.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_store_search.c` | `file` | `engines/codebase-memory-mcp/tests/test_store_search.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_str_intern.c` | `file` | `engines/codebase-memory-mcp/tests/test_str_intern.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_str_util.c` | `file` | `engines/codebase-memory-mcp/tests/test_str_util.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_subprocess.c` | `file` | `engines/codebase-memory-mcp/tests/test_subprocess.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_traces.c` | `file` | `engines/codebase-memory-mcp/tests/test_traces.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ts_lsp.c` | `file` | `engines/codebase-memory-mcp/tests/test_ts_lsp.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_type_rep.c` | `file` | `engines/codebase-memory-mcp/tests/test_type_rep.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ui.c` | `file` | `engines/codebase-memory-mcp/tests/test_ui.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_ui_dev_proxy_security.sh` | `file` | `engines/codebase-memory-mcp/tests/test_ui_dev_proxy_security.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_userconfig.c` | `file` | `engines/codebase-memory-mcp/tests/test_userconfig.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vendored_integrity_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vendored_integrity_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_venue_parity_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_venue_parity_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_version_cohort.c` | `file` | `engines/codebase-memory-mcp/tests/test_version_cohort.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vm_worktree_manifest.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vm_worktree_manifest.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vmem.c` | `file` | `engines/codebase-memory-mcp/tests/test_vmem.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_candidate_selection_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_candidate_selection_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_gate_policy_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_gate_policy_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_vt_release_notes_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_vt_release_notes_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_watcher.c` | `file` | `engines/codebase-memory-mcp/tests/test_watcher.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_windows_bundle_contract.sh` | `file` | `engines/codebase-memory-mcp/tests/test_windows_bundle_contract.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_error_response.sh` | `file` | `engines/codebase-memory-mcp/tests/test_worker_error_response.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_pool.c` | `file` | `engines/codebase-memory-mcp/tests/test_worker_pool.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_worker_watchdog.sh` | `file` | `engines/codebase-memory-mcp/tests/test_worker_watchdog.sh` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_workspace.c` | `file` | `engines/codebase-memory-mcp/tests/test_workspace.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_yaml.c` | `file` | `engines/codebase-memory-mcp/tests/test_yaml.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/test_zstd.c` | `file` | `engines/codebase-memory-mcp/tests/test_zstd.c` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/mcp_stdio.py` | `file` | `engines/codebase-memory-mcp/tests/windows/mcp_stdio.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_cli_non_ascii_arg.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_cli_non_ascii_arg.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_daemon_lifecycle.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_daemon_lifecycle.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_daemon_stability.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_daemon_stability.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_hook_augment.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_hook_augment.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_non_ascii_cache_dump.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_non_ascii_cache_dump.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_non_ascii_path.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_non_ascii_path.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_ui_drive_listing.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_ui_drive_listing.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tests/windows/test_windows_update_handoff.py` | `file` | `engines/codebase-memory-mcp/tests/windows/test_windows_update_handoff.py` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/control_flow.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/control_flow.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/declarations.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/declarations.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/procedures.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-form/test/corpus/procedures.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/control_flow.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/control_flow.txt` | `direct_test_file` |
+| `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/functions.txt` | `file` | `engines/codebase-memory-mcp/tools/tree-sitter-magma/test/corpus/functions.txt` | `direct_test_file` |
+

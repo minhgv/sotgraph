@@ -1,0 +1,10 @@
+{
+  "archive_sha256": "9bd840dfb3ec7eaef4f310382057adaa5b0e904df883104d03ffcf39836afd07",
+  "members": [
+    {
+      "name": "codebase-memory-mcp",
+      "bytes": 297185328,
+      "sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf"
+    }
+  ]
+}

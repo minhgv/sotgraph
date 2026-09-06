@@ -1,0 +1,10 @@
+# SOT-Graph Commit History & Risk Assessment
+
+**Total Commits Analyzed:** 3 | 🔴 High Risk: 1 | 🟡 Medium Risk: 0 | 🟢 Low Risk: 2
+
+| Hash | Author | Date | Churn | Risk | Message | Reasons |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `0428c1b` | minhgv | 2026-09-06 | +11/-2 (1 files) | 🟢 **LOW** | docs(p4): record verified artifact runtime assembly | Small localized change with low churn |
+| `248a399` | minhgv | 2026-09-06 | +478/-0 (2 files) | 🔴 **HIGH** | feat(installation): assemble managed providers from verified artifacts | Moderate code churn (478 lines modified); Touches high-in-degree core symbol 'create_managed_installation' (15 incoming callers) |
+| `42440ab` | minhgv | 2026-09-06 | +39/-0 (1 files) | 🟢 **LOW** | docs(quality): record full suite and offline package validation | Small localized change with low churn |
+

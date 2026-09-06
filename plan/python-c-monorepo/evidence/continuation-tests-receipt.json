@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/continuation-tests.xml"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 178.03736133291386,
+  "scratch": "/var/folders/47/qlv2mtk93jv08t892fhbks680000gn/T/sot-cont-tests-zgrc3koz"
+}
