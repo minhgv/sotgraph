@@ -156,6 +156,26 @@ When requested to review or synthesize comprehensive architecture documentation 
 """
 
 
+def _update_omp_rules(path: Path) -> None:
+    """Update only the managed block; retain all unmarked (including legacy) rules."""
+    start_marker = b"<!-- BEGIN SOT-GRAPH OMP RULES -->"
+    end_marker = b"<!-- END SOT-GRAPH OMP RULES -->"
+    section = start_marker + b"\n" + RULES_MARKDOWN.rstrip().encode("utf-8") + b"\n" + end_marker
+    content = path.read_bytes() if path.exists() else b""
+    start = content.rfind(start_marker)
+    end = content.find(end_marker, start + len(start_marker)) if start >= 0 else -1
+    if start >= 0 and end >= 0:
+        updated = content[:start] + section + content[end + len(end_marker):]
+    else:
+        # Never infer ownership from a heading or an incomplete marker pair.
+        separator = b""
+        if content and not content.endswith(b"\n\n"):
+            separator = b"\n" if content.endswith(b"\n") else b"\n\n"
+        updated = content + separator + section + b"\n"
+    if updated != content:
+        path.write_bytes(updated)
+
+
 def setup_omp(root: Path, global_install: bool = True, workspace_install: bool = True) -> list[str]:
     """Configure OMP harness at workspace and/or global levels."""
     installed = []
@@ -181,7 +201,7 @@ def setup_omp(root: Path, global_install: bool = True, workspace_install: bool =
         installed.append(str(skill_dir / "SKILL.md"))
 
         # Write rules
-        (omp_dir / "RULES.md").write_text(RULES_MARKDOWN, encoding="utf-8")
+        _update_omp_rules(omp_dir / "RULES.md")
         installed.append(str(omp_dir / "RULES.md"))
         (rules_dir / "sot-graph.md").write_text(RULES_MARKDOWN, encoding="utf-8")
         installed.append(str(rules_dir / "sot-graph.md"))
@@ -204,7 +224,7 @@ def setup_omp(root: Path, global_install: bool = True, workspace_install: bool =
         (global_skill_dir / "SKILL.md").write_text(SKILL_MARKDOWN, encoding="utf-8")
         installed.append(str(global_skill_dir / "SKILL.md"))
 
-        (global_omp / "RULES.md").write_text(RULES_MARKDOWN, encoding="utf-8")
+        _update_omp_rules(global_omp / "RULES.md")
         installed.append(str(global_omp / "RULES.md"))
         (global_rules_dir / "sot-graph.md").write_text(RULES_MARKDOWN, encoding="utf-8")
         installed.append(str(global_rules_dir / "sot-graph.md"))
