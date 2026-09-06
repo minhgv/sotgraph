@@ -48,15 +48,14 @@ Nguồn: `evidence/p2-managed-acceptance.md` (201 dòng, ngày 2026-09-06) + `ev
 Yêu cầu G2 nguyên văn (`execution-plan.md` §3): query không đổi source/index generation/ledger; không đụng global daemon/config; cancellation confirm HOẶC unknown an toàn; no orphan writer báo success.
 
 - Đã có bằng chứng (scope hẹp): query read-only zero-mutation (full-hash invariant); isolation global (pgrep pre/post, global rendezvous untouched, user daemon không đụng); timeout → `cancellation_unknown` + quarantine persistent — **gate CHO PHÉP unknown an toàn; xác nhận terminal daemon KHÔNG bắt buộc**.
-- **2 gap G2 còn lại (chỉ 2, không bịa thêm):**
-  1. **Live acceptance của provider hiện tại:** measured native acceptance là executor-layer, TRƯỚC binding layer — cần 1 lần chạy live qua provider tại tip committed (`8131295`/`8d83f64`).
-  2. **Isolation/orphan unsafe-success proof theo định nghĩa gate:** bằng chứng có định nghĩa rằng không orphan writer nào báo success (hiện mới có hygiene pgrep delta 0).
+- **Gap "live provider acceptance": ĐÃ ĐÓNG (2026-09-06)** — native measured PASS exit 0, total 64.18s tại tip `8d83f64` qua provider binding: binding checks 4/4 true; prepare ok READY 6.133s; index ok 39.699s (no ledger binding); search ok UNBOUND `snapshot_bound=false` 17.915s; bytes WAL/SHM + ledger rows unchanged; native span 63.758 ≤ 120. n=1, 1 host, KHÔNG có global process inventory trong run; cancellation không đo lại (bằng chứng timeout executor `cancellation_unknown` + QUARANTINED vẫn hiện hành). Bằng chứng: `evidence/p2-provider-acceptance.md` + `evidence/p2-provider-acceptance-receipt.json` (sanitized, sha256-16 `9cbbaf6623a1285d`).
+- **Gap G2 còn lại (đúng 1, theo literal gate):** isolation/orphan unsafe-success proof — bằng chứng có định nghĩa rằng không orphan writer nào báo success, gồm global non-interference CÓ inventory tiến trình độc lập (run acceptance vừa rồi không có). Chỉ gap này chặn G2.
 - **Hạn chế giai đoạn sau — KHÔNG phải blocker G2:** 1 host macOS arm64 (đủ nếu khai báo scope host trung thực); public CLI/installer = phạm vi **P4/P5**, không phải điều kiện G2 (programmatic-only là đúng scope hiện tại); policy trust registry (self-binding) = quyết định maintainer về sau; G0-B3 + 11/15 native tool UNKNOWN = P3/later; SIGINT/non-daemon = việc khác, không thuộc G2.
 - Kết luận trung thực: **P2 code implemented + measured native subset PASS (1 host, executor layer); G2 = CHƯA PASS (đúng 2 gap trên), KHÔNG promote; P3 KHÔNG bắt đầu theo chuỗi promotion.**
 
 ## 7. Quyết định mở (cho maintainer/phiên sau)
 
-1. Đóng đúng 2 gap G2 (mục 6): live acceptance qua provider tại tip `8d83f64` + isolation/orphan unsafe-success proof; khai báo scope host trung thực (1 host đủ nếu honest).
+1. Còn đúng 1 gap G2 (mục 6): isolation/orphan unsafe-success proof (gồm global process inventory độc lập). Gap live provider acceptance ĐÃ ĐÓNG bằng `evidence/p2-provider-acceptance.md`; khai báo scope host trung thực (1 host đủ nếu honest).
 2. Rerun `evidence/p2-managed-acceptance-harness.py` (pinned `--binary`/`--root`) tại tip mới khi được phép chạy native.
 3. Surface công khai (CLI/installer) giữ hẹn P4/P5 — không thuộc điều kiện G2.
 4. Fix lint tồn: 2× E731 adversarial test + F401 `uuid` (không chạm production nếu làm).

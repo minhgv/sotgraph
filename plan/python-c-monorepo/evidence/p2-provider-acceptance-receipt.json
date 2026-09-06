@@ -1,0 +1,53 @@
+{
+ "binary_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+ "registry_ops": [
+  "config_get_auto_watch",
+  "config_set_auto_watch",
+  "index_repository",
+  "index_status",
+  "list_projects",
+  "search_graph"
+ ],
+ "sot_head": "76819f0d2d91077a7a4fce1428487e3443008beb",
+ "no_native_run_at_authoring": true,
+ "env_preflight": "7-key env + ui_enabled=false preseed, pre-native",
+ "provider_binding": {
+  "managed_is_runtime": true,
+  "repo_binding": true,
+  "exe_binding": true,
+  "exact_context_is_ctx": true
+ },
+ "prepare": {
+  "status": "ok",
+  "state": "READY",
+  "err": null
+ },
+ "index": {
+  "status": "ok",
+  "ledger_binding_row": false
+ },
+ "search": {
+  "ok": true,
+  "status": "ok",
+  "freshness": "UNBOUND",
+  "snapshot_bound": false
+ },
+ "query_no_mutation": {
+  "bytes_incl_wal_shm": true,
+  "ledger_rows": true
+ },
+ "budget": {
+  "per_stage": {
+   "p_prepare": 6.133,
+   "i_index": 39.699,
+   "q_search": 17.915
+  },
+  "elapsed_native_span_s": 63.758,
+  "budget_s": 120.0,
+  "reserves": {
+   "p_prepare": 62.0,
+   "i_index": 60.0,
+   "q_search": 32.0
+  }
+ }
+}
