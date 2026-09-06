@@ -18,20 +18,47 @@ def test_cli_register_status_disable_persist_without_native(trusted_lab, capsys)
                           "--registry", str(lab.registry), "--protocol", "cbm-cli-json-v1"]) == 0
     assert lab.path.exists()
     assert config.load_managed_installation(lab.repo, config_path=lab.path) is not None
-    assert main(prefix + ["config-status"]) == 0
-    assert isinstance(json.loads(capsys.readouterr().out.splitlines()[-1]), dict)
+    for action in ("config-status", "config-doctor"):
+        assert main(prefix + [action]) == 1
+        status = json.loads(capsys.readouterr().out.splitlines()[-1])
+        assert status["schema_version"] == 2
+        assert status["status"] == "enabled"
+        assert status["registration"] == "enabled"
+        assert status["runtime_status"] == "UNINITIALIZED"
+        assert status["reason"] == "runtime_uninitialized"
+        assert status["ready"] is False
+        assert status["query_permission"] == "not_assessed"
+        assert status["remediation"] == ["sot engine prepare", "sot engine probe", "sot engine sync"]
     assert main(prefix + ["disable"]) == 0
     assert config.load_managed_installation(lab.repo, config_path=lab.path) is None
     assert not lab.runtime.exists()
     assert not (lab.repo / ".sot").exists()
 
 
-def test_cli_default_off_does_not_create_config(trusted_lab):
+def test_cli_default_off_does_not_create_config(trusted_lab, capsys):
     lab = trusted_lab
     prefix = ["--root", str(lab.repo), "engine"]
     assert main(prefix + ["disable"]) == 0
-    assert main(prefix + ["config-status"]) in (0, 1)
+    assert main(prefix + ["config-status"]) == 0
+    assert main(prefix + ["config-doctor"]) == 0
+    status = json.loads(capsys.readouterr().out.splitlines()[-1])
+    assert status["schema_version"] == 2
+    assert status["status"] == "disabled"
+    assert status["registration"] == "missing"
+    assert status["ready"] is False
+    assert status["query_permission"] == "not_assessed"
     assert not lab.path.exists()
+    lab.path.write_bytes(b"{corrupt authority")
+    lab.path.chmod(0o600)
+    for action in ("config-status", "config-doctor"):
+        assert main(prefix + [action]) == 2
+        status = json.loads(capsys.readouterr().out.splitlines()[-1])
+        assert status["schema_version"] == 2
+        assert status["status"] == "refused"
+        assert status["reason"] == "config_refused"
+        assert status["ready"] is False
+        assert status["query_permission"] == "not_assessed"
+        assert lab.path.read_bytes() == b"{corrupt authority"
     assert not lab.runtime.exists()
     assert not (lab.repo / ".sot").exists()
 

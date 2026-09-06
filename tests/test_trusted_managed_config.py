@@ -266,8 +266,14 @@ def test_unsupported_platform_defaults_off_but_explicit_admin_refuses(trusted_la
             config.register_managed_installation(lab.repo, **lab.kwargs)
         with pytest.raises(config.TrustedConfigError, match="unsupported"):
             config.disable_managed_installation(lab.repo, config_path=lab.path)
-        with pytest.raises(config.TrustedConfigError, match="unsupported"):
-            config.managed_config_status(lab.repo, config_path=lab.path)
+        for options in ({}, {"config_path": lab.path}):
+            status = config.managed_config_status(lab.repo, **options)
+            assert status["schema_version"] == 2
+            assert status["status"] == "refused"
+            assert status["reason"] == "unsupported_platform"
+            assert status["ready"] is False
+            assert status["runtime_status"] == "NOT_ASSESSED"
+            assert status["query_permission"] == "not_assessed"
 
 
 @pytest.mark.parametrize("unsupported", ["os", "pwd"])
@@ -370,6 +376,13 @@ def test_malformed_unrelated_project_blocks_load_and_disable_without_rewriting(t
         with pytest.raises(config.TrustedConfigError):
             operation(lab.repo, config_path=lab.path)
         assert lab.path.read_bytes() == corrupt
+    status = config.managed_config_status(lab.repo, config_path=lab.path)
+    assert status["status"] == "refused"
+    assert status["reason"] == "config_refused"
+    assert status["ready"] is False
+    assert status["runtime_status"] == "NOT_ASSESSED"
+    assert status["query_permission"] == "not_assessed"
+    assert lab.path.read_bytes() == corrupt
     assert not lab.runtime.exists()
 
 

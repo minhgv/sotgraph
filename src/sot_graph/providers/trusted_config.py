@@ -294,9 +294,81 @@ def disable_managed_installation(repo_path, *, config_path=None) -> bool:
 
 
 def managed_config_status(repo_path, *, config_path=None) -> dict:
-    """Report validated opt-in, not runtime health or dispatch availability."""
-    installation = load_managed_installation(repo_path, config_path=config_path)
-    return {'schema_version': 1, 'status': 'enabled' if installation else 'disabled',
-            'enabled': installation is not None,
-            'artifact_digest': installation.artifact.digest if installation else None,
-            'lifecycle': 'not_started'}
+    """Read-only operational observation, never query authorization or repair.
+
+    Keep the strict dispatch loader separate: diagnostic failures are fixed
+    codes, not exception text or instructions sourced from native state.
+    """
+    from .artifacts import ArtifactError
+    from .runtime import ManagedRuntimeError
+
+    result = dict(schema_version=2, status='disabled', enabled=False,
+                  registration='unknown', reason=None, project_path=None,
+                  project_key=None, artifact_digest=None,
+                  current_artifact_digest=None, generation=None, namespace=None,
+                  runtime_status='NOT_ASSESSED', ready=False,
+                  query_permission='not_assessed', lifecycle='not_started',
+                  remediation=[])
+
+    def refuse(reason, *operations):
+        result.update(status='refused', enabled=False, ready=False, reason=reason,
+                      remediation=['sot engine ' + operation for operation in operations])
+        return result
+
+    if not _supported_platform():
+        return refuse('unsupported_platform', 'config-status')
+    try:
+        with _errors():
+            project, key, config = _location(repo_path, config_path)
+            result.update(project_path=project, project_key=key)
+            entry = _read(config)['projects'].get(key)
+    except TrustedConfigError:
+        return refuse('config_refused', 'config-status')
+    if entry is None or not entry['enabled']:
+        result.update(registration='missing' if entry is None else 'disabled',
+                      reason='registration_missing' if entry is None else 'registration_disabled',
+                      remediation=['sot engine register'])
+        return result
+    result.update(registration='enabled', artifact_digest=entry['artifact_digest'])
+    if entry['project_path'] != project:
+        return refuse('config_refused', 'config-status')
+    try:
+        selected = ArtifactStore(entry['store_path'], repo_path=project).resolve(entry['artifact_name'])
+        if selected is None:
+            return refuse('artifact_missing', 'promote', 'rollback', 'register', 'disable')
+        _path(selected.executable, private_file=True)
+        result['current_artifact_digest'] = selected.digest
+    except (ArtifactError, TrustedConfigError, OSError, ValueError, TypeError, KeyError,
+            RuntimeError, RecursionError):
+        return refuse('artifact_refused', 'promote', 'rollback', 'disable')
+    if selected.digest != entry['artifact_digest']:
+        return refuse('artifact_mismatch', 'register', 'rollback', 'disable')
+    try:
+        installation = _installation(entry, config)
+    except (ArtifactError, ManagedRuntimeError, OSError, ValueError, TypeError, KeyError,
+            RuntimeError, RecursionError):
+        return refuse('installation_incompatible', 'register', 'rollback', 'disable')
+    # _installation resolves again; never report a raced promotion as validated.
+    if installation.artifact.digest != entry['artifact_digest']:
+        return refuse('artifact_mismatch', 'register', 'rollback', 'disable')
+    result.update(generation=installation.profile.identity['generation'],
+                  namespace=str(installation.profile.namespace))
+    try:
+        runtime = installation.profile.status()
+    except (ManagedRuntimeError, OSError, ValueError, TypeError, KeyError,
+            RuntimeError, RecursionError):
+        return refuse('runtime_refused', 'runtime-status', 'register', 'disable')
+    state = runtime.get('state')
+    if state not in {'UNINITIALIZED', 'READY', 'SYNCING', 'QUARANTINED'}:
+        return refuse('runtime_refused', 'runtime-status', 'disable')
+    result['runtime_status'] = state
+    if state == 'QUARANTINED':
+        return refuse('runtime_quarantined', 'runtime-status', 'register', 'disable')
+    result.update(status='enabled', enabled=True, ready=state == 'READY',
+                  reason={'READY': 'runtime_ready', 'UNINITIALIZED': 'runtime_uninitialized',
+                          'SYNCING': 'runtime_syncing'}[state],
+                  remediation=['sot engine ' + operation for operation in
+                               ({'READY': ('probe', 'sync'),
+                                 'UNINITIALIZED': ('prepare', 'probe', 'sync'),
+                                 'SYNCING': ('runtime-status', 'disable')}[state])])
+    return result

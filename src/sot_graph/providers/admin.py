@@ -14,7 +14,7 @@ from sot_graph.locking import LockBusy
 
 def add_parser(subparsers):
     parser = subparsers.add_parser('engine', help='Explicit local engine artifact administration (experimental)')
-    parser.add_argument('--store', help='Private absolute store outside the repository (required except disable/config-status)')
+    parser.add_argument('--store', help='Private absolute store outside the repository (required except disable/config-status/config-doctor)')
     parser.add_argument('--name', default='codebase-memory')
     operations = parser.add_subparsers(dest='engine_action', required=True)
     install = operations.add_parser('import', help='Verify and stage an explicit local artifact; never activate automatically')
@@ -26,7 +26,8 @@ def add_parser(subparsers):
     operations.add_parser('status', help='Verify selected artifact without spawning an engine')
     operations.add_parser('doctor', help='Report artifact identity and experimental limitations')
     operations.add_parser('disable', help='Disable trusted project opt-in; preserve all stored data')
-    operations.add_parser('config-status', help='Read trusted project opt-in without starting the engine')
+    operations.add_parser('config-status', help='Read trusted binding and runtime readiness without starting the engine')
+    operations.add_parser('config-doctor', help='Alias for read-only trusted operational config-status')
     for action in ('register', 'prepare', 'probe', 'sync', 'search', 'runtime-status'):
         operation = operations.add_parser(action, help='Explicit managed SOT operation (experimental)')
         operation.add_argument('--runtime-root', required=True)
@@ -68,7 +69,7 @@ def verified_search(outcome, root, limit):
 def run(args, root):
     try:
         action = args.engine_action
-        if action in ('register', 'disable', 'config-status'):
+        if action in ('register', 'disable', 'config-status', 'config-doctor'):
             from .trusted_config import (
                 disable_managed_installation, managed_config_status,
                 register_managed_installation,
@@ -90,6 +91,10 @@ def run(args, root):
             else:
                 response = managed_config_status(root)
             print(json.dumps(response, sort_keys=True))
+            if action in ('config-status', 'config-doctor'):
+                if response['status'] == 'refused':
+                    return 2
+                return 0 if response['status'] == 'disabled' or response['ready'] else 1
             return 0
         if not args.store:
             raise ValueError('engine operation requires --store')
