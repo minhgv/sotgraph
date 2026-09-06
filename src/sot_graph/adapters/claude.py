@@ -136,7 +136,8 @@ def _append_agents_rules(agents_md_path: Path) -> None:
         return
 
     content = agents_md_path.read_text(encoding="utf-8")
-    if "SOT-Graph Knowledge Reuse Protocol" not in content:
+    if ("SOT-Graph Knowledge Reuse Protocol" not in content
+            and "# SOT-Graph Single Source of Truth Protocols & Rules for Agents" not in content):
         agents_md_path.write_text(f"{content.rstrip()}\n\n{protocol_text}\n", encoding="utf-8")
 
 def setup_claude(root: Path, global_install: bool = True, workspace_install: bool = True) -> list[str]:

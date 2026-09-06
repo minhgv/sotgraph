@@ -129,7 +129,7 @@ class McpReceiptToolsTests(unittest.TestCase):
             result = await client.call_tool(
                 "sot_scope_receipt", {"target": ""}
             )
-            self.assertFalse(result.isError)  # service error maps to payload
+            self.assertTrue(result.isError)  # service error retains its payload
             structured = result.structuredContent
             self.assertEqual(
                 structured.get("error", {}).get("code"), "invalid_argument"

@@ -584,6 +584,11 @@ def create_server(service: McpService) -> Any:
                 )
             else:
                 result = {"error": {"code": "unknown_tool", "message": "unknown MCP tool"}}
+                return types.CallToolResult(
+                    content=[types.TextContent(type="text", text=_json(result))],
+                    structuredContent=result,
+                    isError=True,
+                )
             result = sanitize_transport_value(result)
             content: list[Any] = [types.TextContent(type="text", text=_json(result))]
             # Resource Links: decouple search results from full node fetches.
@@ -603,9 +608,11 @@ def create_server(service: McpService) -> Any:
         except Exception as exc:
             err = _error(exc)
             _ensure_schema_shape(name, err, args)
-            if name in _SCHEMA_SHAPES:
-                return [types.TextContent(type="text", text=_json(err))], err
-            return [types.TextContent(type="text", text=_json(err))]
+            return types.CallToolResult(
+                content=[types.TextContent(type="text", text=_json(err))],
+                structuredContent=err if name in _SCHEMA_SHAPES else None,
+                isError=True,
+            )
 
     @server.list_prompts()
     async def list_prompts() -> list[Any]:
