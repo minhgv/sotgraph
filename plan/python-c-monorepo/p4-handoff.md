@@ -13,7 +13,7 @@ Session viết handoff này: **docs-only — không chạy test, không chạy n
 ## 2. Receipt đo thật (main, exit code thật — từ session code, KHÔNG chạy lại trong session docs này)
 
 - `.venv/bin/pytest tests/test_managed_artifacts.py -q -p no:cacheprovider` → **35 passed, 1 skipped, 0.36s, exit 0**.
-- Suite adjacent TRƯỚC khi thêm test file artifacts: **132 passed, 1 skipped, 8.04s** (receipt giữ nguyên, không rerun).
+- Suite adjacent có file artifacts, TRƯỚC khi thêm regression cuối về collision: **132 passed, 1 skipped, 8.04s** (receipt giữ nguyên, không rerun).
 - Ruff scoped trên `artifacts.py` + test file = **pass**. Review độc lập HOÀN TẤT: **4 repairs + collision guard** (guard = dest rỗng bị trồng trong lúc staging bị refuse và preserve).
 - **1 skip duy nhất:** test chown cần quyền root (`skipif geteuid != 0`) — skip đúng trên host dev không root.
 - **Zero spawn:** toàn bộ test mocked — không test nào gọi binary native thật, không network, không process con.
@@ -39,7 +39,16 @@ Session viết handoff này: **docs-only — không chạy test, không chạy n
 - **Không có auto-deletion:** store không bao giờ prune/xóa artifact cũ, pointer cũ, hay dữ liệu lạ trong root; promote fail giữ pointer cũ → rollback logic-side an toàn theo thiết kế.
 - Code rollback: `git revert 8ccfd1f` là self-contained (chỉ 2 file MỚI, không đụng code khác); không có migration hay state ngoài root admin (root do admin tạo, admin tự quản).
 
-## 6. Điều kiện resume
+## 6. Cập nhật integration — `248a399`
+
+- Thêm `providers/installation.py` và `tests/test_managed_installation.py`: factory `create_managed_installation` nối artifact đã promote/verify với exact compatibility context, profile, runtime và provider. API admin-local opt-in; không prepare, spawn, đọc cấu hình repo hay ghi ledger khi khởi tạo.
+- Protocol artifact `artifacts-v1` tách biệt native protocol được kiểm chứng qua registry. Thiếu identity/operation evidence hoặc artifact bị sửa thì fail-closed, không fallback legacy.
+- Kiểm tra repo thực tế, artifact store và runtime root không chứa nhau, trước khi resolve. Kiểm tra inode/ancestor bổ sung cho alias trên filesystem không phân biệt hoa thường; store dùng chung giữa các repo độc lập vẫn được phép.
+- Main chạy `.venv/bin/pytest tests/test_managed_installation.py tests/test_managed_artifacts.py tests/test_managed_runtime.py tests/test_managed_execution.py tests/test_cbm_managed_provider.py -q -p no:cacheprovider`: **165 passed, 2 skipped, exit 0, 8.21s**. Skip: root-only chown và trường hợp yêu cầu filesystem phân biệt hoa thường. Ruff hai file pass; reviewer độc lập không còn findings sau sửa path overlap/alias.
+- Full default suite trước integration tại `cf8d031`: **1,848 passed, 176 subtests passed, 3 skipped**, offline wheel/sdist build pass. Đây không phải full-suite receipt cho `248a399`; xem `evidence/branch-quality-gate.md`.
+- Không merge: `main` vẫn ở `319a442`; user yêu cầu tiếp tục trên feature branch. G4 vẫn BLOCKED theo mục 4; chưa có public lifecycle hay native packaging.
+
+## 7. Điều kiện resume
 
 1. Đọc `adr-p0-baseline.md` mục B4 + D làm khung: 5 mảnh G4 (source import/build/license/platform/surface) phải đóng tuần tự có bằng chứng; foundation `8ccfd1f` là điểm start.
 2. Source import: cần user quyết budget/topology TRƯỚC (không tự chốt); measurement mới phải tách source vs .git vs build vs cache, và ghi rõ dataset nào thuộc `46ae198f` nào thuộc `3c7427e`.
