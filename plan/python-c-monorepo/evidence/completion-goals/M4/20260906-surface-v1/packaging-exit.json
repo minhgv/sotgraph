@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-B",
+    "scripts/check_surface_packaging.py",
+    "--wheel",
+    "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/artifacts/sot_graph-0.3.2-py3-none-any.whl",
+    "--output-dir",
+    "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live"
+  ],
+  "exit": 0,
+  "commit": "297026742778d5aef2f9d47a0a65663bd4db8cc8",
+  "utc": "2026-09-06T09:27:43.395330+00:00"
+}

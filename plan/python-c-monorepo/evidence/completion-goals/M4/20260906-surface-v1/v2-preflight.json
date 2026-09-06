@@ -1,0 +1,21 @@
+{
+  "status": "PASS_SCOPED",
+  "tests": "14 passed",
+  "ruff": "passed",
+  "types_explicit_interpreter": "0 errors",
+  "types_default_invocation": "1 missing pytest import; corrected explicit interpreter clean",
+  "review": "agent_94016c0f-e1dd-4137-aa72-6218f9f98ac6 zero findings per authorized handoff",
+  "production_security": "unchanged; old overlapping layout still rejected by regression",
+  "graph": "AST heuristic bounded evidence; doctor healthy schema8; impact no mapped tests is not coverage proof",
+  "logs": {
+    "v2-search.json": "917f5cd4a5e1e38465d8958ae379caa7ea88d7c756e3de698c920fff3de767ce",
+    "v2-explore.json": "0f61f2fc54af538d0bd8079055e1f00011f77cf1f0499ddd506c60fa4e1ba98b",
+    "v2-usages.json": "a546ffbfd6808d5ffb427c0ddaf65af8a23bd571e207fc96802ea5bbeaab6738",
+    "v2-types.log": "d2030d79684b1aa834649fdb964e369d0f3bfccd448ae695722aaf18cc49c4e2",
+    "v2-types-explicit.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+    "v2-reconcile.log": "668c3832621ed9d27e5c247d43bce39c3d47c9e9478d57ce414eafaa8deac772",
+    "v2-doctor.log": "de9ee9d8569acf306c9f931e2a9cd5094ae0aa88e0bbbf26f29a432c2fd60502",
+    "v2-impact.log": "943fa9f15d60427f7448b93ddad1d4256acc3e0c73c3260c8f219afce51072c4"
+  },
+  "native_run": "NOT_STARTED"
+}

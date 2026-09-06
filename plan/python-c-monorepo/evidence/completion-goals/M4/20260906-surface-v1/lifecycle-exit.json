@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "-B",
+    "scripts/check_surface_lifecycle.py",
+    "--binary",
+    "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+    "--sha256",
+    "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+    "--native-commit",
+    "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+    "--registry",
+    "/private/tmp/a-u8mldiy1/registry.json",
+    "--protocol",
+    "p4-release-2412e017-measured-v1",
+    "--output-dir",
+    "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lifecycle-live",
+    "--exclusive-slot",
+    "MAIN_M4_20260906"
+  ],
+  "exit": 1,
+  "commit": "297026742778d5aef2f9d47a0a65663bd4db8cc8",
+  "utc": "2026-09-06T09:28:03.428887+00:00"
+}

@@ -1,0 +1,417 @@
+{
+  "scope": "offline Python wheel; generated configs, NOT live harness/native matrix",
+  "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "wheel": {
+    "sha256": "eeea22bfca6668fca8955918d40c53e6efb90a2bc990bce0c04bf77cc83099b0",
+    "entries": {
+      "sot": "sot_graph.cli:main"
+    },
+    "files": [
+      "sot_graph/__init__.py",
+      "sot_graph/claims.py",
+      "sot_graph/cli.py",
+      "sot_graph/config.py",
+      "sot_graph/db.py",
+      "sot_graph/diff_impact.py",
+      "sot_graph/envelope.py",
+      "sot_graph/evidence.py",
+      "sot_graph/extractor.py",
+      "sot_graph/ignore.py",
+      "sot_graph/locking.py",
+      "sot_graph/mcp_server.py",
+      "sot_graph/mcp_service.py",
+      "sot_graph/modutil.py",
+      "sot_graph/pack.py",
+      "sot_graph/parser_outcome.py",
+      "sot_graph/proc.py",
+      "sot_graph/provider_contract.py",
+      "sot_graph/providers_registry.py",
+      "sot_graph/receipt_explorer.py",
+      "sot_graph/reconciler.py",
+      "sot_graph/repo_map.py",
+      "sot_graph/snapshot.py",
+      "sot_graph/solution.py",
+      "sot_graph/tokenizer.py",
+      "sot_graph/trace.py",
+      "sot_graph/ts_extract.py",
+      "sot_graph/vector.py",
+      "sot_graph/verifier.py",
+      "sot_graph/watcher.py",
+      "sot_graph/_vendor/__init__.py",
+      "sot_graph/_vendor/graphify/__init__.py",
+      "sot_graph/_vendor/graphify/extract.py",
+      "sot_graph/adapters/AGENTS.md",
+      "sot_graph/adapters/__init__.py",
+      "sot_graph/adapters/antigravity.py",
+      "sot_graph/adapters/claude.py",
+      "sot_graph/adapters/hooks.py",
+      "sot_graph/adapters/installer.py",
+      "sot_graph/adapters/omp.py",
+      "sot_graph/adapters/omp_extension.ts",
+      "sot_graph/adapters/opencode.py",
+      "sot_graph/adapters/opencode_plugin.ts",
+      "sot_graph/adapters/zcode.py",
+      "sot_graph/analytics/__init__.py",
+      "sot_graph/analytics/architecture.py",
+      "sot_graph/analytics/bundle.py",
+      "sot_graph/analytics/conformance.py",
+      "sot_graph/analytics/diagnostics.py",
+      "sot_graph/analytics/graph.py",
+      "sot_graph/analytics/report.py",
+      "sot_graph/assurance/__init__.py",
+      "sot_graph/assurance/accounting.py",
+      "sot_graph/assurance/coverage.py",
+      "sot_graph/assurance/engine.py",
+      "sot_graph/assurance/identity.py",
+      "sot_graph/assurance/impact_pipeline.py",
+      "sot_graph/assurance/ledger.py",
+      "sot_graph/assurance/orchestrator.py",
+      "sot_graph/assurance/receipts.py",
+      "sot_graph/assurance/routing.py",
+      "sot_graph/assurance/state.py",
+      "sot_graph/export/__init__.py",
+      "sot_graph/export/d3.v7.min.js",
+      "sot_graph/export/exporter.py",
+      "sot_graph/export/html.py",
+      "sot_graph/export/scip.py",
+      "sot_graph/holdout/__init__.py",
+      "sot_graph/holdout/evaluator.py",
+      "sot_graph/holdout/splits.py",
+      "sot_graph/importer/__init__.py",
+      "sot_graph/importer/scip.py",
+      "sot_graph/providers/__init__.py",
+      "sot_graph/providers/admin.py",
+      "sot_graph/providers/artifacts.py",
+      "sot_graph/providers/base.py",
+      "sot_graph/providers/codebase_memory.py",
+      "sot_graph/providers/compatibility.py",
+      "sot_graph/providers/contract.py",
+      "sot_graph/providers/cross_check.py",
+      "sot_graph/providers/identity_join.py",
+      "sot_graph/providers/installation.py",
+      "sot_graph/providers/lifecycle.py",
+      "sot_graph/providers/managed.py",
+      "sot_graph/providers/normalization.py",
+      "sot_graph/providers/runtime.py",
+      "sot_graph/providers/scip.py",
+      "sot_graph/providers/trusted_config.py",
+      "sot_graph/providers/verification.py",
+      "sot_graph/templates/ARCHITECTURE_TEMPLATE.md",
+      "sot_graph-0.3.2.dist-info/licenses/LICENSE",
+      "sot_graph-0.3.2.dist-info/METADATA",
+      "sot_graph-0.3.2.dist-info/WHEEL",
+      "sot_graph-0.3.2.dist-info/entry_points.txt",
+      "sot_graph-0.3.2.dist-info/top_level.txt",
+      "sot_graph-0.3.2.dist-info/RECORD"
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+        "-m",
+        "venv",
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-deps",
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/artifacts/sot_graph-0.3.2-py3-none-any.whl"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "Processing /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/artifacts/sot_graph-0.3.2-py3-none-any.whl\nInstalling collected packages: sot-graph\nSuccessfully installed sot-graph-0.3.2\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "No broken requirements found.\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/python",
+        "-c",
+        "import importlib.metadata as m; d=m.distribution(\"sot-graph\"); print(d.read_text(\"RECORD\"))"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "../../../bin/sot,sha256=83WHzeg-5WXxaAOg3Toh3bzFy6bHYF0cctahblWdEe0,286\nsot_graph-0.3.2.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4\nsot_graph-0.3.2.dist-info/METADATA,sha256=C3QapFagYZLbHJe-EuTAvUH_Q3tqq_JgBqRDLx4DOvY,29122\nsot_graph-0.3.2.dist-info/RECORD,,\nsot_graph-0.3.2.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0\nsot_graph-0.3.2.dist-info/WHEEL,sha256=aeYiig01lYGDzBgS8HxWXOg3uV61G9ijOsup-k9o1sk,91\nsot_graph-0.3.2.dist-info/direct_url.json,sha256=8N5fFOoZwTWtFOhqgQNd_cj_hnKFIO6rGRMIKWLgvRk,363\nsot_graph-0.3.2.dist-info/entry_points.txt,sha256=wMUgPE-MSIngcYBYTmELltGok1VER4_uJKrsiefwNoc,43\nsot_graph-0.3.2.dist-info/licenses/LICENSE,sha256=7DniCadoXEFOa59uNgxGVeFuIrV15Y3Hr1YAT94uhqE,1066\nsot_graph-0.3.2.dist-info/top_level.txt,sha256=Gr2nEBQvYAjzLO-wT0fSYQIqNCx2j4lw1Ru-8yODCQA,10\nsot_graph/__init__.py,sha256=_AsO2ZU8e5JTcrD8xP1RLEgZapJUgpZpgaiudKgYUuA,602\nsot_graph/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/__pycache__/claims.cpython-314.pyc,,\nsot_graph/__pycache__/cli.cpython-314.pyc,,\nsot_graph/__pycache__/config.cpython-314.pyc,,\nsot_graph/__pycache__/db.cpython-314.pyc,,\nsot_graph/__pycache__/diff_impact.cpython-314.pyc,,\nsot_graph/__pycache__/envelope.cpython-314.pyc,,\nsot_graph/__pycache__/evidence.cpython-314.pyc,,\nsot_graph/__pycache__/extractor.cpython-314.pyc,,\nsot_graph/__pycache__/ignore.cpython-314.pyc,,\nsot_graph/__pycache__/locking.cpython-314.pyc,,\nsot_graph/__pycache__/mcp_server.cpython-314.pyc,,\nsot_graph/__pycache__/mcp_service.cpython-314.pyc,,\nsot_graph/__pycache__/modutil.cpython-314.pyc,,\nsot_graph/__pycache__/pack.cpython-314.pyc,,\nsot_graph/__pycache__/parser_outcome.cpython-314.pyc,,\nsot_graph/__pycache__/proc.cpython-314.pyc,,\nsot_graph/__pycache__/provider_contract.cpython-314.pyc,,\nsot_graph/__pycache__/providers_registry.cpython-314.pyc,,\nsot_graph/__pycache__/receipt_explorer.cpython-314.pyc,,\nsot_graph/__pycache__/reconciler.cpython-314.pyc,,\nsot_graph/__pycache__/repo_map.cpython-314.pyc,,\nsot_graph/__pycache__/snapshot.cpython-314.pyc,,\nsot_graph/__pycache__/solution.cpython-314.pyc,,\nsot_graph/__pycache__/tokenizer.cpython-314.pyc,,\nsot_graph/__pycache__/trace.cpython-314.pyc,,\nsot_graph/__pycache__/ts_extract.cpython-314.pyc,,\nsot_graph/__pycache__/vector.cpython-314.pyc,,\nsot_graph/__pycache__/verifier.cpython-314.pyc,,\nsot_graph/__pycache__/watcher.cpython-314.pyc,,\nsot_graph/_vendor/__init__.py,sha256=QUYEs9oSm2Xfc5Sda1Xed7osZDfRYMK_GYVtrU2GLZ8,88\nsot_graph/_vendor/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/_vendor/graphify/__init__.py,sha256=2lL6_9Ker6ZgUstrvN1f3pVZ3n0td60cByNRta1pozE,552\nsot_graph/_vendor/graphify/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/_vendor/graphify/__pycache__/extract.cpython-314.pyc,,\nsot_graph/_vendor/graphify/extract.py,sha256=nXvQ5tFvRtRRlbY-mZRfaToJsHF1dJC0KIS5chckqno,69931\nsot_graph/adapters/AGENTS.md,sha256=ev0sDxA7Jk8XjHt_dwH264ZIjkPK_-oQlyUKOyFCXJA,5944\nsot_graph/adapters/__init__.py,sha256=-1kHT7PzrlWBmoGsyK2ilZhtxG9gbJECslJ78l-YJjE,364\nsot_graph/adapters/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/antigravity.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/claude.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/hooks.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/installer.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/omp.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/opencode.cpython-314.pyc,,\nsot_graph/adapters/__pycache__/zcode.cpython-314.pyc,,\nsot_graph/adapters/antigravity.py,sha256=bGsS0wbRTcB_h71zOL5c5_L5cObdoKNiDheTp6p7few,12609\nsot_graph/adapters/claude.py,sha256=yGUIRj3SNuU46j7sjKpUhPOPBgpjoUMVBOY0J7k0c4o,9603\nsot_graph/adapters/hooks.py,sha256=E_zvXBpLLlMI8cXGVNzaYu62V5ZYlOwQqv3roHawCPc,1996\nsot_graph/adapters/installer.py,sha256=2hPEjx4HiQn2PFvZhoDGgaTdpqIvOuV88GmGfSEIeug,2651\nsot_graph/adapters/omp.py,sha256=eBfANWdbZEdwZFde_aF7ImzWZmJgfxfbbA8FSxxwacM,15702\nsot_graph/adapters/omp_extension.ts,sha256=JOCGJ62UDpnMKaosacbS_blWgPf1xBen6eW9XOQfJa4,43397\nsot_graph/adapters/opencode.py,sha256=BBfvK7mRoL54LExQVc6RUt2aVn5OWfCB06rsM25_czs,12498\nsot_graph/adapters/opencode_plugin.ts,sha256=Oxxpq8kgqBithvFMGL9T1-jutmlb0Ec9I97nRc-hQsQ,7611\nsot_graph/adapters/zcode.py,sha256=ZnzSpjGesq73oGxc1Lyf-WbWfFawFBkjbYfoA_eptoQ,15972\nsot_graph/analytics/__init__.py,sha256=dTMWGleSs8vBySG0Xlhjyrgmpf1lPGT23vdmwSRFN6g,1248\nsot_graph/analytics/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/architecture.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/bundle.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/conformance.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/diagnostics.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/graph.cpython-314.pyc,,\nsot_graph/analytics/__pycache__/report.cpython-314.pyc,,\nsot_graph/analytics/architecture.py,sha256=d74mafvmazu-sn4QZDXKr2vDdnf-uJXatstOLU-bee0,51769\nsot_graph/analytics/bundle.py,sha256=gOUcwT6FwHzTye6UMNZwIUDW1iDugEYHdM8MJbSdzjs,21389\nsot_graph/analytics/conformance.py,sha256=fGf24zxy4iz8gCxZnkdnFOytmru3-lRXE66fokwwADY,8599\nsot_graph/analytics/diagnostics.py,sha256=O2E9z8__oC0OLTJk9tE2wegk-AdoWvKDZpOv6ugG9jU,11210\nsot_graph/analytics/graph.py,sha256=OiAgw86G0pwXK83EdWOPkEx8YQcSNJfPCGf2GL2ohjY,35205\nsot_graph/analytics/report.py,sha256=ZJ6kDm32NccdxQPbgvewEm7xXOjtwDUk2PmTkj0NRVY,25823\nsot_graph/assurance/__init__.py,sha256=XYrAER0jruZFwMjkNO2zNarKuzwrQo34yO9m0yO3H4A,2589\nsot_graph/assurance/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/accounting.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/coverage.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/engine.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/identity.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/impact_pipeline.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/ledger.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/orchestrator.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/receipts.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/routing.cpython-314.pyc,,\nsot_graph/assurance/__pycache__/state.cpython-314.pyc,,\nsot_graph/assurance/accounting.py,sha256=4y-bNJeILh3myweXKj46YWbWLQu_3ynIYf2u3WYWSKA,14854\nsot_graph/assurance/coverage.py,sha256=PbrA6HqKyqYw-1uMi7w5-ggud8-W750-gVv71HFq3HU,35565\nsot_graph/assurance/engine.py,sha256=u-e_FbfaMYsVGYQn1X6V6dzF2SYGTq952tJDFu7i11k,4617\nsot_graph/assurance/identity.py,sha256=SdJBi03ZcxCHpRisv5CqylXdUTuTUD0gu29pWhuqNcw,7598\nsot_graph/assurance/impact_pipeline.py,sha256=MBROX49doKrpRTk-vkW66H-34SY__pxTlp6-Q2kzWHI,20174\nsot_graph/assurance/ledger.py,sha256=P1QkJZZgSujy6ohKdTdgv9czTzlxmzieXcz-lVbhjl4,12224\nsot_graph/assurance/orchestrator.py,sha256=rgGfY3Jf89kEYA0WeVcn4AUOO8xb2tayWmtccQH9gGI,41038\nsot_graph/assurance/receipts.py,sha256=OmRHzmWYXxLjEzTLmP-BFbtRGA-0KE-qSrMSAlvt-aw,55920\nsot_graph/assurance/routing.py,sha256=hiJ9dr4dYeF4m1KLUXyNb6WocYI5ytCkO_3pWs7l2Zo,3073\nsot_graph/assurance/state.py,sha256=IUNhdGe5Jl2OTIVT-AX4WNLnXp-aakY0pRc7QdMt8ko,9762\nsot_graph/claims.py,sha256=4Uf2K83GMDgxtcKqhs8wAmvC6_QCUOKRpDz06hPTyTA,20042\nsot_graph/cli.py,sha256=L0V6UdYTMsUrXzWwaMvmwRMs2KXqlbOYQfsSh7NqtWI,123951\nsot_graph/config.py,sha256=Klo0QbSSk9QNzO428zgpQmWV9JwUyCFOXjT0zuYOvC0,10702\nsot_graph/db.py,sha256=F6O0-mAP2eSrav3Ejv3j5n6sGBP7sGLxUxKmqiJXN8o,155279\nsot_graph/diff_impact.py,sha256=PZoNcJgULoQervvucVyp4Pb8lhA_JVBCjqwAoHW--Dg,66518\nsot_graph/envelope.py,sha256=993F73zy9q0minohMdCJrLp6z_xlY23JreKzN4kU308,6634\nsot_graph/evidence.py,sha256=f7X1aIXu06GO7Vvj9noGUpigUgdPVS4HLGxotFxQgk8,11028\nsot_graph/export/__init__.py,sha256=Qu2KxxPwbNDoB6Cr-KEti3Ud6IkmA1lZSjjBv3TC12E,386\nsot_graph/export/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/export/__pycache__/exporter.cpython-314.pyc,,\nsot_graph/export/__pycache__/html.cpython-314.pyc,,\nsot_graph/export/__pycache__/scip.cpython-314.pyc,,\nsot_graph/export/d3.v7.min.js,sha256=8glLv2FBs1lyLE_kVOtsSw8OQswQzHr5IfwVj864ZTk,279706\nsot_graph/export/exporter.py,sha256=KtD5auUJSsRPaPVJDJJ6HPdIiQUxFXCoocH4lpqOk0A,11424\nsot_graph/export/html.py,sha256=sMWdOBxw9M7Uxj1DLukv6lj5xPOhAz2kV2XHqc7Xu0s,17604\nsot_graph/export/scip.py,sha256=tJKTFJzkkKpol66UjTVUz6c0Eu6KSMfihayKPKGpcmY,7216\nsot_graph/extractor.py,sha256=FvG2IqTNdINNRNYVC_a5YeQtiOD-EuaGWOgm4jU654k,17914\nsot_graph/holdout/__init__.py,sha256=Uk4jDhEZq2QDAnMft5VvrEacbmssLHK3tP1EbbhFkK0,420\nsot_graph/holdout/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/holdout/__pycache__/evaluator.cpython-314.pyc,,\nsot_graph/holdout/__pycache__/splits.cpython-314.pyc,,\nsot_graph/holdout/evaluator.py,sha256=cESKsuv8q3JxiFA4CKevQqzWeAzNezyYApQvYXr6g0Q,18101\nsot_graph/holdout/splits.py,sha256=6y0oyT9ay8T5GEXOd3fjJbPQesjaKOxFZf9UMeDK1os,10609\nsot_graph/ignore.py,sha256=Qjz-TBLbS9XpeLX47Shnjzlne9rs43ljKLzOMkxjcTg,10243\nsot_graph/importer/__init__.py,sha256=Jso7zh0HzY6Ezmm56qO1psRJDvRQuMc5BnHlDC5pTyo,272\nsot_graph/importer/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/importer/__pycache__/scip.cpython-314.pyc,,\nsot_graph/importer/scip.py,sha256=FcMnChlmuY_keFEZrevfPY4TYFq2m4t0WIZOy-G9K10,41266\nsot_graph/locking.py,sha256=dfgwvW0bz8H37YteBCujePr5TMUSNUUtp1U2bMDbgzQ,7804\nsot_graph/mcp_server.py,sha256=vWSta-DniFMRaAozBpbAVWJsYVt0l-7qfR0byFcahMw,41233\nsot_graph/mcp_service.py,sha256=tQNXZYVs6Mv2j4r41Z8X7_9Dl2dBJURFG-1So0UFqpY,87445\nsot_graph/modutil.py,sha256=FGH2IxrXDqQRSH0rE_xmNEAx7ggIYTTO2_nmKK4dPVo,5272\nsot_graph/pack.py,sha256=VA8bpZDIqr6dqJrNjusbDA7lL8ArWQ7o8LlzWKBuYwQ,55381\nsot_graph/parser_outcome.py,sha256=MvZwGDaP4b5yjlH116w4-WkeGJl5yJ7UyxVs1r8fxT4,2707\nsot_graph/proc.py,sha256=aZv-02pVZV1dg-5UyRp0zLqV1GALzPlQYwANyrgv25o,14405\nsot_graph/provider_contract.py,sha256=gZBByRZHxGy9lF2Q2RTbZY8jRizm6FR6Z959f3SVNpU,8696\nsot_graph/providers/__init__.py,sha256=rbAVoHXnnMARRqhlKTgZCGFx5Lwgu1aurU-kx6Dg6ZY,816\nsot_graph/providers/__pycache__/__init__.cpython-314.pyc,,\nsot_graph/providers/__pycache__/admin.cpython-314.pyc,,\nsot_graph/providers/__pycache__/artifacts.cpython-314.pyc,,\nsot_graph/providers/__pycache__/base.cpython-314.pyc,,\nsot_graph/providers/__pycache__/codebase_memory.cpython-314.pyc,,\nsot_graph/providers/__pycache__/compatibility.cpython-314.pyc,,\nsot_graph/providers/__pycache__/contract.cpython-314.pyc,,\nsot_graph/providers/__pycache__/cross_check.cpython-314.pyc,,\nsot_graph/providers/__pycache__/identity_join.cpython-314.pyc,,\nsot_graph/providers/__pycache__/installation.cpython-314.pyc,,\nsot_graph/providers/__pycache__/lifecycle.cpython-314.pyc,,\nsot_graph/providers/__pycache__/managed.cpython-314.pyc,,\nsot_graph/providers/__pycache__/normalization.cpython-314.pyc,,\nsot_graph/providers/__pycache__/runtime.cpython-314.pyc,,\nsot_graph/providers/__pycache__/scip.cpython-314.pyc,,\nsot_graph/providers/__pycache__/trusted_config.cpython-314.pyc,,\nsot_graph/providers/__pycache__/verification.cpython-314.pyc,,\nsot_graph/providers/admin.py,sha256=sKLBjFxHU_dy41PBc_TnqwFrbAyXo48AzDqW1mzKNOE,11628\nsot_graph/providers/artifacts.py,sha256=BSTVTjFngfxt1EAKrBP6fc17BFLcFpGS8W7jh-NHDBo,23489\nsot_graph/providers/base.py,sha256=G2kIh6w7VhOxa1aYXcsColdpIn9h7iN-WLL8EFNahxA,6440\nsot_graph/providers/codebase_memory.py,sha256=K8faoBvaWAvwEti7bWBkTS-fOmg0uQipL-F4uzmZ-V4,101404\nsot_graph/providers/compatibility.py,sha256=QzsrQ8OMsvFAq-qK6rtWBuAnggRiMJrdSAkZEuLKiNo,20465\nsot_graph/providers/contract.py,sha256=HU9QtY-rRcBQ-21ZQltTSMxUKrUW85mfHpqrPO1ZfNg,7496\nsot_graph/providers/cross_check.py,sha256=2heVzSpTqQjLFtS-uWkNPjki9eSQam4MNNuLU1gvZes,21989\nsot_graph/providers/identity_join.py,sha256=Eprzn502zDydP13tTX_17UYrxiYCQRaE0TFWRFgepXU,15201\nsot_graph/providers/installation.py,sha256=m5Xuo0pBRb_EeEoh8XcIyAUZjHN2xdJJhlinV2Pd_XQ,6403\nsot_graph/providers/lifecycle.py,sha256=nR55F3ujYXwAqVBUaZY7WJB7UoAqzIbCPI1wKn44K4U,4033\nsot_graph/providers/managed.py,sha256=JPmDYBZKY11Y-qzV4Ps-4VNnxEohNIjQQiggs7D1dMQ,30169\nsot_graph/providers/normalization.py,sha256=r0-RXzw6L1a26vQc12ZAyhkWBKSeCA842-BoR4S80wQ,15313\nsot_graph/providers/runtime.py,sha256=udf9waFgBdt-JVivxSJy7diXe1_NSE7ZdEYKPnkDSh4,22005\nsot_graph/providers/scip.py,sha256=O7UlzCLCzVRcPWtSWjKCBstgyU8HV6AmfKIhR5XK_Os,22768\nsot_graph/providers/trusted_config.py,sha256=IKdp_tsuu9tEFK7UGyCu5sK6jVxtdjndBeRKrU_K1I4,17304\nsot_graph/providers/verification.py,sha256=PWDp7mvOT3Q1EGN-OVW-qA_uNUof3xxA80wXARtus40,12791\nsot_graph/providers_registry.py,sha256=_ee4AHh37zMAZT5GmO2YWbxxe7bgr6xxK8ccQUBFe34,17938\nsot_graph/receipt_explorer.py,sha256=81IhV-LdCn7frV43Mj9ehsjOCQ8DAwmypvogwhkcJ5U,25974\nsot_graph/reconciler.py,sha256=Sxn8kEOp4EFi3TfNhq_dyJx66RYHxitOM5EgHPrgCYA,35591\nsot_graph/repo_map.py,sha256=lvhzMWqVwxdh2xdb42gL4SI4-IvDsBgP8V0v35quwJM,17134\nsot_graph/snapshot.py,sha256=fD-dVbMuuMvmAIUIO6oTfvW3bnE0BJ_7l0duOyXpaKA,13271\nsot_graph/solution.py,sha256=_FjUaxaNYDL4NSPxK0RFTaRL-i6p8wAyrf0IovS0AyY,29814\nsot_graph/templates/ARCHITECTURE_TEMPLATE.md,sha256=L95ThpABdBTqM3_iu4KyVMCcqBqsFBhx-OSstfMQZrk,12519\nsot_graph/tokenizer.py,sha256=EiMKWSgvac73gMXthQgrZugmxwm6eH9GVE_6RJYzEFc,3365\nsot_graph/trace.py,sha256=jGSUhdLnibOe0m_4aWOP-ozT0dazwbwYRwgF42VwNTY,26663\nsot_graph/ts_extract.py,sha256=bXuq2u_NSz0Jy8M64_8GH8uSFZmwiu_Ni93xzYx0NIc,45033\nsot_graph/vector.py,sha256=oJF857z1eRnLYVoLI-NCFqvOcoXYeR9sGbbfTD6ztbM,13962\nsot_graph/verifier.py,sha256=i8Arkae5XNX2A1E9ZYvK3Mo5MCi7cOI_Lop1tJPGxFs,30797\nsot_graph/watcher.py,sha256=M32GzsNuE2xFkdmplctxxXVWh8k8Xhfu9YtZrhF5lMg,33143\n\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "--help"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "usage: sot [-h] [-V] [--root ROOT] [--db DB]\n           {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits} ...\n\nsot-graph: Verified, self-healing knowledge graph for AI coding agents.\n\npositional arguments:\n  {engine,search,embed,explore,usages,implementations,rename,map,insert,reconcile,batch-reconcile,verify,doctor,clean,vacuum,mcp,report,cluster,viz,export,bundle,setup,pack,watch,trace,import-scip,ui-tree,be-flow,solution,scope-receipt,receipt,providers,diff-impact,claims,log,commits}\n    engine              Explicit local engine artifact administration\n                        (experimental)\n    search              Ranked search with Trust Verdicts\n    embed               Build/refresh the optional vector index ([vector]\n                        extra)\n    explore             Explore AST relations and cross-file edges\n    usages              List every reference site of a symbol, grouped by\n                        caller\n    implementations     Show extends/implements relationships of a symbol\n    rename              Report-only impact plan for renaming a symbol\n    map                 Token-budgeted repo map ranked by personalized\n                        PageRank\n    insert              Insert a reusable piece of knowledge or decision\n    reconcile           Idempotently sync graph with filesystem\n    batch-reconcile     Batch reconcile multiple repositories concurrently\n    verify              Check for drift between graph and filesystem (CI-safe)\n    doctor              Check database and graph health statistics\n    clean               Remove stale or reset graph data safely\n    vacuum              Compact the SQLite database\n    mcp                 Run the optional MCP stdio server\n    report              Generate comprehensive architectural markdown report\n    cluster             Detect and inspect architectural communities/clusters\n    viz                 Generate standalone interactive HTML graph visualizer\n    export              Export knowledge graph to GraphRAG JSON, Obsidian,\n                        GraphML, or SCIP\n    bundle              Extract 5 high-density fact bundle markdown files for\n                        LLM architecture reports\n    setup               Configure AI coding harnesses (OMP / Pi, OpenCode,\n                        Antigravity, Claude, ZCode)\n    pack                Package a k-hop ContextBundle (YAML) for AI agent\n                        prompt registers\n    watch               Watch filesystem and reconcile in real time (daemon &\n                        multi-project support)\n    trace               Extract Full-Stack execution path, UI decisions, API\n                        binding, and Mermaid diagrams\n    import-scip         Import compiler-backed SCIP index into Multi-Provider\n                        Evidence Storage\n    ui-tree             Extract local Frontend UI decision tree, validation\n                        rules, and modals\n    be-flow             Extract Backend processing steps, multi-datasources,\n                        and exception branches\n    solution            Automated Solution Architecture and Manpower\n                        Estimation Engine\n    scope-receipt       PRE-change bounded evidence receipt for one edit\n                        target\n    receipt             Human-readable view of serialized assurance receipts\n                        (read-only, SG-205)\n    providers           Detect, list, and diagnose evidence providers (read-\n                        only)\n    diff-impact         Git diff blast radius, upstream caller traversal, and\n                        API impact analysis\n    claims              Lint public trust claims in docs against the claim\n                        registry (SG-110)\n    log (commits)       Inspect git commit history with automated risk scoring\n                        and impacted symbols\n\noptions:\n  -h, --help            show this help message and exit\n  -V, --version         show program's version number and exit\n  --root ROOT           Project root directory (default: current dir)\n  --db DB               Custom SQLite DB path (default: .sot/sot.db)\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "omp",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[OMP] (4 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "omp",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[OMP] (4 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "opencode",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[OPENCODE] (2 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/opencode.json\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "opencode",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[OPENCODE] (2 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/opencode.json\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "antigravity",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[ANTIGRAVITY] (3 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/settings.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "antigravity",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[ANTIGRAVITY] (3 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/settings.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "claude",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[CLAUDE] (4 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.mcp.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.cursor/mcp.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "claude",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[CLAUDE] (4 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.mcp.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.cursor/mcp.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "zcode",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[ZCODE] (11 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/config.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-search.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-map.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-explore.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-usages.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-rename.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-pack.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-bundle.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-diff-impact.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-log.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/sot",
+        "setup",
+        "--harness",
+        "zcode",
+        "--workspace-only"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "\ud83d\ude80 Configured 1 harness(es):\n\n[ZCODE] (11 files)\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/config.json\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/skills/sot-graph/SKILL.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-search.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-map.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-explore.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-usages.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-rename.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-pack.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-bundle.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-diff-impact.md\n  \u2713 /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/zcode/.zcode/commands/sot-log.md\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    },
+    {
+      "argv": [
+        "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/venv/bin/python",
+        "-m",
+        "pip",
+        "uninstall",
+        "--yes",
+        "sot-graph"
+      ],
+      "state": "finished",
+      "exit": 0,
+      "stdout": "Found existing installation: sot-graph 0.3.2\nUninstalling sot-graph-0.3.2:\n  Successfully uninstalled sot-graph-0.3.2\n",
+      "stderr": "",
+      "timed_out": false,
+      "truncated": false,
+      "error": null
+    }
+  ],
+  "home_before": {
+    ".config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+    "bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e"
+  },
+  "native_engine_digest": null,
+  "blocked": [
+    "native upgrades/races/rollback",
+    "live harness loading",
+    "OS process/network/listener audit",
+    "upstream native installer execution",
+    "descendants that escape their process group"
+  ],
+  "bin_added": [
+    "sot"
+  ],
+  "omp": {
+    ".omp/RULES.md": "cc0de1ddbeef1514ca2a2bb70979a3bcb7a41c3a8004d6db4cc11b929ce85241",
+    ".omp/extensions/sot-graph.ts": "24e08627ad940e99cc29aa2c69c6d2fdb95680f7f5c417a7e9e5bd5ce41f25ae",
+    ".omp/rules/sot-graph.md": "15cfe5fa866e2e21b1805c000f5e094a07350c0da392bbb309f50e562a63c13f",
+    ".omp/skills/sot-graph/SKILL.md": "b61cf36df970d13a48c7268f453db7b9a7e25c45d481b1e850d01425d7fe455e"
+  },
+  "opencode": {
+    ".opencode/opencode.json": "0d630fadee091f8964ec8e4dc0cae9ce75254cd64fa34912ad4f7665a226b7df",
+    ".opencode/skills/sot-graph/SKILL.md": "d3148515edaf05c9d0e2f5080d18ba6b48960cbe3aa0280dbd77935b45a0b1e3"
+  },
+  "antigravity": {
+    ".gemini/GEMINI.md": "6a042c4b61aa6612ac9b13996434dc7d4e49e2233dadea667905311d2eb4a226",
+    ".gemini/settings.json": "890755667de0de46a9e5785db105ec5c5bc52722afadacd3d8d75a4aecb1236a",
+    ".gemini/skills/sot-graph/SKILL.md": "0e065238bea8c73206114eb5013c3ee4b3a404e97f37e3f812940ce6e47c8c22"
+  },
+  "claude": {
+    ".claude/CLAUDE.md": "dcfec621af01231fe912ad6975330b5279790add034ca73ef0f6df737a9b5ebe",
+    ".cursor/mcp.json": "890755667de0de46a9e5785db105ec5c5bc52722afadacd3d8d75a4aecb1236a",
+    ".mcp.json": "890755667de0de46a9e5785db105ec5c5bc52722afadacd3d8d75a4aecb1236a",
+    "AGENTS.md": "ae31f1825920ae7cdee234742688eda088423209e5c409f56db29f1d1b2b06e0"
+  },
+  "zcode": {
+    ".zcode/commands/sot-bundle.md": "16a3e01c8b757e8cb7d7d9a90e02ca90e8f271542d1b23ade6be6ea9a1f0f2ee",
+    ".zcode/commands/sot-diff-impact.md": "5c0b5a69fefcd951ceefd4d20870536713719264a891f71b83e9c1aa8f7feb3c",
+    ".zcode/commands/sot-explore.md": "eda96842420162956cf8143fdf21c0532ac3d0e596d8cafabb8c55b33fef0f65",
+    ".zcode/commands/sot-log.md": "b66b8aa025254a1732fcf5d6ee304a5f528d6a411d2faf080e9b5b8528a01b5c",
+    ".zcode/commands/sot-map.md": "233d2785787d5736740d5ac8d9aac5361f65236ba949df71f540596f3d72f206",
+    ".zcode/commands/sot-pack.md": "6ee261f7fc50ed3ebffbc921cca7ea60f4b10264d23949523a7c693409b45dc3",
+    ".zcode/commands/sot-rename.md": "7c60cc94151a75b412451a7425261e066065919ef0b5662c4f8a8a86e73a8647",
+    ".zcode/commands/sot-search.md": "d67862149ed7623171cd451bf8207019b8dc8873d3dcc72e201c52c2ac27a04d",
+    ".zcode/commands/sot-usages.md": "6b023e44d536eda741f294cdd4c93bc249f1dd099b8dd695f5598c057f174101",
+    ".zcode/config.json": "2b341453277270e9a8c39eeeaba3f73427c8b30128b42c8c26b3cd7a9a5e022f",
+    ".zcode/skills/sot-graph/SKILL.md": "45927e894d7def550a9c13e4db81e71c037d3b6966a04c062ad5b99e886073cc"
+  },
+  "result": "PASS_SCOPED",
+  "home_after": {
+    ".config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+    "bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:f1387e12016ff72d0f28875041b491b877cee080e7753612dd7b351dee00250a",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "symbol": "Runner",
+    "node_id": "sym:4c8737ef674c:Runner",
+    "status": "COMPLETE",
+    "completeness": "COMPLETE",
+    "resolved_count": 1,
+    "unresolved_count": 0,
+    "callers": [
+      {
+        "caller_id": "sym:4c8737ef674c:main",
+        "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "sites": [
+          {
+            "relation": "calls",
+            "line": 275
+          }
+        ]
+      }
+    ],
+    "risk": [],
+    "confirmed": [
+      {
+        "caller_id": "sym:4c8737ef674c:main",
+        "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "sites": [
+          {
+            "relation": "calls",
+            "line": 275
+          }
+        ]
+      }
+    ],
+    "unresolved": [],
+    "next_steps": [],
+    "snapshot": {
+      "snapshot_id": null,
+      "descriptor_digest": "sha256:1fef9103474cd65cf40b72d96679a4b8b536bea1394f56db43af76cf91f24c18",
+      "role": "query",
+      "commit_sha": "297026742778d5aef2f9d47a0a65663bd4db8cc8",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:9bb1cc98ec03a48669a31e2fb09f9de3335abd59cb9f6e0b4b29d608d94f5ca5",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "captured_at": 1788687448,
+      "content_digests": {
+        "scripts/check_surface_lifecycle.py": "6512bab6ef8e34222db9f0a05faf5f33f6fe43b9f3e217bce3afc53e65a490eb"
+      },
+      "scope_digest": "sha256:1cdcb5bad1395f069ce7fa5c822ec965b80626c2ea2a550413b750ea24387cb1"
+    },
+    "stale_files": []
+  },
+  "symbol": "Runner",
+  "node_id": "sym:4c8737ef674c:Runner",
+  "status": "COMPLETE",
+  "resolved_count": 1,
+  "unresolved_count": 0,
+  "callers": [
+    {
+      "caller_id": "sym:4c8737ef674c:main",
+      "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "sites": [
+        {
+          "relation": "calls",
+          "line": 275
+        }
+      ]
+    }
+  ],
+  "risk": [],
+  "confirmed": [
+    {
+      "caller_id": "sym:4c8737ef674c:main",
+      "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "sites": [
+        {
+          "relation": "calls",
+          "line": 275
+        }
+      ]
+    }
+  ],
+  "unresolved": [],
+  "next_steps": [],
+  "snapshot": {
+    "snapshot_id": null,
+    "descriptor_digest": "sha256:1fef9103474cd65cf40b72d96679a4b8b536bea1394f56db43af76cf91f24c18",
+    "role": "query",
+    "commit_sha": "297026742778d5aef2f9d47a0a65663bd4db8cc8",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:9bb1cc98ec03a48669a31e2fb09f9de3335abd59cb9f6e0b4b29d608d94f5ca5",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "captured_at": 1788687448,
+    "content_digests": {
+      "scripts/check_surface_lifecycle.py": "6512bab6ef8e34222db9f0a05faf5f33f6fe43b9f3e217bce3afc53e65a490eb"
+    },
+    "scope_digest": "sha256:1cdcb5bad1395f069ce7fa5c822ec965b80626c2ea2a550413b750ea24387cb1"
+  },
+  "stale_files": []
+}
