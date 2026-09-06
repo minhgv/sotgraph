@@ -1,0 +1,2975 @@
+receipt stored: .sot/receipts/ef034de2315234ba6046ca681ffaeb7e0b2782d51937a4318fd6b3d3c1471bc9.json
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:4965d54cde943bdd1dbca583ab8baebca12da961610adf1106da9e93663200ff",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "schema_version": "1.7",
+    "kind": "diff_impact",
+    "proof_scope": "post_change",
+    "diff_identity": {
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true
+    },
+    "changed_files": [
+      "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+      "plan/python-c-monorepo/trusted-opt-in-runbook.md",
+      "plan/remaining-work-phased-plan-2026-09-05.md"
+    ],
+    "changed_files_total": 14,
+    "changed_files_truncated": false,
+    "direct_nodes": [
+      {
+        "id": "file:d4eccf465188",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+        "kind": "file",
+        "symbol": "completion-goal-plan-2026-09-06.md",
+        "fqn": "plan.python-c-monorepo.completion-goal-plan-2026-09-06.md",
+        "label": "File: plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+        "line_start": 1,
+        "line_end": 169,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            3,
+            3
+          ],
+          [
+            125,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "file:cb49e46a47b5",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+        "kind": "file",
+        "symbol": "GEMINI.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.antigravity..gemini.GEMINI.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+        "line_start": 1,
+        "line_end": 55,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            54
+          ]
+        ]
+      },
+      {
+        "id": "file:be622d3aef31",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+        "kind": "file",
+        "symbol": "SKILL.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.antigravity..gemini.skills.sot-graph.SKILL.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+        "line_start": 1,
+        "line_end": 66,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            65
+          ]
+        ]
+      },
+      {
+        "id": "file:2921aa4305fd",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+        "kind": "file",
+        "symbol": "CLAUDE.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.claude..claude.CLAUDE.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+        "line_start": 1,
+        "line_end": 86,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            85
+          ]
+        ]
+      },
+      {
+        "id": "file:751daf8e4b6f",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+        "kind": "file",
+        "symbol": "AGENTS.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.claude.AGENTS.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+        "line_start": 1,
+        "line_end": 81,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            80
+          ]
+        ]
+      },
+      {
+        "id": "file:04cd346a2e40",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+        "kind": "file",
+        "symbol": "RULES.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.RULES.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+        "line_start": 1,
+        "line_end": 88,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            87
+          ]
+        ]
+      },
+      {
+        "id": "file:ad41170192cb",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "file",
+        "symbol": "sot-graph.ts",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "line_start": 1,
+        "line_end": 1037,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:environmentValue",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "environmentValue",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.environmentValue",
+        "label": "def environmentValue \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:32",
+        "line_start": 32,
+        "line_end": 37,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:pathDelimiter",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "pathDelimiter",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.pathDelimiter",
+        "label": "def pathDelimiter \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:39",
+        "line_start": 39,
+        "line_end": 39,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:canonicalPath",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "canonicalPath",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.canonicalPath",
+        "label": "def canonicalPath \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:41",
+        "line_start": 41,
+        "line_end": 47,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:canonicalExistingPath",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "canonicalExistingPath",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.canonicalExistingPath",
+        "label": "def canonicalExistingPath \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:49",
+        "line_start": 49,
+        "line_end": 55,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:isWithin",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "isWithin",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.isWithin",
+        "label": "def isWithin \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:57",
+        "line_start": 57,
+        "line_end": 62,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:commandEnvironment",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "commandEnvironment",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.commandEnvironment",
+        "label": "def commandEnvironment \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:64",
+        "line_start": 64,
+        "line_end": 98,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:windowsPathSuffixes",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "windowsPathSuffixes",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.windowsPathSuffixes",
+        "label": "def windowsPathSuffixes \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:100",
+        "line_start": 100,
+        "line_end": 107,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:isExecutableFile",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "isExecutableFile",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.isExecutableFile",
+        "label": "def isExecutableFile \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:109",
+        "line_start": 109,
+        "line_end": 117,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:ToolResult",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "class",
+        "symbol": "ToolResult",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.ToolResult",
+        "label": "class ToolResult \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:119",
+        "line_start": 119,
+        "line_end": 122,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:ExtensionAPI",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "class",
+        "symbol": "ExtensionAPI",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.ExtensionAPI",
+        "label": "class ExtensionAPI \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:124",
+        "line_start": 124,
+        "line_end": 134,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:runCmd",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "runCmd",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.runCmd",
+        "label": "def runCmd \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:136",
+        "line_start": 136,
+        "line_end": 161,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:resolveSotBinary",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "resolveSotBinary",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.resolveSotBinary",
+        "label": "def resolveSotBinary \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:163",
+        "line_start": 163,
+        "line_end": 201,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:sotGraphExtension",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "sotGraphExtension",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.sotGraphExtension",
+        "label": "def sotGraphExtension \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:204",
+        "line_start": 204,
+        "line_end": 1036,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:getSotBin",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "getSotBin",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.getSotBin",
+        "label": "def getSotBin \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:205",
+        "line_start": 205,
+        "line_end": 205,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:execute",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "method",
+        "symbol": "execute",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.execute",
+        "label": "def execute \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:225",
+        "line_start": 225,
+        "line_end": 235,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "sym:ad41170192cb:triggerReconcile",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+        "kind": "function",
+        "symbol": "triggerReconcile",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.triggerReconcile",
+        "label": "def triggerReconcile \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:939",
+        "line_start": 939,
+        "line_end": 965,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            1036
+          ]
+        ]
+      },
+      {
+        "id": "file:089b7829741c",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+        "kind": "file",
+        "symbol": "sot-graph.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.rules.sot-graph.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+        "line_start": 1,
+        "line_end": 86,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            85
+          ]
+        ]
+      },
+      {
+        "id": "file:37a03089bcba",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+        "kind": "file",
+        "symbol": "SKILL.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.skills.sot-graph.SKILL.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+        "line_start": 1,
+        "line_end": 62,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            61
+          ]
+        ]
+      },
+      {
+        "id": "file:587c03d41de0",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+        "kind": "file",
+        "symbol": "SKILL.md",
+        "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.opencode..opencode.skills.sot-graph.SKILL.md",
+        "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+        "line_start": 1,
+        "line_end": 119,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            118
+          ]
+        ]
+      },
+      {
+        "id": "file:051819ccb3cb",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/trusted-opt-in-runbook.md",
+        "kind": "file",
+        "symbol": "trusted-opt-in-runbook.md",
+        "fqn": "plan.python-c-monorepo.trusted-opt-in-runbook.md",
+        "label": "File: plan/python-c-monorepo/trusted-opt-in-runbook.md",
+        "line_start": 1,
+        "line_end": 133,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            5,
+            5
+          ],
+          [
+            115,
+            115
+          ],
+          [
+            121,
+            121
+          ]
+        ]
+      },
+      {
+        "id": "file:7b2e2b978702",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+        "kind": "file",
+        "symbol": "remaining-work-phased-plan-2026-09-05.md",
+        "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+        "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+        "line_start": 1,
+        "line_end": 149,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            148
+          ]
+        ]
+      }
+    ],
+    "caller_impacts": [
+      {
+        "id": "sym:0430ca2f393f:McpService.providers_sync",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.providers_sync",
+        "fqn": "sot_graph.mcp_service.McpService.providers_sync",
+        "label": "def providers_sync \u2014 src/sot_graph/mcp_service.py:233",
+        "line_start": 233,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService._providers",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService._providers",
+        "fqn": "sot_graph.mcp_service.McpService._providers",
+        "label": "def _providers \u2014 src/sot_graph/mcp_service.py:417",
+        "line_start": 417,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.search.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.search.op",
+        "fqn": "sot_graph.mcp_service.McpService.search.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:812",
+        "line_start": 812,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.explore.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.explore.op",
+        "fqn": "sot_graph.mcp_service.McpService.explore.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:923",
+        "line_start": 923,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService._resolve_target_row",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService._resolve_target_row",
+        "fqn": "sot_graph.mcp_service.McpService._resolve_target_row",
+        "label": "def _resolve_target_row \u2014 src/sot_graph/mcp_service.py:1000",
+        "line_start": 1000,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.notes.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.notes.op",
+        "fqn": "sot_graph.mcp_service.McpService.notes.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:1187",
+        "line_start": 1187,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.graph_generation.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.graph_generation.op",
+        "fqn": "sot_graph.mcp_service.McpService.graph_generation.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:1209",
+        "line_start": 1209,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.node.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.node.op",
+        "fqn": "sot_graph.mcp_service.McpService.node.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:1223",
+        "line_start": 1223,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.verify_drift.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.verify_drift.op",
+        "fqn": "sot_graph.mcp_service.McpService.verify_drift.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:1235",
+        "line_start": 1235,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:0430ca2f393f:McpService.stats.op",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+        "kind": "method",
+        "symbol": "McpService.stats.op",
+        "fqn": "sot_graph.mcp_service.McpService.stats.op",
+        "label": "def op \u2014 src/sot_graph/mcp_service.py:1273",
+        "line_start": 1273,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "kind": "method",
+        "symbol": "SotGraphStateMachine.insert_user_note",
+        "fqn": "tests.property.test_invariants.SotGraphStateMachine.insert_user_note",
+        "label": "def insert_user_note \u2014 tests/property/test_invariants.py:125",
+        "line_start": 125,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "kind": "method",
+        "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "label": "def invariant_1_freshness_reflects_physical_disk_sha \u2014 tests/property/test_invariants.py:156",
+        "line_start": 156,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "kind": "method",
+        "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "label": "def invariant_2_context_pack_token_budget_bound \u2014 tests/property/test_invariants.py:203",
+        "line_start": 203,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "kind": "method",
+        "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "label": "def invariant_3_zero_mixed_snapshot_generations \u2014 tests/property/test_invariants.py:233",
+        "line_start": 233,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "kind": "method",
+        "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "label": "def invariant_4_user_notes_preserved \u2014 tests/property/test_invariants.py:299",
+        "line_start": 299,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "kind": "method",
+        "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "label": "def test_db_preserve_notes_on_schema_reset_and_clean \u2014 tests/test_hardening_fixes.py:31",
+        "line_start": 31,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "kind": "method",
+        "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "label": "def test_db_clean_deletes_auxiliary_tables \u2014 tests/test_hardening_fixes.py:52",
+        "line_start": 52,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "kind": "method",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+        "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_pack_token_budget_cap",
+        "label": "def test_pack_token_budget_cap \u2014 tests/test_hardening_fixes.py:141",
+        "line_start": 141,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "kind": "method",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "label": "def test_pack_token_budget_convergence_tight_and_small \u2014 tests/test_hardening_fixes.py:179",
+        "line_start": 179,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+        "kind": "method",
+        "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "fqn": "tests.test_pack_sg202_priority.SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "label": "def test_accounting_invariants_under_budget \u2014 tests/test_pack_sg202_priority.py:182",
+        "line_start": 182,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+        "kind": "method",
+        "symbol": "RepoMapTests._node_id",
+        "fqn": "tests.test_repo_map.RepoMapTests._node_id",
+        "label": "def _node_id \u2014 tests/test_repo_map.py:82",
+        "line_start": 82,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+        "kind": "method",
+        "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "fqn": "tests.test_sg202_pack_completeness.SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "label": "def test_accounting_node_cap_discovered_returned_omitted \u2014 tests/test_sg202_pack_completeness.py:152",
+        "line_start": 152,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:_reference_explore_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "function",
+        "symbol": "_reference_explore_node",
+        "fqn": "tests.test_sprint4_compass_and_pack._reference_explore_node",
+        "label": "def _reference_explore_node \u2014 tests/test_sprint4_compass_and_pack.py:31",
+        "line_start": 31,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests._add_node",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests._add_node",
+        "label": "def _add_node \u2014 tests/test_sprint4_compass_and_pack.py:96",
+        "line_start": 96,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests._add_edge",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests._add_edge",
+        "label": "def _add_edge \u2014 tests/test_sprint4_compass_and_pack.py:104",
+        "line_start": 104,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "fqn": "tests.test_sprint4_compass_and_pack.Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "label": "def test_db_explore_node_hop_separation \u2014 tests/test_sprint4_compass_and_pack.py:269",
+        "line_start": 269,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "fqn": "tests.test_sprint4_compass_and_pack.Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "label": "def test_atomic_rehome_content_hash \u2014 tests/test_sprint4_compass_and_pack.py:374",
+        "line_start": 374,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:ad41170192cb:execute",
+        "callee_symbol": "execute"
+      },
+      {
+        "id": "sym:081f2612ac35:TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+        "kind": "method",
+        "symbol": "TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+        "fqn": "tests.test_p6_ledger.TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+        "label": "def test_providers_sync_records_run_and_evidence \u2014 tests/test_p6_ledger.py:223",
+        "line_start": 223,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:0430ca2f393f:McpService.providers_sync",
+        "callee_symbol": "McpService.providers_sync"
+      },
+      {
+        "id": "sym:1e037f5c17d0:RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+        "kind": "method",
+        "symbol": "RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+        "fqn": "tests.test_repo_map.RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+        "label": "def test_focus_personalization_promotes_focused_symbol \u2014 tests/test_repo_map.py:55",
+        "line_start": 55,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+        "callee_symbol": "RepoMapTests._node_id"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+        "label": "def test_deep_chain_matches_reference \u2014 tests/test_sprint4_compass_and_pack.py:114",
+        "line_start": 114,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+        "callee_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+        "label": "def test_wide_fanout_across_chunks_matches_reference \u2014 tests/test_sprint4_compass_and_pack.py:127",
+        "line_start": 127,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+        "callee_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+        "label": "def test_random_graphs_match_reference_across_depths_and_limits \u2014 tests/test_sprint4_compass_and_pack.py:166",
+        "line_start": 166,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+        "callee_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "kind": "method",
+        "symbol": "ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+        "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+        "label": "def test_hop_bound_and_limit_respected \u2014 tests/test_sprint4_compass_and_pack.py:189",
+        "line_start": 189,
+        "depth": 2,
+        "via_relation": "calls",
+        "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+        "callee_symbol": "_reference_explore_node"
+      }
+    ],
+    "test_impacts": [
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.insert_user_note",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+        "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+        "symbol": "RepoMapTests._node_id",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+        "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:_reference_explore_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "_reference_explore_node",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests._add_node",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests._add_edge",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:081f2612ac35:TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+        "symbol": "TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "McpService.providers_sync"
+      },
+      {
+        "id": "sym:1e037f5c17d0:RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+        "symbol": "RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "RepoMapTests._node_id"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "_reference_explore_node"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.insert_user_note",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+        "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+        "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:_reference_explore_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "_reference_explore_node",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests._add_node",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "ExploreNodeLevelBatchTests._add_edge",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+        "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+        "symbol": "RepoMapTests._node_id",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+        "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      },
+      {
+        "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+        "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "execute"
+      }
+    ],
+    "api_impacts": [],
+    "tests_to_run": [
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py"
+    ],
+    "invalidated_evidence": [],
+    "invalidated_evidence_dead_count": 0,
+    "collection_stats": {
+      "changed_files": {
+        "enumerated_count": 14,
+        "returned_count": 14,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "invalidated_evidence": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 50,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_runs": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_union": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 5000,
+        "truncated": false,
+        "cursor_exhausted": true
+      }
+    },
+    "post_change_snapshot": {
+      "snapshot_id": null,
+      "descriptor_digest": "sha256:8980a612b52f9f5c739860d2e5f59858fefd9f5be8b1952cf7b80b32d3d498d5",
+      "role": "post_change",
+      "commit_sha": "dddc903da93633c9bfcf4255a525aed34c83d483",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:a28d22a553645f0032b70bdf73f5240df384824b701940519a91c02953b97014",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "captured_at": 1788688100,
+      "content_digests": {
+        "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md": "bd585b448a1081e06bc6558155c5cf1973b104e30c8d38a399f4a9f4f6eb3a48",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md": "6a042c4b61aa6612ac9b13996434dc7d4e49e2233dadea667905311d2eb4a226",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md": "0e065238bea8c73206114eb5013c3ee4b3a404e97f37e3f812940ce6e47c8c22",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md": "dcfec621af01231fe912ad6975330b5279790add034ca73ef0f6df737a9b5ebe",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md": "ae31f1825920ae7cdee234742688eda088423209e5c409f56db29f1d1b2b06e0",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md": "cc0de1ddbeef1514ca2a2bb70979a3bcb7a41c3a8004d6db4cc11b929ce85241",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts": "24e08627ad940e99cc29aa2c69c6d2fdb95680f7f5c417a7e9e5bd5ce41f25ae",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md": "15cfe5fa866e2e21b1805c000f5e094a07350c0da392bbb309f50e562a63c13f",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md": "b61cf36df970d13a48c7268f453db7b9a7e25c45d481b1e850d01425d7fe455e",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md": "d3148515edaf05c9d0e2f5080d18ba6b48960cbe3aa0280dbd77935b45a0b1e3",
+        "plan/python-c-monorepo/trusted-opt-in-runbook.md": "03d09a0bd100439922530f80e2deafbb1727552ffd8643518c348d13b3ab35c7",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+      },
+      "scope_digest": "sha256:d1196bfa5e59b0d8740b8895710f8d376e632cb80b43f8904fd8d584e442204d"
+    },
+    "reconcile": {
+      "required": true,
+      "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+    },
+    "summary": {
+      "total_changed_files": 14,
+      "total_hunks": 17,
+      "total_direct_nodes": 28,
+      "total_callers": 33,
+      "total_apis": 0,
+      "total_tests": 40,
+      "risk_score": 80,
+      "risk_level": "HIGH",
+      "execution_time_ms": 79.47
+    },
+    "pre_receipt_digest": null,
+    "pre_change_snapshot": {
+      "descriptor_digest": "sha256:641ef45110304788856b4451e21252b9a4d28194ca080f7635a6873687d4397e",
+      "role": "pre_change",
+      "commit_sha": "dddc903da93633c9bfcf4255a525aed34c83d483",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:a28d22a553645f0032b70bdf73f5240df384824b701940519a91c02953b97014",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "content_digests": {
+        "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md": "bd585b448a1081e06bc6558155c5cf1973b104e30c8d38a399f4a9f4f6eb3a48",
+        "plan/python-c-monorepo/trusted-opt-in-runbook.md": "03d09a0bd100439922530f80e2deafbb1727552ffd8643518c348d13b3ab35c7",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md": "6a042c4b61aa6612ac9b13996434dc7d4e49e2233dadea667905311d2eb4a226",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md": "0e065238bea8c73206114eb5013c3ee4b3a404e97f37e3f812940ce6e47c8c22",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md": "dcfec621af01231fe912ad6975330b5279790add034ca73ef0f6df737a9b5ebe",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md": "ae31f1825920ae7cdee234742688eda088423209e5c409f56db29f1d1b2b06e0",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md": "cc0de1ddbeef1514ca2a2bb70979a3bcb7a41c3a8004d6db4cc11b929ce85241",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts": "24e08627ad940e99cc29aa2c69c6d2fdb95680f7f5c417a7e9e5bd5ce41f25ae",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md": "15cfe5fa866e2e21b1805c000f5e094a07350c0da392bbb309f50e562a63c13f",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md": "b61cf36df970d13a48c7268f453db7b9a7e25c45d481b1e850d01425d7fe455e",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md": "d3148515edaf05c9d0e2f5080d18ba6b48960cbe3aa0280dbd77935b45a0b1e3",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+      },
+      "scope_digest": "sha256:d1196bfa5e59b0d8740b8895710f8d376e632cb80b43f8904fd8d584e442204d"
+    },
+    "remaining_gaps": [],
+    "warnings": [],
+    "closure_decision": "open",
+    "omp_confirmations_remaining": [],
+    "assurance_facts": {
+      "identity_status": "UNIQUE",
+      "snapshot_bound": true,
+      "collection_error": false,
+      "stale_files": [
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp"
+      ],
+      "coverage_measured": false,
+      "coverage_fraction": null,
+      "coverage_floor": 0.9,
+      "parser_failures": 0,
+      "unresolved_count": 0,
+      "unresolved_budget": 0,
+      "open_conflicts": 0,
+      "truncated": false,
+      "truncation_sources": [],
+      "enumeration_complete": null,
+      "parser_capability_complete": null,
+      "partial_ast_present": false,
+      "provider_capability_ok": true,
+      "absence_claim": false,
+      "gate_blocked": false,
+      "dynamic_dispatch_unresolved": false,
+      "claim_profile": "scoped"
+    },
+    "assurance": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources"
+      ],
+      "decision": {
+        "status": "STALE",
+        "reason_codes": [
+          "stale_sources"
+        ]
+      }
+    },
+    "digest": "ef034de2315234ba6046ca681ffaeb7e0b2782d51937a4318fd6b3d3c1471bc9",
+    "request": {
+      "schema_version": "impact-request/1",
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true,
+      "depth": 2,
+      "auto_reconcile": false,
+      "reconcile_provenance": "pipeline"
+    },
+    "projection": {
+      "collections": [
+        {
+          "key": "changed_files",
+          "enumerated_count": 14,
+          "returned_count": 14,
+          "truncated": false,
+          "cap": 200,
+          "cursor_exhausted": true
+        },
+        {
+          "key": "direct_nodes",
+          "enumerated_count": 28,
+          "returned_count": 28,
+          "truncated": false
+        },
+        {
+          "key": "caller_impacts",
+          "enumerated_count": 33,
+          "returned_count": 33,
+          "truncated": false
+        },
+        {
+          "key": "test_impacts",
+          "enumerated_count": 40,
+          "returned_count": 40,
+          "truncated": false
+        },
+        {
+          "key": "api_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "tests_to_run",
+          "enumerated_count": 7,
+          "returned_count": 7,
+          "truncated": false
+        }
+      ],
+      "next_cursor": null
+    },
+    "stale_files": []
+  },
+  "kind": "diff_impact",
+  "proof_scope": "post_change",
+  "diff_identity": {
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true
+  },
+  "changed_files": [
+    "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+    "plan/python-c-monorepo/trusted-opt-in-runbook.md",
+    "plan/remaining-work-phased-plan-2026-09-05.md"
+  ],
+  "changed_files_total": 14,
+  "changed_files_truncated": false,
+  "direct_nodes": [
+    {
+      "id": "file:d4eccf465188",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+      "kind": "file",
+      "symbol": "completion-goal-plan-2026-09-06.md",
+      "fqn": "plan.python-c-monorepo.completion-goal-plan-2026-09-06.md",
+      "label": "File: plan/python-c-monorepo/completion-goal-plan-2026-09-06.md",
+      "line_start": 1,
+      "line_end": 169,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          3,
+          3
+        ],
+        [
+          125,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "file:cb49e46a47b5",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+      "kind": "file",
+      "symbol": "GEMINI.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.antigravity..gemini.GEMINI.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md",
+      "line_start": 1,
+      "line_end": 55,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          54
+        ]
+      ]
+    },
+    {
+      "id": "file:be622d3aef31",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+      "kind": "file",
+      "symbol": "SKILL.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.antigravity..gemini.skills.sot-graph.SKILL.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md",
+      "line_start": 1,
+      "line_end": 66,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          65
+        ]
+      ]
+    },
+    {
+      "id": "file:2921aa4305fd",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+      "kind": "file",
+      "symbol": "CLAUDE.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.claude..claude.CLAUDE.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md",
+      "line_start": 1,
+      "line_end": 86,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          85
+        ]
+      ]
+    },
+    {
+      "id": "file:751daf8e4b6f",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+      "kind": "file",
+      "symbol": "AGENTS.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.claude.AGENTS.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md",
+      "line_start": 1,
+      "line_end": 81,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          80
+        ]
+      ]
+    },
+    {
+      "id": "file:04cd346a2e40",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+      "kind": "file",
+      "symbol": "RULES.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.RULES.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md",
+      "line_start": 1,
+      "line_end": 88,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          87
+        ]
+      ]
+    },
+    {
+      "id": "file:ad41170192cb",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "file",
+      "symbol": "sot-graph.ts",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "line_start": 1,
+      "line_end": 1037,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:environmentValue",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "environmentValue",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.environmentValue",
+      "label": "def environmentValue \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:32",
+      "line_start": 32,
+      "line_end": 37,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:pathDelimiter",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "pathDelimiter",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.pathDelimiter",
+      "label": "def pathDelimiter \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:39",
+      "line_start": 39,
+      "line_end": 39,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:canonicalPath",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "canonicalPath",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.canonicalPath",
+      "label": "def canonicalPath \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:41",
+      "line_start": 41,
+      "line_end": 47,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:canonicalExistingPath",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "canonicalExistingPath",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.canonicalExistingPath",
+      "label": "def canonicalExistingPath \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:49",
+      "line_start": 49,
+      "line_end": 55,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:isWithin",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "isWithin",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.isWithin",
+      "label": "def isWithin \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:57",
+      "line_start": 57,
+      "line_end": 62,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:commandEnvironment",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "commandEnvironment",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.commandEnvironment",
+      "label": "def commandEnvironment \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:64",
+      "line_start": 64,
+      "line_end": 98,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:windowsPathSuffixes",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "windowsPathSuffixes",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.windowsPathSuffixes",
+      "label": "def windowsPathSuffixes \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:100",
+      "line_start": 100,
+      "line_end": 107,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:isExecutableFile",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "isExecutableFile",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.isExecutableFile",
+      "label": "def isExecutableFile \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:109",
+      "line_start": 109,
+      "line_end": 117,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:ToolResult",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "class",
+      "symbol": "ToolResult",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.ToolResult",
+      "label": "class ToolResult \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:119",
+      "line_start": 119,
+      "line_end": 122,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:ExtensionAPI",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "class",
+      "symbol": "ExtensionAPI",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.ExtensionAPI",
+      "label": "class ExtensionAPI \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:124",
+      "line_start": 124,
+      "line_end": 134,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:runCmd",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "runCmd",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.runCmd",
+      "label": "def runCmd \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:136",
+      "line_start": 136,
+      "line_end": 161,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:resolveSotBinary",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "resolveSotBinary",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.resolveSotBinary",
+      "label": "def resolveSotBinary \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:163",
+      "line_start": 163,
+      "line_end": 201,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:sotGraphExtension",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "sotGraphExtension",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.sotGraphExtension",
+      "label": "def sotGraphExtension \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:204",
+      "line_start": 204,
+      "line_end": 1036,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:getSotBin",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "getSotBin",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.getSotBin",
+      "label": "def getSotBin \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:205",
+      "line_start": 205,
+      "line_end": 205,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:execute",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "method",
+      "symbol": "execute",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.execute",
+      "label": "def execute \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:225",
+      "line_start": 225,
+      "line_end": 235,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "sym:ad41170192cb:triggerReconcile",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts",
+      "kind": "function",
+      "symbol": "triggerReconcile",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.extensions.sot-graph.ts.triggerReconcile",
+      "label": "def triggerReconcile \u2014 plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts:939",
+      "line_start": 939,
+      "line_end": 965,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          1036
+        ]
+      ]
+    },
+    {
+      "id": "file:089b7829741c",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+      "kind": "file",
+      "symbol": "sot-graph.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.rules.sot-graph.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md",
+      "line_start": 1,
+      "line_end": 86,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          85
+        ]
+      ]
+    },
+    {
+      "id": "file:37a03089bcba",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+      "kind": "file",
+      "symbol": "SKILL.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.omp..omp.skills.sot-graph.SKILL.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md",
+      "line_start": 1,
+      "line_end": 62,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          61
+        ]
+      ]
+    },
+    {
+      "id": "file:587c03d41de0",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+      "kind": "file",
+      "symbol": "SKILL.md",
+      "fqn": "plan.python-c-monorepo.evidence.completion-goals.M4.20260906-surface-v1.packaging-live.workspaces.opencode..opencode.skills.sot-graph.SKILL.md",
+      "label": "File: plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md",
+      "line_start": 1,
+      "line_end": 119,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          118
+        ]
+      ]
+    },
+    {
+      "id": "file:051819ccb3cb",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/trusted-opt-in-runbook.md",
+      "kind": "file",
+      "symbol": "trusted-opt-in-runbook.md",
+      "fqn": "plan.python-c-monorepo.trusted-opt-in-runbook.md",
+      "label": "File: plan/python-c-monorepo/trusted-opt-in-runbook.md",
+      "line_start": 1,
+      "line_end": 133,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          5,
+          5
+        ],
+        [
+          115,
+          115
+        ],
+        [
+          121,
+          121
+        ]
+      ]
+    },
+    {
+      "id": "file:7b2e2b978702",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+      "kind": "file",
+      "symbol": "remaining-work-phased-plan-2026-09-05.md",
+      "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+      "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+      "line_start": 1,
+      "line_end": 149,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          148
+        ]
+      ]
+    }
+  ],
+  "caller_impacts": [
+    {
+      "id": "sym:0430ca2f393f:McpService.providers_sync",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.providers_sync",
+      "fqn": "sot_graph.mcp_service.McpService.providers_sync",
+      "label": "def providers_sync \u2014 src/sot_graph/mcp_service.py:233",
+      "line_start": 233,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService._providers",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService._providers",
+      "fqn": "sot_graph.mcp_service.McpService._providers",
+      "label": "def _providers \u2014 src/sot_graph/mcp_service.py:417",
+      "line_start": 417,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.search.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.search.op",
+      "fqn": "sot_graph.mcp_service.McpService.search.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:812",
+      "line_start": 812,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.explore.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.explore.op",
+      "fqn": "sot_graph.mcp_service.McpService.explore.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:923",
+      "line_start": 923,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService._resolve_target_row",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService._resolve_target_row",
+      "fqn": "sot_graph.mcp_service.McpService._resolve_target_row",
+      "label": "def _resolve_target_row \u2014 src/sot_graph/mcp_service.py:1000",
+      "line_start": 1000,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.notes.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.notes.op",
+      "fqn": "sot_graph.mcp_service.McpService.notes.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:1187",
+      "line_start": 1187,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.graph_generation.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.graph_generation.op",
+      "fqn": "sot_graph.mcp_service.McpService.graph_generation.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:1209",
+      "line_start": 1209,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.node.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.node.op",
+      "fqn": "sot_graph.mcp_service.McpService.node.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:1223",
+      "line_start": 1223,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.verify_drift.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.verify_drift.op",
+      "fqn": "sot_graph.mcp_service.McpService.verify_drift.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:1235",
+      "line_start": 1235,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:0430ca2f393f:McpService.stats.op",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/mcp_service.py",
+      "kind": "method",
+      "symbol": "McpService.stats.op",
+      "fqn": "sot_graph.mcp_service.McpService.stats.op",
+      "label": "def op \u2014 src/sot_graph/mcp_service.py:1273",
+      "line_start": 1273,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "kind": "method",
+      "symbol": "SotGraphStateMachine.insert_user_note",
+      "fqn": "tests.property.test_invariants.SotGraphStateMachine.insert_user_note",
+      "label": "def insert_user_note \u2014 tests/property/test_invariants.py:125",
+      "line_start": 125,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "kind": "method",
+      "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "label": "def invariant_1_freshness_reflects_physical_disk_sha \u2014 tests/property/test_invariants.py:156",
+      "line_start": 156,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "kind": "method",
+      "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "label": "def invariant_2_context_pack_token_budget_bound \u2014 tests/property/test_invariants.py:203",
+      "line_start": 203,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "kind": "method",
+      "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "label": "def invariant_3_zero_mixed_snapshot_generations \u2014 tests/property/test_invariants.py:233",
+      "line_start": 233,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "kind": "method",
+      "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "fqn": "tests.property.test_invariants.SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "label": "def invariant_4_user_notes_preserved \u2014 tests/property/test_invariants.py:299",
+      "line_start": 299,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "kind": "method",
+      "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "label": "def test_db_preserve_notes_on_schema_reset_and_clean \u2014 tests/test_hardening_fixes.py:31",
+      "line_start": 31,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "kind": "method",
+      "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "label": "def test_db_clean_deletes_auxiliary_tables \u2014 tests/test_hardening_fixes.py:52",
+      "line_start": 52,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "kind": "method",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+      "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_pack_token_budget_cap",
+      "label": "def test_pack_token_budget_cap \u2014 tests/test_hardening_fixes.py:141",
+      "line_start": 141,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "kind": "method",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "fqn": "tests.test_hardening_fixes.HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "label": "def test_pack_token_budget_convergence_tight_and_small \u2014 tests/test_hardening_fixes.py:179",
+      "line_start": 179,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+      "kind": "method",
+      "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "fqn": "tests.test_pack_sg202_priority.SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "label": "def test_accounting_invariants_under_budget \u2014 tests/test_pack_sg202_priority.py:182",
+      "line_start": 182,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "kind": "method",
+      "symbol": "RepoMapTests._node_id",
+      "fqn": "tests.test_repo_map.RepoMapTests._node_id",
+      "label": "def _node_id \u2014 tests/test_repo_map.py:82",
+      "line_start": 82,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+      "kind": "method",
+      "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "fqn": "tests.test_sg202_pack_completeness.SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "label": "def test_accounting_node_cap_discovered_returned_omitted \u2014 tests/test_sg202_pack_completeness.py:152",
+      "line_start": 152,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:_reference_explore_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "function",
+      "symbol": "_reference_explore_node",
+      "fqn": "tests.test_sprint4_compass_and_pack._reference_explore_node",
+      "label": "def _reference_explore_node \u2014 tests/test_sprint4_compass_and_pack.py:31",
+      "line_start": 31,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests._add_node",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests._add_node",
+      "label": "def _add_node \u2014 tests/test_sprint4_compass_and_pack.py:96",
+      "line_start": 96,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests._add_edge",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests._add_edge",
+      "label": "def _add_edge \u2014 tests/test_sprint4_compass_and_pack.py:104",
+      "line_start": 104,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "fqn": "tests.test_sprint4_compass_and_pack.Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "label": "def test_db_explore_node_hop_separation \u2014 tests/test_sprint4_compass_and_pack.py:269",
+      "line_start": 269,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "fqn": "tests.test_sprint4_compass_and_pack.Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "label": "def test_atomic_rehome_content_hash \u2014 tests/test_sprint4_compass_and_pack.py:374",
+      "line_start": 374,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:ad41170192cb:execute",
+      "callee_symbol": "execute"
+    },
+    {
+      "id": "sym:081f2612ac35:TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+      "kind": "method",
+      "symbol": "TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+      "fqn": "tests.test_p6_ledger.TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+      "label": "def test_providers_sync_records_run_and_evidence \u2014 tests/test_p6_ledger.py:223",
+      "line_start": 223,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:0430ca2f393f:McpService.providers_sync",
+      "callee_symbol": "McpService.providers_sync"
+    },
+    {
+      "id": "sym:1e037f5c17d0:RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "kind": "method",
+      "symbol": "RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+      "fqn": "tests.test_repo_map.RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+      "label": "def test_focus_personalization_promotes_focused_symbol \u2014 tests/test_repo_map.py:55",
+      "line_start": 55,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+      "callee_symbol": "RepoMapTests._node_id"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+      "label": "def test_deep_chain_matches_reference \u2014 tests/test_sprint4_compass_and_pack.py:114",
+      "line_start": 114,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+      "callee_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+      "label": "def test_wide_fanout_across_chunks_matches_reference \u2014 tests/test_sprint4_compass_and_pack.py:127",
+      "line_start": 127,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+      "callee_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+      "label": "def test_random_graphs_match_reference_across_depths_and_limits \u2014 tests/test_sprint4_compass_and_pack.py:166",
+      "line_start": 166,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+      "callee_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "kind": "method",
+      "symbol": "ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+      "fqn": "tests.test_sprint4_compass_and_pack.ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+      "label": "def test_hop_bound_and_limit_respected \u2014 tests/test_sprint4_compass_and_pack.py:189",
+      "line_start": 189,
+      "depth": 2,
+      "via_relation": "calls",
+      "callee_id": "sym:8d8facd09c31:_reference_explore_node",
+      "callee_symbol": "_reference_explore_node"
+    }
+  ],
+  "test_impacts": [
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.insert_user_note",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+      "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "symbol": "RepoMapTests._node_id",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+      "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:_reference_explore_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "_reference_explore_node",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests._add_node",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests._add_edge",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:081f2612ac35:TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+      "symbol": "TestMcpWritePath.test_providers_sync_records_run_and_evidence",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "McpService.providers_sync"
+    },
+    {
+      "id": "sym:1e037f5c17d0:RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "symbol": "RepoMapTests.test_focus_personalization_promotes_focused_symbol",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "RepoMapTests._node_id"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests.test_deep_chain_matches_reference",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests.test_wide_fanout_across_chunks_matches_reference",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests.test_random_graphs_match_reference_across_depths_and_limits",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests.test_hop_bound_and_limit_respected",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "_reference_explore_node"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.insert_user_note",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.insert_user_note",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_1_freshness_reflects_physical_disk_sha",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_2_context_pack_token_budget_bound",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_3_zero_mixed_snapshot_generations",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:a0ad6c1229ca:SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+      "symbol": "SotGraphStateMachine.invariant_4_user_notes_preserved",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_db_preserve_notes_on_schema_reset_and_clean",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_db_clean_deletes_auxiliary_tables",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_cap",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_cap",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:41fa6bfbed48:HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+      "symbol": "HardeningFixesTests.test_pack_token_budget_convergence_tight_and_small",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:_reference_explore_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "_reference_explore_node",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_node",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests._add_node",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:ExploreNodeLevelBatchTests._add_edge",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "ExploreNodeLevelBatchTests._add_edge",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "Sprint4CompassAndPackTests.test_db_explore_node_hop_separation",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:8d8facd09c31:Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py",
+      "symbol": "Sprint4CompassAndPackTests.test_atomic_rehome_content_hash",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:1e037f5c17d0:RepoMapTests._node_id",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+      "symbol": "RepoMapTests._node_id",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:1ab85392e084:SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+      "symbol": "SG202PackPriorityTests.test_accounting_invariants_under_budget",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    },
+    {
+      "id": "sym:23a7d8cbff5f:SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+      "symbol": "SG202PackCompletenessTests.test_accounting_node_cap_discovered_returned_omitted",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "execute"
+    }
+  ],
+  "api_impacts": [],
+  "tests_to_run": [
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/property/test_invariants.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_hardening_fixes.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p6_ledger.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_pack_sg202_priority.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_repo_map.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sg202_pack_completeness.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_sprint4_compass_and_pack.py"
+  ],
+  "invalidated_evidence": [],
+  "invalidated_evidence_dead_count": 0,
+  "collection_stats": {
+    "changed_files": {
+      "enumerated_count": 14,
+      "returned_count": 14,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "invalidated_evidence": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 50,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_runs": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_union": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 5000,
+      "truncated": false,
+      "cursor_exhausted": true
+    }
+  },
+  "post_change_snapshot": {
+    "snapshot_id": null,
+    "descriptor_digest": "sha256:8980a612b52f9f5c739860d2e5f59858fefd9f5be8b1952cf7b80b32d3d498d5",
+    "role": "post_change",
+    "commit_sha": "dddc903da93633c9bfcf4255a525aed34c83d483",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:a28d22a553645f0032b70bdf73f5240df384824b701940519a91c02953b97014",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "captured_at": 1788688100,
+    "content_digests": {
+      "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md": "bd585b448a1081e06bc6558155c5cf1973b104e30c8d38a399f4a9f4f6eb3a48",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md": "6a042c4b61aa6612ac9b13996434dc7d4e49e2233dadea667905311d2eb4a226",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md": "0e065238bea8c73206114eb5013c3ee4b3a404e97f37e3f812940ce6e47c8c22",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md": "dcfec621af01231fe912ad6975330b5279790add034ca73ef0f6df737a9b5ebe",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md": "ae31f1825920ae7cdee234742688eda088423209e5c409f56db29f1d1b2b06e0",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md": "cc0de1ddbeef1514ca2a2bb70979a3bcb7a41c3a8004d6db4cc11b929ce85241",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts": "24e08627ad940e99cc29aa2c69c6d2fdb95680f7f5c417a7e9e5bd5ce41f25ae",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md": "15cfe5fa866e2e21b1805c000f5e094a07350c0da392bbb309f50e562a63c13f",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md": "b61cf36df970d13a48c7268f453db7b9a7e25c45d481b1e850d01425d7fe455e",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md": "d3148515edaf05c9d0e2f5080d18ba6b48960cbe3aa0280dbd77935b45a0b1e3",
+      "plan/python-c-monorepo/trusted-opt-in-runbook.md": "03d09a0bd100439922530f80e2deafbb1727552ffd8643518c348d13b3ab35c7",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+    },
+    "scope_digest": "sha256:d1196bfa5e59b0d8740b8895710f8d376e632cb80b43f8904fd8d584e442204d"
+  },
+  "reconcile": {
+    "required": true,
+    "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+  },
+  "summary": {
+    "total_changed_files": 14,
+    "total_hunks": 17,
+    "total_direct_nodes": 28,
+    "total_callers": 33,
+    "total_apis": 0,
+    "total_tests": 40,
+    "risk_score": 80,
+    "risk_level": "HIGH",
+    "execution_time_ms": 79.47
+  },
+  "pre_receipt_digest": null,
+  "pre_change_snapshot": {
+    "descriptor_digest": "sha256:641ef45110304788856b4451e21252b9a4d28194ca080f7635a6873687d4397e",
+    "role": "pre_change",
+    "commit_sha": "dddc903da93633c9bfcf4255a525aed34c83d483",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:a28d22a553645f0032b70bdf73f5240df384824b701940519a91c02953b97014",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "content_digests": {
+      "plan/python-c-monorepo/completion-goal-plan-2026-09-06.md": "bd585b448a1081e06bc6558155c5cf1973b104e30c8d38a399f4a9f4f6eb3a48",
+      "plan/python-c-monorepo/trusted-opt-in-runbook.md": "03d09a0bd100439922530f80e2deafbb1727552ffd8643518c348d13b3ab35c7",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish": "fa4a6ab1812e82011e66dad9f045fd463ed9a690f11054b3972a31c02bd2528d",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp": "d3b5f42d8a63f02454ce59ec36d72b0cb90e0f02df8b3f1793c6a7d85102542e",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/GEMINI.md": "6a042c4b61aa6612ac9b13996434dc7d4e49e2233dadea667905311d2eb4a226",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/antigravity/.gemini/skills/sot-graph/SKILL.md": "0e065238bea8c73206114eb5013c3ee4b3a404e97f37e3f812940ce6e47c8c22",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/.claude/CLAUDE.md": "dcfec621af01231fe912ad6975330b5279790add034ca73ef0f6df737a9b5ebe",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/claude/AGENTS.md": "ae31f1825920ae7cdee234742688eda088423209e5c409f56db29f1d1b2b06e0",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/RULES.md": "cc0de1ddbeef1514ca2a2bb70979a3bcb7a41c3a8004d6db4cc11b929ce85241",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/extensions/sot-graph.ts": "24e08627ad940e99cc29aa2c69c6d2fdb95680f7f5c417a7e9e5bd5ce41f25ae",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/rules/sot-graph.md": "15cfe5fa866e2e21b1805c000f5e094a07350c0da392bbb309f50e562a63c13f",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/omp/.omp/skills/sot-graph/SKILL.md": "b61cf36df970d13a48c7268f453db7b9a7e25c45d481b1e850d01425d7fe455e",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/workspaces/opencode/.opencode/skills/sot-graph/SKILL.md": "d3148515edaf05c9d0e2f5080d18ba6b48960cbe3aa0280dbd77935b45a0b1e3",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc"
+    },
+    "scope_digest": "sha256:d1196bfa5e59b0d8740b8895710f8d376e632cb80b43f8904fd8d584e442204d"
+  },
+  "remaining_gaps": [],
+  "warnings": [],
+  "closure_decision": "open",
+  "omp_confirmations_remaining": [],
+  "assurance_facts": {
+    "identity_status": "UNIQUE",
+    "snapshot_bound": true,
+    "collection_error": false,
+    "stale_files": [
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/.config/fish/completions/codebase-memory-mcp.fish",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/packaging-live/home/bin/codebase-memory-mcp"
+    ],
+    "coverage_measured": false,
+    "coverage_fraction": null,
+    "coverage_floor": 0.9,
+    "parser_failures": 0,
+    "unresolved_count": 0,
+    "unresolved_budget": 0,
+    "open_conflicts": 0,
+    "truncated": false,
+    "truncation_sources": [],
+    "enumeration_complete": null,
+    "parser_capability_complete": null,
+    "partial_ast_present": false,
+    "provider_capability_ok": true,
+    "absence_claim": false,
+    "gate_blocked": false,
+    "dynamic_dispatch_unresolved": false,
+    "claim_profile": "scoped"
+  },
+  "assurance": {
+    "status": "STALE",
+    "reason_codes": [
+      "stale_sources"
+    ],
+    "decision": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources"
+      ]
+    }
+  },
+  "digest": "ef034de2315234ba6046ca681ffaeb7e0b2782d51937a4318fd6b3d3c1471bc9",
+  "request": {
+    "schema_version": "impact-request/1",
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true,
+    "depth": 2,
+    "auto_reconcile": false,
+    "reconcile_provenance": "pipeline"
+  },
+  "projection": {
+    "collections": [
+      {
+        "key": "changed_files",
+        "enumerated_count": 14,
+        "returned_count": 14,
+        "truncated": false,
+        "cap": 200,
+        "cursor_exhausted": true
+      },
+      {
+        "key": "direct_nodes",
+        "enumerated_count": 28,
+        "returned_count": 28,
+        "truncated": false
+      },
+      {
+        "key": "caller_impacts",
+        "enumerated_count": 33,
+        "returned_count": 33,
+        "truncated": false
+      },
+      {
+        "key": "test_impacts",
+        "enumerated_count": 40,
+        "returned_count": 40,
+        "truncated": false
+      },
+      {
+        "key": "api_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "tests_to_run",
+        "enumerated_count": 7,
+        "returned_count": 7,
+        "truncated": false
+      }
+    ],
+    "next_cursor": null
+  },
+  "stale_files": []
+}

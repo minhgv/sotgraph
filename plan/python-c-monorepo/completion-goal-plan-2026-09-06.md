@@ -1,6 +1,6 @@
 # Kế hoạch hoàn thiện theo mục tiêu — 2026-09-06
 
-Trạng thái: PLAN ONLY, chưa triển khai các mục tiêu bên dưới. Kế hoạch bổ sung `execution-plan.md`, không thay ngưỡng hoặc ghi đè bằng chứng/handoff lịch sử. Yêu cầu điều phối: hoàn thành từng mục tiêu, nhiều agent song song trong cùng mục tiêu, main agent tự commit từng checkpoint; không push/merge hoặc chạy remote workflow khi chưa được duyệt.
+Trạng thái: ĐÃ THỰC THI LOCAL, chưa release PASS. M1 INCONCLUSIVE; M2 BLOCKED; M3a–c scoped acceptance đã commit; M4 packaging PASS_SCOPED nhưng lifecycle v4 FAILED tại search abstention sau prepare/probe/sync thành công; M5/M6/M7 external gates BLOCKED. Bằng chứng và checkpoint hiện tại ở mục 13 bên dưới. Kế hoạch bổ sung `execution-plan.md`, không thay ngưỡng hoặc ghi đè bằng chứng/handoff lịch sử. Yêu cầu điều phối: hoàn thành từng mục tiêu, nhiều agent song song trong cùng mục tiêu, main agent tự commit từng checkpoint; không push/merge hoặc chạy remote workflow khi chưa được duyệt.
 
 ## 1. Baseline và phạm vi
 
@@ -121,6 +121,49 @@ Lập matrix SUR-01..12 theo đúng §9.1, đối chiếu các test hiện có t
 - Coverage-first opt-in/preferred exception phải chốt đúng policy, không tự nới ngưỡng speed sau đo.
 
 Không cần hỏi lại việc builtin mặc định, CLI/MCP parity, giữ notes/evidence, hay full subtree đã duyệt. Không xem immutable historical docs chứa 'uncommitted' là trạng thái Git hiện tại; mỗi checkpoint mới ghi HEAD và evidence binding riêng.
+
+## 13. Local execution receipt — 2026-09-06
+
+Scope: Darwin arm64 / Python 3.14.6 only; no remote actions, downloads, publication, global native adoption or release signoff. Evidence root: `evidence/completion-goals/M4/20260906-surface-v1/`.
+
+- M3c acceptance: `b7c1fe1`, `ff40695`, 2130 passed / 4 skipped; runbook pending wording corrected. M4 baseline full suite: 2198 passed / 4 skipped (freeze.md); runner-only corrections subsequently pass 14 tests plus scoped Ruff/Pyright. Whole quality remains FAIL on 10 baseline provider type errors, not release PASS.
+- Checkpoints: `f001e1f` runner disjoint layout; `e9828a9` committed v2 manifest/previous receipts; `d15e187` v3 records-only registry input; `3cbea72` short runtime root/v4 freeze; `dddc903` actual v4 receipt. Each rerun manifest committed before execution; no timeout or production validator relaxed. v1–v4 failures remain immutable.
+- v1 refused overlapping evidence/config paths; v2 refused legacy registry envelope; v3 refused Darwin socket108 >104-byte budget. v4 fixed only runner root basename to `r`; native import/promote/register/prepare/probe/sync succeeded, then search abstained (exit1). Downstream status/recovery/rollback/disable/uninstall were not attempted. Fixtures preserved and source_drift false. Exact underlying search outcome is not retained by the redacted CLI; next diagnostic requires a new frozen protocol, not speculative parser/security edits.
+
+### M4 SUR-01..12 scoped matrix
+
+All rows are local supplemental evidence, not full GS-SURFACE acceptance. Tests below are `tests/test_completion_surface_{packaging,provider,harness}.py` and `tests/test_surface_lifecycle_runner.py`; freeze.md records packaging23/provider10/harness22 and baseline runner13, updated runner14.
+
+| Row | Actual evidence | Acceptance / remaining gap |
+| --- | --- | --- |
+| SUR-01 | Packaging behavioral suite; packaging-live receipt16 commands | PASS_SCOPED local wheel/setup; other platforms BLOCKED |
+| SUR-02 | Provider catalog/invocation/policy behavioral tests | PASS_SCOPED synthetic; ordinary persisted native CLI/MCP live BLOCKED |
+| SUR-03 | Packaging entrypoint/help/completion behavioral tests and live install | PASS_SCOPED tested shell/entrypoint scope; actual client apps BLOCKED |
+| SUR-04 | Harness generated-help/onboarding tests | PASS_SCOPED generated resources; actual clients BLOCKED |
+| SUR-05 | Provider failure/remediation tests | PASS_SCOPED synthetic; v4 search safely abstains, successful recovery live incomplete |
+| SUR-06 | Offline wheel/poisoned upstream hook build in full-suite freeze | PASS_SCOPED configured offline backend; not all source/platform builds |
+| SUR-07 | Harness injection/exclusion/content-authority tests | PASS_SCOPED synthetic; no native instruction-authority promotion |
+| SUR-08 | Packaging coexistence tests; retained legacy sentinel in v4 | PASS_SCOPED scratch; host-wide process lifetime noninterference BLOCKED |
+| SUR-09 | Packaging upgrade/race/rollback/uninstall tests | PASS_SCOPED synthetic; native end-to-end operations after v4 search NOT RUN |
+| SUR-10 | Provider workspace/version-isolation tests | PASS_SCOPED synthetic; distinct native-version drill BLOCKED |
+| SUR-11 | Provider quarantine/env/PATH/UI/network-injection tests | PASS_SCOPED synthetic; descendant lifetime/network coverage BLOCKED |
+| SUR-12 | lifecycle-live-v4/receipt.json:8 commands, seventh sync successful, eighth search refused | FAILED/incomplete live E2E; no same-artifact rollback or uninstall claim |
+
+### M5 prerequisite/protocol — BLOCKED, specification only
+
+Available release2412e017 and scratch8953ad08 share native source pin46ae198f; distinct bytes do not establish versions/schema. Prior distinct-artifact rollback was synthetic, not a native schema downgrade. Native get_schema is graph labels/count introspection, not index-format version; SOT SQLite v8 is unrelated. No genuine old/new artifact pair, format compatibility mapping or live dual-version fault harness is available. Do not acquire artifacts without separate permission.
+
+Before a future drill freeze two genuine version pins, binaries/digests/provenance, exact operation registries, explicit old/new index compatibility declarations, isolated namespaces and refusal criteria. Capture notes/evidence/index hashes and process ownership before upgrade; test compatible and incompatible indexes, refusing the latter before open; query old → upgrade/query new → rollback/query old through SOT. Preserve both namespaces and old index; restore old generation or rebuild a new namespace, never overwrite retained indexes. Unknown format compatibility blocks execution. Synthetic fault cases remain supplemental, not live proof.
+
+### M6 prerequisite/protocol — BLOCKED, no benchmark executed
+
+M1 remains INCONCLUSIVE and M2 has no evidence-backed optimization. M4 successful live query/recovery is also missing. Small non-Python fixtures are not representative corpora. Require licensed/pinned local corpora in all four language groups, explicit file selections/hash manifests, independently fixed oracle and held-out evaluation split, descendants-aware resource measurement or explicit resource BLOCKED. Freeze §9 thresholds, at least5 index runs/30 queries per workload, cold-state definition (OS cache unknown if uncontrolled), hardware and per-task engine/SOT timing before any exclusive run. No fabricated results, performance win or preferred rollout; builtin remains default.
+
+Final continuation scoped validation: **69 passed** with the original pinned offline setuptools backend; unconfigured run **68 passed / 1 skipped** is separately retained. Ruff/Pyright/claims clean. Doctor healthy schema8/no orphan nodes. Working-tree impact remains **STALE/open** due preserved untracked packaging scratch sources; this is not graph closure or release assurance. Coordinator confirmed no other active tests/builds/writers throughout all exclusive slots. Final command/exit/hash receipt is `final-local-receipt.json` in the M4 evidence root.
+
+### M7 local hygiene / release decision
+
+Local checkpoints/evidence only. Exact JSON evidence allowlists were force-staged because repository ignores JSON; packaging live venv/home/workspaces are not included. Preexisting untracked `plan/remaining-work-phased-plan-2026-09-05.md` remains untouched. Retained scratch states are not implicitly deleted or adopted. Supported-platform/remote CI/legal/release-owner signoff remain BLOCKED; G4/G5/G7 are not release-certified and historical G6 speed FAIL is unchanged. New live search refusal remains a known operational gap, not hidden by scoped unit-test success.
 
 ## 12. Kết thúc mỗi mục tiêu
 

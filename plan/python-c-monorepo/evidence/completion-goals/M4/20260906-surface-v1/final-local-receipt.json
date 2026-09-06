@@ -1,0 +1,58 @@
+{
+  "status": "LOCAL_CHECKPOINT_COMPLETE_RELEASE_BLOCKED",
+  "head_before_docs": "dddc903",
+  "v4_freeze": "3cbea72",
+  "M4": "NOT_ACCEPTED: live search abstention unresolved; dependent stages not attempted",
+  "native_successful_stages": [
+    "import",
+    "promote",
+    "explicit-config-register",
+    "prepare",
+    "probe",
+    "sync"
+  ],
+  "exclusive_slots": "coordinator explicitly confirmed no other active writers/tests/builds throughout",
+  "tests": {
+    "runner": 14,
+    "final_scoped_offline": 69,
+    "final_scoped_unconfigured": "68 passed /1 skipped",
+    "full_suite_prior_freeze": "2198 passed /4 skipped; not rerun after runner-only edits"
+  },
+  "checks": {
+    "ruff": 0,
+    "pyright_explicit_interpreter": 0,
+    "claims": 0,
+    "doctor_healthy": true,
+    "impact_closure": "open",
+    "impact_assurance": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources"
+      ],
+      "decision": {
+        "status": "STALE",
+        "reason_codes": [
+          "stale_sources"
+        ]
+      }
+    },
+    "whole_quality": "10 baseline type errors retained; release not passed"
+  },
+  "M5": "BLOCKED genuine different native versions/index schemas unavailable",
+  "M6": "BLOCKED M2, representative corpora/oracles, M4 live success",
+  "M7": "BLOCKED remote permission, platform receipts, owner signoff",
+  "preserved_untracked_plan_sha256": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+  "scratch_policy": "retain; do not stage live venv/home/workspaces; no native global adoption or cleanup",
+  "hashes": {
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-reconcile.log": "b09f0c4b52979931c9001267cf363807fe05420dc335b289d4c90f72097ec0df",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-history.log": "63e43688d8e95d84bbb356e2a6f88b6adfa31a46f37ba234c7f236d9961d44bd",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-impact.json": "d363a7130553b02bc8b4407ca9fec58995b992c4c18c141c402020670186013c",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests.log": "cd718ca6341df591dd7cee5650d0e6d9622b581f9e6b6f3b602f0b1ae90887f2",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-note.log": "2e2364f5161b6911895cf1789a4547b752208ae9ee149de367b4460449a8e4f6",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-tests-offline.log": "c4b67245129019321e7f135a8e3114bf5c6687fcc13209052b5c78957fd49661",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/final-doctor.json": "d95a4c6bde8be4f1bc243f236d62b84795e4346071d471df97c9ed707cf5a99e"
+  }
+}

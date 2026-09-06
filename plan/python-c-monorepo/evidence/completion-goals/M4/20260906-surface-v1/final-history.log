@@ -1,0 +1,10 @@
+# SOT-Graph Commit History & Risk Assessment
+
+**Total Commits Analyzed:** 3 | 🔴 High Risk: 3 | 🟡 Medium Risk: 0 | 🟢 Low Risk: 0
+
+| Hash | Author | Date | Churn | Risk | Message | Reasons |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `dddc903` | minhgv | 2026-09-06 | +1168/-0 (21 files) | 🔴 **HIGH** | test(surface): retain v4 native sync and fail-closed search receipt | High file blast radius (21 files changed); Massive code churn (1168 lines modified) |
+| `3cbea72` | minhgv | 2026-09-06 | +1401/-4 (23 files) | 🔴 **HIGH** | fix(surface): respect Darwin socket budget and freeze v4 | High file blast radius (23 files changed); Massive code churn (1405 lines modified); Touches high-in-degree core symbol 'validate' (9 incoming callers) |
+| `d15e187` | minhgv | 2026-09-06 | +873/-0 (14 files) | 🔴 **HIGH** | bench(surface): preserve v2 refusal and freeze records-only v3 input | Multi-file modification (14 files changed); Massive code churn (873 lines modified) |
+
