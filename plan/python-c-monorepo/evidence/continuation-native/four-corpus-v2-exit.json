@@ -1,0 +1,1 @@
+{"exit_code": 0, "records": 292, "command_failures": 0, "limitations": ["First index empty cache; later indices unchanged incremental, not 5 independent cold builds.", "OS page cache not evicted.", "Native daemon child resource accounting may not include detached descendants.", "Synthetic cells do not certify language support."]}

@@ -1,0 +1,49 @@
+{
+  "corpora": [
+    {
+      "name": "python",
+      "root": "/private/tmp/b-j26s00rh/python",
+      "head": "d8e19bae85080b686dea1001a21b114f86fcf8ac",
+      "files": {
+        "app.py": "4a80ada0edf9623956955afead01271a573ae6af0d9c5650527796442d7b04a3"
+      }
+    },
+    {
+      "name": "typescript",
+      "root": "/private/tmp/b-j26s00rh/typescript",
+      "head": "5387e0785ca42fe6d819f9bcb0de4c6dc81259e6",
+      "files": {
+        "app.ts": "ae8e25d98bddbb205012423b2924f4e557c862c63716f9a373dade460bca7f46"
+      }
+    },
+    {
+      "name": "c",
+      "root": "/private/tmp/b-j26s00rh/c",
+      "head": "3c60b0cb214ce178c3e348366356934c04cd1392",
+      "files": {
+        "app.c": "41a5da13f2437f4094059fee28aa7029eb604808adc15ae284a7bb262212fd52"
+      }
+    },
+    {
+      "name": "polyglot",
+      "root": "/private/tmp/b-j26s00rh/polyglot",
+      "head": "e3612cec26bc75f7beef15a9b965408675679929",
+      "files": {
+        "app.py": "5fd6b222bda9f1220299c0851c8b0110e290c53b6bb6c94282b9fb2377c5f299",
+        "app.ts": "a261b794a7faed1ac63c673e8f0ed3e5f37b8887cfcaa13fb4f2037d61e704cf",
+        "vendor/generated.c": "b7d8c2fd69a74a2a2674fa971846808c7770248621863dd06ad0ceb920c77744"
+      }
+    }
+  ],
+  "query": "greet",
+  "index_repetitions": 5,
+  "query_repetitions": 30,
+  "warmups": 1,
+  "policy_thresholds": {
+    "p50_improvement": 0.2,
+    "p95_max_regression": 0.1,
+    "rss_max_regression": 0.2
+  },
+  "scope": "Synthetic controlled language cells, not representative support claim",
+  "exclusions": "No external repository downloads; generated fixture explicit in polyglot"
+}

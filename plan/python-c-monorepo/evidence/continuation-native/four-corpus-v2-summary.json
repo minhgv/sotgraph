@@ -1,0 +1,128 @@
+{
+  "cells": {
+    "python": {
+      "builtin-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 0.15197512484155595,
+        "p95_seconds": 0.15980875003151596,
+        "max_reported_rss_bytes": 44072960
+      },
+      "managed-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 21.405985249904916,
+        "p95_seconds": 21.448636500164866,
+        "max_reported_rss_bytes": 41746432
+      },
+      "builtin-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 0.11716874991543591,
+        "p95_seconds": 0.12325545912608504,
+        "max_reported_rss_bytes": 34897920
+      },
+      "managed-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 27.37057945842389,
+        "p95_seconds": 27.628532874863595,
+        "max_reported_rss_bytes": 41680896
+      }
+    },
+    "typescript": {
+      "builtin-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 0.13238745904527605,
+        "p95_seconds": 0.13269220804795623,
+        "max_reported_rss_bytes": 43925504
+      },
+      "managed-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 20.943999333074316,
+        "p95_seconds": 20.986371458042413,
+        "max_reported_rss_bytes": 40534016
+      },
+      "builtin-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 0.11865979200229049,
+        "p95_seconds": 0.15997387492097914,
+        "max_reported_rss_bytes": 34717696
+      },
+      "managed-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 27.459224604535848,
+        "p95_seconds": 27.744196124840528,
+        "max_reported_rss_bytes": 42975232
+      }
+    },
+    "c": {
+      "builtin-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 0.15337008400820196,
+        "p95_seconds": 0.15534170903265476,
+        "max_reported_rss_bytes": 44023808
+      },
+      "managed-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 21.497357500018552,
+        "p95_seconds": 21.499152624979615,
+        "max_reported_rss_bytes": 42336256
+      },
+      "builtin-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 0.1118927295319736,
+        "p95_seconds": 0.15927066700533032,
+        "max_reported_rss_bytes": 34832384
+      },
+      "managed-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 26.84068147954531,
+        "p95_seconds": 27.940571708139032,
+        "max_reported_rss_bytes": 42565632
+      }
+    },
+    "polyglot": {
+      "builtin-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 0.13176366593688726,
+        "p95_seconds": 0.13557229097932577,
+        "max_reported_rss_bytes": 43810816
+      },
+      "managed-index": {
+        "n": 5,
+        "failures": 0,
+        "p50_seconds": 20.85259483405389,
+        "p95_seconds": 20.883252624887973,
+        "max_reported_rss_bytes": 40599552
+      },
+      "builtin-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 0.10546354216057807,
+        "p95_seconds": 0.10992229194380343,
+        "max_reported_rss_bytes": 34734080
+      },
+      "managed-query": {
+        "n": 30,
+        "failures": 0,
+        "p50_seconds": 26.78269918751903,
+        "p95_seconds": 26.822892666095868,
+        "max_reported_rss_bytes": 40599552
+      }
+    }
+  },
+  "performance_verdict": "FAIL: no cell meets20percent end-to-end speed improvement",
+  "interruption": "Tool killed after275 records; resumed missing17; interrupted call excluded, polyglot samples span interruption",
+  "resource_limit": "time -l process accounting may omit detached workers",
+  "support": "experimental synthetic cells only"
+}

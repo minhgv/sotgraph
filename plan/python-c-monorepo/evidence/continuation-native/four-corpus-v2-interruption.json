@@ -1,0 +1,9 @@
+{
+  "status": "tool task killed before completion",
+  "completed_records": 275,
+  "last_completed": {
+    "corpus": "polyglot",
+    "ordinal": 55
+  },
+  "no_success_claim_for_interrupted_call": true
+}
