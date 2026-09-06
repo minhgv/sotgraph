@@ -1,0 +1,27 @@
+{
+  "phase": "M4 exclusive local runs",
+  "scope": "Darwin arm64 Python3.14; real offline wheel installation and explicit SOT administrator lifecycle only",
+  "wheel": "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/artifacts/sot_graph-0.3.2-py3-none-any.whl",
+  "wheel_sha256": "eeea22bfca6668fca8955918d40c53e6efb90a2bc990bce0c04bf77cc83099b0",
+  "binary": "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+  "sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+  "native_commit": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+  "registry": "/private/tmp/a-u8mldiy1/registry.json",
+  "protocol": "p4-release-2412e017-measured-v1",
+  "slot": "MAIN_M4_20260906",
+  "outputs": [
+    "packaging-live",
+    "lifecycle-live"
+  ],
+  "limitations": [
+    "ordinary persisted CLI/MCP live requires isolated OS account",
+    "no second native version/schema",
+    "point-in-time process/listener inventory is bounded",
+    "no remote workflows or actual client apps"
+  ],
+  "script_hashes": {
+    "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+    "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e"
+  },
+  "registry_sha256": "4174b9bc93b0e3db34f6be005e058b0362e252291f9dfc42808dd468ebf0aedf"
+}

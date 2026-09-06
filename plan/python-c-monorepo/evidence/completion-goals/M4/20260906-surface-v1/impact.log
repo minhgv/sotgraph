@@ -1,0 +1,4557 @@
+receipt stored: .sot/receipts/d9e225e8a714c9b8c53d052c782717c47f23c6ea75aa25d51d9aab2383fc64c0.json
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:1c7982d2bfc29a2d6ba531405541f3894fc8e7e5ffc30309512f149b944c3eb2",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "schema_version": "1.7",
+    "kind": "diff_impact",
+    "proof_scope": "post_change",
+    "diff_identity": {
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true
+    },
+    "changed_files": [
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log",
+      "plan/remaining-work-phased-plan-2026-09-05.md",
+      "scripts/check_surface_lifecycle.py",
+      "scripts/check_surface_packaging.py",
+      "src/sot_graph/adapters/omp.py",
+      "tests/test_completion_surface_harness.py",
+      "tests/test_completion_surface_packaging.py",
+      "tests/test_completion_surface_provider.py",
+      "tests/test_surface_lifecycle_runner.py"
+    ],
+    "changed_files_total": 16,
+    "changed_files_truncated": false,
+    "direct_nodes": [
+      {
+        "id": "file:7b2e2b978702",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+        "kind": "file",
+        "symbol": "remaining-work-phased-plan-2026-09-05.md",
+        "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+        "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+        "line_start": 1,
+        "line_end": 149,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            148
+          ]
+        ]
+      },
+      {
+        "id": "file:4c8737ef674c",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "file",
+        "symbol": "check_surface_lifecycle.py",
+        "fqn": "scripts.check_surface_lifecycle",
+        "label": "File: scripts/check_surface_lifecycle.py",
+        "line_start": 1,
+        "line_end": 282,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:parser",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "symbol": "parser",
+        "fqn": "scripts.check_surface_lifecycle.parser",
+        "label": "def parser \u2014 scripts/check_surface_lifecycle.py:48",
+        "line_start": 48,
+        "line_end": 57,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:validate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "symbol": "validate",
+        "fqn": "scripts.check_surface_lifecycle.validate",
+        "label": "def validate \u2014 scripts/check_surface_lifecycle.py:60",
+        "line_start": 60,
+        "line_end": 70,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:private_write",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "symbol": "private_write",
+        "fqn": "scripts.check_surface_lifecycle.private_write",
+        "label": "def private_write \u2014 scripts/check_surface_lifecycle.py:73",
+        "line_start": 73,
+        "line_end": 76,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:snapshot_files",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "symbol": "snapshot_files",
+        "fqn": "scripts.check_surface_lifecycle.snapshot_files",
+        "label": "def snapshot_files \u2014 scripts/check_surface_lifecycle.py:79",
+        "line_start": 79,
+        "line_end": 81,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "class",
+        "symbol": "Runner",
+        "fqn": "scripts.check_surface_lifecycle.Runner",
+        "label": "class Runner \u2014 scripts/check_surface_lifecycle.py:84",
+        "line_start": 84,
+        "line_end": 271,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.__init__",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.__init__",
+        "fqn": "scripts.check_surface_lifecycle.Runner.__init__",
+        "label": "def __init__ \u2014 scripts/check_surface_lifecycle.py:85",
+        "line_start": 85,
+        "line_end": 95,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.save",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.save",
+        "fqn": "scripts.check_surface_lifecycle.Runner.save",
+        "label": "def save \u2014 scripts/check_surface_lifecycle.py:97",
+        "line_start": 97,
+        "line_end": 101,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.command",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.command",
+        "fqn": "scripts.check_surface_lifecycle.Runner.command",
+        "label": "def command \u2014 scripts/check_surface_lifecycle.py:103",
+        "line_start": 103,
+        "line_end": 131,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.cli",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.cli",
+        "fqn": "scripts.check_surface_lifecycle.Runner.cli",
+        "label": "def cli \u2014 scripts/check_surface_lifecycle.py:133",
+        "line_start": 133,
+        "line_end": 137,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.engine",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.engine",
+        "fqn": "scripts.check_surface_lifecycle.Runner.engine",
+        "label": "def engine \u2014 scripts/check_surface_lifecycle.py:139",
+        "line_start": 139,
+        "line_end": 142,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.managed",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.managed",
+        "fqn": "scripts.check_surface_lifecycle.Runner.managed",
+        "label": "def managed \u2014 scripts/check_surface_lifecycle.py:144",
+        "line_start": 144,
+        "line_end": 150,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.config",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.config",
+        "fqn": "scripts.check_surface_lifecycle.Runner.config",
+        "label": "def config \u2014 scripts/check_surface_lifecycle.py:152",
+        "line_start": 152,
+        "line_end": 159,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:Runner.execute",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "method",
+        "symbol": "Runner.execute",
+        "fqn": "scripts.check_surface_lifecycle.Runner.execute",
+        "label": "def execute \u2014 scripts/check_surface_lifecycle.py:161",
+        "line_start": 161,
+        "line_end": 271,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "sym:4c8737ef674c:main",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+        "kind": "function",
+        "symbol": "main",
+        "fqn": "scripts.check_surface_lifecycle.main",
+        "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+        "line_start": 274,
+        "line_end": 277,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            281
+          ]
+        ]
+      },
+      {
+        "id": "file:cdc0b82c1f4c",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "file",
+        "symbol": "check_surface_packaging.py",
+        "fqn": "scripts.check_surface_packaging",
+        "label": "File: scripts/check_surface_packaging.py",
+        "line_start": 1,
+        "line_end": 161,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "sym:cdc0b82c1f4c:snapshot",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "function",
+        "symbol": "snapshot",
+        "fqn": "scripts.check_surface_packaging.snapshot",
+        "label": "def snapshot \u2014 scripts/check_surface_packaging.py:24",
+        "line_start": 24,
+        "line_end": 28,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "sym:cdc0b82c1f4c:audit_wheel",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "function",
+        "symbol": "audit_wheel",
+        "fqn": "scripts.check_surface_packaging.audit_wheel",
+        "label": "def audit_wheel \u2014 scripts/check_surface_packaging.py:31",
+        "line_start": 31,
+        "line_end": 51,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "sym:cdc0b82c1f4c:run_audit",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "function",
+        "symbol": "run_audit",
+        "fqn": "scripts.check_surface_packaging.run_audit",
+        "label": "def run_audit \u2014 scripts/check_surface_packaging.py:54",
+        "line_start": 54,
+        "line_end": 147,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "sym:cdc0b82c1f4c:run_audit.run",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "method",
+        "symbol": "run_audit.run",
+        "fqn": "scripts.check_surface_packaging.run_audit.run",
+        "label": "def run \u2014 scripts/check_surface_packaging.py:94",
+        "line_start": 94,
+        "line_end": 105,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "sym:cdc0b82c1f4c:main",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+        "kind": "function",
+        "symbol": "main",
+        "fqn": "scripts.check_surface_packaging.main",
+        "label": "def main \u2014 scripts/check_surface_packaging.py:150",
+        "line_start": 150,
+        "line_end": 156,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            160
+          ]
+        ]
+      },
+      {
+        "id": "file:3e770f7d3d9b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+        "kind": "file",
+        "symbol": "omp.py",
+        "fqn": "sot_graph.adapters.omp",
+        "label": "File: src/sot_graph/adapters/omp.py",
+        "line_start": 1,
+        "line_end": 233,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            159,
+            178
+          ],
+          [
+            204,
+            204
+          ],
+          [
+            227,
+            227
+          ]
+        ]
+      },
+      {
+        "id": "sym:3e770f7d3d9b:_update_omp_rules",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+        "kind": "function",
+        "symbol": "_update_omp_rules",
+        "fqn": "sot_graph.adapters.omp._update_omp_rules",
+        "label": "def _update_omp_rules \u2014 src/sot_graph/adapters/omp.py:159",
+        "line_start": 159,
+        "line_end": 176,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            159,
+            178
+          ]
+        ]
+      },
+      {
+        "id": "sym:3e770f7d3d9b:setup_omp",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+        "kind": "function",
+        "symbol": "setup_omp",
+        "fqn": "sot_graph.adapters.omp.setup_omp",
+        "label": "def setup_omp \u2014 src/sot_graph/adapters/omp.py:179",
+        "line_start": 179,
+        "line_end": 232,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            204,
+            204
+          ],
+          [
+            227,
+            227
+          ]
+        ]
+      },
+      {
+        "id": "file:2eb7f779fee4",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "file",
+        "symbol": "test_completion_surface_harness.py",
+        "fqn": "tests.test_completion_surface_harness",
+        "label": "File: tests/test_completion_surface_harness.py",
+        "line_start": 1,
+        "line_end": 166,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:scratch_only",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "scratch_only",
+        "fqn": "tests.test_completion_surface_harness.scratch_only",
+        "label": "def scratch_only \u2014 tests/test_completion_surface_harness.py:30",
+        "line_start": 30,
+        "line_end": 44,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:scratch_only.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "method",
+        "symbol": "scratch_only.forbidden",
+        "fqn": "tests.test_completion_surface_harness.scratch_only.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_harness.py:37",
+        "line_start": 37,
+        "line_end": 38,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:poison_dependency",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "poison_dependency",
+        "fqn": "tests.test_completion_surface_harness.poison_dependency",
+        "label": "def poison_dependency \u2014 tests/test_completion_surface_harness.py:47",
+        "line_start": 47,
+        "line_end": 68,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:snapshot",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "snapshot",
+        "fqn": "tests.test_completion_surface_harness.snapshot",
+        "label": "def snapshot \u2014 tests/test_completion_surface_harness.py:71",
+        "line_start": 71,
+        "line_end": 72,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_generated_surface_is_independent_of_dependency_resources",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "test_generated_surface_is_independent_of_dependency_resources",
+        "fqn": "tests.test_completion_surface_harness.test_generated_surface_is_independent_of_dependency_resources",
+        "label": "def test_generated_surface_is_independent_of_dependency_resources \u2014 tests/test_completion_surface_harness.py:77",
+        "line_start": 77,
+        "line_end": 103,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_cli_onboarding_generates_only_sot_resources",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "test_cli_onboarding_generates_only_sot_resources",
+        "fqn": "tests.test_completion_surface_harness.test_cli_onboarding_generates_only_sot_resources",
+        "label": "def test_cli_onboarding_generates_only_sot_resources \u2014 tests/test_completion_surface_harness.py:107",
+        "line_start": 107,
+        "line_end": 125,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "kind": "function",
+        "symbol": "test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+        "fqn": "tests.test_completion_surface_harness.test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+        "label": "def test_self_index_excludes_vendor_then_explicit_file_remains_untrusted \u2014 tests/test_completion_surface_harness.py:128",
+        "line_start": 128,
+        "line_end": 165,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            165
+          ]
+        ]
+      },
+      {
+        "id": "file:916d169db320",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "file",
+        "symbol": "test_completion_surface_packaging.py",
+        "fqn": "tests.test_completion_surface_packaging",
+        "label": "File: tests/test_completion_surface_packaging.py",
+        "line_start": 1,
+        "line_end": 327,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface",
+        "fqn": "tests.test_completion_surface_packaging.test_sur01_sur08_generated_setup_preserves_foreign_surface",
+        "label": "def test_sur01_sur08_generated_setup_preserves_foreign_surface \u2014 tests/test_completion_surface_packaging.py:32",
+        "line_start": 32,
+        "line_end": 105,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "method",
+        "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+        "fqn": "tests.test_completion_surface_packaging.test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:79",
+        "line_start": 79,
+        "line_end": 80,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur08_omp_foreign_rules_preserved",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur08_omp_foreign_rules_preserved",
+        "fqn": "tests.test_completion_surface_packaging.test_sur08_omp_foreign_rules_preserved",
+        "label": "def test_sur08_omp_foreign_rules_preserved \u2014 tests/test_completion_surface_packaging.py:109",
+        "line_start": 109,
+        "line_end": 124,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur08_omp_non_utf8_rules_preserved",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur08_omp_non_utf8_rules_preserved",
+        "fqn": "tests.test_completion_surface_packaging.test_sur08_omp_non_utf8_rules_preserved",
+        "label": "def test_sur08_omp_non_utf8_rules_preserved \u2014 tests/test_completion_surface_packaging.py:127",
+        "line_start": 127,
+        "line_end": 141,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+        "label": "def test_sur09_upgrade_between_uninstall_checks_preserves_new_owner \u2014 tests/test_completion_surface_packaging.py:144",
+        "line_start": 144,
+        "line_end": 196,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "method",
+        "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:155",
+        "line_start": 155,
+        "line_end": 156,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "method",
+        "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+        "label": "def promote_before_lock \u2014 tests/test_completion_surface_packaging.py:174",
+        "line_start": 174,
+        "line_end": 180,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:_wheel",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "_wheel",
+        "fqn": "tests.test_completion_surface_packaging._wheel",
+        "label": "def _wheel \u2014 tests/test_completion_surface_packaging.py:199",
+        "line_start": 199,
+        "line_end": 207,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_timeout_receipt_retains_command_and_partial_output",
+        "label": "def test_sur09_timeout_receipt_retains_command_and_partial_output \u2014 tests/test_completion_surface_packaging.py:210",
+        "line_start": 210,
+        "line_end": 229,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "method",
+        "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+        "label": "def timeout \u2014 tests/test_completion_surface_packaging.py:213",
+        "line_start": 213,
+        "line_end": 220,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_missing_or_case_changed_console_manifest_refused",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur03_missing_or_case_changed_console_manifest_refused",
+        "fqn": "tests.test_completion_surface_packaging.test_sur03_missing_or_case_changed_console_manifest_refused",
+        "label": "def test_sur03_missing_or_case_changed_console_manifest_refused \u2014 tests/test_completion_surface_packaging.py:234",
+        "line_start": 234,
+        "line_end": 239,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_wheel_audit_requires_sot_only_entrypoints",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur03_wheel_audit_requires_sot_only_entrypoints",
+        "fqn": "tests.test_completion_surface_packaging.test_sur03_wheel_audit_requires_sot_only_entrypoints",
+        "label": "def test_sur03_wheel_audit_requires_sot_only_entrypoints \u2014 tests/test_completion_surface_packaging.py:242",
+        "line_start": 242,
+        "line_end": 247,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_wheel_audit_rejects_native_public_payload",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur03_wheel_audit_rejects_native_public_payload",
+        "fqn": "tests.test_completion_surface_packaging.test_sur03_wheel_audit_rejects_native_public_payload",
+        "label": "def test_sur03_wheel_audit_rejects_native_public_payload \u2014 tests/test_completion_surface_packaging.py:254",
+        "line_start": 254,
+        "line_end": 256,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur06_python_build_does_not_execute_upstream_hooks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur06_python_build_does_not_execute_upstream_hooks",
+        "fqn": "tests.test_completion_surface_packaging.test_sur06_python_build_does_not_execute_upstream_hooks",
+        "label": "def test_sur06_python_build_does_not_execute_upstream_hooks \u2014 tests/test_completion_surface_packaging.py:259",
+        "line_start": 259,
+        "line_end": 310,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "function",
+        "symbol": "test_sur09_audit_output_never_overwrites_prior_run",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_audit_output_never_overwrites_prior_run",
+        "label": "def test_sur09_audit_output_never_overwrites_prior_run \u2014 tests/test_completion_surface_packaging.py:313",
+        "line_start": 313,
+        "line_end": 326,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "kind": "method",
+        "symbol": "test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+        "fqn": "tests.test_completion_surface_packaging.test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:320",
+        "line_start": 320,
+        "line_end": 321,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            326
+          ]
+        ]
+      },
+      {
+        "id": "file:f65b72514699",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "file",
+        "symbol": "test_completion_surface_provider.py",
+        "fqn": "tests.test_completion_surface_provider",
+        "label": "File: tests/test_completion_surface_provider.py",
+        "line_start": 1,
+        "line_end": 266,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:surface",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "surface",
+        "fqn": "tests.test_completion_surface_provider.surface",
+        "label": "def surface \u2014 tests/test_completion_surface_provider.py:29",
+        "line_start": 29,
+        "line_end": 85,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:surface.home_snapshot",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "method",
+        "symbol": "surface.home_snapshot",
+        "fqn": "tests.test_completion_surface_provider.surface.home_snapshot",
+        "label": "def home_snapshot \u2014 tests/test_completion_surface_provider.py:43",
+        "line_start": 43,
+        "line_end": 46,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:surface.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "method",
+        "symbol": "surface.forbidden",
+        "fqn": "tests.test_completion_surface_provider.surface.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_provider.py:54",
+        "line_start": 54,
+        "line_end": 55,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:surface.popen",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "method",
+        "symbol": "surface.popen",
+        "fqn": "tests.test_completion_surface_provider.surface.popen",
+        "label": "def popen \u2014 tests/test_completion_surface_provider.py:61",
+        "line_start": 61,
+        "line_end": 73,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:dispatch",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "dispatch",
+        "fqn": "tests.test_completion_surface_provider.dispatch",
+        "label": "def dispatch \u2014 tests/test_completion_surface_provider.py:88",
+        "line_start": 88,
+        "line_end": 90,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+        "fqn": "tests.test_completion_surface_provider.test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+        "label": "def test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants \u2014 tests/test_completion_surface_provider.py:93",
+        "line_start": 93,
+        "line_end": 128,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+        "fqn": "tests.test_completion_surface_provider.test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+        "label": "def test_sur02_repo_grant_cannot_replace_absent_trusted_registration \u2014 tests/test_completion_surface_provider.py:131",
+        "line_start": 131,
+        "line_end": 141,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+        "fqn": "tests.test_completion_surface_provider.test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+        "label": "def test_sur05_dispatch_revalidates_trusted_artifact_and_registry \u2014 tests/test_completion_surface_provider.py:145",
+        "line_start": 145,
+        "line_end": 162,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+        "fqn": "tests.test_completion_surface_provider.test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+        "label": "def test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate \u2014 tests/test_completion_surface_provider.py:165",
+        "line_start": 165,
+        "line_end": 186,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur05_native_failure_with_hostile_remediation_is_not_public",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur05_native_failure_with_hostile_remediation_is_not_public",
+        "fqn": "tests.test_completion_surface_provider.test_sur05_native_failure_with_hostile_remediation_is_not_public",
+        "label": "def test_sur05_native_failure_with_hostile_remediation_is_not_public \u2014 tests/test_completion_surface_provider.py:190",
+        "line_start": 190,
+        "line_end": 201,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+        "fqn": "tests.test_completion_surface_provider.test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+        "label": "def test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate \u2014 tests/test_completion_surface_provider.py:204",
+        "line_start": 204,
+        "line_end": 249,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "method",
+        "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+        "fqn": "tests.test_completion_surface_provider.test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+        "label": "async def exercise \u2014 tests/test_completion_surface_provider.py:217",
+        "line_start": 217,
+        "line_end": 245,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "function",
+        "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+        "fqn": "tests.test_completion_surface_provider.test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+        "label": "def test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch \u2014 tests/test_completion_surface_provider.py:252",
+        "line_start": 252,
+        "line_end": 265,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "kind": "method",
+        "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+        "fqn": "tests.test_completion_surface_provider.test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+        "label": "def forbidden \u2014 tests/test_completion_surface_provider.py:261",
+        "line_start": 261,
+        "line_end": 262,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            265
+          ]
+        ]
+      },
+      {
+        "id": "file:73d6dfc3cb7e",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "file",
+        "symbol": "test_surface_lifecycle_runner.py",
+        "fqn": "tests.test_surface_lifecycle_runner",
+        "label": "File: tests/test_surface_lifecycle_runner.py",
+        "line_start": 1,
+        "line_end": 188,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:runner_module",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "runner_module",
+        "fqn": "tests.test_surface_lifecycle_runner.runner_module",
+        "label": "def runner_module \u2014 tests/test_surface_lifecycle_runner.py:13",
+        "line_start": 13,
+        "line_end": 23,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:inputs",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "inputs",
+        "fqn": "tests.test_surface_lifecycle_runner.inputs",
+        "label": "def inputs \u2014 tests/test_surface_lifecycle_runner.py:27",
+        "line_start": 27,
+        "line_end": 35,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:fake_commands",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "fake_commands",
+        "fqn": "tests.test_surface_lifecycle_runner.fake_commands",
+        "label": "def fake_commands \u2014 tests/test_surface_lifecycle_runner.py:38",
+        "line_start": 38,
+        "line_end": 60,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:fake_commands.run",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "method",
+        "symbol": "fake_commands.run",
+        "fqn": "tests.test_surface_lifecycle_runner.fake_commands.run",
+        "label": "def run \u2014 tests/test_surface_lifecycle_runner.py:41",
+        "line_start": 41,
+        "line_end": 57,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_no_slot_is_blocked_without_subprocess",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_no_slot_is_blocked_without_subprocess",
+        "fqn": "tests.test_surface_lifecycle_runner.test_no_slot_is_blocked_without_subprocess",
+        "label": "def test_no_slot_is_blocked_without_subprocess \u2014 tests/test_surface_lifecycle_runner.py:63",
+        "line_start": 63,
+        "line_end": 69,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_full_fake_lifecycle_and_durable_receipts",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_full_fake_lifecycle_and_durable_receipts",
+        "fqn": "tests.test_surface_lifecycle_runner.test_full_fake_lifecycle_and_durable_receipts",
+        "label": "def test_full_fake_lifecycle_and_durable_receipts \u2014 tests/test_surface_lifecycle_runner.py:72",
+        "line_start": 72,
+        "line_end": 95,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_failed_prepare_stops_dependents_and_keeps_outputs",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_failed_prepare_stops_dependents_and_keeps_outputs",
+        "fqn": "tests.test_surface_lifecycle_runner.test_failed_prepare_stops_dependents_and_keeps_outputs",
+        "label": "def test_failed_prepare_stops_dependents_and_keeps_outputs \u2014 tests/test_surface_lifecycle_runner.py:98",
+        "line_start": 98,
+        "line_end": 106,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_pin_mismatch_never_allocates_scratch",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_pin_mismatch_never_allocates_scratch",
+        "fqn": "tests.test_surface_lifecycle_runner.test_pin_mismatch_never_allocates_scratch",
+        "label": "def test_pin_mismatch_never_allocates_scratch \u2014 tests/test_surface_lifecycle_runner.py:109",
+        "line_start": 109,
+        "line_end": 115,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_registry_refusals",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_registry_refusals",
+        "fqn": "tests.test_surface_lifecycle_runner.test_registry_refusals",
+        "label": "def test_registry_refusals \u2014 tests/test_surface_lifecycle_runner.py:119",
+        "line_start": 119,
+        "line_end": 135,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_validation_failure_does_not_invent_source_drift",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_validation_failure_does_not_invent_source_drift",
+        "fqn": "tests.test_surface_lifecycle_runner.test_validation_failure_does_not_invent_source_drift",
+        "label": "def test_validation_failure_does_not_invent_source_drift \u2014 tests/test_surface_lifecycle_runner.py:138",
+        "line_start": 138,
+        "line_end": 142,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_refuses_existing_output",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_refuses_existing_output",
+        "fqn": "tests.test_surface_lifecycle_runner.test_refuses_existing_output",
+        "label": "def test_refuses_existing_output \u2014 tests/test_surface_lifecycle_runner.py:145",
+        "line_start": 145,
+        "line_end": 148,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_same_artifact_second_input_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_same_artifact_second_input_rejected",
+        "fqn": "tests.test_surface_lifecycle_runner.test_same_artifact_second_input_rejected",
+        "label": "def test_same_artifact_second_input_rejected \u2014 tests/test_surface_lifecycle_runner.py:151",
+        "line_start": 151,
+        "line_end": 154,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+        "fqn": "tests.test_surface_lifecycle_runner.test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+        "label": "def test_distinct_second_artifact_rolls_back_then_uninstalls_selected \u2014 tests/test_surface_lifecycle_runner.py:157",
+        "line_start": 157,
+        "line_end": 173,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "function",
+        "symbol": "test_timeout_is_durable_and_stops",
+        "fqn": "tests.test_surface_lifecycle_runner.test_timeout_is_durable_and_stops",
+        "label": "def test_timeout_is_durable_and_stops \u2014 tests/test_surface_lifecycle_runner.py:176",
+        "line_start": 176,
+        "line_end": 187,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops.timeout",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "kind": "method",
+        "symbol": "test_timeout_is_durable_and_stops.timeout",
+        "fqn": "tests.test_surface_lifecycle_runner.test_timeout_is_durable_and_stops.timeout",
+        "label": "def timeout \u2014 tests/test_surface_lifecycle_runner.py:177",
+        "line_start": 177,
+        "line_end": 179,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            187
+          ]
+        ]
+      }
+    ],
+    "caller_impacts": [
+      {
+        "id": "file:16d1caf0206b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/installer.py",
+        "kind": "file",
+        "symbol": "installer.py",
+        "fqn": "sot_graph.adapters.installer",
+        "label": "File: src/sot_graph/adapters/installer.py",
+        "line_start": 1,
+        "depth": 1,
+        "via_relation": "imports",
+        "callee_id": "sym:3e770f7d3d9b:setup_omp",
+        "callee_symbol": "setup_omp"
+      },
+      {
+        "id": "file:7d61a587199b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "kind": "file",
+        "symbol": "test_adapters.py",
+        "fqn": "tests.test_adapters",
+        "label": "File: tests/test_adapters.py",
+        "line_start": 1,
+        "depth": 1,
+        "via_relation": "imports",
+        "callee_id": "sym:3e770f7d3d9b:setup_omp",
+        "callee_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "kind": "method",
+        "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "fqn": "tests.test_adapters.TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "label": "def test_omp_adapter_workspace_and_global \u2014 tests/test_adapters.py:42",
+        "line_start": 42,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:3e770f7d3d9b:setup_omp",
+        "callee_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "kind": "method",
+        "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "fqn": "tests.test_p8_omp_integration.TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "label": "def test_omp_rules_installed_reference_receipts \u2014 tests/test_p8_omp_integration.py:130",
+        "line_start": 130,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:3e770f7d3d9b:setup_omp",
+        "callee_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "kind": "method",
+        "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "fqn": "tests.test_p8_omp_integration.TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "label": "def test_omp_skill_and_rules_no_absolute_claims \u2014 tests/test_p8_omp_integration.py:144",
+        "line_start": 144,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:3e770f7d3d9b:setup_omp",
+        "callee_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "kind": "method",
+        "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "fqn": "tests.test_provider_compatibility.TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "label": "def test_envelope_validate_flags_malformed_artifact_digest \u2014 tests/test_provider_compatibility.py:301",
+        "line_start": 301,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "kind": "method",
+        "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "label": "def test_status_outside_vocabulary_flagged \u2014 tests/test_provider_compatibility.py:454",
+        "line_start": 454,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "kind": "method",
+        "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "label": "def test_non_string_subject_path_flagged_without_crash \u2014 tests/test_provider_compatibility.py:458",
+        "line_start": 458,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "kind": "method",
+        "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "label": "def test_empty_subject_path_flagged \u2014 tests/test_provider_compatibility.py:462",
+        "line_start": 462,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "kind": "method",
+        "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "label": "def test_valid_envelope_has_no_problems \u2014 tests/test_provider_contract.py:51",
+        "line_start": 51,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "kind": "method",
+        "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "label": "def test_confidence_out_of_range_rejected \u2014 tests/test_provider_contract.py:65",
+        "line_start": 65,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "kind": "method",
+        "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "label": "def test_absolute_subject_path_rejected \u2014 tests/test_provider_contract.py:68",
+        "line_start": 68,
+        "depth": 1,
+        "via_relation": "calls",
+        "callee_id": "sym:4c8737ef674c:validate",
+        "callee_symbol": "validate"
+      }
+    ],
+    "test_impacts": [
+      {
+        "id": "test:tests/test_completion_surface_harness.py",
+        "path": "tests/test_completion_surface_harness.py",
+        "symbol": "",
+        "kind": "file",
+        "impact_reason": "direct_test_file",
+        "target_symbol": null
+      },
+      {
+        "id": "test:tests/test_completion_surface_packaging.py",
+        "path": "tests/test_completion_surface_packaging.py",
+        "symbol": "",
+        "kind": "file",
+        "impact_reason": "direct_test_file",
+        "target_symbol": null
+      },
+      {
+        "id": "test:tests/test_completion_surface_provider.py",
+        "path": "tests/test_completion_surface_provider.py",
+        "symbol": "",
+        "kind": "file",
+        "impact_reason": "direct_test_file",
+        "target_symbol": null
+      },
+      {
+        "id": "test:tests/test_surface_lifecycle_runner.py",
+        "path": "tests/test_surface_lifecycle_runner.py",
+        "symbol": "",
+        "kind": "file",
+        "impact_reason": "direct_test_file",
+        "target_symbol": null
+      },
+      {
+        "id": "file:7d61a587199b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "symbol": "test_adapters.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_same_artifact_second_input_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_same_artifact_second_input_rejected",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "parser"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+        "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+        "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "validate"
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_missing_or_case_changed_console_manifest_refused",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur03_missing_or_case_changed_console_manifest_refused",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "audit_wheel"
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_wheel_audit_requires_sot_only_entrypoints",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur03_wheel_audit_requires_sot_only_entrypoints",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "audit_wheel"
+      },
+      {
+        "id": "sym:916d169db320:test_sur03_wheel_audit_rejects_native_public_payload",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur03_wheel_audit_rejects_native_public_payload",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "audit_wheel"
+      },
+      {
+        "id": "sym:916d169db320:test_sur06_python_build_does_not_execute_upstream_hooks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur06_python_build_does_not_execute_upstream_hooks",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "audit_wheel"
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "run_audit"
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur09_audit_output_never_overwrites_prior_run",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "run_audit"
+      },
+      {
+        "id": "file:7d61a587199b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "symbol": "test_adapters.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+        "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+        "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "setup_omp"
+      },
+      {
+        "id": "file:2eb7f779fee4",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "symbol": "test_completion_surface_harness.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "scratch_only"
+      },
+      {
+        "id": "sym:2eb7f779fee4:scratch_only",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "symbol": "scratch_only",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "scratch_only.forbidden"
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_generated_surface_is_independent_of_dependency_resources",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "symbol": "test_generated_surface_is_independent_of_dependency_resources",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "poison_dependency"
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_cli_onboarding_generates_only_sot_resources",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "symbol": "test_cli_onboarding_generates_only_sot_resources",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "poison_dependency"
+      },
+      {
+        "id": "sym:2eb7f779fee4:test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+        "symbol": "test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "poison_dependency"
+      },
+      {
+        "id": "file:916d169db320",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_completion_surface_packaging.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface"
+      },
+      {
+        "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden"
+      },
+      {
+        "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+        "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden"
+      },
+      {
+        "id": "file:f65b72514699",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_completion_surface_provider.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "surface"
+      },
+      {
+        "id": "sym:f65b72514699:surface",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "surface",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "surface.home_snapshot"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur05_native_failure_with_hostile_remediation_is_not_public",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur05_native_failure_with_hostile_remediation_is_not_public",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "dispatch"
+      },
+      {
+        "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+        "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise"
+      },
+      {
+        "id": "file:73d6dfc3cb7e",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_surface_lifecycle_runner.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "runner_module"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_full_fake_lifecycle_and_durable_receipts",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_full_fake_lifecycle_and_durable_receipts",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_failed_prepare_stops_dependents_and_keeps_outputs",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_failed_prepare_stops_dependents_and_keeps_outputs",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_pin_mismatch_never_allocates_scratch",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_pin_mismatch_never_allocates_scratch",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_registry_refusals",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_registry_refusals",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:fake_commands",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "fake_commands",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "fake_commands.run"
+      },
+      {
+        "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+        "symbol": "test_timeout_is_durable_and_stops",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_timeout_is_durable_and_stops.timeout"
+      }
+    ],
+    "api_impacts": [],
+    "tests_to_run": [
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "tests/test_completion_surface_harness.py",
+      "tests/test_completion_surface_packaging.py",
+      "tests/test_completion_surface_provider.py",
+      "tests/test_surface_lifecycle_runner.py"
+    ],
+    "invalidated_evidence": [],
+    "invalidated_evidence_dead_count": 0,
+    "collection_stats": {
+      "changed_files": {
+        "enumerated_count": 16,
+        "returned_count": 16,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "invalidated_evidence": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 50,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_runs": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_union": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 5000,
+        "truncated": false,
+        "cursor_exhausted": true
+      }
+    },
+    "post_change_snapshot": {
+      "snapshot_id": null,
+      "descriptor_digest": "sha256:203c188ede4243944b662aa869fa36d815c6d51397c12fb54e0b4f56c470d9fe",
+      "role": "post_change",
+      "commit_sha": "ff40695b13871ad2899734bf9a9ef2df0f72faaf",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:d9c85fe398a23d3b47fd591de4e67a2e36e38ad1a47faff988095bb714418cd8",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "captured_at": 1788686734,
+      "content_digests": {
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log": "38cd7c13624f255bcb4810860fa5404580154b62162cb2a60974aa08fb1a65c3",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log": "f5697201f4a0ee60fe464b451b112a1167b4f83cfbd5009453274eed31f60f2b",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log": "701c2f5a8e69484d64748a626c5d40222e91fcd77c7e0da43139d1ae8d9d54cf",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+        "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e",
+        "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+        "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+        "tests/test_completion_surface_harness.py": "82ba2173c0accdb124cb1a2875962c3353b9f279da5c8d6d5f6220767cf5c414",
+        "tests/test_completion_surface_packaging.py": "30d3fea1e987b6519a7ca752ff3c5eaf40fce6b901b0b1d994c186f8ce28669a",
+        "tests/test_completion_surface_provider.py": "53b1f75e00acef29ae9541d4e1cc3a690edb57215fa41cfcfb33551091bfc5c7",
+        "tests/test_surface_lifecycle_runner.py": "538ad57b39bbf5872011df9c7435f4d63b7290f1dfc995660b2144c836544fb8"
+      },
+      "scope_digest": "sha256:b50c6a2633ea3de1b9c133d7ed95f01c7c9878d4092490182403982036b60dab"
+    },
+    "reconcile": {
+      "required": true,
+      "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+    },
+    "summary": {
+      "total_changed_files": 16,
+      "total_hunks": 18,
+      "total_direct_nodes": 81,
+      "total_callers": 12,
+      "total_apis": 0,
+      "total_tests": 58,
+      "risk_score": 80,
+      "risk_level": "HIGH",
+      "execution_time_ms": 92.97
+    },
+    "pre_receipt_digest": null,
+    "pre_change_snapshot": {
+      "descriptor_digest": "sha256:0e74bef2593da64d9de3051f6fc64c59e8ca3202ba8c0941cad2cb6197610bcd",
+      "role": "pre_change",
+      "commit_sha": "ff40695b13871ad2899734bf9a9ef2df0f72faaf",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:d9c85fe398a23d3b47fd591de4e67a2e36e38ad1a47faff988095bb714418cd8",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "content_digests": {
+        "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log": "38cd7c13624f255bcb4810860fa5404580154b62162cb2a60974aa08fb1a65c3",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log": "f5697201f4a0ee60fe464b451b112a1167b4f83cfbd5009453274eed31f60f2b",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log": "701c2f5a8e69484d64748a626c5d40222e91fcd77c7e0da43139d1ae8d9d54cf",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+        "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e",
+        "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+        "tests/test_completion_surface_harness.py": "82ba2173c0accdb124cb1a2875962c3353b9f279da5c8d6d5f6220767cf5c414",
+        "tests/test_completion_surface_packaging.py": "30d3fea1e987b6519a7ca752ff3c5eaf40fce6b901b0b1d994c186f8ce28669a",
+        "tests/test_completion_surface_provider.py": "53b1f75e00acef29ae9541d4e1cc3a690edb57215fa41cfcfb33551091bfc5c7",
+        "tests/test_surface_lifecycle_runner.py": "538ad57b39bbf5872011df9c7435f4d63b7290f1dfc995660b2144c836544fb8"
+      },
+      "scope_digest": "sha256:b50c6a2633ea3de1b9c133d7ed95f01c7c9878d4092490182403982036b60dab"
+    },
+    "remaining_gaps": [],
+    "warnings": [],
+    "closure_decision": "open",
+    "omp_confirmations_remaining": [],
+    "assurance_facts": {
+      "identity_status": "UNIQUE",
+      "snapshot_bound": true,
+      "collection_error": false,
+      "stale_files": [
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log"
+      ],
+      "coverage_measured": false,
+      "coverage_fraction": null,
+      "coverage_floor": 0.9,
+      "parser_failures": 0,
+      "unresolved_count": 0,
+      "unresolved_budget": 0,
+      "open_conflicts": 0,
+      "truncated": false,
+      "truncation_sources": [],
+      "enumeration_complete": null,
+      "parser_capability_complete": null,
+      "partial_ast_present": false,
+      "provider_capability_ok": true,
+      "absence_claim": false,
+      "gate_blocked": false,
+      "dynamic_dispatch_unresolved": true,
+      "claim_profile": "scoped"
+    },
+    "assurance": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "dynamic_dispatch_unresolved"
+      ],
+      "decision": {
+        "status": "STALE",
+        "reason_codes": [
+          "stale_sources",
+          "dynamic_dispatch_unresolved"
+        ]
+      }
+    },
+    "digest": "d9e225e8a714c9b8c53d052c782717c47f23c6ea75aa25d51d9aab2383fc64c0",
+    "request": {
+      "schema_version": "impact-request/1",
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true,
+      "depth": 2,
+      "auto_reconcile": false,
+      "reconcile_provenance": "pipeline"
+    },
+    "projection": {
+      "collections": [
+        {
+          "key": "changed_files",
+          "enumerated_count": 16,
+          "returned_count": 16,
+          "truncated": false,
+          "cap": 200,
+          "cursor_exhausted": true
+        },
+        {
+          "key": "direct_nodes",
+          "enumerated_count": 81,
+          "returned_count": 81,
+          "truncated": false
+        },
+        {
+          "key": "caller_impacts",
+          "enumerated_count": 12,
+          "returned_count": 12,
+          "truncated": false
+        },
+        {
+          "key": "test_impacts",
+          "enumerated_count": 58,
+          "returned_count": 58,
+          "truncated": false
+        },
+        {
+          "key": "api_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "tests_to_run",
+          "enumerated_count": 12,
+          "returned_count": 12,
+          "truncated": false
+        }
+      ],
+      "next_cursor": null
+    },
+    "stale_files": []
+  },
+  "kind": "diff_impact",
+  "proof_scope": "post_change",
+  "diff_identity": {
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true
+  },
+  "changed_files": [
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log",
+    "plan/remaining-work-phased-plan-2026-09-05.md",
+    "scripts/check_surface_lifecycle.py",
+    "scripts/check_surface_packaging.py",
+    "src/sot_graph/adapters/omp.py",
+    "tests/test_completion_surface_harness.py",
+    "tests/test_completion_surface_packaging.py",
+    "tests/test_completion_surface_provider.py",
+    "tests/test_surface_lifecycle_runner.py"
+  ],
+  "changed_files_total": 16,
+  "changed_files_truncated": false,
+  "direct_nodes": [
+    {
+      "id": "file:7b2e2b978702",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+      "kind": "file",
+      "symbol": "remaining-work-phased-plan-2026-09-05.md",
+      "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+      "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+      "line_start": 1,
+      "line_end": 149,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          148
+        ]
+      ]
+    },
+    {
+      "id": "file:4c8737ef674c",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "file",
+      "symbol": "check_surface_lifecycle.py",
+      "fqn": "scripts.check_surface_lifecycle",
+      "label": "File: scripts/check_surface_lifecycle.py",
+      "line_start": 1,
+      "line_end": 282,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:parser",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "symbol": "parser",
+      "fqn": "scripts.check_surface_lifecycle.parser",
+      "label": "def parser \u2014 scripts/check_surface_lifecycle.py:48",
+      "line_start": 48,
+      "line_end": 57,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:validate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "symbol": "validate",
+      "fqn": "scripts.check_surface_lifecycle.validate",
+      "label": "def validate \u2014 scripts/check_surface_lifecycle.py:60",
+      "line_start": 60,
+      "line_end": 70,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:private_write",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "symbol": "private_write",
+      "fqn": "scripts.check_surface_lifecycle.private_write",
+      "label": "def private_write \u2014 scripts/check_surface_lifecycle.py:73",
+      "line_start": 73,
+      "line_end": 76,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:snapshot_files",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "symbol": "snapshot_files",
+      "fqn": "scripts.check_surface_lifecycle.snapshot_files",
+      "label": "def snapshot_files \u2014 scripts/check_surface_lifecycle.py:79",
+      "line_start": 79,
+      "line_end": 81,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "class",
+      "symbol": "Runner",
+      "fqn": "scripts.check_surface_lifecycle.Runner",
+      "label": "class Runner \u2014 scripts/check_surface_lifecycle.py:84",
+      "line_start": 84,
+      "line_end": 271,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.__init__",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.__init__",
+      "fqn": "scripts.check_surface_lifecycle.Runner.__init__",
+      "label": "def __init__ \u2014 scripts/check_surface_lifecycle.py:85",
+      "line_start": 85,
+      "line_end": 95,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.save",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.save",
+      "fqn": "scripts.check_surface_lifecycle.Runner.save",
+      "label": "def save \u2014 scripts/check_surface_lifecycle.py:97",
+      "line_start": 97,
+      "line_end": 101,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.command",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.command",
+      "fqn": "scripts.check_surface_lifecycle.Runner.command",
+      "label": "def command \u2014 scripts/check_surface_lifecycle.py:103",
+      "line_start": 103,
+      "line_end": 131,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.cli",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.cli",
+      "fqn": "scripts.check_surface_lifecycle.Runner.cli",
+      "label": "def cli \u2014 scripts/check_surface_lifecycle.py:133",
+      "line_start": 133,
+      "line_end": 137,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.engine",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.engine",
+      "fqn": "scripts.check_surface_lifecycle.Runner.engine",
+      "label": "def engine \u2014 scripts/check_surface_lifecycle.py:139",
+      "line_start": 139,
+      "line_end": 142,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.managed",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.managed",
+      "fqn": "scripts.check_surface_lifecycle.Runner.managed",
+      "label": "def managed \u2014 scripts/check_surface_lifecycle.py:144",
+      "line_start": 144,
+      "line_end": 150,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.config",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.config",
+      "fqn": "scripts.check_surface_lifecycle.Runner.config",
+      "label": "def config \u2014 scripts/check_surface_lifecycle.py:152",
+      "line_start": 152,
+      "line_end": 159,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:Runner.execute",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "method",
+      "symbol": "Runner.execute",
+      "fqn": "scripts.check_surface_lifecycle.Runner.execute",
+      "label": "def execute \u2014 scripts/check_surface_lifecycle.py:161",
+      "line_start": 161,
+      "line_end": 271,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "sym:4c8737ef674c:main",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_lifecycle.py",
+      "kind": "function",
+      "symbol": "main",
+      "fqn": "scripts.check_surface_lifecycle.main",
+      "label": "def main \u2014 scripts/check_surface_lifecycle.py:274",
+      "line_start": 274,
+      "line_end": 277,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          281
+        ]
+      ]
+    },
+    {
+      "id": "file:cdc0b82c1f4c",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "file",
+      "symbol": "check_surface_packaging.py",
+      "fqn": "scripts.check_surface_packaging",
+      "label": "File: scripts/check_surface_packaging.py",
+      "line_start": 1,
+      "line_end": 161,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "sym:cdc0b82c1f4c:snapshot",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "function",
+      "symbol": "snapshot",
+      "fqn": "scripts.check_surface_packaging.snapshot",
+      "label": "def snapshot \u2014 scripts/check_surface_packaging.py:24",
+      "line_start": 24,
+      "line_end": 28,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "sym:cdc0b82c1f4c:audit_wheel",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "function",
+      "symbol": "audit_wheel",
+      "fqn": "scripts.check_surface_packaging.audit_wheel",
+      "label": "def audit_wheel \u2014 scripts/check_surface_packaging.py:31",
+      "line_start": 31,
+      "line_end": 51,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "sym:cdc0b82c1f4c:run_audit",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "function",
+      "symbol": "run_audit",
+      "fqn": "scripts.check_surface_packaging.run_audit",
+      "label": "def run_audit \u2014 scripts/check_surface_packaging.py:54",
+      "line_start": 54,
+      "line_end": 147,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "sym:cdc0b82c1f4c:run_audit.run",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "method",
+      "symbol": "run_audit.run",
+      "fqn": "scripts.check_surface_packaging.run_audit.run",
+      "label": "def run \u2014 scripts/check_surface_packaging.py:94",
+      "line_start": 94,
+      "line_end": 105,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "sym:cdc0b82c1f4c:main",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/check_surface_packaging.py",
+      "kind": "function",
+      "symbol": "main",
+      "fqn": "scripts.check_surface_packaging.main",
+      "label": "def main \u2014 scripts/check_surface_packaging.py:150",
+      "line_start": 150,
+      "line_end": 156,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "file:3e770f7d3d9b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+      "kind": "file",
+      "symbol": "omp.py",
+      "fqn": "sot_graph.adapters.omp",
+      "label": "File: src/sot_graph/adapters/omp.py",
+      "line_start": 1,
+      "line_end": 233,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          159,
+          178
+        ],
+        [
+          204,
+          204
+        ],
+        [
+          227,
+          227
+        ]
+      ]
+    },
+    {
+      "id": "sym:3e770f7d3d9b:_update_omp_rules",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+      "kind": "function",
+      "symbol": "_update_omp_rules",
+      "fqn": "sot_graph.adapters.omp._update_omp_rules",
+      "label": "def _update_omp_rules \u2014 src/sot_graph/adapters/omp.py:159",
+      "line_start": 159,
+      "line_end": 176,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          159,
+          178
+        ]
+      ]
+    },
+    {
+      "id": "sym:3e770f7d3d9b:setup_omp",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/omp.py",
+      "kind": "function",
+      "symbol": "setup_omp",
+      "fqn": "sot_graph.adapters.omp.setup_omp",
+      "label": "def setup_omp \u2014 src/sot_graph/adapters/omp.py:179",
+      "line_start": 179,
+      "line_end": 232,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          204,
+          204
+        ],
+        [
+          227,
+          227
+        ]
+      ]
+    },
+    {
+      "id": "file:2eb7f779fee4",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "file",
+      "symbol": "test_completion_surface_harness.py",
+      "fqn": "tests.test_completion_surface_harness",
+      "label": "File: tests/test_completion_surface_harness.py",
+      "line_start": 1,
+      "line_end": 166,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:scratch_only",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "scratch_only",
+      "fqn": "tests.test_completion_surface_harness.scratch_only",
+      "label": "def scratch_only \u2014 tests/test_completion_surface_harness.py:30",
+      "line_start": 30,
+      "line_end": 44,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:scratch_only.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "method",
+      "symbol": "scratch_only.forbidden",
+      "fqn": "tests.test_completion_surface_harness.scratch_only.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_harness.py:37",
+      "line_start": 37,
+      "line_end": 38,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:poison_dependency",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "poison_dependency",
+      "fqn": "tests.test_completion_surface_harness.poison_dependency",
+      "label": "def poison_dependency \u2014 tests/test_completion_surface_harness.py:47",
+      "line_start": 47,
+      "line_end": 68,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:snapshot",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "snapshot",
+      "fqn": "tests.test_completion_surface_harness.snapshot",
+      "label": "def snapshot \u2014 tests/test_completion_surface_harness.py:71",
+      "line_start": 71,
+      "line_end": 72,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_generated_surface_is_independent_of_dependency_resources",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "test_generated_surface_is_independent_of_dependency_resources",
+      "fqn": "tests.test_completion_surface_harness.test_generated_surface_is_independent_of_dependency_resources",
+      "label": "def test_generated_surface_is_independent_of_dependency_resources \u2014 tests/test_completion_surface_harness.py:77",
+      "line_start": 77,
+      "line_end": 103,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_cli_onboarding_generates_only_sot_resources",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "test_cli_onboarding_generates_only_sot_resources",
+      "fqn": "tests.test_completion_surface_harness.test_cli_onboarding_generates_only_sot_resources",
+      "label": "def test_cli_onboarding_generates_only_sot_resources \u2014 tests/test_completion_surface_harness.py:107",
+      "line_start": 107,
+      "line_end": 125,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "kind": "function",
+      "symbol": "test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+      "fqn": "tests.test_completion_surface_harness.test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+      "label": "def test_self_index_excludes_vendor_then_explicit_file_remains_untrusted \u2014 tests/test_completion_surface_harness.py:128",
+      "line_start": 128,
+      "line_end": 165,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          165
+        ]
+      ]
+    },
+    {
+      "id": "file:916d169db320",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "file",
+      "symbol": "test_completion_surface_packaging.py",
+      "fqn": "tests.test_completion_surface_packaging",
+      "label": "File: tests/test_completion_surface_packaging.py",
+      "line_start": 1,
+      "line_end": 327,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface",
+      "fqn": "tests.test_completion_surface_packaging.test_sur01_sur08_generated_setup_preserves_foreign_surface",
+      "label": "def test_sur01_sur08_generated_setup_preserves_foreign_surface \u2014 tests/test_completion_surface_packaging.py:32",
+      "line_start": 32,
+      "line_end": 105,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "method",
+      "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+      "fqn": "tests.test_completion_surface_packaging.test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:79",
+      "line_start": 79,
+      "line_end": 80,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur08_omp_foreign_rules_preserved",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur08_omp_foreign_rules_preserved",
+      "fqn": "tests.test_completion_surface_packaging.test_sur08_omp_foreign_rules_preserved",
+      "label": "def test_sur08_omp_foreign_rules_preserved \u2014 tests/test_completion_surface_packaging.py:109",
+      "line_start": 109,
+      "line_end": 124,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur08_omp_non_utf8_rules_preserved",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur08_omp_non_utf8_rules_preserved",
+      "fqn": "tests.test_completion_surface_packaging.test_sur08_omp_non_utf8_rules_preserved",
+      "label": "def test_sur08_omp_non_utf8_rules_preserved \u2014 tests/test_completion_surface_packaging.py:127",
+      "line_start": 127,
+      "line_end": 141,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+      "label": "def test_sur09_upgrade_between_uninstall_checks_preserves_new_owner \u2014 tests/test_completion_surface_packaging.py:144",
+      "line_start": 144,
+      "line_end": 196,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "method",
+      "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:155",
+      "line_start": 155,
+      "line_end": 156,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "method",
+      "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.promote_before_lock",
+      "label": "def promote_before_lock \u2014 tests/test_completion_surface_packaging.py:174",
+      "line_start": 174,
+      "line_end": 180,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:_wheel",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "_wheel",
+      "fqn": "tests.test_completion_surface_packaging._wheel",
+      "label": "def _wheel \u2014 tests/test_completion_surface_packaging.py:199",
+      "line_start": 199,
+      "line_end": 207,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_timeout_receipt_retains_command_and_partial_output",
+      "label": "def test_sur09_timeout_receipt_retains_command_and_partial_output \u2014 tests/test_completion_surface_packaging.py:210",
+      "line_start": 210,
+      "line_end": 229,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "method",
+      "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_timeout_receipt_retains_command_and_partial_output.timeout",
+      "label": "def timeout \u2014 tests/test_completion_surface_packaging.py:213",
+      "line_start": 213,
+      "line_end": 220,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_missing_or_case_changed_console_manifest_refused",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur03_missing_or_case_changed_console_manifest_refused",
+      "fqn": "tests.test_completion_surface_packaging.test_sur03_missing_or_case_changed_console_manifest_refused",
+      "label": "def test_sur03_missing_or_case_changed_console_manifest_refused \u2014 tests/test_completion_surface_packaging.py:234",
+      "line_start": 234,
+      "line_end": 239,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_wheel_audit_requires_sot_only_entrypoints",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur03_wheel_audit_requires_sot_only_entrypoints",
+      "fqn": "tests.test_completion_surface_packaging.test_sur03_wheel_audit_requires_sot_only_entrypoints",
+      "label": "def test_sur03_wheel_audit_requires_sot_only_entrypoints \u2014 tests/test_completion_surface_packaging.py:242",
+      "line_start": 242,
+      "line_end": 247,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_wheel_audit_rejects_native_public_payload",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur03_wheel_audit_rejects_native_public_payload",
+      "fqn": "tests.test_completion_surface_packaging.test_sur03_wheel_audit_rejects_native_public_payload",
+      "label": "def test_sur03_wheel_audit_rejects_native_public_payload \u2014 tests/test_completion_surface_packaging.py:254",
+      "line_start": 254,
+      "line_end": 256,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur06_python_build_does_not_execute_upstream_hooks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur06_python_build_does_not_execute_upstream_hooks",
+      "fqn": "tests.test_completion_surface_packaging.test_sur06_python_build_does_not_execute_upstream_hooks",
+      "label": "def test_sur06_python_build_does_not_execute_upstream_hooks \u2014 tests/test_completion_surface_packaging.py:259",
+      "line_start": 259,
+      "line_end": 310,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "function",
+      "symbol": "test_sur09_audit_output_never_overwrites_prior_run",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_audit_output_never_overwrites_prior_run",
+      "label": "def test_sur09_audit_output_never_overwrites_prior_run \u2014 tests/test_completion_surface_packaging.py:313",
+      "line_start": 313,
+      "line_end": 326,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "kind": "method",
+      "symbol": "test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+      "fqn": "tests.test_completion_surface_packaging.test_sur09_audit_output_never_overwrites_prior_run.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_packaging.py:320",
+      "line_start": 320,
+      "line_end": 321,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          326
+        ]
+      ]
+    },
+    {
+      "id": "file:f65b72514699",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "file",
+      "symbol": "test_completion_surface_provider.py",
+      "fqn": "tests.test_completion_surface_provider",
+      "label": "File: tests/test_completion_surface_provider.py",
+      "line_start": 1,
+      "line_end": 266,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:surface",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "surface",
+      "fqn": "tests.test_completion_surface_provider.surface",
+      "label": "def surface \u2014 tests/test_completion_surface_provider.py:29",
+      "line_start": 29,
+      "line_end": 85,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:surface.home_snapshot",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "method",
+      "symbol": "surface.home_snapshot",
+      "fqn": "tests.test_completion_surface_provider.surface.home_snapshot",
+      "label": "def home_snapshot \u2014 tests/test_completion_surface_provider.py:43",
+      "line_start": 43,
+      "line_end": 46,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:surface.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "method",
+      "symbol": "surface.forbidden",
+      "fqn": "tests.test_completion_surface_provider.surface.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_provider.py:54",
+      "line_start": 54,
+      "line_end": 55,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:surface.popen",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "method",
+      "symbol": "surface.popen",
+      "fqn": "tests.test_completion_surface_provider.surface.popen",
+      "label": "def popen \u2014 tests/test_completion_surface_provider.py:61",
+      "line_start": 61,
+      "line_end": 73,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:dispatch",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "dispatch",
+      "fqn": "tests.test_completion_surface_provider.dispatch",
+      "label": "def dispatch \u2014 tests/test_completion_surface_provider.py:88",
+      "line_start": 88,
+      "line_end": 90,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+      "fqn": "tests.test_completion_surface_provider.test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+      "label": "def test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants \u2014 tests/test_completion_surface_provider.py:93",
+      "line_start": 93,
+      "line_end": 128,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+      "fqn": "tests.test_completion_surface_provider.test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+      "label": "def test_sur02_repo_grant_cannot_replace_absent_trusted_registration \u2014 tests/test_completion_surface_provider.py:131",
+      "line_start": 131,
+      "line_end": 141,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+      "fqn": "tests.test_completion_surface_provider.test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+      "label": "def test_sur05_dispatch_revalidates_trusted_artifact_and_registry \u2014 tests/test_completion_surface_provider.py:145",
+      "line_start": 145,
+      "line_end": 162,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+      "fqn": "tests.test_completion_surface_provider.test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+      "label": "def test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate \u2014 tests/test_completion_surface_provider.py:165",
+      "line_start": 165,
+      "line_end": 186,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur05_native_failure_with_hostile_remediation_is_not_public",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur05_native_failure_with_hostile_remediation_is_not_public",
+      "fqn": "tests.test_completion_surface_provider.test_sur05_native_failure_with_hostile_remediation_is_not_public",
+      "label": "def test_sur05_native_failure_with_hostile_remediation_is_not_public \u2014 tests/test_completion_surface_provider.py:190",
+      "line_start": 190,
+      "line_end": 201,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+      "fqn": "tests.test_completion_surface_provider.test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+      "label": "def test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate \u2014 tests/test_completion_surface_provider.py:204",
+      "line_start": 204,
+      "line_end": 249,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "method",
+      "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+      "fqn": "tests.test_completion_surface_provider.test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise",
+      "label": "async def exercise \u2014 tests/test_completion_surface_provider.py:217",
+      "line_start": 217,
+      "line_end": 245,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "function",
+      "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+      "fqn": "tests.test_completion_surface_provider.test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+      "label": "def test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch \u2014 tests/test_completion_surface_provider.py:252",
+      "line_start": 252,
+      "line_end": 265,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "kind": "method",
+      "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+      "fqn": "tests.test_completion_surface_provider.test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch.forbidden",
+      "label": "def forbidden \u2014 tests/test_completion_surface_provider.py:261",
+      "line_start": 261,
+      "line_end": 262,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          265
+        ]
+      ]
+    },
+    {
+      "id": "file:73d6dfc3cb7e",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "file",
+      "symbol": "test_surface_lifecycle_runner.py",
+      "fqn": "tests.test_surface_lifecycle_runner",
+      "label": "File: tests/test_surface_lifecycle_runner.py",
+      "line_start": 1,
+      "line_end": 188,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:runner_module",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "runner_module",
+      "fqn": "tests.test_surface_lifecycle_runner.runner_module",
+      "label": "def runner_module \u2014 tests/test_surface_lifecycle_runner.py:13",
+      "line_start": 13,
+      "line_end": 23,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:inputs",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "inputs",
+      "fqn": "tests.test_surface_lifecycle_runner.inputs",
+      "label": "def inputs \u2014 tests/test_surface_lifecycle_runner.py:27",
+      "line_start": 27,
+      "line_end": 35,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:fake_commands",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "fake_commands",
+      "fqn": "tests.test_surface_lifecycle_runner.fake_commands",
+      "label": "def fake_commands \u2014 tests/test_surface_lifecycle_runner.py:38",
+      "line_start": 38,
+      "line_end": 60,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:fake_commands.run",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "method",
+      "symbol": "fake_commands.run",
+      "fqn": "tests.test_surface_lifecycle_runner.fake_commands.run",
+      "label": "def run \u2014 tests/test_surface_lifecycle_runner.py:41",
+      "line_start": 41,
+      "line_end": 57,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_no_slot_is_blocked_without_subprocess",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_no_slot_is_blocked_without_subprocess",
+      "fqn": "tests.test_surface_lifecycle_runner.test_no_slot_is_blocked_without_subprocess",
+      "label": "def test_no_slot_is_blocked_without_subprocess \u2014 tests/test_surface_lifecycle_runner.py:63",
+      "line_start": 63,
+      "line_end": 69,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_full_fake_lifecycle_and_durable_receipts",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_full_fake_lifecycle_and_durable_receipts",
+      "fqn": "tests.test_surface_lifecycle_runner.test_full_fake_lifecycle_and_durable_receipts",
+      "label": "def test_full_fake_lifecycle_and_durable_receipts \u2014 tests/test_surface_lifecycle_runner.py:72",
+      "line_start": 72,
+      "line_end": 95,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_failed_prepare_stops_dependents_and_keeps_outputs",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_failed_prepare_stops_dependents_and_keeps_outputs",
+      "fqn": "tests.test_surface_lifecycle_runner.test_failed_prepare_stops_dependents_and_keeps_outputs",
+      "label": "def test_failed_prepare_stops_dependents_and_keeps_outputs \u2014 tests/test_surface_lifecycle_runner.py:98",
+      "line_start": 98,
+      "line_end": 106,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_pin_mismatch_never_allocates_scratch",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_pin_mismatch_never_allocates_scratch",
+      "fqn": "tests.test_surface_lifecycle_runner.test_pin_mismatch_never_allocates_scratch",
+      "label": "def test_pin_mismatch_never_allocates_scratch \u2014 tests/test_surface_lifecycle_runner.py:109",
+      "line_start": 109,
+      "line_end": 115,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_registry_refusals",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_registry_refusals",
+      "fqn": "tests.test_surface_lifecycle_runner.test_registry_refusals",
+      "label": "def test_registry_refusals \u2014 tests/test_surface_lifecycle_runner.py:119",
+      "line_start": 119,
+      "line_end": 135,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_validation_failure_does_not_invent_source_drift",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_validation_failure_does_not_invent_source_drift",
+      "fqn": "tests.test_surface_lifecycle_runner.test_validation_failure_does_not_invent_source_drift",
+      "label": "def test_validation_failure_does_not_invent_source_drift \u2014 tests/test_surface_lifecycle_runner.py:138",
+      "line_start": 138,
+      "line_end": 142,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_refuses_existing_output",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_refuses_existing_output",
+      "fqn": "tests.test_surface_lifecycle_runner.test_refuses_existing_output",
+      "label": "def test_refuses_existing_output \u2014 tests/test_surface_lifecycle_runner.py:145",
+      "line_start": 145,
+      "line_end": 148,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_same_artifact_second_input_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_same_artifact_second_input_rejected",
+      "fqn": "tests.test_surface_lifecycle_runner.test_same_artifact_second_input_rejected",
+      "label": "def test_same_artifact_second_input_rejected \u2014 tests/test_surface_lifecycle_runner.py:151",
+      "line_start": 151,
+      "line_end": 154,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+      "fqn": "tests.test_surface_lifecycle_runner.test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+      "label": "def test_distinct_second_artifact_rolls_back_then_uninstalls_selected \u2014 tests/test_surface_lifecycle_runner.py:157",
+      "line_start": 157,
+      "line_end": 173,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "function",
+      "symbol": "test_timeout_is_durable_and_stops",
+      "fqn": "tests.test_surface_lifecycle_runner.test_timeout_is_durable_and_stops",
+      "label": "def test_timeout_is_durable_and_stops \u2014 tests/test_surface_lifecycle_runner.py:176",
+      "line_start": 176,
+      "line_end": 187,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops.timeout",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "kind": "method",
+      "symbol": "test_timeout_is_durable_and_stops.timeout",
+      "fqn": "tests.test_surface_lifecycle_runner.test_timeout_is_durable_and_stops.timeout",
+      "label": "def timeout \u2014 tests/test_surface_lifecycle_runner.py:177",
+      "line_start": 177,
+      "line_end": 179,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          187
+        ]
+      ]
+    }
+  ],
+  "caller_impacts": [
+    {
+      "id": "file:16d1caf0206b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/adapters/installer.py",
+      "kind": "file",
+      "symbol": "installer.py",
+      "fqn": "sot_graph.adapters.installer",
+      "label": "File: src/sot_graph/adapters/installer.py",
+      "line_start": 1,
+      "depth": 1,
+      "via_relation": "imports",
+      "callee_id": "sym:3e770f7d3d9b:setup_omp",
+      "callee_symbol": "setup_omp"
+    },
+    {
+      "id": "file:7d61a587199b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "kind": "file",
+      "symbol": "test_adapters.py",
+      "fqn": "tests.test_adapters",
+      "label": "File: tests/test_adapters.py",
+      "line_start": 1,
+      "depth": 1,
+      "via_relation": "imports",
+      "callee_id": "sym:3e770f7d3d9b:setup_omp",
+      "callee_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "kind": "method",
+      "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "fqn": "tests.test_adapters.TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "label": "def test_omp_adapter_workspace_and_global \u2014 tests/test_adapters.py:42",
+      "line_start": 42,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:3e770f7d3d9b:setup_omp",
+      "callee_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "kind": "method",
+      "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "fqn": "tests.test_p8_omp_integration.TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "label": "def test_omp_rules_installed_reference_receipts \u2014 tests/test_p8_omp_integration.py:130",
+      "line_start": 130,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:3e770f7d3d9b:setup_omp",
+      "callee_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "kind": "method",
+      "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "fqn": "tests.test_p8_omp_integration.TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "label": "def test_omp_skill_and_rules_no_absolute_claims \u2014 tests/test_p8_omp_integration.py:144",
+      "line_start": 144,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:3e770f7d3d9b:setup_omp",
+      "callee_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "kind": "method",
+      "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "fqn": "tests.test_provider_compatibility.TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "label": "def test_envelope_validate_flags_malformed_artifact_digest \u2014 tests/test_provider_compatibility.py:301",
+      "line_start": 301,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "kind": "method",
+      "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "label": "def test_status_outside_vocabulary_flagged \u2014 tests/test_provider_compatibility.py:454",
+      "line_start": 454,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "kind": "method",
+      "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "label": "def test_non_string_subject_path_flagged_without_crash \u2014 tests/test_provider_compatibility.py:458",
+      "line_start": 458,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "kind": "method",
+      "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "fqn": "tests.test_provider_compatibility.TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "label": "def test_empty_subject_path_flagged \u2014 tests/test_provider_compatibility.py:462",
+      "line_start": 462,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "kind": "method",
+      "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "label": "def test_valid_envelope_has_no_problems \u2014 tests/test_provider_contract.py:51",
+      "line_start": 51,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "kind": "method",
+      "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "label": "def test_confidence_out_of_range_rejected \u2014 tests/test_provider_contract.py:65",
+      "line_start": 65,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "kind": "method",
+      "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "fqn": "tests.test_provider_contract.TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "label": "def test_absolute_subject_path_rejected \u2014 tests/test_provider_contract.py:68",
+      "line_start": 68,
+      "depth": 1,
+      "via_relation": "calls",
+      "callee_id": "sym:4c8737ef674c:validate",
+      "callee_symbol": "validate"
+    }
+  ],
+  "test_impacts": [
+    {
+      "id": "test:tests/test_completion_surface_harness.py",
+      "path": "tests/test_completion_surface_harness.py",
+      "symbol": "",
+      "kind": "file",
+      "impact_reason": "direct_test_file",
+      "target_symbol": null
+    },
+    {
+      "id": "test:tests/test_completion_surface_packaging.py",
+      "path": "tests/test_completion_surface_packaging.py",
+      "symbol": "",
+      "kind": "file",
+      "impact_reason": "direct_test_file",
+      "target_symbol": null
+    },
+    {
+      "id": "test:tests/test_completion_surface_provider.py",
+      "path": "tests/test_completion_surface_provider.py",
+      "symbol": "",
+      "kind": "file",
+      "impact_reason": "direct_test_file",
+      "target_symbol": null
+    },
+    {
+      "id": "test:tests/test_surface_lifecycle_runner.py",
+      "path": "tests/test_surface_lifecycle_runner.py",
+      "symbol": "",
+      "kind": "file",
+      "impact_reason": "direct_test_file",
+      "target_symbol": null
+    },
+    {
+      "id": "file:7d61a587199b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "symbol": "test_adapters.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_same_artifact_second_input_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_same_artifact_second_input_rejected",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "parser"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_valid_envelope_has_no_problems",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_confidence_out_of_range_rejected",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:1c33eef27947:TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+      "symbol": "TestEvidenceEnvelope.test_absolute_subject_path_rejected",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestSerializationBackwardCompatible.test_envelope_validate_flags_malformed_artifact_digest",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_status_outside_vocabulary_flagged",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_non_string_subject_path_flagged_without_crash",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:57c03290fb24:TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+      "symbol": "TestEnvelopeValidateGuards.test_empty_subject_path_flagged",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "validate"
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_missing_or_case_changed_console_manifest_refused",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur03_missing_or_case_changed_console_manifest_refused",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "audit_wheel"
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_wheel_audit_requires_sot_only_entrypoints",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur03_wheel_audit_requires_sot_only_entrypoints",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "audit_wheel"
+    },
+    {
+      "id": "sym:916d169db320:test_sur03_wheel_audit_rejects_native_public_payload",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur03_wheel_audit_rejects_native_public_payload",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "audit_wheel"
+    },
+    {
+      "id": "sym:916d169db320:test_sur06_python_build_does_not_execute_upstream_hooks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur06_python_build_does_not_execute_upstream_hooks",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "audit_wheel"
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_timeout_receipt_retains_command_and_partial_output",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur09_timeout_receipt_retains_command_and_partial_output",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "run_audit"
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_audit_output_never_overwrites_prior_run",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur09_audit_output_never_overwrites_prior_run",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "run_audit"
+    },
+    {
+      "id": "file:7d61a587199b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "symbol": "test_adapters.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:7d61a587199b:TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+      "symbol": "TestHarnessAdapters.test_omp_adapter_workspace_and_global",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "symbol": "TestAssuredChangeLoop.test_omp_rules_installed_reference_receipts",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "sym:143ab3c80e53:TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+      "symbol": "TestAssuredChangeLoop.test_omp_skill_and_rules_no_absolute_claims",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "setup_omp"
+    },
+    {
+      "id": "file:2eb7f779fee4",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "symbol": "test_completion_surface_harness.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "scratch_only"
+    },
+    {
+      "id": "sym:2eb7f779fee4:scratch_only",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "symbol": "scratch_only",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "scratch_only.forbidden"
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_generated_surface_is_independent_of_dependency_resources",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "symbol": "test_generated_surface_is_independent_of_dependency_resources",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "poison_dependency"
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_cli_onboarding_generates_only_sot_resources",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "symbol": "test_cli_onboarding_generates_only_sot_resources",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "poison_dependency"
+    },
+    {
+      "id": "sym:2eb7f779fee4:test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+      "symbol": "test_self_index_excludes_vendor_then_explicit_file_remains_untrusted",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "poison_dependency"
+    },
+    {
+      "id": "file:916d169db320",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_completion_surface_packaging.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface"
+    },
+    {
+      "id": "sym:916d169db320:test_sur01_sur08_generated_setup_preserves_foreign_surface",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_sur01_sur08_generated_setup_preserves_foreign_surface.forbidden"
+    },
+    {
+      "id": "sym:916d169db320:test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+      "symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_sur09_upgrade_between_uninstall_checks_preserves_new_owner.forbidden"
+    },
+    {
+      "id": "file:f65b72514699",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_completion_surface_provider.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "surface"
+    },
+    {
+      "id": "sym:f65b72514699:surface",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "surface",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "surface.home_snapshot"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur11_trusted_dispatch_replaces_child_env_and_ignores_repo_grants",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur02_repo_grant_cannot_replace_absent_trusted_registration",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur05_dispatch_revalidates_trusted_artifact_and_registry",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur10_two_registered_workspaces_keep_runtime_and_binding_separate",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur05_native_failure_with_hostile_remediation_is_not_public",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur05_native_failure_with_hostile_remediation_is_not_public",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur10_timeout_quarantine_survives_trusted_reload_and_blocks_dispatch",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "dispatch"
+    },
+    {
+      "id": "sym:f65b72514699:test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+      "symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate.exercise"
+    },
+    {
+      "id": "file:73d6dfc3cb7e",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_surface_lifecycle_runner.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "runner_module"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_full_fake_lifecycle_and_durable_receipts",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_full_fake_lifecycle_and_durable_receipts",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_failed_prepare_stops_dependents_and_keeps_outputs",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_failed_prepare_stops_dependents_and_keeps_outputs",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_pin_mismatch_never_allocates_scratch",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_pin_mismatch_never_allocates_scratch",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_registry_refusals",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_registry_refusals",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_distinct_second_artifact_rolls_back_then_uninstalls_selected",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:fake_commands",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "fake_commands",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "fake_commands.run"
+    },
+    {
+      "id": "sym:73d6dfc3cb7e:test_timeout_is_durable_and_stops",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+      "symbol": "test_timeout_is_durable_and_stops",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_timeout_is_durable_and_stops.timeout"
+    }
+  ],
+  "api_impacts": [],
+  "tests_to_run": [
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_adapters.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_harness.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_packaging.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_completion_surface_provider.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_p8_omp_integration.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_compatibility.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_provider_contract.py",
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_surface_lifecycle_runner.py",
+    "tests/test_completion_surface_harness.py",
+    "tests/test_completion_surface_packaging.py",
+    "tests/test_completion_surface_provider.py",
+    "tests/test_surface_lifecycle_runner.py"
+  ],
+  "invalidated_evidence": [],
+  "invalidated_evidence_dead_count": 0,
+  "collection_stats": {
+    "changed_files": {
+      "enumerated_count": 16,
+      "returned_count": 16,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "invalidated_evidence": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 50,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_runs": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_union": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 5000,
+      "truncated": false,
+      "cursor_exhausted": true
+    }
+  },
+  "post_change_snapshot": {
+    "snapshot_id": null,
+    "descriptor_digest": "sha256:203c188ede4243944b662aa869fa36d815c6d51397c12fb54e0b4f56c470d9fe",
+    "role": "post_change",
+    "commit_sha": "ff40695b13871ad2899734bf9a9ef2df0f72faaf",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:d9c85fe398a23d3b47fd591de4e67a2e36e38ad1a47faff988095bb714418cd8",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "captured_at": 1788686734,
+    "content_digests": {
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log": "38cd7c13624f255bcb4810860fa5404580154b62162cb2a60974aa08fb1a65c3",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log": "f5697201f4a0ee60fe464b451b112a1167b4f83cfbd5009453274eed31f60f2b",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log": "701c2f5a8e69484d64748a626c5d40222e91fcd77c7e0da43139d1ae8d9d54cf",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+      "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e",
+      "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+      "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+      "tests/test_completion_surface_harness.py": "82ba2173c0accdb124cb1a2875962c3353b9f279da5c8d6d5f6220767cf5c414",
+      "tests/test_completion_surface_packaging.py": "30d3fea1e987b6519a7ca752ff3c5eaf40fce6b901b0b1d994c186f8ce28669a",
+      "tests/test_completion_surface_provider.py": "53b1f75e00acef29ae9541d4e1cc3a690edb57215fa41cfcfb33551091bfc5c7",
+      "tests/test_surface_lifecycle_runner.py": "538ad57b39bbf5872011df9c7435f4d63b7290f1dfc995660b2144c836544fb8"
+    },
+    "scope_digest": "sha256:b50c6a2633ea3de1b9c133d7ed95f01c7c9878d4092490182403982036b60dab"
+  },
+  "reconcile": {
+    "required": true,
+    "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+  },
+  "summary": {
+    "total_changed_files": 16,
+    "total_hunks": 18,
+    "total_direct_nodes": 81,
+    "total_callers": 12,
+    "total_apis": 0,
+    "total_tests": 58,
+    "risk_score": 80,
+    "risk_level": "HIGH",
+    "execution_time_ms": 92.97
+  },
+  "pre_receipt_digest": null,
+  "pre_change_snapshot": {
+    "descriptor_digest": "sha256:0e74bef2593da64d9de3051f6fc64c59e8ca3202ba8c0941cad2cb6197610bcd",
+    "role": "pre_change",
+    "commit_sha": "ff40695b13871ad2899734bf9a9ef2df0f72faaf",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:d9c85fe398a23d3b47fd591de4e67a2e36e38ad1a47faff988095bb714418cd8",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "content_digests": {
+      "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log": "38cd7c13624f255bcb4810860fa5404580154b62162cb2a60974aa08fb1a65c3",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log": "f5697201f4a0ee60fe464b451b112a1167b4f83cfbd5009453274eed31f60f2b",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log": "701c2f5a8e69484d64748a626c5d40222e91fcd77c7e0da43139d1ae8d9d54cf",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log": "6d88a1b220adb7a3d62092b6e38431f0b3fe8babe9864fab90e5849766260332",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+      "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e",
+      "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+      "tests/test_completion_surface_harness.py": "82ba2173c0accdb124cb1a2875962c3353b9f279da5c8d6d5f6220767cf5c414",
+      "tests/test_completion_surface_packaging.py": "30d3fea1e987b6519a7ca752ff3c5eaf40fce6b901b0b1d994c186f8ce28669a",
+      "tests/test_completion_surface_provider.py": "53b1f75e00acef29ae9541d4e1cc3a690edb57215fa41cfcfb33551091bfc5c7",
+      "tests/test_surface_lifecycle_runner.py": "538ad57b39bbf5872011df9c7435f4d63b7290f1dfc995660b2144c836544fb8"
+    },
+    "scope_digest": "sha256:b50c6a2633ea3de1b9c133d7ed95f01c7c9878d4092490182403982036b60dab"
+  },
+  "remaining_gaps": [],
+  "warnings": [],
+  "closure_decision": "open",
+  "omp_confirmations_remaining": [],
+  "assurance_facts": {
+    "identity_status": "UNIQUE",
+    "snapshot_bound": true,
+    "collection_error": false,
+    "stale_files": [
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/claims.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/doctor.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/full-pytest.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/impact.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/lint.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/quality.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/reconcile.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M4/20260906-surface-v1/types.log"
+    ],
+    "coverage_measured": false,
+    "coverage_fraction": null,
+    "coverage_floor": 0.9,
+    "parser_failures": 0,
+    "unresolved_count": 0,
+    "unresolved_budget": 0,
+    "open_conflicts": 0,
+    "truncated": false,
+    "truncation_sources": [],
+    "enumeration_complete": null,
+    "parser_capability_complete": null,
+    "partial_ast_present": false,
+    "provider_capability_ok": true,
+    "absence_claim": false,
+    "gate_blocked": false,
+    "dynamic_dispatch_unresolved": true,
+    "claim_profile": "scoped"
+  },
+  "assurance": {
+    "status": "STALE",
+    "reason_codes": [
+      "stale_sources",
+      "dynamic_dispatch_unresolved"
+    ],
+    "decision": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "dynamic_dispatch_unresolved"
+      ]
+    }
+  },
+  "digest": "d9e225e8a714c9b8c53d052c782717c47f23c6ea75aa25d51d9aab2383fc64c0",
+  "request": {
+    "schema_version": "impact-request/1",
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true,
+    "depth": 2,
+    "auto_reconcile": false,
+    "reconcile_provenance": "pipeline"
+  },
+  "projection": {
+    "collections": [
+      {
+        "key": "changed_files",
+        "enumerated_count": 16,
+        "returned_count": 16,
+        "truncated": false,
+        "cap": 200,
+        "cursor_exhausted": true
+      },
+      {
+        "key": "direct_nodes",
+        "enumerated_count": 81,
+        "returned_count": 81,
+        "truncated": false
+      },
+      {
+        "key": "caller_impacts",
+        "enumerated_count": 12,
+        "returned_count": 12,
+        "truncated": false
+      },
+      {
+        "key": "test_impacts",
+        "enumerated_count": 58,
+        "returned_count": 58,
+        "truncated": false
+      },
+      {
+        "key": "api_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "tests_to_run",
+        "enumerated_count": 12,
+        "returned_count": 12,
+        "truncated": false
+      }
+    ],
+    "next_cursor": null
+  },
+  "stale_files": []
+}

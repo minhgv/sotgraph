@@ -1,0 +1,9 @@
+{
+  "src/sot_graph/adapters/omp.py": "7817c035675b64477064575efda17b226cd66662607f17db6c0f054b1c7069c3",
+  "scripts/check_surface_lifecycle.py": "81d09997757eb4ee59d956be67c95bcfc9df63cf2c6d22e911b79242787a773e",
+  "scripts/check_surface_packaging.py": "53306d0058d4ec33f903eb7e24bd38907564a6effe3d573237de4f36ce702d43",
+  "tests/test_completion_surface_harness.py": "82ba2173c0accdb124cb1a2875962c3353b9f279da5c8d6d5f6220767cf5c414",
+  "tests/test_completion_surface_packaging.py": "30d3fea1e987b6519a7ca752ff3c5eaf40fce6b901b0b1d994c186f8ce28669a",
+  "tests/test_completion_surface_provider.py": "53b1f75e00acef29ae9541d4e1cc3a690edb57215fa41cfcfb33551091bfc5c7",
+  "tests/test_surface_lifecycle_runner.py": "538ad57b39bbf5872011df9c7435f4d63b7290f1dfc995660b2144c836544fb8"
+}

@@ -1,0 +1,24 @@
+== ruff (core modules)
+All checks passed!
+== pyright (core modules)
+/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:840:28 - error: Argument of type "str | None" cannot be assigned to parameter "detail" of type "str" in function "__init__"
+    Type "str | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:987:20 - error: "__getitem__" method not defined on type "object" (reportIndexIssue)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:1077:32 - error: "query" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:1140:38 - error: "prepare" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:1152:46 - error: "sync" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/codebase_memory.py:1932:43 - error: Argument of type "str | None" cannot be assigned to parameter "detail" of type "str" in function "_index_record"
+    Type "str | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/installation.py
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/installation.py:127:64 - error: "items" is not a known attribute of "None" (reportOptionalMemberAccess)
+/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/managed.py
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/managed.py:267:47 - error: Argument of type "str | None" cannot be assigned to parameter "fingerprint" of type "str" in function "_write_marker"
+    Type "str | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/managed.py:340:19 - error: "get" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/managed.py:343:54 - error: "get" is not a known attribute of "None" (reportOptionalMemberAccess)
+10 errors, 0 warnings, 0 informations
+❌ gate failed: pyright

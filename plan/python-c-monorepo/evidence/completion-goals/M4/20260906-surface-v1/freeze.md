@@ -1,0 +1,11 @@
+# M4 local surface freeze
+
+Baseline ff40695. Three isolated packet authors: packaging SUR01/03/06/08/09, provider SUR02/05/10/11, harness SUR04/07; separate lifecycle runner author and read-only reviewers. Production defect found and fixed by its own owner: OMP global/workspace setup previously overwrote foreign RULES.md; managed byte-section updates now preserve even non-UTF8 user bytes and are idempotent.
+
+Scoped tests: packaging23, provider10, harness22, fake lifecycle runner13. Full **2,198 passed / 4 skipped** with explicit offline setuptools backend pinned in environment.json, including actual poisoned-upstream-hook wheel build. Without that backend SUR06 skips; no claim from unconfigured execution. Scoped types/lint/claims pass. Whole quality gate fails the unchanged10baseline coretype errors; later stages not reached.
+
+Review fixes include process-group bounded runner reuse, durable started-command/timeout evidence, bytecode-disabled lifecycle children, bounded registry checks, no false drift on failed preflight, private captured-home snapshots, nonempty intercepted provider rows, exact wheel entrypoint case and no CWD PATH. All blocking review findings closed. Native lifetime escape/OS-wide inventory remain unproven.
+
+Main graph sequence reconcile→doctor→impact exits0; healthy schema8 snapshot58 closureopen no listed remaining gaps. Freeze hashes in file-hashes.json/live-manifest.json. Raw prior failure output remains immutable. A referenced pytest-1399 wheel was already removed by pytest retention; no measurement ran with that missing path. Instead the available current full-suite build wheel from pytest-1403 was retained under artifacts and hashed; this is a new freeze input, not a silent result rerun.
+
+Next exclusive run is offline clean Python-wheel install plus explicit SOT native administrator lifecycle. No actual user authority registration, no global native adoption/kill, no remote run. Ordinary persisted CLI/MCP live execution requires isolated OS-account authority and remains BLOCKED; synthetic tests cover its contract. Same native digest rollback is selection-only, never M5 cross-schema proof. Full SUR01..12 release acceptance is not inferred from test count.

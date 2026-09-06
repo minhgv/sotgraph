@@ -1,0 +1,98 @@
+[
+  {
+    "label": "full-pytest",
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/",
+      "-q"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:26.434093+00:00"
+  },
+  {
+    "label": "quality",
+    "command": [
+      "bash",
+      "scripts/quality_gates.sh"
+    ],
+    "exit": 1,
+    "utc": "2026-09-06T09:25:29.869709+00:00"
+  },
+  {
+    "label": "claims",
+    "command": [
+      ".venv/bin/sot",
+      "claims",
+      "lint"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:30.585344+00:00"
+  },
+  {
+    "label": "types",
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "src/sot_graph/adapters/omp.py",
+      "scripts/check_surface_lifecycle.py",
+      "scripts/check_surface_packaging.py",
+      "tests/test_completion_surface_harness.py",
+      "tests/test_completion_surface_packaging.py",
+      "tests/test_completion_surface_provider.py",
+      "tests/test_surface_lifecycle_runner.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:32.363354+00:00"
+  },
+  {
+    "label": "lint",
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "src/sot_graph/adapters/omp.py",
+      "scripts/check_surface_lifecycle.py",
+      "scripts/check_surface_packaging.py",
+      "tests/test_completion_surface_harness.py",
+      "tests/test_completion_surface_packaging.py",
+      "tests/test_completion_surface_provider.py",
+      "tests/test_surface_lifecycle_runner.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:32.401121+00:00"
+  },
+  {
+    "label": "reconcile",
+    "command": [
+      ".venv/bin/sot",
+      "reconcile"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:33.344142+00:00"
+  },
+  {
+    "label": "doctor",
+    "command": [
+      ".venv/bin/sot",
+      "doctor",
+      "--json"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:33.624844+00:00"
+  },
+  {
+    "label": "impact",
+    "command": [
+      ".venv/bin/sot",
+      "diff-impact",
+      "--working-tree",
+      "--json"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T09:25:34.395736+00:00"
+  }
+]
