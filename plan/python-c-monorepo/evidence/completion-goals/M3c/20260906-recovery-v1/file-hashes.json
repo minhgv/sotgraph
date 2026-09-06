@@ -1,0 +1,7 @@
+{
+  "src/sot_graph/providers/trusted_config.py": "20a769fedb2ebbdb4414aed41b20aee6c2ba8d5c6d7639dd05e44aad4fcad48e",
+  "src/sot_graph/providers/admin.py": "b0a2c18c5c4753f772e353c173f4e7ab016b6c0c97a38f00cc3a96d66cca34e1",
+  "tests/test_trusted_managed_config.py": "7cd3ffd459a4e4b3b35679d8e18fccba03419028fe6cd91e9e61fab37e2dc228",
+  "tests/test_engine_trusted_config.py": "50c7ef1eac2efde7ddaa714f3ff5c496cbbc3740bb937b88077719505129d0aa",
+  "tests/test_managed_config_recovery.py": "aec7fc1c42a1805577eae47aa8c71f0400df1a1fa412bbfdb6fac89685271fb3"
+}

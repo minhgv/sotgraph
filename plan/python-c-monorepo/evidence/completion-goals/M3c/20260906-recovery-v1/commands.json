@@ -1,0 +1,94 @@
+[
+  {
+    "label": "full-pytest",
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/",
+      "-q"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:16.977291+00:00"
+  },
+  {
+    "label": "quality",
+    "command": [
+      "bash",
+      "scripts/quality_gates.sh"
+    ],
+    "exit": 1,
+    "utc": "2026-09-06T08:55:19.919729+00:00"
+  },
+  {
+    "label": "claims",
+    "command": [
+      ".venv/bin/sot",
+      "claims",
+      "lint"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:20.505238+00:00"
+  },
+  {
+    "label": "types",
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "src/sot_graph/providers/trusted_config.py",
+      "src/sot_graph/providers/admin.py",
+      "tests/test_trusted_managed_config.py",
+      "tests/test_engine_trusted_config.py",
+      "tests/test_managed_config_recovery.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:21.760640+00:00"
+  },
+  {
+    "label": "lint",
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "src/sot_graph/providers/trusted_config.py",
+      "src/sot_graph/providers/admin.py",
+      "tests/test_trusted_managed_config.py",
+      "tests/test_engine_trusted_config.py",
+      "tests/test_managed_config_recovery.py"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:21.794437+00:00"
+  },
+  {
+    "label": "reconcile",
+    "command": [
+      ".venv/bin/sot",
+      "reconcile"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:22.558340+00:00"
+  },
+  {
+    "label": "doctor",
+    "command": [
+      ".venv/bin/sot",
+      "doctor",
+      "--json"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:22.777082+00:00"
+  },
+  {
+    "label": "impact",
+    "command": [
+      ".venv/bin/sot",
+      "diff-impact",
+      "--working-tree",
+      "--json"
+    ],
+    "exit": 0,
+    "utc": "2026-09-06T08:55:23.465609+00:00"
+  }
+]

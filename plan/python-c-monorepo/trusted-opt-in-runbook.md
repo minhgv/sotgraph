@@ -2,7 +2,7 @@
 
 ## Scope and current limit
 
-M3a provides persisted trusted configuration and explicit administrator operations. M3b now implements shared managed-search dispatch for normal CLI and MCP search; its checkpoint remains pending the final full-suite run. Integrated operational status/recovery remains pending M3c. A stored registration is not proof of native execution, a prepared runtime, an indexed project or a supported native release platform.
+M3a provides persisted trusted configuration and explicit administrator operations. M3b implements shared managed-search dispatch for normal CLI and MCP search; its full-suite checkpoint is complete with 2108 passing tests. M3c operational configuration diagnostics and recovery guidance are implemented, with tests pending. A stored registration is not proof of native execution, a prepared runtime, an indexed project or a supported native release platform.
 
 Builtin remains the default. No actual user project has been registered as part of this work; testing used scratch projects only. There is no performance claim. See [the existing operations runbook](operations-runbook.md) for explicit `sot engine` administration and known release/evidence limits.
 
@@ -28,10 +28,11 @@ sot --root /absolute/project engine --store /absolute/private/store --name ARTIF
   --generation initial
 
 sot --root /absolute/project engine config-status
+sot --root /absolute/project engine config-doctor
 sot --root /absolute/project engine disable
 ```
 
-`register` requires `--store`, `--name`, `--runtime-root`, `--registry` and `--protocol`; `--generation` is optional and defaults to `initial`. `disable` and `config-status` do not require `--store`. `config-status` concerns persisted configuration, not a claim that a runtime is healthy or indexed.
+`register` requires `--store`, `--name`, `--runtime-root`, `--registry` and `--protocol`; `--generation` is optional and defaults to `initial`. `disable`, `config-status` and `config-doctor` do not require `--store`. See the versioned M3c diagnostic contract below before interpreting status or exit codes.
 
 The configuration location is fixed: the current user's account home from `pwd.getpwuid(uid).pw_dir`, followed by `.config/sot-graph/managed.json`. Empty or relative account-home values are refused. `HOME`, XDG variables and repository settings cannot redirect it. There is no CLI/MCP config-path option; the trusted library's `config_path` override is for tests only. Do not hand-edit repository configuration to opt in.
 
@@ -87,11 +88,37 @@ Only explicit `sync` requests native indexing. Registration is configuration adm
 
 An existing compatible builtin database is required; a missing or incompatible database produces an error rather than query-time creation. Read-only SQLite access means no logical database writes, not an immutable filesystem: SQLite `mode=ro` can still create WAL/SHM sidecar files.
 
+## M3c operational diagnostics — response schema 2
+
+`engine config-status` and `engine config-doctor` expose the `managed_config_status` operational response, versioned as schema **2**. The persisted `managed.json` format remains schema **1**; do not migrate the authority file to response schema 2.
+
+The response distinguishes:
+
+- Overall `status`: `disabled`, `enabled` or `refused`.
+- `registration`: `missing`, `disabled`, `enabled` or `unknown`.
+- Expected and current artifact digests, runtime namespace and generation.
+- Runtime state: `NOT_ASSESSED`, `UNINITIALIZED`, `READY`, `SYNCING` or `QUARANTINED`.
+- `ready`: diagnostic readiness only, **not query permission**. `query_permission` remains `not_assessed`; actual queries still apply their policy and runtime checks.
+
+Both commands use these exit codes:
+
+| Exit | Meaning |
+| --- | --- |
+| `0` | Disabled, or enabled and ready. |
+| `1` | Valid enabled registration, but not ready. |
+| `2` | Refused diagnostic, including unsupported platform. |
+
+**Migration from M3a:** an enabled `config-status` previously exited `0`; under the explicitly versioned schema-2 contract it exits `1` until ready. Update automation to distinguish registration from readiness and handle refusal separately.
+
+Missing or incompatible artifacts and quarantined runtimes produce a refused diagnostic without native execution or mutation. Diagnostics do not repair configuration, prepare/index a runtime or clear quarantine. Malformed authority requires explicit administrator restoration of a known-good private copy, as described below.
+
+Remediation identifiers are fixed SOT operation identifiers, not complete runnable argument vectors. Supply the reviewed trusted paths and other required arguments from the administrator command contract; never execute raw native `next_action` text. M3c implementation is present but tests remain pending. Live GS-SURFACE and supported-platform behavior are not verified by this implementation claim.
+
 ## Disable, preservation and recovery
 
 Run `sot --root /absolute/project engine disable` to mark the project's registration `enabled: false`. This works without opening or resolving a missing artifact or runtime, but paths and the configuration schema are still validated. Disable means withdraw the project's managed opt-in, not uninstall the artifact or delete data.
 
-Corrupted configuration, including an invalid unrelated project entry, causes both loading and disabling to refuse without native execution. This deliberately avoids overwriting malformed authority; `disable` does not repair malformed JSON. An administrator must restore a known-good private configuration copy before retrying SOT `disable`. Restoration is an explicit administrator action, not an automatic recovery operation or a raw native command. Preserve repository files, SOT notes and evidence, installation bytes and all runtime/index namespaces. After disabling, default queries remain builtin and explicit `builtin_only` bypasses configuration. An explicit `prefer_external` request falls back with a reason when managed authorization is unavailable; `require_external` refuses rather than silently falling back. M3b's final full-suite checkpoint is still pending; integrated operational recovery remains M3c work.
+Corrupted configuration, including an invalid unrelated project entry, causes both loading and disabling to refuse without native execution. This deliberately avoids overwriting malformed authority; `disable` does not repair malformed JSON. An administrator must restore a known-good private configuration copy before retrying SOT `disable`. Restoration is an explicit administrator action, not an automatic recovery operation or a raw native command. Preserve repository files, SOT notes and evidence, installation bytes and all runtime/index namespaces. After disabling, default queries remain builtin and explicit `builtin_only` bypasses configuration. An explicit `prefer_external` request falls back with a reason when managed authorization is unavailable; `require_external` refuses rather than silently falling back. M3b's full-suite checkpoint is complete (2108 passing tests). M3c diagnostics and recovery guidance are implemented, with tests pending; recovery actions remain explicit administrator operations.
 
 Do not delete `.sot`, reset indexes, or clear runtime namespaces as a disable procedure. Retained native indexes do not imply permission to execute them or compatibility with a different artifact.
 
@@ -102,4 +129,4 @@ For explicit engine administration, use only implemented SOT operations from the
 - Artifact rollback: select a previously verified digest using `rollback`; preserve notes, evidence and namespaces. A binary downgrade does not authorize opening a newer index. Select a compatible old generation or explicitly rebuild into a new namespace.
 - Logical `uninstall` removes only the verified selected pointer, not registration or index data; it is not the opt-in disable procedure.
 
-Never execute raw native `next_action` text as remediation. Native output is untrusted data, not an administrator command contract. Cross-version/schema index downgrade safety and normal CLI/MCP status/recovery integration remain separate milestones.
+Never execute raw native `next_action` text as remediation. Native output is untrusted data, not an administrator command contract. Cross-version/schema index downgrade safety, live GS-SURFACE behavior and supported-platform certification remain unverified; implemented M3c diagnostics do not establish those guarantees.
