@@ -1,0 +1,2477 @@
+receipt stored: .sot/receipts/026dd1df9f39c60505d6f476520c0e06fdc66ec796dc352e0cb8e21b3f6394af.json
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:ac814f995d93370d5829b5fbec5bc72eb726d0401d6b2382be2e75e5a1a55524",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "schema_version": "1.7",
+    "kind": "diff_impact",
+    "proof_scope": "post_change",
+    "diff_identity": {
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true
+    },
+    "changed_files": [
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log",
+      "plan/remaining-work-phased-plan-2026-09-05.md",
+      "scripts/diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "changed_files_total": 11,
+    "changed_files_truncated": false,
+    "direct_nodes": [
+      {
+        "id": "file:7b2e2b978702",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+        "kind": "file",
+        "symbol": "remaining-work-phased-plan-2026-09-05.md",
+        "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+        "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+        "line_start": 1,
+        "line_end": 149,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            148
+          ]
+        ]
+      },
+      {
+        "id": "file:8d54e4a27f40",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "file",
+        "symbol": "diagnose_native_latency.py",
+        "fqn": "scripts.diagnose_native_latency",
+        "label": "File: scripts/diagnose_native_latency.py",
+        "line_start": 1,
+        "line_end": 365,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:span",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "span",
+        "fqn": "scripts.diagnose_native_latency.span",
+        "label": "def span \u2014 scripts/diagnose_native_latency.py:36",
+        "line_start": 36,
+        "line_end": 56,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:instrument",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "instrument",
+        "fqn": "scripts.diagnose_native_latency.instrument",
+        "label": "def instrument \u2014 scripts/diagnose_native_latency.py:59",
+        "line_start": 59,
+        "line_end": 70,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:instrument.wrapped",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "instrument.wrapped",
+        "fqn": "scripts.diagnose_native_latency.instrument.wrapped",
+        "label": "def wrapped \u2014 scripts/diagnose_native_latency.py:63",
+        "line_start": 63,
+        "line_end": 69,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:fingerprint_cache",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "fingerprint_cache",
+        "fqn": "scripts.diagnose_native_latency.fingerprint_cache",
+        "label": "def fingerprint_cache \u2014 scripts/diagnose_native_latency.py:73",
+        "line_start": 73,
+        "line_end": 79,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:digest_file",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "digest_file",
+        "fqn": "scripts.diagnose_native_latency.digest_file",
+        "label": "def digest_file \u2014 scripts/diagnose_native_latency.py:82",
+        "line_start": 82,
+        "line_end": 84,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:bounded_command",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "bounded_command",
+        "fqn": "scripts.diagnose_native_latency.bounded_command",
+        "label": "def bounded_command \u2014 scripts/diagnose_native_latency.py:87",
+        "line_start": 87,
+        "line_end": 99,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:source_identity",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "source_identity",
+        "fqn": "scripts.diagnose_native_latency.source_identity",
+        "label": "def source_identity \u2014 scripts/diagnose_native_latency.py:102",
+        "line_start": 102,
+        "line_end": 109,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:inventory",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "inventory",
+        "fqn": "scripts.diagnose_native_latency.inventory",
+        "label": "def inventory \u2014 scripts/diagnose_native_latency.py:112",
+        "line_start": 112,
+        "line_end": 140,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:failure_receipt",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "failure_receipt",
+        "fqn": "scripts.diagnose_native_latency.failure_receipt",
+        "label": "def failure_receipt \u2014 scripts/diagnose_native_latency.py:144",
+        "line_start": 144,
+        "line_end": 156,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:main",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "main",
+        "fqn": "scripts.diagnose_native_latency.main",
+        "label": "def main \u2014 scripts/diagnose_native_latency.py:159",
+        "line_start": 159,
+        "line_end": 360,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:main.save",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "main.save",
+        "fqn": "scripts.diagnose_native_latency.main.save",
+        "label": "def save \u2014 scripts/diagnose_native_latency.py:248",
+        "line_start": 248,
+        "line_end": 251,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:main.observed_run",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "main.observed_run",
+        "fqn": "scripts.diagnose_native_latency.main.observed_run",
+        "label": "def observed_run \u2014 scripts/diagnose_native_latency.py:264",
+        "line_start": 264,
+        "line_end": 285,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "sym:8d54e4a27f40:main.factory",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "main.factory",
+        "fqn": "scripts.diagnose_native_latency.main.factory",
+        "label": "def factory \u2014 scripts/diagnose_native_latency.py:299",
+        "line_start": 299,
+        "line_end": 303,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            364
+          ]
+        ]
+      },
+      {
+        "id": "file:92001bc1fc5b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "file",
+        "symbol": "test_diagnose_native_latency.py",
+        "fqn": "tests.test_diagnose_native_latency",
+        "label": "File: tests/test_diagnose_native_latency.py",
+        "line_start": 1,
+        "line_end": 409,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:runner",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "runner",
+        "fqn": "tests.test_diagnose_native_latency.runner",
+        "label": "def runner \u2014 tests/test_diagnose_native_latency.py:18",
+        "line_start": 18,
+        "line_end": 45,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_existing_output_is_never_overwritten",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_existing_output_is_never_overwritten",
+        "fqn": "tests.test_diagnose_native_latency.test_existing_output_is_never_overwritten",
+        "label": "def test_existing_output_is_never_overwritten \u2014 tests/test_diagnose_native_latency.py:49",
+        "line_start": 49,
+        "line_end": 64,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_requires_at_least_three_samples",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_requires_at_least_three_samples",
+        "fqn": "tests.test_diagnose_native_latency.test_requires_at_least_three_samples",
+        "label": "def test_requires_at_least_three_samples \u2014 tests/test_diagnose_native_latency.py:68",
+        "line_start": 68,
+        "line_end": 74,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_rejects_trace_and_profile_hooks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_rejects_trace_and_profile_hooks",
+        "fqn": "tests.test_diagnose_native_latency.test_rejects_trace_and_profile_hooks",
+        "label": "def test_rejects_trace_and_profile_hooks \u2014 tests/test_diagnose_native_latency.py:78",
+        "line_start": 78,
+        "line_end": 82,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_rejects_instrumentation_environment_even_empty",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_rejects_instrumentation_environment_even_empty",
+        "fqn": "tests.test_diagnose_native_latency.test_rejects_instrumentation_environment_even_empty",
+        "label": "def test_rejects_instrumentation_environment_even_empty \u2014 tests/test_diagnose_native_latency.py:87",
+        "line_start": 87,
+        "line_end": 91,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_rejects_optimized_python",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_rejects_optimized_python",
+        "fqn": "tests.test_diagnose_native_latency.test_rejects_optimized_python",
+        "label": "def test_rejects_optimized_python \u2014 tests/test_diagnose_native_latency.py:94",
+        "line_start": 94,
+        "line_end": 102,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:install_fake_native",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "install_fake_native",
+        "fqn": "tests.test_diagnose_native_latency.install_fake_native",
+        "label": "def install_fake_native \u2014 tests/test_diagnose_native_latency.py:105",
+        "line_start": 105,
+        "line_end": 190,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Profile",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "class",
+        "symbol": "Profile",
+        "fqn": "tests.test_diagnose_native_latency.Profile",
+        "label": "class Profile \u2014 tests/test_diagnose_native_latency.py:116",
+        "line_start": 116,
+        "line_end": 129,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Profile.status",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Profile.status",
+        "fqn": "tests.test_diagnose_native_latency.Profile.status",
+        "label": "def status \u2014 tests/test_diagnose_native_latency.py:120",
+        "line_start": 120,
+        "line_end": 121,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Profile.environment",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Profile.environment",
+        "fqn": "tests.test_diagnose_native_latency.Profile.environment",
+        "label": "def environment \u2014 tests/test_diagnose_native_latency.py:123",
+        "line_start": 123,
+        "line_end": 129,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "class",
+        "symbol": "Runtime",
+        "fqn": "tests.test_diagnose_native_latency.Runtime",
+        "label": "class Runtime \u2014 tests/test_diagnose_native_latency.py:131",
+        "line_start": 131,
+        "line_end": 155,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime._guard_ready",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime._guard_ready",
+        "fqn": "tests.test_diagnose_native_latency.Runtime._guard_ready",
+        "label": "def _guard_ready \u2014 tests/test_diagnose_native_latency.py:132",
+        "line_start": 132,
+        "line_end": 133,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime._config_fingerprint",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime._config_fingerprint",
+        "fqn": "tests.test_diagnose_native_latency.Runtime._config_fingerprint",
+        "label": "def _config_fingerprint \u2014 tests/test_diagnose_native_latency.py:135",
+        "line_start": 135,
+        "line_end": 136,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime._gate",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime._gate",
+        "fqn": "tests.test_diagnose_native_latency.Runtime._gate",
+        "label": "def _gate \u2014 tests/test_diagnose_native_latency.py:138",
+        "line_start": 138,
+        "line_end": 139,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime.prepare",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime.prepare",
+        "fqn": "tests.test_diagnose_native_latency.Runtime.prepare",
+        "label": "def prepare \u2014 tests/test_diagnose_native_latency.py:141",
+        "line_start": 141,
+        "line_end": 142,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime.sync",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime.sync",
+        "fqn": "tests.test_diagnose_native_latency.Runtime.sync",
+        "label": "def sync \u2014 tests/test_diagnose_native_latency.py:144",
+        "line_start": 144,
+        "line_end": 145,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime.query",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Runtime.query",
+        "fqn": "tests.test_diagnose_native_latency.Runtime.query",
+        "label": "def query \u2014 tests/test_diagnose_native_latency.py:147",
+        "line_start": 147,
+        "line_end": 155,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Store",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "class",
+        "symbol": "Store",
+        "fqn": "tests.test_diagnose_native_latency.Store",
+        "label": "class Store \u2014 tests/test_diagnose_native_latency.py:157",
+        "line_start": 157,
+        "line_end": 164,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:Store.__init__",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "Store.__init__",
+        "fqn": "tests.test_diagnose_native_latency.Store.__init__",
+        "label": "def __init__ \u2014 tests/test_diagnose_native_latency.py:158",
+        "line_start": 158,
+        "line_end": 159,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:install_fake_native.command",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "install_fake_native.command",
+        "fqn": "tests.test_diagnose_native_latency.install_fake_native.command",
+        "label": "def command \u2014 tests/test_diagnose_native_latency.py:184",
+        "line_start": 184,
+        "line_end": 186,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_paired_samples_hashes_timestamps_and_atomic_output",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_paired_samples_hashes_timestamps_and_atomic_output",
+        "fqn": "tests.test_diagnose_native_latency.test_paired_samples_hashes_timestamps_and_atomic_output",
+        "label": "def test_paired_samples_hashes_timestamps_and_atomic_output \u2014 tests/test_diagnose_native_latency.py:194",
+        "line_start": 194,
+        "line_end": 234,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_failures_save_evidence_and_reraise",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_failures_save_evidence_and_reraise",
+        "fqn": "tests.test_diagnose_native_latency.test_failures_save_evidence_and_reraise",
+        "label": "def test_failures_save_evidence_and_reraise \u2014 tests/test_diagnose_native_latency.py:238",
+        "line_start": 238,
+        "line_end": 258,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_cache_snapshot_excludes_symlinks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_cache_snapshot_excludes_symlinks",
+        "fqn": "tests.test_diagnose_native_latency.test_cache_snapshot_excludes_symlinks",
+        "label": "def test_cache_snapshot_excludes_symlinks \u2014 tests/test_diagnose_native_latency.py:261",
+        "line_start": 261,
+        "line_end": 267,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_span_records_nested_failure_and_unwinds",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_span_records_nested_failure_and_unwinds",
+        "fqn": "tests.test_diagnose_native_latency.test_span_records_nested_failure_and_unwinds",
+        "label": "def test_span_records_nested_failure_and_unwinds \u2014 tests/test_diagnose_native_latency.py:270",
+        "line_start": 270,
+        "line_end": 277,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_post_mkdir_setup_failure_is_durable",
+        "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable",
+        "label": "def test_post_mkdir_setup_failure_is_durable \u2014 tests/test_diagnose_native_latency.py:281",
+        "line_start": 281,
+        "line_end": 331,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_import",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "test_post_mkdir_setup_failure_is_durable.fail_import",
+        "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_import",
+        "label": "def fail_import \u2014 tests/test_diagnose_native_latency.py:288",
+        "line_start": 288,
+        "line_end": 291,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_stat",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "test_post_mkdir_setup_failure_is_durable.fail_stat",
+        "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_stat",
+        "label": "def fail_stat \u2014 tests/test_diagnose_native_latency.py:298",
+        "line_start": 298,
+        "line_end": 301,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_digest",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "test_post_mkdir_setup_failure_is_durable.fail_digest",
+        "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_digest",
+        "label": "def fail_digest \u2014 tests/test_diagnose_native_latency.py:308",
+        "line_start": 308,
+        "line_end": 311,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_source_identity_hashes_python_and_records_git",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_source_identity_hashes_python_and_records_git",
+        "fqn": "tests.test_diagnose_native_latency.test_source_identity_hashes_python_and_records_git",
+        "label": "def test_source_identity_hashes_python_and_records_git \u2014 tests/test_diagnose_native_latency.py:334",
+        "line_start": 334,
+        "line_end": 347,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_bounded_command_caps_output_and_sets_deadline",
+        "fqn": "tests.test_diagnose_native_latency.test_bounded_command_caps_output_and_sets_deadline",
+        "label": "def test_bounded_command_caps_output_and_sets_deadline \u2014 tests/test_diagnose_native_latency.py:351",
+        "line_start": 351,
+        "line_end": 364,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline.command",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "method",
+        "symbol": "test_bounded_command_caps_output_and_sets_deadline.command",
+        "fqn": "tests.test_diagnose_native_latency.test_bounded_command_caps_output_and_sets_deadline.command",
+        "label": "def command \u2014 tests/test_diagnose_native_latency.py:352",
+        "line_start": 352,
+        "line_end": 359,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_bounded_command_inspection_failure_is_unknown",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_bounded_command_inspection_failure_is_unknown",
+        "fqn": "tests.test_diagnose_native_latency.test_bounded_command_inspection_failure_is_unknown",
+        "label": "def test_bounded_command_inspection_failure_is_unknown \u2014 tests/test_diagnose_native_latency.py:368",
+        "line_start": 368,
+        "line_end": 373,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+        "fqn": "tests.test_diagnose_native_latency.test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+        "label": "def test_inventory_is_scratch_scoped_and_does_not_follow_symlinks \u2014 tests/test_diagnose_native_latency.py:376",
+        "line_start": 376,
+        "line_end": 393,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_without_scratch_skips_lsof",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_inventory_without_scratch_skips_lsof",
+        "fqn": "tests.test_diagnose_native_latency.test_inventory_without_scratch_skips_lsof",
+        "label": "def test_inventory_without_scratch_skips_lsof \u2014 tests/test_diagnose_native_latency.py:396",
+        "line_start": 396,
+        "line_end": 400,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_bounds_file_rows",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "kind": "function",
+        "symbol": "test_inventory_bounds_file_rows",
+        "fqn": "tests.test_diagnose_native_latency.test_inventory_bounds_file_rows",
+        "label": "def test_inventory_bounds_file_rows \u2014 tests/test_diagnose_native_latency.py:403",
+        "line_start": 403,
+        "line_end": 408,
+        "change_type": "modified",
+        "intersected_lines": [
+          [
+            1,
+            408
+          ]
+        ]
+      }
+    ],
+    "caller_impacts": [],
+    "test_impacts": [
+      {
+        "id": "test:tests/test_diagnose_native_latency.py",
+        "path": "tests/test_diagnose_native_latency.py",
+        "symbol": "",
+        "kind": "file",
+        "impact_reason": "direct_test_file",
+        "target_symbol": null
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_source_identity_hashes_python_and_records_git",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_source_identity_hashes_python_and_records_git",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "source_identity"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "inventory"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_without_scratch_skips_lsof",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_inventory_without_scratch_skips_lsof",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "inventory"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_inventory_bounds_file_rows",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_inventory_bounds_file_rows",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "inventory"
+      },
+      {
+        "id": "file:92001bc1fc5b",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_diagnose_native_latency.py",
+        "kind": "file",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "runner"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_paired_samples_hashes_timestamps_and_atomic_output",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_paired_samples_hashes_timestamps_and_atomic_output",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "install_fake_native"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_failures_save_evidence_and_reraise",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_failures_save_evidence_and_reraise",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "install_fake_native"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_post_mkdir_setup_failure_is_durable",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "install_fake_native"
+      },
+      {
+        "id": "sym:92001bc1fc5b:install_fake_native",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "install_fake_native",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Profile"
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime.query",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "Runtime.query",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Profile"
+      },
+      {
+        "id": "sym:92001bc1fc5b:Profile",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "Profile",
+        "kind": "class",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Profile.status"
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "Runtime",
+        "kind": "class",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Runtime._guard_ready"
+      },
+      {
+        "id": "sym:92001bc1fc5b:Runtime.sync",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "Runtime.sync",
+        "kind": "method",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Runtime.prepare"
+      },
+      {
+        "id": "sym:92001bc1fc5b:Store",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "Store",
+        "kind": "class",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "Store.__init__"
+      },
+      {
+        "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+        "symbol": "test_bounded_command_caps_output_and_sets_deadline",
+        "kind": "function",
+        "impact_reason": "calls_modified_node",
+        "target_symbol": "test_bounded_command_caps_output_and_sets_deadline.command"
+      }
+    ],
+    "api_impacts": [],
+    "tests_to_run": [
+      "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "invalidated_evidence": [],
+    "invalidated_evidence_dead_count": 0,
+    "collection_stats": {
+      "changed_files": {
+        "enumerated_count": 11,
+        "returned_count": 11,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "invalidated_evidence": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 50,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_runs": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 200,
+        "truncated": false,
+        "cursor_exhausted": true
+      },
+      "ledger_union": {
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "cap": 5000,
+        "truncated": false,
+        "cursor_exhausted": true
+      }
+    },
+    "post_change_snapshot": {
+      "snapshot_id": null,
+      "descriptor_digest": "sha256:f2eae96458a3ea7ea87e70c447f650e80e77c5194439ab652348e3d31d029c4d",
+      "role": "post_change",
+      "commit_sha": "1c90ccba02bcfc27d9f37ef6f95615c1fad9ec81",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:547884bcf1dcdb6bfdd1f7c2c06d79b99303c01be4d484a6100ec073ffb93e2c",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "captured_at": 1788680131,
+      "content_digests": {
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log": "224b84fb92cb8cc6f72d226214cb43b8b8549483e4815200871c6cb41908ed98",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log": "f72f3d8ce3896055d8a9a0878491435a0c65ad914927be69e2746414b3b41609",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log": "575b5cb6f5bf30129001ce8b850cf314140aa26d9ab020e8bcd4df23df070a97",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log": "f811e745705a44182276b0517363ac99ba67baf8a6bbe2bffc9631c445360262",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+        "scripts/diagnose_native_latency.py": "617a33db1355b3bb7ff52f15994997312ad8c16fb608f5c3eae0066c6eda83f5",
+        "tests/test_diagnose_native_latency.py": "691ba0dc4897cacbcd0dc337ae10b6043377faf8dd519ac81f831ec792702298"
+      },
+      "scope_digest": "sha256:29299cbf1dbbe5ced13fd550add930d054605b8283cf01b595a7fd96e6446b86"
+    },
+    "reconcile": {
+      "required": true,
+      "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+    },
+    "summary": {
+      "total_changed_files": 11,
+      "total_hunks": 11,
+      "total_direct_nodes": 51,
+      "total_callers": 0,
+      "total_apis": 0,
+      "total_tests": 16,
+      "risk_score": 55,
+      "risk_level": "MEDIUM",
+      "execution_time_ms": 87.0
+    },
+    "pre_receipt_digest": null,
+    "pre_change_snapshot": {
+      "descriptor_digest": "sha256:4c023df577474821203ada46e72d1e3db0a2211463244c6fcb89cb1f7b804c6c",
+      "role": "pre_change",
+      "commit_sha": "1c90ccba02bcfc27d9f37ef6f95615c1fad9ec81",
+      "dirty": true,
+      "dirty_fingerprint": "sha256:547884bcf1dcdb6bfdd1f7c2c06d79b99303c01be4d484a6100ec073ffb93e2c",
+      "manifest_digest": null,
+      "generation": null,
+      "algo_version": "sha256-v2",
+      "content_digests": {
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log": "224b84fb92cb8cc6f72d226214cb43b8b8549483e4815200871c6cb41908ed98",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log": "f72f3d8ce3896055d8a9a0878491435a0c65ad914927be69e2746414b3b41609",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log": "575b5cb6f5bf30129001ce8b850cf314140aa26d9ab020e8bcd4df23df070a97",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log": "f811e745705a44182276b0517363ac99ba67baf8a6bbe2bffc9631c445360262",
+        "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+        "scripts/diagnose_native_latency.py": "617a33db1355b3bb7ff52f15994997312ad8c16fb608f5c3eae0066c6eda83f5",
+        "tests/test_diagnose_native_latency.py": "691ba0dc4897cacbcd0dc337ae10b6043377faf8dd519ac81f831ec792702298"
+      },
+      "scope_digest": "sha256:29299cbf1dbbe5ced13fd550add930d054605b8283cf01b595a7fd96e6446b86"
+    },
+    "remaining_gaps": [],
+    "warnings": [],
+    "closure_decision": "open",
+    "omp_confirmations_remaining": [],
+    "assurance_facts": {
+      "identity_status": "UNIQUE",
+      "snapshot_bound": true,
+      "collection_error": false,
+      "stale_files": [
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log",
+        "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log"
+      ],
+      "coverage_measured": false,
+      "coverage_fraction": null,
+      "coverage_floor": 0.9,
+      "parser_failures": 0,
+      "unresolved_count": 0,
+      "unresolved_budget": 0,
+      "open_conflicts": 0,
+      "truncated": false,
+      "truncation_sources": [],
+      "enumeration_complete": null,
+      "parser_capability_complete": null,
+      "partial_ast_present": false,
+      "provider_capability_ok": true,
+      "absence_claim": false,
+      "gate_blocked": false,
+      "dynamic_dispatch_unresolved": true,
+      "claim_profile": "scoped"
+    },
+    "assurance": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "dynamic_dispatch_unresolved"
+      ],
+      "decision": {
+        "status": "STALE",
+        "reason_codes": [
+          "stale_sources",
+          "dynamic_dispatch_unresolved"
+        ]
+      }
+    },
+    "digest": "026dd1df9f39c60505d6f476520c0e06fdc66ec796dc352e0cb8e21b3f6394af",
+    "request": {
+      "schema_version": "impact-request/1",
+      "target": "HEAD",
+      "staged": false,
+      "working_tree": true,
+      "depth": 2,
+      "auto_reconcile": false,
+      "reconcile_provenance": "pipeline"
+    },
+    "projection": {
+      "collections": [
+        {
+          "key": "changed_files",
+          "enumerated_count": 11,
+          "returned_count": 11,
+          "truncated": false,
+          "cap": 200,
+          "cursor_exhausted": true
+        },
+        {
+          "key": "direct_nodes",
+          "enumerated_count": 51,
+          "returned_count": 51,
+          "truncated": false
+        },
+        {
+          "key": "caller_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "test_impacts",
+          "enumerated_count": 16,
+          "returned_count": 16,
+          "truncated": false
+        },
+        {
+          "key": "api_impacts",
+          "enumerated_count": 0,
+          "returned_count": 0,
+          "truncated": false
+        },
+        {
+          "key": "tests_to_run",
+          "enumerated_count": 2,
+          "returned_count": 2,
+          "truncated": false
+        }
+      ],
+      "next_cursor": null
+    },
+    "stale_files": []
+  },
+  "kind": "diff_impact",
+  "proof_scope": "post_change",
+  "diff_identity": {
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true
+  },
+  "changed_files": [
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log",
+    "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log",
+    "plan/remaining-work-phased-plan-2026-09-05.md",
+    "scripts/diagnose_native_latency.py",
+    "tests/test_diagnose_native_latency.py"
+  ],
+  "changed_files_total": 11,
+  "changed_files_truncated": false,
+  "direct_nodes": [
+    {
+      "id": "file:7b2e2b978702",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/plan/remaining-work-phased-plan-2026-09-05.md",
+      "kind": "file",
+      "symbol": "remaining-work-phased-plan-2026-09-05.md",
+      "fqn": "plan.remaining-work-phased-plan-2026-09-05.md",
+      "label": "File: plan/remaining-work-phased-plan-2026-09-05.md",
+      "line_start": 1,
+      "line_end": 149,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          148
+        ]
+      ]
+    },
+    {
+      "id": "file:8d54e4a27f40",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "file",
+      "symbol": "diagnose_native_latency.py",
+      "fqn": "scripts.diagnose_native_latency",
+      "label": "File: scripts/diagnose_native_latency.py",
+      "line_start": 1,
+      "line_end": 365,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:span",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "span",
+      "fqn": "scripts.diagnose_native_latency.span",
+      "label": "def span \u2014 scripts/diagnose_native_latency.py:36",
+      "line_start": 36,
+      "line_end": 56,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:instrument",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "instrument",
+      "fqn": "scripts.diagnose_native_latency.instrument",
+      "label": "def instrument \u2014 scripts/diagnose_native_latency.py:59",
+      "line_start": 59,
+      "line_end": 70,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:instrument.wrapped",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "instrument.wrapped",
+      "fqn": "scripts.diagnose_native_latency.instrument.wrapped",
+      "label": "def wrapped \u2014 scripts/diagnose_native_latency.py:63",
+      "line_start": 63,
+      "line_end": 69,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:fingerprint_cache",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "fingerprint_cache",
+      "fqn": "scripts.diagnose_native_latency.fingerprint_cache",
+      "label": "def fingerprint_cache \u2014 scripts/diagnose_native_latency.py:73",
+      "line_start": 73,
+      "line_end": 79,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:digest_file",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "digest_file",
+      "fqn": "scripts.diagnose_native_latency.digest_file",
+      "label": "def digest_file \u2014 scripts/diagnose_native_latency.py:82",
+      "line_start": 82,
+      "line_end": 84,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:bounded_command",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "bounded_command",
+      "fqn": "scripts.diagnose_native_latency.bounded_command",
+      "label": "def bounded_command \u2014 scripts/diagnose_native_latency.py:87",
+      "line_start": 87,
+      "line_end": 99,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:source_identity",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "source_identity",
+      "fqn": "scripts.diagnose_native_latency.source_identity",
+      "label": "def source_identity \u2014 scripts/diagnose_native_latency.py:102",
+      "line_start": 102,
+      "line_end": 109,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:inventory",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "inventory",
+      "fqn": "scripts.diagnose_native_latency.inventory",
+      "label": "def inventory \u2014 scripts/diagnose_native_latency.py:112",
+      "line_start": 112,
+      "line_end": 140,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:failure_receipt",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "failure_receipt",
+      "fqn": "scripts.diagnose_native_latency.failure_receipt",
+      "label": "def failure_receipt \u2014 scripts/diagnose_native_latency.py:144",
+      "line_start": 144,
+      "line_end": 156,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:main",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "main",
+      "fqn": "scripts.diagnose_native_latency.main",
+      "label": "def main \u2014 scripts/diagnose_native_latency.py:159",
+      "line_start": 159,
+      "line_end": 360,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:main.save",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "main.save",
+      "fqn": "scripts.diagnose_native_latency.main.save",
+      "label": "def save \u2014 scripts/diagnose_native_latency.py:248",
+      "line_start": 248,
+      "line_end": 251,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:main.observed_run",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "main.observed_run",
+      "fqn": "scripts.diagnose_native_latency.main.observed_run",
+      "label": "def observed_run \u2014 scripts/diagnose_native_latency.py:264",
+      "line_start": 264,
+      "line_end": 285,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "sym:8d54e4a27f40:main.factory",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "main.factory",
+      "fqn": "scripts.diagnose_native_latency.main.factory",
+      "label": "def factory \u2014 scripts/diagnose_native_latency.py:299",
+      "line_start": 299,
+      "line_end": 303,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          364
+        ]
+      ]
+    },
+    {
+      "id": "file:92001bc1fc5b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "file",
+      "symbol": "test_diagnose_native_latency.py",
+      "fqn": "tests.test_diagnose_native_latency",
+      "label": "File: tests/test_diagnose_native_latency.py",
+      "line_start": 1,
+      "line_end": 409,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:runner",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "runner",
+      "fqn": "tests.test_diagnose_native_latency.runner",
+      "label": "def runner \u2014 tests/test_diagnose_native_latency.py:18",
+      "line_start": 18,
+      "line_end": 45,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_existing_output_is_never_overwritten",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_existing_output_is_never_overwritten",
+      "fqn": "tests.test_diagnose_native_latency.test_existing_output_is_never_overwritten",
+      "label": "def test_existing_output_is_never_overwritten \u2014 tests/test_diagnose_native_latency.py:49",
+      "line_start": 49,
+      "line_end": 64,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_requires_at_least_three_samples",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_requires_at_least_three_samples",
+      "fqn": "tests.test_diagnose_native_latency.test_requires_at_least_three_samples",
+      "label": "def test_requires_at_least_three_samples \u2014 tests/test_diagnose_native_latency.py:68",
+      "line_start": 68,
+      "line_end": 74,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_rejects_trace_and_profile_hooks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_rejects_trace_and_profile_hooks",
+      "fqn": "tests.test_diagnose_native_latency.test_rejects_trace_and_profile_hooks",
+      "label": "def test_rejects_trace_and_profile_hooks \u2014 tests/test_diagnose_native_latency.py:78",
+      "line_start": 78,
+      "line_end": 82,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_rejects_instrumentation_environment_even_empty",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_rejects_instrumentation_environment_even_empty",
+      "fqn": "tests.test_diagnose_native_latency.test_rejects_instrumentation_environment_even_empty",
+      "label": "def test_rejects_instrumentation_environment_even_empty \u2014 tests/test_diagnose_native_latency.py:87",
+      "line_start": 87,
+      "line_end": 91,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_rejects_optimized_python",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_rejects_optimized_python",
+      "fqn": "tests.test_diagnose_native_latency.test_rejects_optimized_python",
+      "label": "def test_rejects_optimized_python \u2014 tests/test_diagnose_native_latency.py:94",
+      "line_start": 94,
+      "line_end": 102,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:install_fake_native",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "install_fake_native",
+      "fqn": "tests.test_diagnose_native_latency.install_fake_native",
+      "label": "def install_fake_native \u2014 tests/test_diagnose_native_latency.py:105",
+      "line_start": 105,
+      "line_end": 190,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Profile",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "class",
+      "symbol": "Profile",
+      "fqn": "tests.test_diagnose_native_latency.Profile",
+      "label": "class Profile \u2014 tests/test_diagnose_native_latency.py:116",
+      "line_start": 116,
+      "line_end": 129,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Profile.status",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Profile.status",
+      "fqn": "tests.test_diagnose_native_latency.Profile.status",
+      "label": "def status \u2014 tests/test_diagnose_native_latency.py:120",
+      "line_start": 120,
+      "line_end": 121,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Profile.environment",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Profile.environment",
+      "fqn": "tests.test_diagnose_native_latency.Profile.environment",
+      "label": "def environment \u2014 tests/test_diagnose_native_latency.py:123",
+      "line_start": 123,
+      "line_end": 129,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "class",
+      "symbol": "Runtime",
+      "fqn": "tests.test_diagnose_native_latency.Runtime",
+      "label": "class Runtime \u2014 tests/test_diagnose_native_latency.py:131",
+      "line_start": 131,
+      "line_end": 155,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime._guard_ready",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime._guard_ready",
+      "fqn": "tests.test_diagnose_native_latency.Runtime._guard_ready",
+      "label": "def _guard_ready \u2014 tests/test_diagnose_native_latency.py:132",
+      "line_start": 132,
+      "line_end": 133,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime._config_fingerprint",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime._config_fingerprint",
+      "fqn": "tests.test_diagnose_native_latency.Runtime._config_fingerprint",
+      "label": "def _config_fingerprint \u2014 tests/test_diagnose_native_latency.py:135",
+      "line_start": 135,
+      "line_end": 136,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime._gate",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime._gate",
+      "fqn": "tests.test_diagnose_native_latency.Runtime._gate",
+      "label": "def _gate \u2014 tests/test_diagnose_native_latency.py:138",
+      "line_start": 138,
+      "line_end": 139,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime.prepare",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime.prepare",
+      "fqn": "tests.test_diagnose_native_latency.Runtime.prepare",
+      "label": "def prepare \u2014 tests/test_diagnose_native_latency.py:141",
+      "line_start": 141,
+      "line_end": 142,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime.sync",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime.sync",
+      "fqn": "tests.test_diagnose_native_latency.Runtime.sync",
+      "label": "def sync \u2014 tests/test_diagnose_native_latency.py:144",
+      "line_start": 144,
+      "line_end": 145,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime.query",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Runtime.query",
+      "fqn": "tests.test_diagnose_native_latency.Runtime.query",
+      "label": "def query \u2014 tests/test_diagnose_native_latency.py:147",
+      "line_start": 147,
+      "line_end": 155,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Store",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "class",
+      "symbol": "Store",
+      "fqn": "tests.test_diagnose_native_latency.Store",
+      "label": "class Store \u2014 tests/test_diagnose_native_latency.py:157",
+      "line_start": 157,
+      "line_end": 164,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:Store.__init__",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "Store.__init__",
+      "fqn": "tests.test_diagnose_native_latency.Store.__init__",
+      "label": "def __init__ \u2014 tests/test_diagnose_native_latency.py:158",
+      "line_start": 158,
+      "line_end": 159,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:install_fake_native.command",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "install_fake_native.command",
+      "fqn": "tests.test_diagnose_native_latency.install_fake_native.command",
+      "label": "def command \u2014 tests/test_diagnose_native_latency.py:184",
+      "line_start": 184,
+      "line_end": 186,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_paired_samples_hashes_timestamps_and_atomic_output",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_paired_samples_hashes_timestamps_and_atomic_output",
+      "fqn": "tests.test_diagnose_native_latency.test_paired_samples_hashes_timestamps_and_atomic_output",
+      "label": "def test_paired_samples_hashes_timestamps_and_atomic_output \u2014 tests/test_diagnose_native_latency.py:194",
+      "line_start": 194,
+      "line_end": 234,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_failures_save_evidence_and_reraise",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_failures_save_evidence_and_reraise",
+      "fqn": "tests.test_diagnose_native_latency.test_failures_save_evidence_and_reraise",
+      "label": "def test_failures_save_evidence_and_reraise \u2014 tests/test_diagnose_native_latency.py:238",
+      "line_start": 238,
+      "line_end": 258,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_cache_snapshot_excludes_symlinks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_cache_snapshot_excludes_symlinks",
+      "fqn": "tests.test_diagnose_native_latency.test_cache_snapshot_excludes_symlinks",
+      "label": "def test_cache_snapshot_excludes_symlinks \u2014 tests/test_diagnose_native_latency.py:261",
+      "line_start": 261,
+      "line_end": 267,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_span_records_nested_failure_and_unwinds",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_span_records_nested_failure_and_unwinds",
+      "fqn": "tests.test_diagnose_native_latency.test_span_records_nested_failure_and_unwinds",
+      "label": "def test_span_records_nested_failure_and_unwinds \u2014 tests/test_diagnose_native_latency.py:270",
+      "line_start": 270,
+      "line_end": 277,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_post_mkdir_setup_failure_is_durable",
+      "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable",
+      "label": "def test_post_mkdir_setup_failure_is_durable \u2014 tests/test_diagnose_native_latency.py:281",
+      "line_start": 281,
+      "line_end": 331,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_import",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "test_post_mkdir_setup_failure_is_durable.fail_import",
+      "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_import",
+      "label": "def fail_import \u2014 tests/test_diagnose_native_latency.py:288",
+      "line_start": 288,
+      "line_end": 291,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_stat",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "test_post_mkdir_setup_failure_is_durable.fail_stat",
+      "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_stat",
+      "label": "def fail_stat \u2014 tests/test_diagnose_native_latency.py:298",
+      "line_start": 298,
+      "line_end": 301,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable.fail_digest",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "test_post_mkdir_setup_failure_is_durable.fail_digest",
+      "fqn": "tests.test_diagnose_native_latency.test_post_mkdir_setup_failure_is_durable.fail_digest",
+      "label": "def fail_digest \u2014 tests/test_diagnose_native_latency.py:308",
+      "line_start": 308,
+      "line_end": 311,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_source_identity_hashes_python_and_records_git",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_source_identity_hashes_python_and_records_git",
+      "fqn": "tests.test_diagnose_native_latency.test_source_identity_hashes_python_and_records_git",
+      "label": "def test_source_identity_hashes_python_and_records_git \u2014 tests/test_diagnose_native_latency.py:334",
+      "line_start": 334,
+      "line_end": 347,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_bounded_command_caps_output_and_sets_deadline",
+      "fqn": "tests.test_diagnose_native_latency.test_bounded_command_caps_output_and_sets_deadline",
+      "label": "def test_bounded_command_caps_output_and_sets_deadline \u2014 tests/test_diagnose_native_latency.py:351",
+      "line_start": 351,
+      "line_end": 364,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline.command",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "method",
+      "symbol": "test_bounded_command_caps_output_and_sets_deadline.command",
+      "fqn": "tests.test_diagnose_native_latency.test_bounded_command_caps_output_and_sets_deadline.command",
+      "label": "def command \u2014 tests/test_diagnose_native_latency.py:352",
+      "line_start": 352,
+      "line_end": 359,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_bounded_command_inspection_failure_is_unknown",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_bounded_command_inspection_failure_is_unknown",
+      "fqn": "tests.test_diagnose_native_latency.test_bounded_command_inspection_failure_is_unknown",
+      "label": "def test_bounded_command_inspection_failure_is_unknown \u2014 tests/test_diagnose_native_latency.py:368",
+      "line_start": 368,
+      "line_end": 373,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+      "fqn": "tests.test_diagnose_native_latency.test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+      "label": "def test_inventory_is_scratch_scoped_and_does_not_follow_symlinks \u2014 tests/test_diagnose_native_latency.py:376",
+      "line_start": 376,
+      "line_end": 393,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_without_scratch_skips_lsof",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_inventory_without_scratch_skips_lsof",
+      "fqn": "tests.test_diagnose_native_latency.test_inventory_without_scratch_skips_lsof",
+      "label": "def test_inventory_without_scratch_skips_lsof \u2014 tests/test_diagnose_native_latency.py:396",
+      "line_start": 396,
+      "line_end": 400,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_bounds_file_rows",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "kind": "function",
+      "symbol": "test_inventory_bounds_file_rows",
+      "fqn": "tests.test_diagnose_native_latency.test_inventory_bounds_file_rows",
+      "label": "def test_inventory_bounds_file_rows \u2014 tests/test_diagnose_native_latency.py:403",
+      "line_start": 403,
+      "line_end": 408,
+      "change_type": "modified",
+      "intersected_lines": [
+        [
+          1,
+          408
+        ]
+      ]
+    }
+  ],
+  "caller_impacts": [],
+  "test_impacts": [
+    {
+      "id": "test:tests/test_diagnose_native_latency.py",
+      "path": "tests/test_diagnose_native_latency.py",
+      "symbol": "",
+      "kind": "file",
+      "impact_reason": "direct_test_file",
+      "target_symbol": null
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_source_identity_hashes_python_and_records_git",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_source_identity_hashes_python_and_records_git",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "source_identity"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_inventory_is_scratch_scoped_and_does_not_follow_symlinks",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "inventory"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_without_scratch_skips_lsof",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_inventory_without_scratch_skips_lsof",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "inventory"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_inventory_bounds_file_rows",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_inventory_bounds_file_rows",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "inventory"
+    },
+    {
+      "id": "file:92001bc1fc5b",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_diagnose_native_latency.py",
+      "kind": "file",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "runner"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_paired_samples_hashes_timestamps_and_atomic_output",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_paired_samples_hashes_timestamps_and_atomic_output",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "install_fake_native"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_failures_save_evidence_and_reraise",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_failures_save_evidence_and_reraise",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "install_fake_native"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_post_mkdir_setup_failure_is_durable",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_post_mkdir_setup_failure_is_durable",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "install_fake_native"
+    },
+    {
+      "id": "sym:92001bc1fc5b:install_fake_native",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "install_fake_native",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Profile"
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime.query",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "Runtime.query",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Profile"
+    },
+    {
+      "id": "sym:92001bc1fc5b:Profile",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "Profile",
+      "kind": "class",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Profile.status"
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "Runtime",
+      "kind": "class",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Runtime._guard_ready"
+    },
+    {
+      "id": "sym:92001bc1fc5b:Runtime.sync",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "Runtime.sync",
+      "kind": "method",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Runtime.prepare"
+    },
+    {
+      "id": "sym:92001bc1fc5b:Store",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "Store",
+      "kind": "class",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "Store.__init__"
+    },
+    {
+      "id": "sym:92001bc1fc5b:test_bounded_command_caps_output_and_sets_deadline",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+      "symbol": "test_bounded_command_caps_output_and_sets_deadline",
+      "kind": "function",
+      "impact_reason": "calls_modified_node",
+      "target_symbol": "test_bounded_command_caps_output_and_sets_deadline.command"
+    }
+  ],
+  "api_impacts": [],
+  "tests_to_run": [
+    "/Users/giapminh79/code/GitHub/sot-graph/tests/test_diagnose_native_latency.py",
+    "tests/test_diagnose_native_latency.py"
+  ],
+  "invalidated_evidence": [],
+  "invalidated_evidence_dead_count": 0,
+  "collection_stats": {
+    "changed_files": {
+      "enumerated_count": 11,
+      "returned_count": 11,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "invalidated_evidence": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 50,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_runs": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 200,
+      "truncated": false,
+      "cursor_exhausted": true
+    },
+    "ledger_union": {
+      "enumerated_count": 0,
+      "returned_count": 0,
+      "cap": 5000,
+      "truncated": false,
+      "cursor_exhausted": true
+    }
+  },
+  "post_change_snapshot": {
+    "snapshot_id": null,
+    "descriptor_digest": "sha256:f2eae96458a3ea7ea87e70c447f650e80e77c5194439ab652348e3d31d029c4d",
+    "role": "post_change",
+    "commit_sha": "1c90ccba02bcfc27d9f37ef6f95615c1fad9ec81",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:547884bcf1dcdb6bfdd1f7c2c06d79b99303c01be4d484a6100ec073ffb93e2c",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "captured_at": 1788680131,
+    "content_digests": {
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log": "224b84fb92cb8cc6f72d226214cb43b8b8549483e4815200871c6cb41908ed98",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log": "f72f3d8ce3896055d8a9a0878491435a0c65ad914927be69e2746414b3b41609",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log": "575b5cb6f5bf30129001ce8b850cf314140aa26d9ab020e8bcd4df23df070a97",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log": "f811e745705a44182276b0517363ac99ba67baf8a6bbe2bffc9631c445360262",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+      "scripts/diagnose_native_latency.py": "617a33db1355b3bb7ff52f15994997312ad8c16fb608f5c3eae0066c6eda83f5",
+      "tests/test_diagnose_native_latency.py": "691ba0dc4897cacbcd0dc337ae10b6043377faf8dd519ac81f831ec792702298"
+    },
+    "scope_digest": "sha256:29299cbf1dbbe5ced13fd550add930d054605b8283cf01b595a7fd96e6446b86"
+  },
+  "reconcile": {
+    "required": true,
+    "note": "run `sot reconcile` to bind the post-change snapshot to a fresh index generation"
+  },
+  "summary": {
+    "total_changed_files": 11,
+    "total_hunks": 11,
+    "total_direct_nodes": 51,
+    "total_callers": 0,
+    "total_apis": 0,
+    "total_tests": 16,
+    "risk_score": 55,
+    "risk_level": "MEDIUM",
+    "execution_time_ms": 87.0
+  },
+  "pre_receipt_digest": null,
+  "pre_change_snapshot": {
+    "descriptor_digest": "sha256:4c023df577474821203ada46e72d1e3db0a2211463244c6fcb89cb1f7b804c6c",
+    "role": "pre_change",
+    "commit_sha": "1c90ccba02bcfc27d9f37ef6f95615c1fad9ec81",
+    "dirty": true,
+    "dirty_fingerprint": "sha256:547884bcf1dcdb6bfdd1f7c2c06d79b99303c01be4d484a6100ec073ffb93e2c",
+    "manifest_digest": null,
+    "generation": null,
+    "algo_version": "sha256-v2",
+    "content_digests": {
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log": "224b84fb92cb8cc6f72d226214cb43b8b8549483e4815200871c6cb41908ed98",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log": "fc4996a57dfb336d37d4ad427a198957eb082fd349bcdaa44daa34332caa0774",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log": "a123cb021ab9b0e4082989ec03817ad3898d5208c58de9f691cba9beba17acef",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log": "f72f3d8ce3896055d8a9a0878491435a0c65ad914927be69e2746414b3b41609",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log": "575b5cb6f5bf30129001ce8b850cf314140aa26d9ab020e8bcd4df23df070a97",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log": "f811e745705a44182276b0517363ac99ba67baf8a6bbe2bffc9631c445360262",
+      "plan/remaining-work-phased-plan-2026-09-05.md": "4aa2465146977de511db70d4f66d2b6d2ae9259cf5b06e786346f216cab9eabc",
+      "scripts/diagnose_native_latency.py": "617a33db1355b3bb7ff52f15994997312ad8c16fb608f5c3eae0066c6eda83f5",
+      "tests/test_diagnose_native_latency.py": "691ba0dc4897cacbcd0dc337ae10b6043377faf8dd519ac81f831ec792702298"
+    },
+    "scope_digest": "sha256:29299cbf1dbbe5ced13fd550add930d054605b8283cf01b595a7fd96e6446b86"
+  },
+  "remaining_gaps": [],
+  "warnings": [],
+  "closure_decision": "open",
+  "omp_confirmations_remaining": [],
+  "assurance_facts": {
+    "identity_status": "UNIQUE",
+    "snapshot_bound": true,
+    "collection_error": false,
+    "stale_files": [
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/0.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/1.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/2.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/3.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/4.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/diff-impact.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/doctor.log",
+      "plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/acceptance/reconcile.log"
+    ],
+    "coverage_measured": false,
+    "coverage_fraction": null,
+    "coverage_floor": 0.9,
+    "parser_failures": 0,
+    "unresolved_count": 0,
+    "unresolved_budget": 0,
+    "open_conflicts": 0,
+    "truncated": false,
+    "truncation_sources": [],
+    "enumeration_complete": null,
+    "parser_capability_complete": null,
+    "partial_ast_present": false,
+    "provider_capability_ok": true,
+    "absence_claim": false,
+    "gate_blocked": false,
+    "dynamic_dispatch_unresolved": true,
+    "claim_profile": "scoped"
+  },
+  "assurance": {
+    "status": "STALE",
+    "reason_codes": [
+      "stale_sources",
+      "dynamic_dispatch_unresolved"
+    ],
+    "decision": {
+      "status": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "dynamic_dispatch_unresolved"
+      ]
+    }
+  },
+  "digest": "026dd1df9f39c60505d6f476520c0e06fdc66ec796dc352e0cb8e21b3f6394af",
+  "request": {
+    "schema_version": "impact-request/1",
+    "target": "HEAD",
+    "staged": false,
+    "working_tree": true,
+    "depth": 2,
+    "auto_reconcile": false,
+    "reconcile_provenance": "pipeline"
+  },
+  "projection": {
+    "collections": [
+      {
+        "key": "changed_files",
+        "enumerated_count": 11,
+        "returned_count": 11,
+        "truncated": false,
+        "cap": 200,
+        "cursor_exhausted": true
+      },
+      {
+        "key": "direct_nodes",
+        "enumerated_count": 51,
+        "returned_count": 51,
+        "truncated": false
+      },
+      {
+        "key": "caller_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "test_impacts",
+        "enumerated_count": 16,
+        "returned_count": 16,
+        "truncated": false
+      },
+      {
+        "key": "api_impacts",
+        "enumerated_count": 0,
+        "returned_count": 0,
+        "truncated": false
+      },
+      {
+        "key": "tests_to_run",
+        "enumerated_count": 2,
+        "returned_count": 2,
+        "truncated": false
+      }
+    ],
+    "next_cursor": null
+  },
+  "stale_files": []
+}

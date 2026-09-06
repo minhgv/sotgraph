@@ -1,0 +1,33 @@
+[
+  {
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "tests/test_diagnose_native_latency.py",
+      "-q"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "scripts/diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "scripts/diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "exit": 0
+  }
+]

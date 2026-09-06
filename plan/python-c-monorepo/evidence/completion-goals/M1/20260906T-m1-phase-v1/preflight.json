@@ -1,0 +1,51 @@
+{
+  "timestamp_utc": "2026-09-06T07:17:46.526475+00:00",
+  "hardware": {
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 10,
+    "sysctl": [
+      "34359738368",
+      "MacBookPro18,4",
+      "10"
+    ]
+  },
+  "measurement_python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "environment_allowlist": {
+    "LANG": "C.UTF-8"
+  },
+  "instrumentation_key_names": [],
+  "measurement_not_started": true,
+  "native_source_verification": {
+    "command": [
+      "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+      "/Users/giapminh79/code/GitHub/sot-graph/scripts/verify_native_source.py",
+      "--help"
+    ],
+    "exit_code": 0,
+    "output": {
+      "pin": "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+      "entries": 2050,
+      "source_bytes": 1332757092,
+      "verified": true
+    },
+    "note": "Verifier ignores arguments; --help executed real read-only verification."
+  },
+  "acceptance_checks": [
+    {
+      "command": "python -m py_compile scripts/diagnose_native_latency.py",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff check scripts/diagnose_native_latency.py",
+      "exit_code": 0
+    }
+  ],
+  "pending": [
+    "independent tests",
+    "read-only review",
+    "main reconcile/doctor/diff-impact",
+    "main manifest commit",
+    "exclusive measurement slot"
+  ]
+}

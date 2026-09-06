@@ -1,0 +1,29 @@
+[
+  {
+    "name": "reconcile",
+    "command": [
+      ".venv/bin/sot",
+      "reconcile"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "doctor",
+    "command": [
+      ".venv/bin/sot",
+      "doctor",
+      "--json"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "diff-impact",
+    "command": [
+      ".venv/bin/sot",
+      "diff-impact",
+      "--working-tree",
+      "--json"
+    ],
+    "exit": 0
+  }
+]

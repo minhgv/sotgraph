@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "goal": "M1",
+  "run_id": "20260906T-m1-phase-v1",
+  "created_utc": "2026-09-06T07:17:46.362669+00:00",
+  "state": "FROZEN_PENDING_MAIN_COMMIT_AND_EXCLUSIVE_SLOT",
+  "author_head": "1c90ccba02bcfc27d9f37ef6f95615c1fad9ec81",
+  "command_argv": [
+    "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python",
+    "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+    "--exclusive-slot",
+    "MAIN_GRANTED_M1_20260906T-m1-phase-v1",
+    "--binary",
+    "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+    "--sha256",
+    "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+    "--native-commit",
+    "46ae198fc11cda80e817acbc5f5908d7c2de7032",
+    "--registry",
+    "/private/tmp/a-u8mldiy1/registry.json",
+    "--protocol",
+    "p4-release-2412e017-measured-v1",
+    "--output-dir",
+    "/Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement",
+    "--samples",
+    "3"
+  ],
+  "command_shell": "/Users/giapminh79/code/GitHub/sot-graph/.venv/bin/python /Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py --exclusive-slot MAIN_GRANTED_M1_20260906T-m1-phase-v1 --binary /tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp --sha256 2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf --native-commit 46ae198fc11cda80e817acbc5f5908d7c2de7032 --registry /private/tmp/a-u8mldiy1/registry.json --protocol p4-release-2412e017-measured-v1 --output-dir /Users/giapminh79/code/GitHub/sot-graph/plan/python-c-monorepo/evidence/completion-goals/M1/20260906T-m1-phase-v1/measurement --samples 3",
+  "inputs": [
+    {
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/scripts/diagnose_native_latency.py",
+      "sha256": "a6316fd65de01b7e12841b799418d5d17b8fa53fd77c964d08ae368509d598ea",
+      "bytes": 19401
+    },
+    {
+      "path": "/tmp/sot-p0-scratch/rel-extract/codebase-memory-mcp",
+      "sha256": "2412e017268bef8f847f38d1b0f79f63185b38c27fe6fba637067bfc87c0eedf",
+      "bytes": 297185328
+    },
+    {
+      "path": "/private/tmp/a-u8mldiy1/registry.json",
+      "sha256": "4174b9bc93b0e3db34f6be005e058b0362e252291f9dfc42808dd468ebf0aedf",
+      "bytes": 4571
+    },
+    {
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/proc.py",
+      "sha256": "699bfed36a55655d5d83ee54c91a74ccba95d4600bccf95063000dcab82fdb9a",
+      "bytes": 14405
+    },
+    {
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/managed.py",
+      "sha256": "24f98360164a635d58faacd5e0fb3ee15367c44a213488d0422820b3b0f574c4",
+      "bytes": 30169
+    },
+    {
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/installation.py",
+      "sha256": "9b95eea34a4145bfc4784a21f17708c805198c7376c5d2498658a75763ddfd74",
+      "bytes": 6403
+    }
+  ],
+  "protocol": {
+    "pair_count": 3,
+    "order": "managed then direct in each pair; order effect not eliminated",
+    "query": {
+      "operation": "search_graph",
+      "args": {
+        "query": "greet"
+      }
+    },
+    "corpus": "one scratch alpha.py: def greet(name): return hello + name; diagnostic only",
+    "setup": "fresh isolated artifact store/runtime/HOME; prepare and sync once before pairs",
+    "transport": "same captured --args-file contents and same argv except ephemeral filename; same replacement seven-key environment and cwd",
+    "query_timeout_seconds": 30.0,
+    "index_timeout_seconds": 300.0,
+    "native_output_cap_bytes": 8388608,
+    "cache": "new namespace/index at setup; reused between pairs; no OS cache eviction; OS cache state UNKNOWN",
+    "instrumentation": "nested Python spans with absolute monotonic and UTC timestamps; inclusive durations never summed",
+    "resource": "Python CPU and RUSAGE_CHILDREN only; incomplete detached descendant coverage",
+    "failures": "retain completed samples and failure information; no silent rerun; changed protocol requires new run id",
+    "exclusive_slot": "main commit first; halt tests/builds before timing; explicit coordinator grant required",
+    "inventory": "Untimed before/after each pair and finally: bounded ps pid/ppid/pgid/comm; lsof +D scratch; <=256 scratch lstat entries. Partial observations, not proof of absence; process and socket lifetime UNKNOWN.",
+    "source_identity": "Untimed hashes of every non-symlink src/sot_graph/*.py recursively, bounded git HEAD/status receipts.",
+    "failure_receipts": "failure.json catches every exception after output mkdir, including initialization; traceback and scratch leftover inventory. Later failures also diagnostic-result.json. Early failure context binds sanitized explicit invocation fields: output_dir,binary,sha256,native_commit,protocol,registry,slot,samples; supplied digest is expected identity, not a false verification claim.",
+    "python_configuration": "LANG/LC_ALL/TZ/PYTHONMALLOC/PYTHONHASHSEED/PYTHONWARNINGS allowlist; known-safe sys._xoptions values and names only.",
+    "scratch_durability": "Scratch remains ephemeral /tmp to preserve short native socket paths; durable result copies inventories and cache hashes; no global process cleanup."
+  },
+  "acceptance": {
+    "measurement": "at least three successful paired samples with matching artifact/env/timeout/transport and timestamps",
+    "attribution": "post-run independent review identifies measured dominant cost and specific safe fix, else INCONCLUSIVE with missing evidence",
+    "m2": "not authorized by successful runner exit; requires attributable bottleneck evidence",
+    "performance_gate": "not G6 benchmark; no PASS or improvement claim from this microdiagnostic"
+  },
+  "known_gaps": [
+    "Native startup/query/teardown boundaries not directly instrumented.",
+    "Bounded point-in-time inventory cannot establish full daemon lifetime, transient listeners, escaped descendants, or absence of leftovers.",
+    "Historical 26.7426s environment/cache state not reproduced; no causal explanation assumed.",
+    "Pair order fixed; only one tiny Python corpus; no representative language/task conclusions.",
+    "Hardware preflight is local only; no remote platform evidence."
+  ],
+  "rollback": "remove only this newly created run directory if uncommitted; retain scratch path reported by measurement; no global cleanup",
+  "historical_evidence": "parallel-latency artifacts remain immutable"
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/",
+      "-q"
+    ],
+    "exit": 0,
+    "log": "0.log",
+    "utc": "2026-09-06T07:34:25.159766+00:00"
+  },
+  {
+    "command": [
+      "bash",
+      "scripts/quality_gates.sh"
+    ],
+    "exit": 1,
+    "log": "1.log",
+    "utc": "2026-09-06T07:34:28.539251+00:00"
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "sot_graph.cli",
+      "claims",
+      "lint"
+    ],
+    "exit": 0,
+    "log": "2.log",
+    "utc": "2026-09-06T07:34:29.277954+00:00"
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "scripts/diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "exit": 0,
+    "log": "3.log",
+    "utc": "2026-09-06T07:34:29.320418+00:00"
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "pyright",
+      "scripts/diagnose_native_latency.py",
+      "tests/test_diagnose_native_latency.py"
+    ],
+    "exit": 1,
+    "log": "4.log",
+    "utc": "2026-09-06T07:34:30.606631+00:00"
+  }
+]

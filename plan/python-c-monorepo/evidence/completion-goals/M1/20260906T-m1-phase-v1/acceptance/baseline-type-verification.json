@@ -1,0 +1,20 @@
+[
+  {
+    "path": "src/sot_graph/providers/codebase_memory.py",
+    "head_sha256": "2bc7daa01bda580bf012d8bb6d60644d2f9f3a6834b908a92fe178bb3999f95e",
+    "disk_sha256": "2bc7daa01bda580bf012d8bb6d60644d2f9f3a6834b908a92fe178bb3999f95e",
+    "identical": true
+  },
+  {
+    "path": "src/sot_graph/providers/installation.py",
+    "head_sha256": "9b95eea34a4145bfc4784a21f17708c805198c7376c5d2498658a75763ddfd74",
+    "disk_sha256": "9b95eea34a4145bfc4784a21f17708c805198c7376c5d2498658a75763ddfd74",
+    "identical": true
+  },
+  {
+    "path": "src/sot_graph/providers/managed.py",
+    "head_sha256": "24f98360164a635d58faacd5e0fb3ee15367c44a213488d0422820b3b0f574c4",
+    "disk_sha256": "24f98360164a635d58faacd5e0fb3ee15367c44a213488d0422820b3b0f574c4",
+    "identical": true
+  }
+]
