@@ -113,6 +113,11 @@ def test_actual_trusted_path_validation_on_runner_layout(runner_module, inputs, 
     assert Path(registry) == lab / 'evidence/registry.json'
     assert (lab / 'evidence').stat().st_mode & 0o777 == 0o700
     _validate_paths(entry, Path(config))
+    from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+    assert Path(runtime) == lab / 'r'
+    # Constructor enforces the actual platform socket budget without native spawn.
+    ManagedRuntimeProfile(runtime, repo, artifact_digest='a' * 64, generation='sur12-0')
 
     # Frozen v1 layout must still be rejected; production security is unchanged.
     old_registry = lab / 'config/registry.json'

@@ -1,0 +1,143 @@
+{
+  "schema_version": "2.0.0",
+  "snapshot_generation": 58,
+  "manifest_digest": "sha256:c16aaa5e7e2963d0fb94ebf82be49e95561783a3a38b68eb07a850a6d1717a44",
+  "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+  "providers": [
+    {
+      "name": "tree-sitter-ast",
+      "version": "0.26.0",
+      "capability": "AST_HEURISTIC_PARSER"
+    }
+  ],
+  "fallbacks_applied": [],
+  "conflicts_detected": [],
+  "data": {
+    "query": "ManagedRuntimeProfile",
+    "results": [
+      {
+        "verdict": "STRONG",
+        "coverage": "100%",
+        "label": "def initialize \u2014 src/sot_graph/providers/runtime.py:184",
+        "fqn": "sot_graph.providers.runtime.ManagedRuntimeProfile.initialize",
+        "symbol": "ManagedRuntimeProfile.initialize",
+        "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py",
+        "kind": "method",
+        "line": 184,
+        "body": "def initialize (method) at src/sot_graph/providers/runtime.py:184\nCreate the profile, or reuse it only on exact identity match.",
+        "score": 15.513537,
+        "sources": null,
+        "evidence": {
+          "freshness": "FRESH",
+          "relevance": "EXACT_SPAN",
+          "resolution": "EXACT",
+          "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+          "confidence": 1.0,
+          "provenance": "ast_visitor:exact_span",
+          "file_path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py",
+          "file_hash": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+          "coverage": 1.0,
+          "resolved_count": 0,
+          "unresolved_count": 0,
+          "details": {
+            "mtime_ms": 1788646571258,
+            "size": 22005,
+            "stale": false,
+            "indexed_sha": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+            "current_sha": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+            "source_span_verified": true,
+            "confirmed": true,
+            "parser_outcome": "COMPLETE"
+          },
+          "legacy_verdict": "STRONG"
+        },
+        "reasons": [
+          "verdict=STRONG",
+          "text match only",
+          "freshness=FreshnessStatus.FRESH"
+        ],
+        "axes": {
+          "anchor_freshness": "fresh",
+          "identity": "unique",
+          "query_relevance": "semantic",
+          "scope_completeness": "unknown"
+        }
+      }
+    ],
+    "axes_schema_version": 1,
+    "axes_semantics": {
+      "anchor_freshness": "indexed anchor vs disk: fresh|stale|missing|unknown",
+      "identity": "hit's indexed name unique in full index: unique|ambiguous|unresolved|unknown",
+      "query_relevance": "query-to-hit lexical heuristic: exact(identity name)|semantic(raw-query token coverage)|weak|unknown; not calibrated, not correctness",
+      "scope_completeness": "result-set retrieval/index coverage: exhaustive|bounded|partial|unknown; never repo coverage"
+    },
+    "legacy_verdict_note": "verdict/legacy_verdict (e.g. STRONG) is a backward-compatibility field describing anchor verification only; not for autonomous decisions and never a correctness or scope-coverage claim. Use the four axes.",
+    "result_set": {
+      "scope_completeness": "bounded",
+      "note": "result set is limit/scope-bounded within index capability; not a repo-coverage or exhaustiveness claim"
+    }
+  },
+  "query": "ManagedRuntimeProfile",
+  "results": [
+    {
+      "verdict": "STRONG",
+      "coverage": "100%",
+      "label": "def initialize \u2014 src/sot_graph/providers/runtime.py:184",
+      "fqn": "sot_graph.providers.runtime.ManagedRuntimeProfile.initialize",
+      "symbol": "ManagedRuntimeProfile.initialize",
+      "path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py",
+      "kind": "method",
+      "line": 184,
+      "body": "def initialize (method) at src/sot_graph/providers/runtime.py:184\nCreate the profile, or reuse it only on exact identity match.",
+      "score": 15.513537,
+      "sources": null,
+      "evidence": {
+        "freshness": "FRESH",
+        "relevance": "EXACT_SPAN",
+        "resolution": "EXACT",
+        "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY",
+        "confidence": 1.0,
+        "provenance": "ast_visitor:exact_span",
+        "file_path": "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py",
+        "file_hash": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+        "coverage": 1.0,
+        "resolved_count": 0,
+        "unresolved_count": 0,
+        "details": {
+          "mtime_ms": 1788646571258,
+          "size": 22005,
+          "stale": false,
+          "indexed_sha": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+          "current_sha": "b9d7fdc1a16005db7e2558afc52272edd8977b5fcd484ed974460a3e79034a1e",
+          "source_span_verified": true,
+          "confirmed": true,
+          "parser_outcome": "COMPLETE"
+        },
+        "legacy_verdict": "STRONG"
+      },
+      "reasons": [
+        "verdict=STRONG",
+        "text match only",
+        "freshness=FreshnessStatus.FRESH"
+      ],
+      "axes": {
+        "anchor_freshness": "fresh",
+        "identity": "unique",
+        "query_relevance": "semantic",
+        "scope_completeness": "unknown"
+      }
+    }
+  ],
+  "axes_schema_version": 1,
+  "axes_semantics": {
+    "anchor_freshness": "indexed anchor vs disk: fresh|stale|missing|unknown",
+    "identity": "hit's indexed name unique in full index: unique|ambiguous|unresolved|unknown",
+    "query_relevance": "query-to-hit lexical heuristic: exact(identity name)|semantic(raw-query token coverage)|weak|unknown; not calibrated, not correctness",
+    "scope_completeness": "result-set retrieval/index coverage: exhaustive|bounded|partial|unknown; never repo coverage"
+  },
+  "legacy_verdict_note": "verdict/legacy_verdict (e.g. STRONG) is a backward-compatibility field describing anchor verification only; not for autonomous decisions and never a correctness or scope-coverage claim. Use the four axes.",
+  "result_set": {
+    "scope_completeness": "bounded",
+    "note": "result set is limit/scope-bounded within index capability; not a repo-coverage or exhaustiveness claim"
+  }
+}

@@ -1,0 +1,33 @@
+receipt stored: .sot/receipts/4ecce2681539eb930b829a77b99e01449902dd784b31d3a0eeac42bc7aa9d080.json
+_Snapshot: pre sha256:3b8b672e69e7 (dirty=True) → post sha256:cd4ac9f47363 (dirty=True)_
+# SOT-Graph Diff Impact Analysis Report
+
+**Target:** `HEAD` | **Risk Level:** 🟡 **MEDIUM** (Score: 25/100) | **Execution Time:** 39.43ms
+
+## 📊 Summary Metrics
+
+| Metric | Count |
+| :--- | :--- |
+| Changed Files | **9** |
+| Diff Hunks | **9** |
+| Directly Modified Symbols | **0** |
+| Blast Radius Callers (In-Degree) | **0** |
+| Impacted API Endpoints | **0** |
+| Tests to Re-Run | **0** |
+
+## 🎯 1. Directly Modified AST Symbols
+
+_No matching AST nodes in knowledge graph for modified line intervals._
+
+## 💥 2. Blast Radius: Upstream Inward Callers
+
+_Zero inward caller dependencies detected (low ripple effect)._
+
+## 🌐 3. Affected Cross-Stack API Endpoints
+
+_No direct or indirect API contract bindings affected._
+
+## 🧪 4. Recommended Test Coverage Verification
+
+_No existing test suites mapped directly to modified symbols. Consider adding new test coverage._
+

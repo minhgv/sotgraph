@@ -1,0 +1,15 @@
+
+🩺 SOT-Graph Doctor Report:
+=======================================================
+  • SQLite Database   : /Users/giapminh79/code/GitHub/sot-graph/.sot/sot.db
+  • Integrity Check   : ✅ OK (quick_check: ok)
+  • Journal Mode      : WAL (schema v8)
+  • DB Storage Size   : 56,037,376 bytes (13681 pages @ 4096B)
+-------------------------------------------------------
+  • Tracked Files     : 534
+  • Graph Nodes       : 6306
+  • FTS5 Sync Records : 6306
+  • Confirmed Edges   : 15929
+  • Pending Edges     : 9400 (Unresolved: 8952, Ambiguous: 448)
+  • Pending Relations : calls: 9221, extends: 178, imports: 1
+=======================================================

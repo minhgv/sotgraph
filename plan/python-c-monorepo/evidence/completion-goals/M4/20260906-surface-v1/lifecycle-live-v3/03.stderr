@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 58, in _errors
+    yield
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 271, in register_managed_installation
+    installation = _installation(entry, config, pin=False)
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 194, in _installation
+    return create_managed_installation(
+        store, artifact_name=entry['artifact_name'], repo_path=entry['project_path'],
+        runtime_root=entry['runtime_root'], registry=registry,
+        operation_fixture_digests=digests, native_protocol_id=protocol,
+        generation=entry['generation'])
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/installation.py", line 132, in create_managed_installation
+    profile = ManagedRuntimeProfile(
+        runtime_root, repo_path, artifact_digest=artifact.digest, generation=generation)
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py", line 149, in __init__
+    self._preflight_socket_bytes(raw)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/runtime.py", line 165, in _preflight_socket_bytes
+    raise ProfileRejected(
+    ...<3 lines>...
+        f"choose a shorter root (no shared/global IPC fallback exists)")
+sot_graph.providers.runtime.ProfileRejected: runtime root too long for native IPC: computed socket path is 108 UTF-8 bytes (sun_path limit 104); max root is 27 UTF-8 bytes for uid 501 — choose a shorter root (no shared/global IPC fallback exists)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+    register_managed_installation(repo,store_path=store,artifact_name='codebase-memory',runtime_root=runtime,registry_path=registry,native_protocol_id=protocol,generation=generation,config_path=config)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 262, in register_managed_installation
+    with _errors():
+         ~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/giapminh79/code/GitHub/sot-graph/src/sot_graph/providers/trusted_config.py", line 62, in _errors
+    raise TrustedConfigError('trusted managed configuration refused') from exc
+sot_graph.providers.trusted_config.TrustedConfigError: trusted managed configuration refused

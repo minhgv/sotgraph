@@ -145,7 +145,7 @@ class Runner:
         if self.lab is None:
             raise RuntimeError('scratch not allocated')
         extra = ['greet', '--limit', '5'] if action == 'search' else []
-        self.engine(action, *extra, '--runtime-root', self.lab / 'runtime',
+        self.engine(action, *extra, '--runtime-root', self.lab / 'r',
                     '--registry', self.lab / 'evidence/registry.json',
                     '--protocol', self.args.protocol, '--generation', generation)
 
@@ -155,7 +155,7 @@ class Runner:
         self.command('explicit-config-' + action,
                      [sys.executable, '-I', '-B', '-c', CONFIG, str(ROOT / 'src'),
                       str(self.lab / 'repo'), str(self.lab / 'store'),
-                      str(self.lab / 'runtime'), str(self.lab / 'evidence/registry.json'),
+                      str(self.lab / 'r'), str(self.lab / 'evidence/registry.json'),
                       self.args.protocol, generation, str(self.lab / 'config/managed.json'), action])
 
     def execute(self):
@@ -184,7 +184,8 @@ class Runner:
                     raise ValueError('binary SHA mismatch')
             self.lab = Path(tempfile.mkdtemp(prefix='sl-', dir='/tmp')).resolve()
             os.chmod(self.lab, 0o700)
-            for name in ('repo', 'home', 'store', 'runtime', 'config', 'evidence', 'tmp', 'oldCBM'):
+            # Keep the canonical runtime root within Darwin's native socket budget.
+            for name in ('repo', 'home', 'store', 'r', 'config', 'evidence', 'tmp', 'oldCBM'):
                 (self.lab / name).mkdir(mode=0o700)
             private_write(self.lab / 'repo/alpha.py', b'def greet(name):\n    return "hello " + name\n')
             private_write(self.lab / 'repo/user-notes.txt', b'preserve user evidence\n')
@@ -200,7 +201,7 @@ class Runner:
             self.receipt['fixture_before'] = snapshot_files(self.lab / 'repo')
             self.env = {'HOME': str(self.lab / 'home'), 'XDG_CONFIG_HOME': str(self.lab / 'config'),
                         'TMPDIR': str(self.lab / 'tmp'), 'PATH': '/usr/bin:/bin', 'TERM': 'dumb',
-                        'CBM_CACHE_DIR': str(self.lab / 'runtime'), 'CBM_RUNTIME_DIR': str(self.lab / 'runtime')}
+                        'CBM_CACHE_DIR': str(self.lab / 'r'), 'CBM_RUNTIME_DIR': str(self.lab / 'r')}
             # Authorized builtin index write is confined to this newly allocated repository.
             self.cli('builtin-reconcile', 'reconcile')
             for index, (binary, digest) in enumerate(artifacts):
