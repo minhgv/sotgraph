@@ -181,8 +181,69 @@ def fs_snapshot(repo: str, namespace: Path) -> dict[str, str]:
     return out
 
 
+DAEMON_TOKEN = "--cbm-daemon-internal"  # passive match token only; never signalled
+
+
+def ps_inventory(bin_path: str, basename: str) -> dict[str, dict[str, str]]:
+    """Passive `ps` snapshot; RAISES if ps fails (a silent {} would fake a
+    pass). Local filtering — ps argv is not reliably shlex-able, so match the
+    exact trusted executable path as prefix with a word boundary (spaces
+    preserved), fallback exact basename token, else the daemon token.
+    Persists pid+lstart+role ONLY (never argv/env tails)."""
+    try:
+        r = subprocess.run(["ps", "-axo", "pid=,lstart=,command="],
+                           capture_output=True, text=True, timeout=5)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError(f"ps inventory unavailable: {type(exc).__name__}") from exc
+    if r.returncode != 0:
+        raise RuntimeError(f"ps inventory failed rc={r.returncode}")
+    found: dict[str, dict[str, str]] = {}
+    for line in r.stdout.splitlines():
+        fields = line.split(None, 6)
+        if len(fields) < 7:
+            continue
+        pid, lstart, cmd = fields[0], " ".join(fields[1:6]), fields[6]
+        if cmd == bin_path or cmd.startswith(bin_path + " "):
+            role = "binary"
+        elif Path(cmd.split()[0]).name == basename:
+            role = "binary"
+        elif DAEMON_TOKEN in cmd.split():
+            role = "daemon"
+        else:
+            continue
+        found[f"{pid} {lstart}"] = {"pid": pid, "start": lstart, "role": role}
+    return found
+
+
+def process_verdict(bin_path: str, basename: str,
+                    baseline: dict[str, dict]) -> dict:
+    """Bounded 10s poll for NEW matching processes (baseline pid+start keyed).
+    Preexisting same pid+start preserved and gate-checked; new ones classed
+    `unknown` (NOT proven orphan/terminated). No signals, no adoption."""
+    t0 = time.monotonic()
+    snap: dict = {}
+    while True:
+        snap = ps_inventory(bin_path, basename)
+        new = {k: v for k, v in snap.items() if k not in baseline}
+        if not new or time.monotonic() - t0 >= 10.0:
+            break
+        time.sleep(1.0)
+    new = {k: v for k, v in snap.items() if k not in baseline}
+    return {
+        "method": "passive ps; pid+start+role only; no signals, no adoption",
+        "poll_elapsed_s": round(time.monotonic() - t0, 3),
+        "baseline_count": len(baseline),
+        "preexisting_preserved": sorted(snap[k]["pid"] for k in snap if k in baseline),
+        "preexisting_preserved_ok": set(baseline) <= set(snap),
+        "new_remaining_unknown": {k: dict(v, classification="unknown_not_"
+                                                 "proven_orphan_or_terminated")
+                                  for k, v in new.items()},
+        "no_new_remaining": not new,
+        "causal_note": "empty post-poll snapshot: no new matching process "
+                       "remains; full causal linkage NOT claimed"}
+
+
 def ledger_digest(db_path: str) -> str:
-    """Logical digest of SOT ledger provider tables (read-only sqlite)."""
     import sqlite3
     from urllib.parse import quote
     conn = sqlite3.connect("file:" + quote(os.path.abspath(db_path), safe="/")
@@ -261,6 +322,12 @@ def main() -> int:
                "exact_context_is_ctx": provider._exact is ctx}
     stages["provider_binding"] = binding
 
+    # Passive process inventory: baseline BEFORE any native start (read-only).
+    # ps failure raises here => FATAL exit before any stage or receipt write.
+    bin_name = bin_path.name
+    base_procs = ps_inventory(str(bin_path), bin_name)
+    stages["process_baseline"] = {"matched_preexisting": len(base_procs)}
+
     # auto_watch=false proven by managed.prepare() (set+get+_config.db readback).
     t_start = time.monotonic()
     admit("p_prepare")
@@ -299,8 +366,13 @@ def main() -> int:
     elapsed = round(time.monotonic() - t_start, 3)
     stages["budget"] = {"per_stage": dict(WALLS), "elapsed_native_span_s": elapsed,
                         "budget_s": BUDGET_S, "reserves": RESERVES}
+    # Final passive inventory AFTER all stages: bounded 10s poll for new procs.
+    stages["process_final"] = process_verdict(str(bin_path), bin_name, base_procs)
     ok = (ok_p and ok_i and ok_q and all(binding.values())
-          and all(stages["query_no_mutation"].values()) and elapsed <= BUDGET_S)
+          and all(stages["query_no_mutation"].values())
+          and stages["process_final"]["no_new_remaining"]
+          and stages["process_final"]["preexisting_preserved_ok"]
+          and elapsed <= BUDGET_S)
     (root_path / "provider-acceptance-receipt.json").write_text(
         json.dumps(sanitize_json(stages), indent=1))
     print(json.dumps(sanitize_json(stages), indent=1, default=str)[:4000])

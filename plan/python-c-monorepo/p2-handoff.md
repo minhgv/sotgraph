@@ -1,6 +1,6 @@
 # P2 Handoff — Managed lifecycle + provider binding (2026-09-06)
 
-File này tự đủ (self-contained): baseline, code đã implement, bằng chứng test + native thật, blocker, quyết định mở, điều kiện resume. Không cần đọc lại hội thoại. `p0-handoff.md`, `p1-handoff.md` giữ nguyên như lịch sử bất biến; `status.md` là bảng trạng thái sống. **Tóm tắt: code managed lifecycle ĐÃ implement + test mocked (receipt main: 203 passed / exit 0 / 33.25s, 8 file, gồm fault-subset + concurrency — chi tiết mục 3); native measured acceptance PASS scope hẹp trên 1 host; G2 KHÔNG được tuyên bố PASS — thiếu bằng chứng gate (mục 6).**
+File này tự đủ (self-contained): baseline, code đã implement, bằng chứng test + native thật, blocker, quyết định mở, điều kiện resume. Không cần đọc lại hội thoại. `p0-handoff.md`, `p1-handoff.md` giữ nguyên như lịch sử bất biến; `status.md` là bảng trạng thái sống. **Tóm tắt: code managed lifecycle ĐÃ implement + test mocked (receipt main: 203 passed / exit 0 / 33.25s, 8 file, gồm fault-subset + concurrency — chi tiết mục 3); native measured acceptance PASS scope hẹp trên 1 host; G2 KHÔNG được tuyên bố PASS — thiếu bằng chứng gate (mục 6).** **[SUPERSEDED 2026-09-06 phần G2: G2 = PASS scope hẹp — xem mục 6b và `evidence/p2-provider-inventory-acceptance.md`; P3 vẫn KHÔNG promote.]**
 
 ## 1. Baseline & phạm vi
 
@@ -43,7 +43,7 @@ Nguồn: `evidence/p2-managed-acceptance.md` (201 dòng, ngày 2026-09-06) + `ev
 - Fixture registry = **self-binding** (digest của chính output op đó, cùng artifact); provenance fixture-suite upstream = future work, ghi trong từng record `tested_by`. Trust policy release-compat = của maintainer.
 - Ghi số daemon exit "cause unknown" ở cả retry lẫn definitive → vế "no orphan writer báo success" mới có hygiene pgrep, chưa có xác nhận terminal daemon.
 
-## 6. Trạng thái gate G2 — KHÔNG PROMOTE
+## 6. Trạng thái gate G2 — KHÔNG PROMOTE **[SUPERSEDED 2026-09-06: xem mục 6b — G2 PASS scope hẹp]**
 
 Yêu cầu G2 nguyên văn (`execution-plan.md` §3): query không đổi source/index generation/ledger; không đụng global daemon/config; cancellation confirm HOẶC unknown an toàn; no orphan writer báo success.
 
@@ -51,11 +51,19 @@ Yêu cầu G2 nguyên văn (`execution-plan.md` §3): query không đổi source
 - **Gap "live provider acceptance": ĐÃ ĐÓNG (2026-09-06)** — native measured PASS exit 0, total 64.18s tại tip `8d83f64` qua provider binding: binding checks 4/4 true; prepare ok READY 6.133s; index ok 39.699s (no ledger binding); search ok UNBOUND `snapshot_bound=false` 17.915s; bytes WAL/SHM + ledger rows unchanged; native span 63.758 ≤ 120. n=1, 1 host, KHÔNG có global process inventory trong run; cancellation không đo lại (bằng chứng timeout executor `cancellation_unknown` + QUARANTINED vẫn hiện hành). Bằng chứng: `evidence/p2-provider-acceptance.md` + `evidence/p2-provider-acceptance-receipt.json` (sanitized, sha256-16 `9cbbaf6623a1285d`).
 - **Gap G2 còn lại (đúng 1, theo literal gate):** isolation/orphan unsafe-success proof — bằng chứng có định nghĩa rằng không orphan writer nào báo success, gồm global non-interference CÓ inventory tiến trình độc lập (run acceptance vừa rồi không có). Chỉ gap này chặn G2.
 - **Hạn chế giai đoạn sau — KHÔNG phải blocker G2:** 1 host macOS arm64 (đủ nếu khai báo scope host trung thực); public CLI/installer = phạm vi **P4/P5**, không phải điều kiện G2 (programmatic-only là đúng scope hiện tại); policy trust registry (self-binding) = quyết định maintainer về sau; G0-B3 + 11/15 native tool UNKNOWN = P3/later; SIGINT/non-daemon = việc khác, không thuộc G2.
-- Kết luận trung thực: **P2 code implemented + measured native subset PASS (1 host, executor layer); G2 = CHƯA PASS (đúng 2 gap trên), KHÔNG promote; P3 KHÔNG bắt đầu theo chuỗi promotion.**
+- Kết luận trung thực: **P2 code implemented + measured native subset PASS (1 host, executor layer); G2 = CHƯA PASS (đúng 2 gap trên), KHÔNG promote; P3 KHÔNG bắt đầu theo chuỗi promotion.** **[SUPERSEDED 2026-09-06: G2 PASS scope hẹp — mục 6b.]**
+
+## 6b. Cập nhật 2026-09-06 — G2 = PASS scope hẹp (process inventory)
+
+- **Run mới (main, exit 0, wall 63.39s; native span 61.763s: prepare 5.974 / index 38.251 / query 17.529; process poll 1.126s):** process inventory độc lập đo được — baseline **6** pre-existing preserved toàn bộ (pid+start), **no new matching remain**; method passive ps, pid+start+role only, KHÔNG signal, KHÔNG adoption; **causal termination KHÔNG được chứng minh** (post-poll rỗng ≠ nguyên nhân kết thúc). Query no-mutation xác nhận lại (bytes incl WAL/SHM + ledger rows unchanged; search UNBOUND `snapshot_bound=false`; `ledger_binding_row=false`). Binding 4/4 true; registry đúng 6 op. Harness reviewed ở dạng hiện hành sau fix `--cbm-daemon-internal`. Bằng chứng: `evidence/p2-provider-inventory-acceptance.md` + `p2-provider-inventory-receipt.json` (sanitized, sha256 `1e264bc2a411…22e291d`).
+- **Bằng chứng cũ giữ nguyên READ-ONLY:** `evidence/p2-provider-acceptance.md` (+receipt) vẫn là nguồn source/index/WAL/SHM/ledger invariance; receipt mới validate lại.
+- **Simulated live-worker timeout tests @ `b08f0de`** (`tests/test_managed_orphan_writer.py`): 2 passed, lặp 5 lần main-run 0.25–0.26s; worker thật sống, timeout mocked → **KHÔNG phải bằng chứng native cancellation thật**.
+- **Verdict:** literal G2 (query no-mutation; global non-interference CÓ inventory; cancellation unknown-safe; no orphan writer báo success qua executor timeout→quarantine refuse-reuse + tests `b08f0de` + namespace isolation tests) = **ĐỦ — G2 PASS SCOPED**. Giới hạn tường minh: 1 host macOS arm64, programmatic-only, n nhỏ. **KHÔNG** là product release / CLI / installer (P4/P5) / platform khác / native CI.
+- **P3 vẫn KHÔNG promote** — full boundary fault matrix (`execution-plan.md` §4) chưa xong, không claim phần thiếu. Provider-ledger rollback đã commit `8131295`.
 
 ## 7. Quyết định mở (cho maintainer/phiên sau)
 
-1. Còn đúng 1 gap G2 (mục 6): isolation/orphan unsafe-success proof (gồm global process inventory độc lập). Gap live provider acceptance ĐÃ ĐÓNG bằng `evidence/p2-provider-acceptance.md`; khai báo scope host trung thực (1 host đủ nếu honest).
+1. Còn đúng 1 gap G2 (mục 6): isolation/orphan unsafe-success proof (gồm global process inventory độc lập). Gap live provider acceptance ĐÃ ĐÓNG bằng `evidence/p2-provider-acceptance.md`; khai báo scope host trung thực (1 host đủ nếu honest). **[ĐÃ ĐÓNG 2026-09-06 — mục 6b: inventory đo được, G2 PASS scope hẹp.]**
 2. Rerun `evidence/p2-managed-acceptance-harness.py` (pinned `--binary`/`--root`) tại tip mới khi được phép chạy native.
 3. Surface công khai (CLI/installer) giữ hẹn P4/P5 — không thuộc điều kiện G2.
 4. Fix lint tồn: 2× E731 adversarial test + F401 `uuid` (không chạm production nếu làm).
@@ -63,6 +71,6 @@ Yêu cầu G2 nguyên văn (`execution-plan.md` §3): query không đổi source
 ## 8. Điều kiện resume
 
 - Bắt đầu từ bằng chứng trên disk: `status.md`, file này, `evidence/p2-managed-acceptance.md` + receipts, tests chạy được (receipt main: 203 passed / exit 0 / 33.25s — mục 3). Không promote theo tên; gate chỉ pass khi có receipt thật.
-- Nếu tiếp G2: owner A = native rerun tại HEAD + đa host/terminal-daemon evidence; owner B = policy trust registry; không hai owner cùng file; native chỉ trong scratch namespace 7-key env + UI-off pre-seed, không bao giờ lặp negative control no-pre-seed.
+- Nếu tiếp G2: owner A = native rerun tại HEAD + đa host/terminal-daemon evidence; owner B = policy trust registry; không hai owner cùng file; native chỉ trong scratch namespace 7-key env + UI-off pre-seed, không bao giờ lặp negative control no-pre-seed. **[SUPERSEDED 2026-09-06: G2 đã PASS scope hẹp (mục 6b) — việc tiếp theo là P3 fault matrix (xem `p3-handoff.md`); đa host/terminal-daemon/trust-registry vẫn là later-stage, không còn chặn gate nào.]**
 - Nếu sang P3 (sau khi G2 được tuyên bố đúng thủ tục): snapshot/ledger integrity theo `execution-plan.md` §4; adversarial suite nền đã có `tests/test_monorepo_snapshot_adversarial.py` (unborn head, linked worktree, mutation giữa captures, failed-sync supersede, binding rollback).
 - Ràng buộc bất biến: không đổi `p0-handoff.md`/`p1-handoff.md`; golden `tests/fixtures/cbm_golden` không đổi; tổng ước lượng 26–47 engineer-days giữ nguyên từ tài liệu gốc. (Commit có authorization rõ của user — không còn cấm commit.)

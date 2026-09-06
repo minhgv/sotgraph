@@ -1,6 +1,6 @@
 # P3 Handoff (fault subset) — Ledger rollback + publication + concurrency (2026-09-06)
 
-**Trạng thái: SUBSET fault-injection HOÀN TẤT — G3 KHÔNG được promote.** File này bàn giao phần việc đã đo; nó KHÔNG tuyên bố gate G3. Chuỗi promotion bắt buộc: G2 phải PASS trước (chưa — `p2-handoff.md` mục 6) và full fault matrix P3 chưa đủ. `p0/p1/p2-handoff.md` giữ nguyên như lịch sử bất biến; `status.md` là bảng trạng thái sống.
+**Trạng thái: SUBSET fault-injection HOÀN TẤT — G3 KHÔNG được promote.** File này bàn giao phần việc đã đo; nó KHÔNG tuyên bố gate G3. Chuỗi promotion bắt buộc: G2 phải PASS trước (chưa — `p2-handoff.md` mục 6) và full fault matrix P3 chưa đủ. **[SUPERSEDED 2026-09-06 phần G2: G2 = PASS scope hẹp (`p2-handoff.md` mục 6b, `evidence/p2-provider-inventory-acceptance.md`); G3 vẫn KHÔNG promote — fault matrix chưa đủ (mục 4).]** `p0/p1/p2-handoff.md` giữ nguyên như lịch sử bất biến; `status.md` là bảng trạng thái sống.
 
 ## 1. Baseline & phạm vi
 
@@ -24,13 +24,13 @@
 
 ## 4. KHÔNG tuyên bố (honest scope)
 
-- **G3 NOT promoted.** Điều kiện chưa đủ: (a) G2 chưa PASS — còn đúng 1 gap: isolation/orphan unsafe-success proof (gap live provider acceptance ĐÃ ĐÓNG: native PASS exit 0 tại `8d83f64` qua binding — `evidence/p2-provider-acceptance.md`; gate cho phép `cancellation_unknown` + quarantine nên terminal-daemon KHÔNG bắt buộc; host scope honest là đủ, CLI/installer thuộc P4/P5); (b) full fault matrix G3 chưa hoàn tất — **specifics G3** (`execution-plan.md` §4): false-fresh adversarial; crash-at-commit (crash không tạo successful run thiếu evidence); stale-supersede (old evidence không bị supersede bởi failed sync); fault injection tại native completion + ledger commit boundary. Một phần đã có từ `86c97fc` (unborn head, linked worktree, mutation giữa captures, failed-sync supersede) + subset mới mục 3. **SIGINT/non-daemon/reindex-during-cancel là việc KHÁC — không tính vào matrix G3.**
+- **G3 NOT promoted.** Điều kiện chưa đủ: (a) G2 chưa PASS — còn đúng 1 gap: isolation/orphan unsafe-success proof (gap live provider acceptance ĐÃ ĐÓNG: native PASS exit 0 tại `8d83f64` qua binding — `evidence/p2-provider-acceptance.md`; gate cho phép `cancellation_unknown` + quarantine nên terminal-daemon KHÔNG bắt buộc; host scope honest là đủ, CLI/installer thuộc P4/P5) **[SUPERSEDED 2026-09-06: G2 = PASS scope hẹp — inventory process đo được, `p2-handoff.md` mục 6b; điều kiện (a) ĐÃ thỏa scoped, chỉ còn (b)];** (b) full fault matrix G3 chưa hoàn tất — **specifics G3** (`execution-plan.md` §4): false-fresh adversarial; crash-at-commit (crash không tạo successful run thiếu evidence); stale-supersede (old evidence không bị supersede bởi failed sync); fault injection tại native completion + ledger commit boundary. Một phần đã có từ `86c97fc` (unborn head, linked worktree, mutation giữa captures, failed-sync supersede) + subset mới mục 3. **SIGINT/non-daemon/reindex-during-cancel là việc KHÁC — không tính vào matrix G3.**
 - **Hạn chế giai đoạn sau (không phải blocker gate hiện tại):** native fault injection (native completion boundary) thuộc phần còn lại của matrix; toàn bộ suite hiện tại mocked/real-SQLite trên 1 host macOS arm64; full-platform native proof = giai đoạn P4/P5 theo khai báo scope trung thực.
 - Không suy diễn hành vi native thật từ mocked tests; các mệnh đề mục 3 là hành vi SOT-side (provider/ledger), không phải chứng minh native 0.10.8.
 
 ## 5. Điều kiện resume
 
 1. **Commit + review ĐÃ XONG:** `8131295` + `8d83f64` đã vào lịch sử; review độc lập hoàn tất no blockers. Bằng chứng mục 2–3 là trạng thái committed, không còn worktree-pending.
-2. **Đóng G2 trước** theo điều kiện liệt kê trong `p2-handoff.md` mục 6–7 (native rerun tại HEAD, đa host hoặc tuyên bố 1-host experimental tường minh, terminal-daemon/orphan evidence, quyết định surface + trust policy).
+2. **Đóng G2 trước** theo điều kiện liệt kê trong `p2-handoff.md` mục 6–7 (native rerun tại HEAD, đa host hoặc tuyên bố 1-host experimental tường minh, terminal-daemon/orphan evidence, quyết định surface + trust policy). **[SUPERSEDED 2026-09-06: G2 = PASS scope hẹp (`p2-handoff.md` mục 6b) — điều kiện này ĐÃ thỏa; bước kế = mục 3 dưới.]**
 3. **Sau G2:** hoàn tất full fault matrix P3 còn thiếu rồi mới xét gate G3 (nguyên văn gate: không false-fresh trong adversarial suite; crash không tạo successful run thiếu evidence; old evidence không bị supersede bởi failed sync).
 4. Ràng buộc bất biến giữ nguyên: không đổi các handoff trước; golden `tests/fixtures/cbm_golden` không đổi; không lặp negative control no-pre-seed khi có native. (Commit có authorization rõ của user.)

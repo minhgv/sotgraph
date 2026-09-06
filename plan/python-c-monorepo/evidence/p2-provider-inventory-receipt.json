@@ -1,0 +1,73 @@
+{
+ "binary_sha256": "996bad5fe6fb89c0c50363d87f03dc78f6e536aeea746c06679a294d14eca435",
+ "registry_ops": [
+  "config_get_auto_watch",
+  "config_set_auto_watch",
+  "index_repository",
+  "index_status",
+  "list_projects",
+  "search_graph"
+ ],
+ "sot_head": "5de4d6f62ac2256c7e4c1e727e334666f88163ff",
+ "no_native_run_at_authoring": true,
+ "env_preflight": "7-key env + ui_enabled=false preseed, pre-native",
+ "provider_binding": {
+  "managed_is_runtime": true,
+  "repo_binding": true,
+  "exe_binding": true,
+  "exact_context_is_ctx": true
+ },
+ "process_baseline": {
+  "matched_preexisting": 6
+ },
+ "prepare": {
+  "status": "ok",
+  "state": "READY",
+  "err": null
+ },
+ "index": {
+  "status": "ok",
+  "ledger_binding_row": false
+ },
+ "search": {
+  "ok": true,
+  "status": "ok",
+  "freshness": "UNBOUND",
+  "snapshot_bound": false
+ },
+ "query_no_mutation": {
+  "bytes_incl_wal_shm": true,
+  "ledger_rows": true
+ },
+ "budget": {
+  "per_stage": {
+   "p_prepare": 5.974,
+   "i_index": 38.251,
+   "q_search": 17.529
+  },
+  "elapsed_native_span_s": 61.763,
+  "budget_s": 120.0,
+  "reserves": {
+   "p_prepare": 62.0,
+   "i_index": 60.0,
+   "q_search": 32.0
+  }
+ },
+ "process_final": {
+  "method": "passive ps; pid+start+role only; no signals, no adoption",
+  "poll_elapsed_s": 1.126,
+  "baseline_count": 6,
+  "preexisting_preserved": [
+   "47134",
+   "66482",
+   "73105",
+   "73106",
+   "7917",
+   "8104"
+  ],
+  "preexisting_preserved_ok": true,
+  "new_remaining_unknown": {},
+  "no_new_remaining": true,
+  "causal_note": "empty post-poll snapshot: no new matching process remains; full causal linkage NOT claimed"
+ }
+}
