@@ -2054,6 +2054,36 @@ def cmd_viz(args: argparse.Namespace, db: Database, root: str) -> int:
     return 0
 
 
+def cmd_arch(args: argparse.Namespace, db: Database, root: str) -> int:
+    from sot_graph.analytics.graph import AnalyticsGraph
+    from sot_graph.export.arch_html import generate_arch_html
+
+    project_name = os.path.basename(os.path.abspath(root))
+    scope = args.scope
+    if scope and not os.path.isabs(scope):
+        # graph_nodes.path stores absolute paths; resolve user-relative scope.
+        scope = os.path.abspath(os.path.join(root, scope))
+    graph = AnalyticsGraph.from_database(db, scope=scope)
+    html_content = generate_arch_html(
+        graph,
+        title=f"Architecture: {project_name}",
+        project=project_name,
+        scope=args.scope,
+    )
+    out_path = args.output
+    out_dir = os.path.dirname(out_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    if getattr(args, "open", False):
+        import webbrowser
+
+        webbrowser.open("file://" + os.path.abspath(out_path))
+    print(f"🏗️  Architecture view generated at: {out_path}")
+    return 0
+
+
 def cmd_export(args: argparse.Namespace, db: Database, root: str) -> int:
     from sot_graph.analytics.graph import AnalyticsGraph
     from sot_graph.export.exporter import (
@@ -2348,6 +2378,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_viz.add_argument("-o", "--output", default="graph.html", help="HTML output path (default: graph.html)")
     p_viz.add_argument("--scope", default=None, help="Scope visualization to path or subdirectory")
     p_viz.add_argument("--open", action="store_true", help="Automatically open visualizer in default web browser")
+
+    # arch
+    p_arch = subparsers.add_parser("arch", help="Generate a deterministic tiered architecture HTML view")
+    p_arch.add_argument("-o", "--output", default="architecture.html", help="HTML output path (default: architecture.html)")
+    p_arch.add_argument("--scope", default=None, help="Scope architecture view to path or subdirectory")
+    p_arch.add_argument("--open", action="store_true", help="Automatically open the view in default web browser")
 
     # export
     p_expo = subparsers.add_parser("export", help="Export knowledge graph to GraphRAG JSON, Obsidian, GraphML, or SCIP")
@@ -2684,6 +2720,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return cmd_cluster(args, db)
         elif args.command == "viz":
             return cmd_viz(args, db, root)
+        elif args.command == "arch":
+            return cmd_arch(args, db, root)
         elif args.command == "export":
             return cmd_export(args, db, root)
         elif args.command == "import-scip":
