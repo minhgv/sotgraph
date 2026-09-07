@@ -1,5 +1,6 @@
 """Independent M3b shared-dispatch contracts; inert artifacts, no native execution."""
 import json
+import sys
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -11,6 +12,8 @@ from sot_graph.providers import trusted_config as config
 from sot_graph.providers.codebase_memory import CodebaseMemoryProvider
 from sot_graph.providers.managed import ManagedNativeRuntime
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 trusted_lab = _trusted_lab

@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,8 @@ from sot_graph.providers import admin, trusted_config as config
 from sot_graph.providers.artifacts import ArtifactManifest, ArtifactStore, host_platform
 from sot_graph.providers.managed import ManagedNativeRuntime
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 trusted_lab = trusted_fixtures.trusted_lab

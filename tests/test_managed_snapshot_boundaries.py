@@ -16,6 +16,7 @@ no sleeps, no real native binary.
 from __future__ import annotations
 
 import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -31,6 +32,8 @@ from test_cbm_managed_provider import (  # noqa: E402  (tests/ is not a package)
     ManagedFixture,
     _git,
 )
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 def _boom_spawn(*_args, **_kwargs):

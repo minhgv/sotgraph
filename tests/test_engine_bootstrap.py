@@ -158,6 +158,8 @@ def test_shipped_pins_manifest_is_valid(monkeypatch):
 
 def test_engine_runtime_env_namespaces_layout(tmp_path, monkeypatch):
     """P1.1 §7.1: rendezvous at a short runtime parent, cache under the store."""
+    if not hasattr(os, "geteuid"):
+        pytest.skip("unix-only rendezvous budget")
     monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
     env = bp.engine_runtime_env(tmp_path, "codebase-memory")
     runtime = tmp_path / "rt" / f"sotgraph-engine-{os.geteuid()}"
@@ -183,6 +185,8 @@ def test_engine_runtime_env_default_parent_fits_socket_budget():
 
 
 def test_engine_runtime_env_fail_closed_on_unusable_store(tmp_path, monkeypatch):
+    if not hasattr(os, "geteuid"):
+        pytest.skip("unix-only runtime namespace refusal")
     def broken_mkdir(self, *args, **kwargs):
         raise OSError("disk on fire")
     monkeypatch.setattr(bp.Path, "mkdir", broken_mkdir)

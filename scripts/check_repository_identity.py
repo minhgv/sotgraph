@@ -40,7 +40,7 @@ def check(root=ROOT):
             continue
         raw = path.read_bytes()
         if name in exceptions:
-            if hashlib.sha256(raw).hexdigest() != exceptions[name]['sha256']:
+            if hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest() != exceptions[name]['sha256']:
                 errors.append(f'{name}: historical exception changed; review provenance')
             continue
         try:

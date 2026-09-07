@@ -195,7 +195,8 @@ class TestGoldenFixtureSuiteInventory:
         for path in sorted(fixtures.rglob("*")):
             if path.is_file():
                 rel = path.relative_to(fixtures).as_posix()
-                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                data = path.read_bytes().replace(b"\r\n", b"\n")
+                digest = hashlib.sha256(data).hexdigest()
                 lines.append(f"{rel}\0{digest}\n")
         suite_digest = hashlib.sha256(
             "".join(lines).encode("utf-8")

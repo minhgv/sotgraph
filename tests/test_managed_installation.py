@@ -2,6 +2,7 @@
 import hashlib
 import os
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 
@@ -23,6 +24,8 @@ from sot_graph.providers.compatibility import (
 from sot_graph.providers.installation import create_managed_installation
 from sot_graph.providers.managed import QUERY_OPERATIONS, ManagedNativeRuntime
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 OPS = QUERY_OPERATIONS | {
     "config_set_auto_watch", "config_get_auto_watch", "index_repository",

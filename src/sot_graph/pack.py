@@ -370,7 +370,7 @@ def build_bundle(
             "raise --max-bytes or split the symbol for the full span"
         )
 
-    rel_path = os.path.relpath(node["path"], root) if os.path.isabs(node["path"]) else node["path"]
+    rel_path = (os.path.relpath(node["path"], root) if os.path.isabs(node["path"]) else node["path"]).replace(os.sep, "/")
 
     target_block = {
         "node_id": node["id"],
@@ -444,7 +444,7 @@ def build_bundle(
         if _row is None:
             continue
         _p = _row["path"]
-        _rel_by_id[_nid] = os.path.relpath(_p, root) if os.path.isabs(_p) else _p
+        _rel_by_id[_nid] = (os.path.relpath(_p, root) if os.path.isabs(_p) else _p).replace(os.sep, "/")
         if _direction == "in" and _is_test_module(_rel_by_id[_nid]):
             _test_line_by_id[_nid] = _line or 0
     _reserved_test_id = (
@@ -487,7 +487,7 @@ def build_bundle(
         if n_warn:
             warnings.append(n_warn)
 
-        n_rel_path = os.path.relpath(neighbor["path"], root) if os.path.isabs(neighbor["path"]) else neighbor["path"]
+        n_rel_path = (os.path.relpath(neighbor["path"], root) if os.path.isabs(neighbor["path"]) else neighbor["path"]).replace(os.sep, "/")
 
         if direction == "in":
             inbound.append({

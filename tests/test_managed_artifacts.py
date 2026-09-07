@@ -16,6 +16,7 @@ import json
 import os
 import stat
 import subprocess
+import sys
 import threading
 from pathlib import Path
 
@@ -29,6 +30,8 @@ from sot_graph.providers.artifacts import (
     ArtifactStore,
     host_platform,
 )
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 @pytest.fixture(autouse=True)

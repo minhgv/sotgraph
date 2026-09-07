@@ -783,6 +783,7 @@ def py_fake(directory: Path, name: str, body: str) -> tuple[str, ...]:
 class TestEngineNamespaceEnv:
     """P1.1 §7.1: every engine spawn merges the per-account store namespace."""
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="engine runtime env namespacing is POSIX-only")
     def test_search_spawn_carries_namespaced_env(self, tmp_path, monkeypatch):
         import sot_graph.providers.bootstrap as bp
         monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
@@ -798,6 +799,7 @@ class TestEngineNamespaceEnv:
             assert path.is_dir()
             assert path.stat().st_mode & 0o777 == 0o700
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="engine runtime env namespacing is POSIX-only")
     def test_index_spawn_carries_namespaced_env(self, tmp_path, monkeypatch):
         import sot_graph.providers.bootstrap as bp
         monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")

@@ -15,7 +15,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import resource
 import platform
 from datetime import datetime, timezone
 import sys
@@ -24,6 +23,11 @@ import time
 import subprocess
 import stat
 import traceback
+
+try:
+    import resource
+except ImportError:  # Windows: rusage accounting unavailable; rest of script works.
+    resource = None
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -80,8 +84,11 @@ def fingerprint_cache(profile):
 
 
 def digest_file(path):
+    hasher = hashlib.sha256()
     with path.open('rb') as stream:
-        return hashlib.file_digest(stream, 'sha256').hexdigest()
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 
 def bounded_command(argv):
@@ -275,12 +282,16 @@ def main():
                 if '--args-file' in argv:
                     captured[-1] += (Path(argv[argv.index('--args-file')+1]).read_text(),)
                 with span('run_command_native_envelope', argv=argv) as row:
-                    before = resource.getrusage(resource.RUSAGE_CHILDREN)
+                    before = (resource.getrusage(resource.RUSAGE_CHILDREN)
+                              if resource is not None else None)
                     result = run_command(argv, **kwargs)
-                    after = resource.getrusage(resource.RUSAGE_CHILDREN)
+                    after = (resource.getrusage(resource.RUSAGE_CHILDREN)
+                             if resource is not None else None)
+                    reaped_cpu = ((after.ru_utime+after.ru_stime-before.ru_utime-before.ru_stime)
+                                  if before is not None and after is not None else None)
                     row.update(returncode=result.returncode, timed_out=result.timed_out,
                                stdout_bytes=len(result.stdout), stderr_bytes=len(result.stderr),
-                               reaped_children_cpu_s=(after.ru_utime+after.ru_stime-before.ru_utime-before.ru_stime),
+                               reaped_children_cpu_s=reaped_cpu,
                                cpu_scope='RUSAGE_CHILDREN only; detached/unreaped daemon accounting incomplete')
                     return result
             managed.run_command = observed_run

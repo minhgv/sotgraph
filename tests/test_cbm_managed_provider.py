@@ -18,6 +18,7 @@ import os
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -53,6 +54,8 @@ from sot_graph.providers.compatibility import (
 )
 from sot_graph.providers.managed import ManagedNativeRuntime, ManagedResult
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 _UNSET = object()
 

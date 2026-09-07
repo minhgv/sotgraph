@@ -1,11 +1,14 @@
 """Public admin surface exercises real persisted configuration, no native runs."""
 import json
+import sys
 
 import pytest
 
 from sot_graph.cli import main
 from sot_graph.providers import trusted_config as config
 from test_trusted_managed_config import trusted_lab as _trusted_lab
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 trusted_lab = _trusted_lab
 

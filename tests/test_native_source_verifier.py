@@ -3,9 +3,12 @@ import hashlib
 import importlib.util
 import json
 import os
+import sys
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="certifies POSIX git-index invariants (symlinks, fifos, mode bits)")
 
 SPEC = importlib.util.spec_from_file_location(
     "native_verifier", Path(__file__).resolve().parents[1] / "scripts/verify_native_source.py"

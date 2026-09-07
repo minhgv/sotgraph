@@ -29,8 +29,15 @@ from typing import Any
 
 from .artifacts import ArtifactStore, host_platform
 
-__all__ = ["BootstrapError", "default_store_root", "engine_runtime_env",
-           "auto_bootstrap_allowed", "load_pins", "resolve_pin", "bootstrap_engine"]
+__all__ = [
+    "BootstrapError",
+    "auto_bootstrap_allowed",
+    "bootstrap_engine",
+    "default_store_root",
+    "engine_runtime_env",
+    "load_pins",
+    "resolve_pin",
+]
 
 _SIZE_SLACK_BYTES = 64 << 20  # tolerate rebuild variance; digest is the gate
 _FETCH_CHUNK = 1 << 20
@@ -49,7 +56,8 @@ def default_store_root() -> Path:
 def _engine_runtime_parent() -> Path:
     """Short rendezvous parent the engine itself trusts (root-owned sticky
     system tmp — the same directory the engine uses by default)."""
-    return Path("/private/tmp" if sys.platform == "darwin" else "/tmp")
+    # deliberate sticky root-owned tmp rendezvous with the engine itself
+    return Path("/private/tmp" if sys.platform == "darwin" else "/tmp")  # nosec B108
 
 
 def engine_runtime_env(store_root: str | os.PathLike[str],
@@ -179,8 +187,9 @@ def _fetch_remote(url: str, expected_sha256: str, size_bytes: int,
     tag_api = _github_release_tag_api(url)
     if tag_api is not None and token:
         lookup_headers = dict(headers, Accept="application/vnd.github+json")
+        # https URL pinned by engine_pins.json, not user input
         try:
-            with urllib.request.urlopen(
+            with urllib.request.urlopen(  # nosec B310
                     urllib.request.Request(tag_api, headers=lookup_headers),
                     timeout=60) as response:
                 release = json.load(response)
@@ -199,7 +208,8 @@ def _fetch_remote(url: str, expected_sha256: str, size_bytes: int,
     target = tmp_dir / f"bootstrap.{uuid.uuid4().hex}"
     cap = size_bytes + _SIZE_SLACK_BYTES
     try:
-        with urllib.request.urlopen(
+        # https URL pinned by engine_pins.json, not user input
+        with urllib.request.urlopen(  # nosec B310
                 urllib.request.Request(fetch_url, headers=headers),
                 timeout=120) as response, open(target, "wb") as out:
             seen, total = hashlib.sha256(), 0

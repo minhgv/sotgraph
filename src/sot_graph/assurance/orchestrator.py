@@ -103,11 +103,13 @@ def managed_read_dispatch(
         # no symlink/FIFO traversal. Directory-relative open pins .sot against
         # replacement between checking its type and opening config.toml.
         document: dict = {}
-        try:
-            directory = os.open(os.path.join(root, ".sot"),
-                                os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-        except FileNotFoundError:
-            directory = None
+        directory: int | None = None
+        if hasattr(os, "O_DIRECTORY"):
+            try:
+                directory = os.open(os.path.join(root, ".sot"),
+                                    os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            except FileNotFoundError:
+                directory = None
         if directory is not None:
             try:
                 try:

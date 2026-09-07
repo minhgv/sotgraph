@@ -52,8 +52,8 @@ def load_json(path: Path) -> Dict[str, Any]:
 
 
 def manifest_sha256(path: Path) -> str:
-    """Freeze hash: sha-256 over the exact manifest bytes on disk."""
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Freeze hash: sha-256 over manifest bytes normalized to LF."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 # ---------------------------------------------------------------------------

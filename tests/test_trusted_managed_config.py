@@ -94,7 +94,9 @@ def test_registration_survives_reload_with_canonical_project_binding(trusted_lab
 
 
 @pytest.mark.parametrize("payload", ["{", "[]", "null", '{"schema_version":2,"projects":{}}',
-                                     '{"schema_version":1,"projects":[]}', " " * 262145])
+                                     '{"schema_version":1,"projects":[]}', " " * 262145],
+                         ids=["json-object", "json-array", "json-null",
+                              "schema-version-bump", "empty-projects", "spaces-256k"])
 def test_malformed_or_oversized_configuration_fails_closed(trusted_lab, payload):
     lab = trusted_lab
     lab.path.write_text(payload)

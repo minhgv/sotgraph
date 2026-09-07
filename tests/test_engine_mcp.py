@@ -135,6 +135,8 @@ def test_error_response_maps_to_exception(tmp_path, stub_server):
 
 def test_store_root_namespaces_spawn_env(tmp_path, monkeypatch):
     """P1.1 §7.1: client spawn carries per-account CBM_RUNTIME_DIR/CBM_CACHE_DIR."""
+    if not hasattr(os, "geteuid"):
+        pytest.skip("unix-only rendezvous budget")
     monkeypatch.setattr(bp, "_engine_runtime_parent", lambda: tmp_path / "rt")
     store = tmp_path / "store"
     script = tmp_path / "env_stub_engine.py"
@@ -172,6 +174,7 @@ def test_explicit_env_merges_namespace(tmp_path):
     assert (store / "cache" / "codebase-memory").is_dir()
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="engine runtime env namespacing is POSIX-only")
 def test_probe_engine_mcp_passes_store_root(tmp_path):
     store = tmp_path / "probe-store"
     script = tmp_path / "env_stub_probe.py"

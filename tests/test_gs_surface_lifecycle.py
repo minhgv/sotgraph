@@ -2,6 +2,7 @@
 import hashlib
 import json
 import subprocess
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -11,6 +12,8 @@ from sot_graph.cli import main
 from sot_graph.providers.artifacts import host_platform
 from sot_graph.providers.base import ProviderStatus
 from sot_graph.providers.compatibility import TestedCompatibilityRecord as Record
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 def test_sur12_sot_only_upgrade_recovery_and_uninstall(tmp_path, monkeypatch, capsys):

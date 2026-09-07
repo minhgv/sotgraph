@@ -19,6 +19,8 @@ from sot_graph.providers.artifacts import (
     ARTIFACT_PROTOCOL_VERSION, ArtifactRejected, ArtifactStore, host_platform,
 )
 
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
+
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
     'surface_packaging', ROOT / 'scripts/check_surface_packaging.py')

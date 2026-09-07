@@ -1,11 +1,14 @@
 import hashlib
 import json
 import subprocess
+import sys
 
 import pytest
 
 from sot_graph.cli import main
 from sot_graph.providers.artifacts import host_platform
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 
 @pytest.fixture

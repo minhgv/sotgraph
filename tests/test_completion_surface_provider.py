@@ -7,6 +7,7 @@ The registry and native receipts are synthetic and confer no release support.
 import io
 import json
 import socket
+import sys
 import webbrowser
 from pathlib import Path
 from types import SimpleNamespace
@@ -19,6 +20,8 @@ from sot_graph.assurance.orchestrator import managed_read_dispatch
 from sot_graph.providers import trusted_config as config
 from sot_graph.providers.managed import ManagedNativeRuntime
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed artifact/runtime gate is POSIX-only by design (artifacts.py:75,155)")
 
 _PREPARE = ManagedNativeRuntime.prepare
 _INITIALIZE = ManagedRuntimeProfile.initialize

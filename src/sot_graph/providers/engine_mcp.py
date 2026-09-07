@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import json
 import os
-import select
 import subprocess
 import time
 from dataclasses import dataclass, field
+from multiprocessing.connection import wait
 from typing import Any
 
 __all__ = ["EngineMcpError", "McpToolInfo", "EngineMcpClient", "probe_engine_mcp"]
@@ -93,7 +93,7 @@ class EngineMcpClient:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise EngineMcpError("engine MCP response timed out")
-            ready, _, _ = select.select([fd], [], [], min(remaining, 1.0))
+            ready = wait([fd], min(remaining, 1.0))
             if not ready:
                 continue
             chunk = os.read(fd, 65536)
