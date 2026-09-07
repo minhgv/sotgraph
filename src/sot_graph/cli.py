@@ -2087,6 +2087,36 @@ def _cmd_arch_flow(args: argparse.Namespace, db: Database, root: str) -> int:
     return 0
 
 
+def _arch_source_prefix(root: str, scope: str | None) -> str:
+    """Default rollup prefix for module-level views.
+
+    Prefers ``<root>/src/<single-package>`` when the layout is unambiguous,
+    else ``<root>/src`` or ``<root>`` itself. An explicit ``--scope`` always
+    wins because it is resolved by the caller.
+    """
+    if scope:
+        return scope
+    pkg_guess = os.path.basename(os.path.abspath(root)).replace("-", "_").replace(".", "_")
+    src_dir = os.path.join(root, "src")
+    if os.path.isdir(src_dir):
+        candidate = os.path.join(src_dir, pkg_guess)
+        if os.path.isdir(candidate):
+            return candidate
+        entries = sorted(
+            e for e in os.listdir(src_dir)
+            if os.path.isdir(os.path.join(src_dir, e))
+            and not e.startswith("_")
+            and not e.endswith(".egg-info")
+        )
+        if len(entries) == 1:
+            return os.path.join(src_dir, entries[0])
+        return src_dir
+    flat = os.path.join(root, pkg_guess)
+    if os.path.isdir(flat):
+        return flat
+    return root
+
+
 def cmd_arch(args: argparse.Namespace, db: Database, root: str) -> int:
     if getattr(args, "flow", None):
         return _cmd_arch_flow(args, db, root)
@@ -2098,13 +2128,26 @@ def cmd_arch(args: argparse.Namespace, db: Database, root: str) -> int:
     if scope and not os.path.isabs(scope):
         # graph_nodes.path stores absolute paths; resolve user-relative scope.
         scope = os.path.abspath(os.path.join(root, scope))
-    graph = AnalyticsGraph.from_database(db, scope=scope)
-    html_content = generate_arch_html(
-        graph,
-        title=f"Architecture: {project_name}",
-        project=project_name,
-        scope=args.scope,
-    )
+    if getattr(args, "level", "symbol") == "module":
+        from sot_graph.export.arch_module import generate_module_html
+
+        prefix = _arch_source_prefix(root, scope)
+        graph = AnalyticsGraph.from_database(db, scope=prefix)
+        html_content = generate_module_html(
+            graph,
+            title=f"System architecture: {project_name}",
+            project=project_name,
+            prefix=prefix,
+            scope=args.scope,
+        )
+    else:
+        graph = AnalyticsGraph.from_database(db, scope=scope)
+        html_content = generate_arch_html(
+            graph,
+            title=f"Architecture: {project_name}",
+            project=project_name,
+            scope=args.scope,
+        )
     out_path = args.output
     out_dir = os.path.dirname(out_path)
     if out_dir:
@@ -2423,6 +2466,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_arch.add_argument("--max-nodes", dest="max_nodes", type=int, default=60, help="Flow node budget before truncation (default: 60)")
     p_arch.add_argument("--lanes", choices=("module", "none"), default="none", help="Group flow nodes into module swimlanes")
     p_arch.add_argument("--open", action="store_true", help="Automatically open the view in default web browser")
+    p_arch.add_argument("--level", choices=("symbol", "module"), default="symbol", help="Granularity: every symbol (default) or one card per module/package — layered system view")
 
     # export
     p_expo = subparsers.add_parser("export", help="Export knowledge graph to GraphRAG JSON, Obsidian, GraphML, or SCIP")
