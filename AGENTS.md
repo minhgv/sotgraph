@@ -55,7 +55,7 @@ When delegating code context to subagents or prompt registers:
 2. Feed the compact ContextBundle instead of full raw files to save 60-70% tokens.
 
 ## 5. Self-Healing, Note Preservation & Storage Integrity
-- If you create, move, or delete files, run `sotgraph reconcile`.
+- Query commands auto-reconcile a stale index by default (JIT Freshness Gate, section 7), but after bulk changes (many files, branch switches, merges) run `sotgraph reconcile` explicitly — it remains the authoritative heal.
 - Run `sotgraph doctor` to audit database health, schema v8, and page allocations.
 - `sotgraph clean --all` purges disposable graph records while permanently preserving user notes (`kind == 'note'`).
 - After completing tricky bugs or complex architectural designs, record knowledge:
@@ -67,17 +67,25 @@ When requested to review or synthesize architecture documentation:
 2. Ingest the 5 fact files (`01_module_inventory.md`, `02_routing_endpoints.md`, `03_workflows_states.md`, `04_dependencies_violations.md`, `05_system_metrics.json`) along with `src/sot_graph/templates/ARCHITECTURE_TEMPLATE.md`.
 3. Output the report with facts grounded ONLY in the bundle files (mark anything beyond them as [INFERENCE]), valid diagrams, and prioritized recommendations.
 
+## 7. JIT Freshness Gate (Auto-Reconcile Before Queries)
+Query surfaces self-heal a stale index instead of serving stale answers:
+1. **Gated surfaces**: `search`, `explore`, `usages`, `implementations`, `map`, `pack`, `trace` (CLI + MCP) and `diff-impact` probe `.sot/sot.db` against disk — size + mtime per journal row, plus a scan walk for never-indexed files — and reconcile first when anything drifted.
+2. **Modes**: `auto` (default — reconcile only when stale) | `force` (always) | `off` (skip). CLI: `--reconcile auto|force|off` (diff-impact: `--auto-reconcile`/`--no-auto-reconcile`, default on). MCP: `auto_reconcile` parameter on the 8 gated tools.
+3. **Disclosure**: gated MCP responses carry a `graph_freshness` envelope (probe counts for modified/deleted/unindexed files, reconcile `performed|skipped|failed` status). CLI prints a `↻ JIT reconcile: ...` notice on stderr when a reconcile ran.
+4. **Never blocks**: if reconcile fails (DB lock, parse error), the query still answers from the stale graph with `status: failed` disclosed — check the envelope before trusting freshness-sensitive verdicts.
+5. **Known blind spot**: same-size edits within the same millisecond skip the probe hash; the assurance layer still hash-checks cited paths post-query. Explicit `sotgraph reconcile` (section 5) remains the authoritative heal after bulk changes.
+
 ## Quick CLI & MCP Reference
 | Category | CLI Command | MCP Tool |
 | :--- | :--- | :--- |
-| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--json]` | `sot_search` |
-| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `sot_map` |
-| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2] [--json]` | `sot_explore` |
-| **Inspect Usages** | `sotgraph usages "<symbol>" [--json]` | `sot_usages` |
+| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--json] [--reconcile auto\|force\|off]` | `sot_search` |
+| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024] [--reconcile auto]` | `sot_map` |
+| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2] [--json] [--reconcile auto]` | `sot_explore` |
+| **Inspect Usages** | `sotgraph usages "<symbol>" [--json] [--reconcile auto]` | `sot_usages` |
 | **Import SCIP Index**| `sotgraph import-scip <path> [--provider-version v1]` | CLI |
-| **Implementations** | `sotgraph implementations "<interface>"` | `sot_implementations` |
+| **Implementations** | `sotgraph implementations "<interface>" [--reconcile auto]` | `sot_implementations` |
 | **Rename Impact** | `sotgraph rename "<symbol>" --to <new_name>` | `CLI only` |
-| **Pack Subgraph** | `sotgraph pack "<symbol>" [--tokens 1500] [--json]` | `sot_pack` |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--tokens 1500] [--json] [--reconcile auto]` | `sot_pack` |
 | **Synchronize DB** | `sotgraph reconcile [--workers 4] [--force]` | `CLI only` |
 | **Audit Drift** | `sotgraph verify [--deep]` | `sot_verify_drift` |
 | **Database Doctor** | `sotgraph doctor [--json]` | `CLI only` |
@@ -89,13 +97,13 @@ When requested to review or synthesize architecture documentation:
 | **Interactive Viz** | `sotgraph viz [-o graph.html]` | `CLI only` |
 | **Export Graph** | `sotgraph export -f <graphrag\|obsidian\|json\|graphml\|scip>` | `CLI only` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/]` | `sot_bundle` |
-| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
+| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>] [--reconcile auto]` | `sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
 | **Backend Flow** | `sotgraph be-flow "<service>"` | `sot_backend_flow` |
 | **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `sot_solution_inventory` |
 | **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table]` | `sot_solution_steps` |
 | **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `sot_solution_bundle` |
-| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `sot_diff_impact` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2] [--auto-reconcile/--no-auto-reconcile]` | `sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
