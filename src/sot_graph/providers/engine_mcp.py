@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
 from multiprocessing.connection import wait
@@ -85,6 +86,11 @@ class EngineMcpClient:
         buffer = bytearray(self._pending)
         self._pending = b""
         fd = self.process.stdout.fileno()
+        if sys.platform == "win32":
+            import msvcrt
+            waitable: object = msvcrt.get_osfhandle(fd)  # kernel handle, not CRT fd
+        else:
+            waitable = fd
         while True:
             newline = buffer.find(b"\n")
             if newline >= 0:
@@ -93,7 +99,7 @@ class EngineMcpClient:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise EngineMcpError("engine MCP response timed out")
-            ready = wait([fd], min(remaining, 1.0))
+            ready = wait([waitable], min(remaining, 1.0))
             if not ready:
                 continue
             chunk = os.read(fd, 65536)
