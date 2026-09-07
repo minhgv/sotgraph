@@ -176,3 +176,118 @@ class UserRepository(BaseRepository):
         for src, dst, rel in edges
     )
     db.close()
+
+
+def test_dict_get_on_param_never_edges_module_level_get(temp_workspace: Path):
+    """Benchmark negative control (select_proxy/merge_hooks/...): a dict
+    ``.get()`` on a parameter of unknown type must NOT be resolved onto a
+    same-named module-level function. Name coincidence is not evidence —
+    the row stays pending instead of fabricating a cross-file edge."""
+    pkg = temp_workspace / "reqs"
+    pkg.mkdir()
+    (pkg / "__init__.py").write_text("from .api import get\n", encoding="utf-8")
+    (pkg / "api.py").write_text(
+        "def get(url):\n    return url\n", encoding="utf-8"
+    )
+    (pkg / "utils.py").write_text(
+        "def select_proxy(url, proxies):\n"
+        "    return proxies.get(url)\n"
+        "def dispatch_hook(hooks, data):\n"
+        "    hook = hooks.get('response')\n"
+        "    return data if hook is None else data\n",
+        encoding="utf-8",
+    )
+
+    db = Database(str(temp_workspace / ".sot" / "sot.db"))
+    rec = Reconciler(db, str(temp_workspace))
+    rec.reconcile(workers=1)
+
+    false_edges = db.conn.execute(
+        "SELECT s.symbol, d.symbol FROM graph_edges e "
+        "JOIN graph_nodes s ON s.id = e.src "
+        "JOIN graph_nodes d ON d.id = e.dst "
+        "WHERE e.relation = 'calls' AND s.symbol IN "
+        "('select_proxy', 'dispatch_hook')"
+    ).fetchall()
+    assert false_edges == [], (
+        f"dict.get calls fabricated edges into module functions: {false_edges}"
+    )
+    # The calls stay honestly pending (unresolved), not silently dropped:
+    pending = db.conn.execute(
+        "SELECT dst_symbol FROM pending_edges WHERE relation = 'calls'"
+    ).fetchall()
+    assert ("get",) in pending
+    db.close()
+
+
+def test_locally_constructed_receiver_call_resolves_across_objects(temp_workspace: Path):
+    """Benchmark missed pair Request.prepare -> PreparedRequest.prepare: a
+    same-name attribute call on a locally constructed object is a real
+    cross-object call and must resolve to the receiver type's method."""
+    (temp_workspace / "models.py").write_text('''
+class PreparedRequest:
+    def prepare(self, method=None, url=None):
+        self.method = method
+
+class Request:
+    def prepare(self):
+        p = PreparedRequest()
+        p.prepare(method="GET", url="http://x")
+        return p
+''', encoding="utf-8")
+
+    db = Database(str(temp_workspace / ".sot" / "sot.db"))
+    rec = Reconciler(db, str(temp_workspace))
+    rec.reconcile(workers=1)
+
+    edges = db.conn.execute(
+        "SELECT s.symbol, d.symbol FROM graph_edges e "
+        "JOIN graph_nodes s ON s.id = e.src "
+        "JOIN graph_nodes d ON d.id = e.dst "
+        "WHERE e.relation = 'calls'"
+    ).fetchall()
+    assert ("Request.prepare", "PreparedRequest.prepare") in edges, (
+        f"cross-object same-name call lost; got: {edges}"
+    )
+    db.close()
+
+
+def test_module_function_same_name_attr_call_no_self_loop(temp_workspace: Path):
+    """requests/api.py shape: module-level request() calling
+    session.request() must resolve to Session.request (via the local var's
+    constructed type), never self-loop onto the module function itself."""
+    pkg = temp_workspace / "reqs"
+    pkg.mkdir()
+    (pkg / "__init__.py").write_text("", encoding="utf-8")
+    (pkg / "sessions.py").write_text(
+        "class Session:\n"
+        "    def request(self, method):\n"
+        "        return method\n",
+        encoding="utf-8",
+    )
+    (pkg / "api.py").write_text(
+        "from .sessions import Session\n\n"
+        "def request(method):\n"
+        "    with Session() as session:\n"
+        "        return session.request(method=method)\n",
+        encoding="utf-8",
+    )
+
+    db = Database(str(temp_workspace / ".sot" / "sot.db"))
+    rec = Reconciler(db, str(temp_workspace))
+    rec.reconcile(workers=1)
+
+    edges = db.conn.execute(
+        "SELECT s.symbol, d.symbol FROM graph_edges e "
+        "JOIN graph_nodes s ON s.id = e.src "
+        "JOIN graph_nodes d ON d.id = e.dst "
+        "WHERE e.relation = 'calls'"
+    ).fetchall()
+    assert ("request", "Session.request") in edges, (
+        f"session.request() must resolve to Session.request; got: {edges}"
+    )
+    self_loops = db.conn.execute(
+        "SELECT COUNT(*) FROM graph_edges WHERE src = dst"
+    ).fetchone()[0]
+    assert self_loops == 0
+    db.close()

@@ -2014,11 +2014,21 @@ class Database:
                     ambiguous_updates.append(rowid)
                     ambiguous += 1
                     continue
+            # An ATTRIBUTE call is a method invoked on a local/parameter
+            # receiver of unknown type whose class-method lookup (Priority 1)
+            # already failed. Bare-name candidates here are module-level
+            # functions only (methods are indexed as 'Class.method'), and a
+            # method call never targets a free function: matching
+            # ``proxies.get()`` onto a unique module-level ``api.get`` is name
+            # coincidence, not evidence. Keep such rows pending/unresolved
+            # instead of fabricating cross-file edges.
+            attr_method_coincidence = call_kind == "ATTRIBUTE" and not imp
+
             # Priority 3b: Caller-file import fallback for legacy edges parked
             # without import_source. Filters multiple candidates by the
             # modules the calling file itself imports; only resolves when the
             # filter narrows to exactly one candidate.
-            if chosen is None and not imp and len(candidates) > 1:
+            if chosen is None and not attr_method_coincidence and not imp and len(candidates) > 1:
                 caller_modules = caller_imported_modules(path)
                 if caller_modules:
                     matched = [
@@ -2032,7 +2042,7 @@ class Database:
                     if len(matched) == 1:
                         chosen = matched[0]
             # Priority 3c: Same-directory candidate matching for same-package symbols
-            if chosen is None and not imp and len(candidates) > 1:
+            if chosen is None and not attr_method_coincidence and not imp and len(candidates) > 1:
                 import os
                 caller_dir = os.path.dirname(path)
                 same_dir_matches = [
@@ -2042,7 +2052,7 @@ class Database:
                 if len(same_dir_matches) == 1:
                     chosen = same_dir_matches[0]
             # Priority 4: Unique project symbol (cross-file only; same-file shadowed calls stay unresolved)
-            if chosen is None and len(candidates) == 1:
+            if chosen is None and not attr_method_coincidence and len(candidates) == 1:
                 if candidates[0][1] != path:
                     chosen = candidates[0]
             # Priority 5: Project import to file node

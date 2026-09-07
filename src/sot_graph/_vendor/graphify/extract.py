@@ -435,6 +435,15 @@ def extract_python(path: Path) -> Dict[str, Any]:
                             elif isinstance(tgt, ast.Attribute) and isinstance(tgt.value, ast.Name) and tgt.value.id in ("self", "cls"):
                                 local_types[f"self.{tgt.attr}"] = val_type
                                 local_types[tgt.attr] = val_type
+                elif isinstance(child, (ast.With, ast.AsyncWith)):
+                    # 'with Ctx() as v:' binds v with the context manager's
+                    # constructed type, same as a plain assignment
+                    # (requests idiom: 'with Session() as session:').
+                    for item in child.items:
+                        var = item.optional_vars
+                        if (isinstance(var, ast.Name) and isinstance(item.context_expr, ast.Call)
+                                and isinstance(item.context_expr.func, ast.Name)):
+                            local_types[var.id] = item.context_expr.func.id
 
             # Detect local imports inside this function scope
             local_import_map = dict(import_map)
@@ -480,9 +489,16 @@ def extract_python(path: Path) -> Dict[str, Any]:
                                 and isinstance(attr_recv.func, ast.Name)
                                 and attr_recv.func.id == "super"):
                             continue
+                        # A non-Name receiver ('user.sudo().write()' inside
+                        # 'write') yields no typable receiver: qualifying it
+                        # to the enclosing method fabricates a self-loop
+                        # edge. A plain-Name receiver ('p.prepare()' inside
+                        # 'Request.prepare', 'session.request()' inside
+                        # 'request') is a real call on another object even
+                        # when the attribute coincides with this method's
+                        # own name — keep it.
                         if (child.func.attr == node.name
-                                and not (isinstance(attr_recv, ast.Name)
-                                         and attr_recv.id in ("self", "cls"))):
+                                and not isinstance(attr_recv, ast.Name)):
                             continue
                         callee = child.func.attr
                     if callee is None:

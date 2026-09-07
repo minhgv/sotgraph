@@ -86,6 +86,48 @@ OVERSIZE_FUNCTION = (
     + "    return x0\n"
 )
 
+# Benchmark B3 shape (requests super_len): a long span whose decisive line is
+# the final return. Long enough that the full source + 8 callers cannot all
+# fit a 1500-token budget, so the pack must choose source over callers.
+B3_DECISIVE_LINE = "        return end_position - current_position - 1000"
+B3_FUNCTION = (
+    "def b3_len(o):\n"
+    "    if hasattr(o, '__len__'):\n"
+    "        return len(o)\n"
+    "    if hasattr(o, 'len'):\n"
+    "        return o.len\n"
+    "    if hasattr(o, 'fileno'):\n"
+    "        try:\n"
+    "            fileno = o.fileno()\n"
+    "        except (io.UnsupportedOperation, AttributeError):\n"
+    "            pass\n"
+    "        else:\n"
+    "            total = os.fstat(fileno).st_size\n"
+    "            # Having used fstat to determine the file length, we need\n"
+    "            # to confirm that this file was opened up in binary mode\n"
+    "            if total > 0 and hasattr(o, 'mode') and 'b' not in o.mode:\n"
+    "                return total\n"
+    "            if total > 0:\n"
+    "                return total\n"
+    "    if hasattr(o, 'getvalue'):\n"
+    "        return len(o.getvalue())\n"
+    "    if hasattr(o, 'read') and hasattr(o, 'seek'):\n"
+    "        current_position = o.tell()\n"
+    "        o.seek(0, os.SEEK_END)\n"
+    "        end_position = o.tell()\n"
+    "        o.seek(current_position or 0)\n"
+    "        if hasattr(o, 'readable') and o.readable():\n"
+    "            # file-like objects may need full consumption to be exact\n"
+    "            chunks = [chunk for chunk in iter(lambda: o.read(8192), b'')]\n"
+    "            if chunks and not hasattr(o, 'seek'):\n"
+    "                return sum(len(chunk) for chunk in chunks)\n"
+    "        # B3 mutation lives in the final return line:\n"
+    f"{B3_DECISIVE_LINE}\n"
+    "    return 0\n"
+)
+
+PROJECT_FILES["pkg/b3_utils.py"] = "import io\nimport os\n\n\n" + B3_FUNCTION
+
 
 class SG202PackPriorityTests(unittest.TestCase):
     def setUp(self):
@@ -257,6 +299,63 @@ class SG202PackPriorityTests(unittest.TestCase):
                               max_tokens=BUDGET)
         self.assertLessEqual(estimate_tokens(render_yaml(bundle)), BUDGET)
         self.assertEqual(bundle["target"]["symbol"], "big_span")
+
+    # --- 5b. Target source outranks surplus caller coverage (benchmark B3) ---
+
+    def test_budget_keeps_decisive_tail_line_over_surplus_callers(self):
+        # B3 shape (requests super_len): a long span whose decisive line is
+        # the LAST return. Under the standard budget the pack must deliver
+        # that line — shedding surplus inbound callers first — instead of
+        # trading the source tail for extra caller coverage. 20 callers
+        # make caller coverage the only thing left to shed at this budget.
+        self._write_files({
+            f"pkg/caller_{i}.py": (
+                "from pkg.b3_utils import b3_len\n\n"
+                f"def use_{i}():\n    return b3_len(None)\n"
+            )
+            for i in range(20)
+        })
+        self._reconcile()
+        bundle = build_bundle(self.db, self.test_dir, "b3_len",
+                              max_hops=2, max_nodes=50, max_bytes=65_536,
+                              max_tokens=BUDGET)
+        self.assertLessEqual(estimate_tokens(render_yaml(bundle)), BUDGET)
+        source = bundle["target"]["full_source"]
+        self.assertIn(B3_DECISIVE_LINE, source,
+                      "budget traded the decisive tail line for callers")
+        # if the source is still truncated anywhere, no surplus caller may
+        # remain: source completeness always wins over caller coverage
+        if "source_partial" in bundle["target"]:
+            self.assertEqual(len(bundle["inbound_callers"]), 1)
+
+    def test_truncated_source_discloses_missing_lines_and_fetch_hint(self):
+        # When the budget genuinely cannot hold the span, the bundle must
+        # say WHERE the cut landed and how to fetch the rest — a silent
+        # prefix cut hides exactly the lines a fixer needs (B3 finding).
+        self._write_files({
+            f"pkg/caller_{i}.py": (
+                "from pkg.b3_utils import b3_len\n\n"
+                f"def use_{i}():\n    return b3_len(None)\n"
+            )
+            for i in range(8)
+        })
+        self._reconcile()
+        bundle = build_bundle(self.db, self.test_dir, "b3_len",
+                              max_hops=2, max_nodes=50, max_bytes=65_536,
+                              max_tokens=700)
+        self.assertLessEqual(estimate_tokens(render_yaml(bundle)), 700)
+        partial = bundle["target"]["source_partial"]
+        self.assertTrue(partial, "truncated source must disclose the cut")
+        span_end = bundle["target"]["span"]["end_line"]
+        self.assertEqual(partial["span_end_line"], span_end)
+        self.assertLess(partial["delivered_through_line"], span_end)
+        self.assertTrue(partial["missing_lines"])
+        self.assertIn("pkg/b3_utils.py", partial["hint"])
+        self.assertTrue(
+            any(w.startswith("source_partial:")
+                for w in bundle["limits"]["warnings"]),
+            bundle["limits"]["warnings"])
+        self.assertEqual(bundle["completeness"], TRUNCATED)
 
     def test_read_cap_bounds_memory_on_giant_file(self):
         # A file larger than _MAX_SOURCE_READ_BYTES is never materialized in

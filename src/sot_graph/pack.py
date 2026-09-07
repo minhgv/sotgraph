@@ -806,6 +806,44 @@ def build_bundle(
         if message not in warnings:
             warnings.append(message)
 
+    def _mark_source_partial() -> None:
+        """Disclose exactly where the delivered source was cut and how to
+        fetch the rest — a prefix-only source must never silently pose as
+        the full span (benchmark B3: the pack returned a valid bundle while
+        hiding the very line that needed fixing)."""
+        cause = source_truncated_cause["cause"]
+        # Each pruning pass re-marks with tighter line numbers: drop stale
+        # copies first so exactly one disclosure survives — and none at all
+        # when there is no delivered prefix left to locate (the generic
+        # truncation warning + accounting already cover full omission).
+        warnings[:] = [w for w in warnings if not w.startswith("source_partial:")]
+        text = target_block.get("full_source") or ""
+        if not cause or not text:
+            target_block.pop("source_partial", None)
+            return
+        span = target_block.get("span") or {}
+        start = int(span.get("start_line") or 1)
+        end = int(span.get("end_line") or start)
+        last = start + text.count("\n")
+        if last >= end:
+            target_block.pop("source_partial", None)
+            return
+        target_block["source_partial"] = {
+            "cause": cause,
+            "delivered_through_line": last,
+            "span_end_line": end,
+            "missing_lines": f"{last + 1}-{end}",
+            "hint": (
+                f"source is partial: read {rel_path} lines "
+                f"{last + 1}-{end} or re-pack with a higher --tokens budget"
+            ),
+        }
+        _warn_once(
+            f"source_partial: delivered lines {start}-{last} of span "
+            f"{start}-{end}; missing lines {last + 1}-{end} — read "
+            f"{rel_path} lines {last + 1}-{end} or raise --tokens"
+        )
+
     # Hard token budget enforcement if max_tokens is provided
     if max_tokens is not None:
         if max_tokens < 32:
@@ -830,12 +868,15 @@ def build_bundle(
             # shed before required content so the budget cannot be starved:
             #   1. transitive stubs  (level>=2 detail, optional by design)
             #   2. trusted instructions (operator-authored, re-readable in repo)
-            #   3. target source bounded to the share left after the required
-            #      neighbor sections, with a useful-share floor
-            #   4. inbound callers from the tail — but at most down to one
+            #   3. inbound callers from the tail — but at most down to one
             #      retained caller (value ordering keeps a test-module usage
             #      example in that slot): a single usage example is honest
-            #      evidence, surplus caller coverage is elastic
+            #      evidence, surplus caller coverage is elastic and NEVER
+            #      outranks the target's own source (a fixer missing the
+            #      decisive line of the target cannot be compensated by
+            #      extra callers)
+            #   4. target source bounded to the share left after the required
+            #      neighbor sections, with a useful-share floor
             #   5. target source squeezed to its exact residual BEFORE any
             #      direct contract is dropped — contracts are a bounded,
             #      all-or-nothing obligation; the source span is elastic and
@@ -884,6 +925,19 @@ def build_bundle(
                 rendered = _measured_yaml()
                 tok_count = estimate_tokens(rendered)
 
+            while tok_count > max_tokens and len(inbound) > 1:
+                # Shed surplus callers BEFORE cutting the target's source: a
+                # fixer missing the decisive line of the target cannot be
+                # compensated by extra caller coverage (benchmark B3).
+                inbound.pop()
+                token_dropped["inbound_callers"] = True
+                truncated = True
+                bundle["limits"]["truncated"] = True
+                progressed = True
+                _sync_lists()
+                rendered = _measured_yaml()
+                tok_count = estimate_tokens(rendered)
+
             if tok_count > max_tokens and target_block.get("full_source"):
                 # Keep a meaningful source share (signature plus leading
                 # body) unless even that cannot fit above the pure-metadata
@@ -898,18 +952,6 @@ def build_bundle(
                 }))
                 feasible = max_tokens - metadata_floor >= _MIN_USEFUL_SOURCE_TOKENS
                 _fit_source(_MIN_USEFUL_SOURCE_TOKENS if feasible else 16)
-
-            while tok_count > max_tokens and len(inbound) > 1:
-                # Shed surplus callers first; direct callee contracts and one
-                # usage example outrank additional caller coverage.
-                inbound.pop()
-                token_dropped["inbound_callers"] = True
-                truncated = True
-                bundle["limits"]["truncated"] = True
-                progressed = True
-                _sync_lists()
-                rendered = _measured_yaml()
-                tok_count = estimate_tokens(rendered)
 
             if tok_count > max_tokens:
                 # Contracts outrank the source share: squeeze the source to
@@ -969,7 +1011,11 @@ def build_bundle(
             if tok_count > max_tokens and target_block.get("full_source"):
                 # Last resort: a bounded halving loop that converges even
                 # when YAML framing shifts the measured count (empty source
-                # when the metadata floor alone reaches the budget).
+                # when the metadata floor alone reaches the budget). The
+                # warning stays terse on purpose: at floor-level budgets
+                # every constant token can flip the bundle to fail-closed,
+                # and the emptied case is already disclosed by accounting
+                # (target_source: returned 0 / omitted 1).
                 _warn_once("token_cap_reached: target full_source truncated")
                 guard = 0
                 while tok_count > max_tokens and target_block.get("full_source") and guard < 48:
@@ -982,6 +1028,12 @@ def build_bundle(
                     progressed = True
                     rendered = _measured_yaml()
                     tok_count = estimate_tokens(rendered)
+
+            # Disclose the cut location while the pass's re-measurement can
+            # still account for the extra lines (stable estimate below runs
+            # after this mark and therefore includes them).
+            if source_truncated_cause["cause"]:
+                _mark_source_partial()
 
             # Stable token estimation & final validation. Writing the real
             # estimate can change its own digit width, so re-measure until the
@@ -1009,6 +1061,7 @@ def build_bundle(
     else:
         _refresh_accounting()
         _sync_honesty()
+        _mark_source_partial()
         tok_est = estimate_tokens(render_yaml(bundle))
         bundle["limits"]["tokens_estimate"] = tok_est
         rendered = render_yaml(bundle)

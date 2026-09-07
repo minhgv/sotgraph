@@ -371,7 +371,15 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
                 })
                 continue
 
-        if dst_raw in symbol_to_node_id and not re_edge.get("is_shadowed"):
+        # A receiver-bearing call (obj.method()) must not fall through to
+        # the bare-name match: 'session.request()' inside module-level
+        # 'request' would self-loop onto the module function itself, and
+        # 'proxies.get()' would hit a same-file 'get' by coincidence. The
+        # receiver-typed and self/cls branches above already handled real
+        # class-qualified targets; anything left with a receiver is a method
+        # on another object and goes to pending resolution.
+        if (dst_raw in symbol_to_node_id and not re_edge.get("is_shadowed")
+                and not receiver):
             # Resolved intra-file edge
             edges.append({
                 "src": src_id,
