@@ -10,7 +10,7 @@
 [![Tests: 2294 collected](https://img.shields.io/badge/Tests-2294%20collected-brightgreen.svg)](tests/)
 [![Quality Gates: Passing](https://img.shields.io/badge/Quality%20Gates-Passing%20(%3E%3D85%25%20Core%20%7C%20%3E%3D90%25%20Receipts)-success.svg)](scripts/quality_gates.sh)
 [![Architecture: Zero-Daemon](https://img.shields.io/badge/Architecture-Zero--Daemon-purple.svg)](#database-architecture--durability)
-[![Tree-Sitter: 21 Grammars](https://img.shields.io/badge/Tree--Sitter-21%20Grammars-success.svg)](src/sot_graph/ts_extract.py)
+[![Builtin Tier: 21 Grammars](https://img.shields.io/badge/Builtin%20Tier-21%20Grammars-success.svg)](src/sot_graph/ts_extract.py)
 
 ---
 
@@ -116,9 +116,14 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ---
 
-## Polyglot AST Engine (Tree-sitter Grammars)
+## Polyglot AST Engine — Builtin Tier (Tree-sitter Grammars)
 
-`sotgraph` registers 21 tree-sitter grammars (TypeScript and TSX counted separately; GraphQL needs its own package install) across 19 language families, plus the Python stdlib AST tier:
+Language coverage comes in two tiers and the numbers belong to their tier:
+
+- **Builtin tier (always installed, zero-dependency core)** — the 21 tree-sitter grammars below plus the Python stdlib AST tier. This tier works even when the CBM engine is absent or opted out.
+- **CBM engine tier (auto-bootstrapped `codebase-memory` extractor)** — the pinned artifact `engine-v2026.09.07` vendors its own tree-sitter grammars covering **158 languages** per the pinned artifact's own documentation (the engine's claim, ingested as provider evidence — sotgraph does not re-measure it; the upstream live README has drifted to 162 without reconciling against the pin), and adds Hybrid LSP semantic type resolution for a core language set (Python, TypeScript/JavaScript family, Go, C/C++, Java, Kotlin, Rust, PHP, C#, Perl).
+
+Builtin tier registry (`src/sot_graph/ts_extract.py`) — 21 tree-sitter grammars (TypeScript and TSX counted separately; GraphQL needs its own package install) across 19 language families, plus the Python stdlib AST tier:
 
 | Language | Extractor Engine | Key AST Constructs |
 | :--- | :--- | :--- |
@@ -157,7 +162,11 @@ provisions both:
    (`AST_HEURISTIC_PARSER` in the Schema v8 provenance ledger).
 2. **CBM engine (`codebase-memory`, protocol `artifacts-v1`)** — an external
    extractor and evidence provider consulted for symbols, callgraph, usages,
-   impact, and broad-language discovery. Its telemetry is joined into the
+   impact, and broad-language discovery (158 vendored tree-sitter grammars
+   per the pinned artifact's documentation, plus Hybrid LSP type resolution
+   for a core language set — see
+   [Polyglot AST Engine](#polyglot-ast-engine--builtin-tier-tree-sitter-grammars)).
+   Its telemetry is joined into the
    `provider_runs` / `provider_evidence` tables and surfaced by
    `sot cross-check`; sotgraph talks to it through an internal MCP stdio
    client with a per-account runtime namespace
