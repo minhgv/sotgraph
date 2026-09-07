@@ -24,6 +24,8 @@ import subprocess
 import stat
 import traceback
 
+_SEPARATOR = os.sep
+
 try:
     import resource
 except ImportError:  # Windows: rusage accounting unavailable; rest of script works.
@@ -77,7 +79,7 @@ def instrument(owner, name, label, path_arg=None):
 def fingerprint_cache(profile):
     """Content hashes are evidence only, never substituted into security gates."""
     with span('diagnostic_cache_content_snapshot'):
-        return {str(p.relative_to(profile.namespace)): {
+        return {str(p.relative_to(profile.namespace)).replace(_SEPARATOR, "/"): {
             'bytes': p.stat().st_size,
             'sha256': digest_file(p),
         } for p in sorted(profile.paths['cache'].rglob('*')) if p.is_file() and not p.is_symlink()}
@@ -107,7 +109,7 @@ def bounded_command(argv):
 
 
 def source_identity():
-    return {'files': {str(p.relative_to(ROOT)): digest_file(p)
+    return {'files': {str(p.relative_to(ROOT)).replace(_SEPARATOR, "/"): digest_file(p)
                       for p in sorted((ROOT / 'src' / 'sot_graph').rglob('*.py'))
                       if not p.is_symlink()},
             'git_head': bounded_command(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']),
@@ -127,7 +129,8 @@ def inventory(lab):
                 path = Path(base) / name
                 try:
                     info = path.lstat()
-                    rows.append({'path': str(path.relative_to(lab)), 'mode': info.st_mode,
+                    rows.append({'path': str(path.relative_to(lab)).replace(_SEPARATOR, "/"),
+                                 'mode': info.st_mode,
                                  'bytes': info.st_size, 'socket': stat.S_ISSOCK(info.st_mode)})
                 except OSError as exc:
                     rows.append({'path': str(path), 'status': 'UNKNOWN',

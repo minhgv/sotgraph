@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -14,6 +15,8 @@ from sot_graph.providers.artifacts import ArtifactManifest, ArtifactStore, host_
 from sot_graph.providers.compatibility import TestedCompatibilityRecord as Record
 from sot_graph.providers.managed import QUERY_OPERATIONS, ManagedNativeRuntime
 from sot_graph.providers.runtime import ManagedRuntimeProfile
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="trusted managed config + ArtifactStore gates are POSIX-only by design")
 
 
 @pytest.fixture

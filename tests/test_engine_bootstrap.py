@@ -2,9 +2,12 @@
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.skipif(sys.platform == "win32", reason="managed engine bootstrap gate is POSIX-only by design")
 
 from sot_graph.providers import bootstrap as bp
 from sot_graph.providers.artifacts import (

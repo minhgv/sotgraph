@@ -157,6 +157,7 @@ def test_store_root_namespaces_spawn_env(tmp_path, monkeypatch):
         assert path.stat().st_mode & 0o777 == 0o700
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="engine runtime env namespacing is POSIX-only")
 def test_explicit_env_merges_namespace(tmp_path):
     script = tmp_path / "env_stub.py"
     script.write_text(_ENV_STUB, encoding="utf-8")
