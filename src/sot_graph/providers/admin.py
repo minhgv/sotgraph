@@ -123,7 +123,13 @@ def run(args, root):
             print(json.dumps(probe, sort_keys=True))
             return 0 if probe.get('status') == 'ok' else 2
         if not args.store:
-            raise ValueError('engine operation requires --store')
+            # Refuse with the actual requirement; the generic refusal below
+            # would point at `engine doctor`, which needs --store just the same.
+            print(json.dumps({
+                'schema_version': 1, 'status': 'refused',
+                'next_action': 'engine operation requires --store '
+                               '(trusted private store, e.g. ~/.sotgraph/engine-store)'}))
+            return 2
         store = ArtifactStore(args.store, repo_path=root)
         if action in ('prepare', 'probe', 'sync', 'search', 'runtime-status'):
             from .base import IndexRequest, SymbolRequest
