@@ -134,3 +134,15 @@ git diff uv.lock                          # trống
 ## 8. Ghi chú nguồn cảm hứng
 
 tt-a1i/archify (MIT): JSON IR → deterministic single-file HTML/SVG, zero-dep, design tokens slate + semantic palette, mono typography, evidence capsule, atomic validation. Chỉ học phương thức trình bày; không sao chép code.
+
+## 9. Bằng chứng nghiệm thu thực thi (2026-09-07)
+
+| Giai đoạn | Commit | CI GitHub | Ghi chú |
+| :--- | :--- | :--- | :--- |
+| Hợp đồng | `23a90ed` | — | file .md, paths-ignore |
+| GĐ1 IR + tiered | `82dbd1e` | run `34109165664` success | 20/20 job xanh |
+| GĐ2 flow + budget | `47c3e78` | run `34111334495` cancelled | bị cancel do concurrency khi GĐ3 push đè, không phải fail |
+| GĐ3 tương tác | `151a8ec` | run `34112385904` **success** | 20 job success + 2 publish skip (không tag) — commit mang code cuối cùng |
+| GĐ4 docs | `7c28215` | không trigger — chủ động | commit chỉ chứa `.md` (README, RELEASE.md, plan/) → rơi đúng `paths-ignore: ["**.md", "plan/**"]` của ci.yml; code test trong CI 151a8ec giống hệt tree 7c28215 |
+
+DoD cục bộ chạy trên tree `7c28215` (không chỉ 151a8ec): RENDER_BOTH_OK; determinism 2 lần render trùng sha; 0 external refs; pytest `2281 passed, 5 skipped, 0 failed`; identity audit OK; bandit 0; pyright 0 lỗi; `uv.lock` không đổi. Lệnh tái kiểm: mục 7 (chữ DoD) — chạy nguyên văn được bất cứ lúc nào.
