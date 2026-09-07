@@ -76,6 +76,7 @@ def stub_server(tmp_path):
     return sys.executable, (str(script),)
 
 
+@pytest.mark.skipif(sys.platform == "win32" and sys.version_info < (3, 11), reason="multiprocessing.connection.wait cannot poll synchronous anonymous pipes on Windows before 3.11")
 def test_handshake_list_tools_and_call(tmp_path, stub_server):
     executable, args = stub_server
     client = EngineMcpClient(executable, args=args, timeout_s=10.0)
@@ -105,6 +106,7 @@ def test_probe_ok(tmp_path):
     assert "index" in probe["tools"]
 
 
+@pytest.mark.skipif(sys.platform == "win32" and sys.version_info < (3, 11), reason="multiprocessing.connection.wait cannot poll synchronous anonymous pipes on Windows before 3.11")
 def test_malformed_stream_fails_closed(tmp_path):
     bad = tmp_path / "bad_engine.py"
     bad.write_text("import sys\nsys.stdout.write('not-json\\n')\nsys.stdout.flush()\n"
@@ -122,6 +124,7 @@ def test_missing_executable_fails_closed(tmp_path):
         client.start()
 
 
+@pytest.mark.skipif(sys.platform == "win32" and sys.version_info < (3, 11), reason="multiprocessing.connection.wait cannot poll synchronous anonymous pipes on Windows before 3.11")
 def test_error_response_maps_to_exception(tmp_path, stub_server):
     executable, args = stub_server
     client = EngineMcpClient(executable, args=args, timeout_s=10.0)
