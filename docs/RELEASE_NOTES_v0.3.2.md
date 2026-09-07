@@ -24,7 +24,7 @@ work below.
 - Range correctness: changed-file enumeration uses the true merge-base
   range `base...head` (verified: the `2666c583...HEAD` smoke reports 50
   changed files where the old single-rev read reported 2).
-- The workflow dogfoods the PR checkout for `minhgv/sotgraph`; external
+- The workflow dogfoods the PR checkout for `minhgv/sot-graph`; external
   consumers can pin a released build with the new `pypi-version` input, and
   the harmful consumer-repo git fallback was removed.
 - The posted GitHub comment now renders the receipt honestly: assurance
