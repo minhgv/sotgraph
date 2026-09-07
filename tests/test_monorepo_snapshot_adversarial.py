@@ -187,7 +187,8 @@ class TestFailedSyncSupersede:
         # A committed change the failed sync will never capture.
         with open(os.path.join(repo, "a.py"), "a", encoding="utf-8") as fh:
             fh.write("def bar():\n    return 2\n")
-        git(repo, "commit", "-q", "-am", "second")
+        git(repo, "-c", "user.email=adv@test", "-c", "user.name=Adv Test",
+            "commit", "-q", "-am", "second")
         monkeypatch.setenv("ADV_FAKE_HEAD_SHA", head_sha(repo))
         monkeypatch.setenv("ADV_FAKE_INDEX_EXIT", "3")
         assert provider.index(IndexRequest(repo_root=repo)).status \

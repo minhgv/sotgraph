@@ -213,7 +213,8 @@ def probe_engine_mcp(executable: str, timeout_s: float = 20.0,
     try:
         client.start()
         init = client.initialize()
-        server = init.get("serverInfo") if isinstance(init.get("serverInfo"), dict) else {}
+        raw_server = init.get("serverInfo")
+        server: dict[str, Any] = raw_server if isinstance(raw_server, dict) else {}
         tools = client.list_tools()
         return {
             "schema_version": 1,

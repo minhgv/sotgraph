@@ -246,7 +246,7 @@ def bootstrap_engine(repo_path: str | os.PathLike[str],
     is ``already`` and nothing is fetched. Every failure is fail-closed — a
     mismatched artifact never reaches the store.
     """
-    pin = resolve_pin(pins=pins_path and load_pins(pins_path))
+    pin = resolve_pin(pins=load_pins(pins_path) if pins_path else None)
     store_root = Path(store_root) if store_root else default_store_root()
     store_root.mkdir(parents=True, exist_ok=True)
     os.chmod(store_root, 0o700)

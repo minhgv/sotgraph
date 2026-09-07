@@ -148,9 +148,15 @@ def test_long_or_unicode_root_typed_rejection_no_native(tmp_path, make_root) -> 
         _profile(over, repo)
     assert "shorter root" in str(exc.value) and "sun_path" in str(exc.value)
     assert not over.exists()  # preflight before any native start, nothing created
-    # unicode root: small char count but UTF-8 bytes over budget
-    uni = base / ("mré" * 5)
-    assert len(uni.name) < budget < len(uni.name.encode("utf-8")) + len(str(base)) + 1
+    # unicode root: small char count but UTF-8 bytes over budget. The
+    # repetition count is derived so the byte length exceeds the budget on
+    # every runner (CI short bases like /tmp leave little headroom).
+    unit = "mré"  # 3 chars, 4 UTF-8 bytes
+    need_bytes = budget + 1 - (len(str(base)) + 1)
+    reps = max(6, -(-need_bytes // len(unit.encode("utf-8"))))
+    uni = base / (unit * reps)
+    assert len(uni.name) < budget
+    assert len(str(uni).encode("utf-8")) > budget
     with pytest.raises(ProfileRejected):
         _profile(uni, repo)
     assert not uni.exists()
