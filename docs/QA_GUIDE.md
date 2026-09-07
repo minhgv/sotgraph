@@ -1,4 +1,4 @@
-# 📚 SOT-Graph: Complete Q&A & Real-World Implementation Guide (Q&A Guide)
+# 📚 sotgraph: Complete Q&A & Real-World Implementation Guide (Q&A Guide)
 
 > **Self-Healing, Anti-Hallucination & Operational Knowledge Architecture for AI Coding Agents.**  
 > *Filesystem as the Single Source of Truth (SSOT) — Zero External Daemons — Sub-Millisecond Latency.*
@@ -26,17 +26,17 @@
 ## 🛡️ 1. Core Architecture & Anti-Hallucination
 
 <details open>
-<summary><h3>Q1: Why is sot-graph called a "Single Source of Truth"? What is the difference between a Filesystem-first architecture and traditional Vector/Graph RAG?</h3></summary>
+<summary><h3>Q1: Why is sotgraph called a "Single Source of Truth"? What is the difference between a Filesystem-first architecture and traditional Vector/Graph RAG?</h3></summary>
 
 Traditional RAG and Agent Memory systems (relying on Vector DBs, Neo4j, Redis) store knowledge as a **detached snapshot**. When a developer modifies code, renames a file, or deletes a directory, the database remains oblivious until a manual re-indexing occurs. This produces **Phantom Anchors (Dead Paths)** — where AI Agents retrieve stale paths and generate patches for non-existent files.
 
 > [!IMPORTANT]
-> **The Golden Rule of sot-graph:**  
+> **The Golden Rule of sotgraph:**  
 > *"Filesystem is the Single Source of Truth — The knowledge graph is a verified, bounded evidence index: anchors are span-verified on disk; verdicts are advisory and scope-bounded."*
 
 Every signal from file watchers, git hooks, or CLI commands is treated merely as a hint (*"please inspect this path"*). The system **never blindly trusts cached records**; it physically verifies file existence and content on disk before delivering results to the Agent.
 
-| Characteristic | Traditional Vector / Graph RAG | sot-graph (SSOT Architecture) |
+| Characteristic | Traditional Vector / Graph RAG | sotgraph (SSOT Architecture) |
 | :--- | :--- | :--- |
 | **Source of Truth** | Vector Embeddings / Graph Nodes in external DB | **Physical Files on Filesystem** |
 | **Deleted File Handling** | Stale vectors remain (causing path hallucinations) | **Instant Auto-Purge at query time** |
@@ -115,7 +115,7 @@ When an Agent runs `sotgraph search "<query>"`, all candidate hits from FTS5 pas
 
 In real-world projects, File A calls `AuthService.validate()` in File B, but File A might be scanned by the Reconciler before File B. At that point, the symbol `AuthService.validate` does not yet exist in the database.
 
-**sot-graph Resolution Mechanism:**
+**sotgraph Resolution Mechanism:**
 1. **Step 1:** The unresolved dependency is staged in `pending_edges (path, src, dst_symbol, relation, line)`.
 2. **Step 2:** When File B is subsequently scanned and registers `AuthService.validate`, `resolve_all_pending_edges()` executes a single atomic SQL statement:
 
@@ -147,7 +147,7 @@ As a result, indexing order is completely decoupled, ensuring **deterministic gr
 <details>
 <summary><h3>Q5: When a file is permanently deleted via rm, how does the database handle it so the Agent doesn't read dead code?</h3></summary>
 
-There are two distinct paths for `sot-graph` to detect and purge deleted files:
+There are two distinct paths for `sotgraph` to detect and purge deleted files:
 
 1. **Active Reconciliation (`sotgraph reconcile`):**
    The Reconciler walks the disk tree and compares the current physical path set against `_known_abs_paths()` in the database. Any path present in the DB but absent from disk is pruned immediately via `db.delete_path(path)`.
@@ -190,7 +190,7 @@ When a file is moved or its parent directory renamed, its prior path becomes inv
 
 Many graph databases accumulate dead records because they rely on `UPSERT` operations (updating existing rows and inserting new ones without removing functions deleted from the source file).
 
-`sot-graph` enforces **Atomic Full-File Replacement** inside `Database.commit_file_batch`:
+`sotgraph` enforces **Atomic Full-File Replacement** inside `Database.commit_file_batch`:
 
 ```python
 # src/sot_graph/db.py:216-218
@@ -209,9 +209,9 @@ It then inserts the newly extracted classes, functions, and call edges from the 
 ## 🤖 3. AI Agent Integration & MCP Protocol
 
 <details>
-<summary><h3>Q8: How do I integrate sot-graph into Oh My Pi (OMP), Claude Code, Cursor, and OpenCode?</h3></summary>
+<summary><h3>Q8: How do I integrate sotgraph into Oh My Pi (OMP), Claude Code, Cursor, and OpenCode?</h3></summary>
 
-`sot-graph` provides 3 official adapters in `src/sot_graph/adapters/`:
+`sotgraph` provides 3 official adapters in `src/sot_graph/adapters/`:
 
 1. **Oh My Pi / OMP Integration (`~/.omp`):**  
    Copy the TypeScript extension to the OMP extensions directory:
@@ -317,7 +317,7 @@ The `Label Propagation / Louvain` algorithm in `sot_graph.analytics` groups tigh
 <details>
 <summary><h3>Q13: How do I export the knowledge graph to Interactive HTML D3.js, GraphRAG JSON, Obsidian Vault, and GraphML?</h3></summary>
 
-`sot-graph` includes standalone multi-format exporters in `src/sot_graph/export/`:
+`sotgraph` includes standalone multi-format exporters in `src/sot_graph/export/`:
 
 ```bash
 # 1. Interactive D3.js HTML visualization opened directly in browser
@@ -385,7 +385,7 @@ The `sotgraph verify` command is specifically engineered for CI/CD pipelines and
 ---
 
 <details>
-<summary><h3>Q16: What is the real-world performance of sot-graph (reconciliation throughput, FTS5 latency, RAM footprint)?</h3></summary>
+<summary><h3>Q16: What is the real-world performance of sotgraph (reconciliation throughput, FTS5 latency, RAM footprint)?</h3></summary>
 
 Measured performance benchmarks (tested on Apple M1 Max):
 - **Reconcile Throughput:** Full AST parsing and ingestion of **100 files in ~24.1ms** (> 4,000 files/second for incremental dirty checks).

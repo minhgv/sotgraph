@@ -1,6 +1,6 @@
 # Release Notes — v0.3.1 (2026-09)
 
-First publicly installable release (`pip install sot-graph`, see
+First publicly installable release (`pip install sotgraph`, see
 [RELEASE.md](RELEASE.md) for the trusted-publishing runbook). This version
 lands the post-audit remediation roadmap (G7–G10) and the R1–R5 gap-closure
 roadmap from the 2026-09 ecosystem assessment.

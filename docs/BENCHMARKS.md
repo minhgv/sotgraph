@@ -1,12 +1,12 @@
 # Benchmarks & Performance Guide
 
-This document details the benchmarking methodology, execution procedures, and verified performance characteristics of `sot-graph`.
+This document details the benchmarking methodology, execution procedures, and verified performance characteristics of `sotgraph`.
 
 ---
 
 ## 🎯 Performance Goals & Philosophy
 
-`sot-graph` is designed to operate inside the fast inner loop of AI coding agents (per-turn file edits, multi-file refactoring, pre-commit checks). To ensure zero noticeable latency for agents:
+`sotgraph` is designed to operate inside the fast inner loop of AI coding agents (per-turn file edits, multi-file refactoring, pre-commit checks). To ensure zero noticeable latency for agents:
 
 1. **Fast Search**: FTS5 candidate retrieval itself stays in the low-millisecond range on small graphs (see §2); full end-to-end search — including per-hit physical Trust Verification (file read + SHA-256) and JIT reconcile — measured p50 ≈ 49 ms / p95 ≈ 50 ms on a 5,000-file graph (`benchmarks/performance_baseline.json`, `bounded_query_mixed`).
 2. **Instant Reconcile**: Unchanged files are checked in O(1) via filesystem metadata (μs range); modified files are parsed concurrently and committed in single-writer batches (150 files / 2 workers: p50 ≈ 207 ms, p95 ≈ 236 ms on `performance_baseline.json`; the per-file marginal cost on 100-file batches is the ~4,300 files/s figure in §1).
@@ -35,7 +35,7 @@ Evaluates parsing, SHA-256 dirty checking, node/edge generation, and SQLite sing
 | **Parallel (4 workers)** | 35.40 | 37.10 | 39.80 | 41.20 | ~2,700 files/s |
 | **Parallel (8 workers)** | 48.20 | 50.15 | 53.40 | 55.60 | ~2,000 files/s |
 
-> **Adaptive Worker Threshold Invariant**: For small-to-medium batches (< 16 files), `sot-graph` automatically switches to in-process sequential parsing to avoid OS process spawn / IPC overhead. For large batches (> 100 files), parallel worker pools scale horizontally.
+> **Adaptive Worker Threshold Invariant**: For small-to-medium batches (< 16 files), `sotgraph` automatically switches to in-process sequential parsing to avoid OS process spawn / IPC overhead. For large batches (> 100 files), parallel worker pools scale horizontally.
 
 ---
 
@@ -56,7 +56,7 @@ Evaluates cold and warm query latency for FTS5 full-text indexing, BM25 rank sco
 
 ## 🛠️ Reproducing Benchmarks Locally
 
-`sot-graph` includes a fully deterministic, self-contained benchmark suite in `benchmarks/`:
+`sotgraph` includes a fully deterministic, self-contained benchmark suite in `benchmarks/`:
 
 ### Run Reconcile Benchmark
 ```bash

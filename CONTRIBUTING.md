@@ -6,7 +6,7 @@ project is actually built and gated — it mirrors the CI workflows and the
 `scripts/quality_gates.sh` entry point rather than a generic template.
 
 Agent-authored contributions: [`AGENTS.md`](AGENTS.md) at the repo root
-governs agent behavior and the SOT-Graph knowledge-reuse protocols. Read it
+governs agent behavior and the sotgraph knowledge-reuse protocols. Read it
 before letting a coding agent touch this repository.
 
 ## Development setup

@@ -3,20 +3,20 @@
 - **Status:** Accepted
 - **Date:** 2026-08-25
 - **Research pins:**
-  - SOT-Graph studied at commit `ba99fbe0db8ead483a76a92070cfe86f63358f17` (= this repo's HEAD at decision time)
+  - sotgraph studied at commit `ba99fbe0db8ead483a76a92070cfe86f63358f17` (= this repo's HEAD at decision time)
   - Codebase Memory source studied at commit `010569fa6ce1bc5d6430f858129243ea1a2e3fd5`
   - Binary actually exercised: `~/.local/bin/codebase-memory-mcp`, version `codebase-memory-mcp 0.10.8`
-- **Reference:** `sot-graph-codebase-memory-integration-solution.md` (P0–P5 roadmap; §13 test plan)
+- **Reference:** `sotgraph-codebase-memory-integration-solution.md` (P0–P5 roadmap; §13 test plan)
 
 ## 1. Context
 
-SOT-Graph owns the **verified evidence layer** for agent navigation: an AST/SCIP-backed knowledge
+sotgraph owns the **verified evidence layer** for agent navigation: an AST/SCIP-backed knowledge
 graph whose Trust Verdicts (`[STRONG]`, `[WEAK]`, `[REBUILT]`, `[REMOVED]`) are derived from the
 physical filesystem and compiler-grade indices. Codebase Memory (CBM) is an independent indexer
 that provides complementary *candidate* signals: semantic search, architecture summaries,
 coverage hints, and change impact over its own graph.
 
-We need candidate evidence without sacrificing the verification guarantees of SOT-Graph.
+We need candidate evidence without sacrificing the verification guarantees of sotgraph.
 Three architectures were considered:
 
 | Option | Description | Rejected because |
@@ -47,7 +47,7 @@ Wire contract (verified from CBM source @`010569f`, re-confirmed against binary 
 | Concern | Owner | Evidence class |
 |---|---|---|
 | Candidate signals (semantic search, arch summary, coverage hints, change detection) | Codebase Memory | **Candidate evidence** — advisory only |
-| Verified truth (existence, location, call edges, Trust Verdicts) | SOT-Graph | **Verified evidence** — filesystem + compiler-backed |
+| Verified truth (existence, location, call edges, Trust Verdicts) | sotgraph | **Verified evidence** — filesystem + compiler-backed |
 
 Rule: a claim is never promoted to SUPPORTED in SOT solely from CBM output. Every external
 assertion must carry provider name, version, and run identity; stale or unbound evidence can

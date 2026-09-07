@@ -1,12 +1,12 @@
-# Cẩm Nang Toàn Diện SOT-Graph: MCP Tools & CLI
+# Cẩm Nang Toàn Diện sotgraph: MCP Tools & CLI
 
 > **Single Source of Truth (SOT) Verified Knowledge Graph cho AI Coding Agents và Phần Mềm Doanh Nghiệp**  
-> *Tài liệu hướng dẫn chuyên sâu về kiến trúc, cơ chế hoạt động, chi tiết toàn bộ 21+ MCP Tools và hệ thống câu lệnh CLI của SOT-Graph.*
+> *Tài liệu hướng dẫn chuyên sâu về kiến trúc, cơ chế hoạt động, chi tiết toàn bộ 21+ MCP Tools và hệ thống câu lệnh CLI của sotgraph.*
 
 ---
 
 ## MỤC LỤC
-1. [Tổng Quan về SOT-Graph](#1-tổng-quan-về-sot-graph)
+1. [Tổng Quan về sotgraph](#1-tổng-quan-về-sotgraph)
 2. [Mô Hình Bằng Chứng & Hệ Nhãn Niềm Tin (Trust Model)](#2-mô-hình-bằng-chứng--hệ-nhãn-niềm-tin-trust-model)
 3. [Chi Tiết 21+ MCP Tools (Dành Cho AI Coding Agents)](#3-chi-tiết-21-mcp-tools-dành-cho-ai-coding-agents)
    - [Nhóm 1: Định vị & Tìm Kiếm Tri Thức](#nhóm-1-định-vị--tìm-kiếm-tri-thức)
@@ -29,14 +29,14 @@
 
 ---
 
-## 1. Tổng Quan về SOT-Graph
+## 1. Tổng Quan về sotgraph
 
-### 1.1. Vấn đề cốt lõi mà SOT-Graph giải quyết
+### 1.1. Vấn đề cốt lõi mà sotgraph giải quyết
 Trong quá trình hỗ trợ lập trình của AI Agents (Claude Code, OpenCode, Antigravity, Pi/OMP, Cursor), hai vấn đề lớn nhất thường trực xảy ra:
 1. **Lãng phí Token & Suy giảm Ngữ cảnh (Context Exhaustion):** Đọc tuần tự hàng chục file mã nguồn lớn (`>100 dòng`) chỉ để tìm vị trí một hàm hoặc hiểu mối quan hệ giữa Controller và Model.
 2. **Ảo tưởng Mã nguồn (Hallucination):** Agent tự suy diễn ra các hàm, route, tham số hoặc cấu trúc bảng không có thật trên đĩa, hoặc sử dụng các symbol đã bị xóa/đổi tên trước đó.
 
-### 1.2. Triết lý Thiết kế của SOT-Graph
+### 1.2. Triết lý Thiết kế của sotgraph
 * **Zero-Daemon SQLite Storage:** Toàn bộ đồ thị tri thức mã nguồn được lưu trữ tại file SQLite cục bộ `.sot/sot.db` (chạy chế độ WAL, tối ưu hóa multi-process locking), không yêu cầu background daemon cồng kềnh, không phụ thuộc vào hạ tầng bên ngoài.
 * **AST Graph-First (Trích xuất Cây Cú pháp Trừu tượng):** Phân tích tĩnh đa ngôn ngữ (PHP, TypeScript/JavaScript, Python, Dart/Flutter, Java, C#, Go, Rust, v.v.) thành các Node (File, Class, Method, Function, Route, Entity) và Edges (Calls, Implements, Extends, Imports, Uses).
 * **Zero-Token Ingestion Protocol:** Tra cứu cấu trúc dự án trong `0.1s` thông qua đồ thị thay vì ném hàng ngàn dòng code vào context window.
@@ -47,7 +47,7 @@ Trong quá trình hỗ trợ lập trình của AI Agents (Claude Code, OpenCode
 
 ## 2. Mô Hình Bằng Chứng & Hệ Nhãn Niềm Tin (Trust Model)
 
-Mọi symbol/kết quả do SOT-Graph trả về đều được đối soát vật lý với đĩa cứng tại thời điểm truy vấn và gán một **Trust Verdict**:
+Mọi symbol/kết quả do sotgraph trả về đều được đối soát vật lý với đĩa cứng tại thời điểm truy vấn và gán một **Trust Verdict**:
 
 | Nhãn Niềm Tin | Ý nghĩa Chi Tiết | Hành Động Khuyến Nghị Của Agent |
 | :--- | :--- | :--- |
@@ -58,7 +58,7 @@ Mọi symbol/kết quả do SOT-Graph trả về đều được đối soát v�
 | `[NOPATH]` | **Node ảo / Inline node:** Symbol không gắn liền trực tiếp với một file vật lý độc lập (hằng số hệ thống, dynamic hook). | Kiểm tra lại ngữ cảnh runtime. |
 
 ### Cơ chế Multi-Provider Evidence
-SOT-Graph tích hợp cơ chế bằng chứng đa nguồn:
+sotgraph tích hợp cơ chế bằng chứng đa nguồn:
 1. **Builtin Extractor:** Phân tích AST qua Tree-sitter & biểu thức chính quy tối ưu hóa cao.
 2. **SCIP Evidence:** Nạp dữ liệu từ compiler thực thụ (`scip-typescript`, `scip-python`, `scip-java`, `rust-analyzer`).
 3. **Codebase-Memory / External Providers:** Tích hợp với các engine semantic bên ngoài.
@@ -67,13 +67,13 @@ SOT-Graph tích hợp cơ chế bằng chứng đa nguồn:
 
 ## 3. Chi Tiết 21+ MCP Tools (Dành Cho AI Coding Agents)
 
-Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **MCP 2025-06-18**, hỗ trợ `outputSchema` có cấu trúc và `ResourceLink` (`sot://node/{id}`) cho phép lazy-fetching dữ liệu chi tiết của từng Node mà không làm tràn context.
+Giao diện Model Context Protocol (MCP) của sotgraph tuân thủ chuẩn **MCP 2025-06-18**, hỗ trợ `outputSchema` có cấu trúc và `ResourceLink` (`sot://node/{id}`) cho phép lazy-fetching dữ liệu chi tiết của từng Node mà không làm tràn context.
 
 ---
 
 ### Nhóm 1: Định vị & Tìm Kiếm Tri Thức
 
-#### 1. `sot-graph_sot_search`
+#### 1. `sotgraph_sot_search`
 * **Mô tả:** Tìm kiếm đồ thị tri thức có xác thực niềm tin (`[STRONG]`, `[WEAK]`, v.v.). Trả về danh sách nodes kèm điểm xếp hạng, metadata và các liên kết `sot://node/{id}` để lazy-fetch khi cần.
 * **Tham số (Parameters):**
   * `query` *(string, bắt buộc)*: Chuỗi tìm kiếm (tên hàm, tên class, route, biến, hoặc từ khóa nghiệp vụ).
@@ -85,14 +85,14 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `budget` *(integer, tùy chọn)*: Giới hạn số lượng token/nút xử lý.
 * **Kịch bản sử dụng:** Sử dụng trước khi viết bất kỳ helper function mới nào để kiểm tra xem trong dự án đã có sẵn hàm tương tự chưa.
 
-#### 2. `sot-graph_sot_map`
+#### 2. `sotgraph_sot_map`
 * **Mô tả:** Trả về bản đồ cấu trúc repository được cô đọng theo ngân sách token, xếp hạng mức độ quan trọng của các symbols bằng thuật toán **Personalized PageRank (PPR)**.
 * **Tham số (Parameters):**
   * `focus` *(string, tùy chọn)*: Danh sách symbols quan trọng (ngăn cách bởi dấu phẩy) để định hướng PageRank tập trung vào phân vùng đó (VD: `UserController,AuthService`).
   * `max_tokens` *(integer, tối thiểu 16, mặc định: 1024)*: Ngân sách token tối đa cho bản đồ đầu ra.
 * **Kịch bản sử dụng:** Khi Agent vừa bắt đầu một phiên làm việc mới và cần nắm bức tranh tổng thể của dự án mà không tốn token đọc hàng loạt thư mục.
 
-#### 3. `sot-graph_sot_notes`
+#### 3. `sotgraph_sot_notes`
 * **Mô tả:** Tra cứu danh sách các ghi chú tri thức (Notes) đã được con người hoặc AI ghi lại từ trước (các quyết định kiến trúc, lỗi kỳ quặc và cách fix, mẹo cấu hình hệ thống).
 * **Tham số (Parameters):**
   * `query` *(string, tùy chọn)*: Từ khóa lọc nội dung ghi chú.
@@ -103,7 +103,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 
 ### Nhóm 2: Khảo Sát AST & Mối Quan Hệ Mã Nguồn
 
-#### 4. `sot-graph_sot_explore`
+#### 4. `sotgraph_sot_explore`
 * **Mô tả:** Duyệt đồ thị quan hệ có giới hạn bậc (bounded traversal). Cho biết một Node được gọi bởi ai (inward callers) và gọi tới ai (outward callees), liên kết import/export nào đang kết nối.
 * **Tham số (Parameters):**
   * `node_id` *(string, bắt buộc)*: ID của Node hoặc FQN của symbol cần duyệt.
@@ -111,7 +111,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `limit` *(integer, mặc định: 100)*: Số lượng cạnh tối đa trả về.
 * **Kịch bản sử dụng:** Khảo sát các lớp xung quanh một hàm trước khi sửa code để nắm rõ bối cảnh phụ thuộc.
 
-#### 5. `sot-graph_sot_usages`
+#### 5. `sotgraph_sot_usages`
 * **Mô tả:** Tìm kiếm các vị trí tham chiếu đã được đánh chỉ mục (indexed references) của một symbol trong phạm vi kết quả báo cáo, nhóm theo từng hàm gọi (caller), đồng thời phát hiện các nguy cơ bare-name (tên biến/hàm bị trùng lặp mơ hồ).
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Tên class, phương thức hoặc symbol cần tra cứu.
@@ -120,13 +120,13 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `assurance` *(boolean, mặc định: true)*: Đối soát trên đĩa.
 * **Kịch bản sử dụng:** Bắt buộc chạy trước khi thay đổi tham số hoặc kiểu trả về của một hàm để đảm bảo không bỏ sót bất kỳ nơi nào đang gọi hàm đó.
 
-#### 6. `sot-graph_sot_implementations`
+#### 6. `sotgraph_sot_implementations`
 * **Mô tả:** Tra cứu quan hệ kế thừa và hiện thực hóa (extends/implements) của một interface, abstract class hoặc class cơ sở, tìm ra toàn bộ các lớp con cụ thể.
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Tên interface hoặc class cơ sở cần tra cứu.
 * **Kịch bản sử dụng:** Khi làm việc với mô hình Factory, Strategy hoặc Polymorphism, giúp Agent lập tức nhìn thấy toàn bộ các Concrete Implementations trong codebase.
 
-#### 7. `sot-graph_sot_pack`
+#### 7. `sotgraph_sot_pack`
 * **Mô tả:** Đóng gói một k-hop ContextBundle dưới dạng định dạng YAML chuẩn hóa quanh một symbol mục tiêu. Bao gồm: 1-hop caller/callee contracts (hợp đồng đầy đủ) và 2-hop signature stubs (chữ ký hàm mở rộng).
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Symbol hoặc FQN mục tiêu.
@@ -139,7 +139,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 
 ### Nhóm 3: Phân Tích Kiến Trúc, Cụm Module & Fact Bundler
 
-#### 8. `sot-graph_sot_architecture_report`
+#### 8. `sotgraph_sot_architecture_report`
 * **Mô tả:** Đọc và phân tích toàn diện kiến trúc dự án: phát hiện mô hình phân tầng (MVC, Clean Architecture), các God Nodes (các lớp/hàm quá ôm đồm nhiều liên kết), chu trình phụ thuộc vòng (circular dependencies) và vi phạm ranh giới tầng kiến trúc.
 * **Tham số (Parameters):**
   * `scope` *(string, tùy chọn)*: Giới hạn đường dẫn phân tích.
@@ -147,14 +147,14 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `sigma` *(number, mặc định: 1.5)*: Ngưỡng độ lệch chuẩn để gắn nhãn God Node.
 * **Kịch bản sử dụng:** Lập báo cáo đánh giá hiện trạng mã nguồn định kỳ hoặc thẩm định kiến trúc trước đợt tái cấu trúc lớn.
 
-#### 9. `sot-graph_sot_communities`
+#### 9. `sotgraph_sot_communities`
 * **Mô tả:** Sử dụng thuật toán phân cụm **Louvain / Modularity Optimization** để phát hiện các phân vùng kiến trúc tự nhiên (communities) và tính điểm gắn kết (cohesion score) của từng phân vùng.
 * **Tham số (Parameters):**
   * `scope` *(string, tùy chọn)*: Đường dẫn giới hạn phân tích.
   * `min_size` *(integer, mặc định: 1)*: Số lượng node tối thiểu trong một cụm.
 * **Kịch bản sử dụng:** Phát hiện các ranh giới module bị phân mảnh hoặc các cụm mã nguồn có tính kết dính lỏng lẻo.
 
-#### 10. `sot-graph_sot_bundle`
+#### 10. `sotgraph_sot_bundle`
 * **Mô tả:** Trích xuất tự động **5 file Fact Bundle** mật độ thông tin cao vào thư mục `.sot/bundle/` để LLM tổng hợp báo cáo kiến trúc mà không phải quét lại source code:
   1. `01_MODULE_INVENTORY.md`: Danh mục toàn bộ module, namespace, file.
   2. `02_ROUTING_ENDPOINTS.md`: Toàn bộ REST/Web endpoints, HTTP methods, Middleware, Controller action.
@@ -169,39 +169,39 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 
 ### Nhóm 4: Reverse Engineering & Động Cơ Solution (ITPRO / Manpower)
 
-#### 11. `sot-graph_sot_trace`
+#### 11. `sotgraph_sot_trace`
 * **Mô tả:** Trích xuất toàn diện đường đi thực thi Full-Stack: từ sự kiện click/nút bấm trên giao diện người dùng (Frontend UI Tree), qua API binding, Controller, Service nghiệp vụ đến tầng truy cập dữ liệu và Database. Tự động sinh sơ đồ **Mermaid Flowchart** và **Sequence Diagram**.
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Mã ticket (VD: `CRMCM-107`), tên chức năng, route endpoint hoặc tên Service/Controller.
   * `depth` *(integer, 1-5, mặc định: 2)*: Độ sâu trace qua các tầng.
 * **Kịch bản sử dụng:** Dùng để vẽ sơ đồ tuần tự và luồng dữ liệu cho Tài liệu Giải pháp (TLGP) và Tài liệu Nghiệp vụ (NV).
 
-#### 12. `sot-graph_sot_ui_tree`
+#### 12. `sotgraph_sot_ui_tree`
 * **Mô tả:** Đọc và phân tích cây quyết định giao diện người dùng (Frontend UI Tree): trích xuất các trường dữ liệu đầu vào (Input fields), quy tắc validate, các nút bấm (Button Triggers) và sự kiện chuyển đổi Modal/Màn hình (hỗ trợ Flutter, React, Vue, Blade).
 * **Tham số (Parameters):**
   * `component` *(string, bắt buộc)*: Tên component hoặc đường dẫn file UI.
 * **Kịch bản sử dụng:** Dùng khi viết Hướng Dẫn Sử Dụng (HDSD) và Kịch Bản Kiểm Thử (KBKT), giúp mô tả các trường trên giao diện bám sát nguồn được truy vết (grounded); vẫn cần đối soát lại với giao diện thực tế.
 
-#### 13. `sot-graph_sot_backend_flow`
+#### 13. `sotgraph_sot_backend_flow`
 * **Mô tả:** Bóc tách các vi bước xử lý backend (micro-steps), các nguồn dữ liệu đa dạng (Multi-Datasources, Oracle/MySQL/Redis), các nhánh rẽ điều kiện và các khối bắt ngoại lệ (Exception handling).
 * **Tham số (Parameters):**
   * `service` *(string, bắt buộc)*: Tên Service class hoặc endpoint controller.
 * **Kịch bản sử dụng:** Đào sâu chi tiết kỹ thuật các bước xử lý backend phục vụ viết tài liệu giải pháp và tính điểm nhân công.
 
-#### 14. `sot-graph_sot_solution_inventory`
+#### 14. `sotgraph_sot_solution_inventory`
 * **Mô tả:** **Giai đoạn 1 (Stage 1) Discovery:** Quét toàn bộ hệ thống để phát hiện danh sách tính năng theo từng vai trò người dùng (Admin, Merchant, EndUser, v.v.) và phân loại vào 10 danh mục tính năng liên quan (CRUD, StatusChange, Export, Import, Payment, v.v.).
 * **Tham số (Parameters):**
   * `module` *(string, tùy chọn)*: Tên module hoặc phân hệ cần quét.
   * `output_file` *(string, tùy chọn)*: Đường dẫn lưu file markdown kết quả.
 * **Kịch bản sử dụng:** Bắt buộc chạy ở bước đầu tiên của quy trình lập Tài liệu Giải pháp (kỹ năng `itpro-tlgp`).
 
-#### 15. `sot-graph_sot_solution_steps`
+#### 15. `sotgraph_sot_solution_steps`
 * **Mô tả:** **Giai đoạn 2 (Stage 2) Micro-step Decomposition:** Tự động bóc tách một phương thức xử lý thành bảng chuẩn 4 cột: `Bước | Thao tác | Đối tượng tác động | Chi tiết kỹ thuật & Đoạn mã AST thực tế` phục vụ tính toán nhân công Manpower (NVJ1/NVJ2/NVJ3).
 * **Tham số (Parameters):**
   * `method` *(string, bắt buộc)*: Tên phương thức hoặc FQN cần bóc tách.
 * **Kịch bản sử dụng:** Dùng để điền file Excel ước lượng nhân công outsource hoặc làm rõ các bước kỹ thuật trong tài liệu giải pháp.
 
-#### 16. `sot-graph_sot_solution_bundle`
+#### 16. `sotgraph_sot_solution_bundle`
 * **Mô tả:** Tổng hợp toàn bộ bối cảnh giải pháp vào một file `ContextBundle.md` hoàn chỉnh: bao gồm định nghĩa bảng CSDL replayed từ migration, form UI, API contract và sơ đồ luồng dữ liệu để các subagent hạ tầng (DBDesign, HDSD, KBKT, Manpower) sử dụng mà không cần đọc lại source code.
 * **Tham số (Parameters):**
   * `module` *(string, tùy chọn)*: Tên module.
@@ -212,7 +212,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 
 ### Nhóm 5: Git Diff Impact, Assurance Receipts & Lịch Sử Commit
 
-#### 17. `sot-graph_sot_diff_impact`
+#### 17. `sotgraph_sot_diff_impact`
 * **Mô tả:** Tính toán bán kính ảnh hưởng (Blast Radius) từ git diff: ánh xạ các dòng thay đổi trong git hunk trực tiếp vào các node AST, tính toán toàn bộ inward callers bị ảnh hưởng gián tiếp, các API endpoints bị tác động và các test suite cần chạy lại.
 * **Tham số (Parameters):**
   * `target` *(string, mặc định: `HEAD~1`)*: Git revision đích (`HEAD~1`, commit SHA, hoặc `main...HEAD`).
@@ -223,7 +223,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `format` *(string: `markdown` \| `json`, mặc định: `markdown`)*: Định dạng kết quả.
 * **Kịch bản sử dụng:** Chạy trước khi tạo Pull Request hoặc sau khi hoàn thành sửa code để xác minh toàn bộ phạm vi ảnh hưởng.
 
-#### 18. `sot-graph_sot_scope_receipt`
+#### 18. `sotgraph_sot_scope_receipt`
 * **Mô tả:** **Giao thức P7.1 PRE-change Scope Receipt:** Tạo biên lai phạm vi trước khi chỉnh sửa một symbol. Ghi nhận snapshot commit hiện tại, độ sâu tác động dự kiến, mức độ rủi ro (liên quan đến Auth hay Dynamic dispatch), danh sách các test candidate tương ứng.
 * **Tham số (Parameters):**
   * `target` *(string, bắt buộc)*: Symbol dự kiến sửa đổi.
@@ -233,7 +233,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `depth` *(integer, mặc định: 2)*: Bán kính duyệt tác động.
 * **Kịch bản sử dụng:** Bắt buộc tạo trước khi thực hiện các sửa đổi cốt lõi trên God Nodes hoặc Public API.
 
-#### 19. `sot-graph_sot_diff_impact_receipt`
+#### 19. `sotgraph_sot_diff_impact_receipt`
 * **Mô tả:** **Giao thức P7.2 POST-change Diff Impact Receipt:** Tạo biên lai hoàn tất sau khi sửa đổi mã nguồn. Đóng gói kết quả phân tích git diff, bằng chứng đối soát sau thay đổi, các điểm còn hở (gaps) và quyết định đóng (closure decision) rõ ràng.
 * **Tham số (Parameters):**
   * `target` *(string, mặc định: `HEAD~1`)*: Git revision so sánh.
@@ -242,7 +242,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `working_tree` *(boolean)*: So sánh unstaged working tree.
 * **Kịch bản sử dụng:** Bắt buộc tạo sau khi sửa code để nộp bằng chứng kiểm toán cho Tier-1 Reviewer và Advisor trước khi merge.
 
-#### 20. `sot-graph_sot_git_history`
+#### 20. `sotgraph_sot_git_history`
 * **Mô tả:** Quét lịch sử git commit kèm chấm điểm rủi ro tự động (Low, Medium, High, Critical) dựa trên số dòng thay đổi, tần suất sửa đổi các God Node và đối soát các symbol bị sửa với đồ thị tri thức.
 * **Tham số (Parameters):**
   * `limit` *(integer, 1-100, mặc định: 10)*: Số lượng commit cần kiểm tra.
@@ -252,7 +252,7 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
   * `format` *(string: `markdown` \| `json`)*: Định dạng kết quả.
 * **Kịch bản sử dụng:** Kiểm toán chất lượng mã nguồn định kỳ hoặc rà soát nhanh các commit nóng trước khi deploy lên UAT/Production.
 
-#### 21. `sot-graph_sot_verify_drift`
+#### 21. `sotgraph_sot_verify_drift`
 * **Mô tả:** Kiểm tra độ lệch (drift) giữa đồ thị trong SQLite và thực tế file trên đĩa cứng: phát hiện các file bị xóa nhưng vẫn còn trong CSDL, các file mới chưa được lập chỉ mục, hoặc hash SHA-256 bị sai lệch. An toàn khi chạy trong CI/CD.
 * **Tham số (Parameters):**
   * `deep` *(boolean, mặc định: false)*: Bật băm toàn bộ nội dung file (SHA-256) thay vì chỉ kiểm tra mtime/size.
@@ -263,16 +263,16 @@ Giao diện Model Context Protocol (MCP) của SOT-Graph tuân thủ chuẩn **M
 
 ### Nhóm 6: Đồng Bộ External Provider
 
-#### 22. `sot-graph_sot_providers_sync`
+#### 22. `sotgraph_sot_providers_sync`
 * **Mô tả:** Kích hoạt đồng bộ hóa tường minh (write path) chỉ mục từ một evidence provider bên ngoài (VD: `codebase-memory`), được bảo vệ an toàn bởi project write lock và lưu lại ledger run receipt kèm snapshot.
 * **Tham số (Parameters):**
   * `provider_name` *(string, mặc định: `codebase-memory`)*: Tên provider cần đồng bộ.
-* **Kịch bản sử dụng:** Khi dự án có sử dụng song song engine SCIP hoặc codebase-memory và cần cập nhật chỉ mục đồng nhất vào SOT-Graph.
+* **Kịch bản sử dụng:** Khi dự án có sử dụng song song engine SCIP hoặc codebase-memory và cần cập nhật chỉ mục đồng nhất vào sotgraph.
 
 ---
 
 ### Tài Nguyên MCP (Resources, Templates & Subscriptions)
-SOT-Graph MCP Server cung cấp các MCP Resources trực tiếp:
+sotgraph MCP Server cung cấp các MCP Resources trực tiếp:
 * `sot://stats`: Trả về toàn bộ chỉ số thống kê của đồ thị (tổng số node, edge, files, dung lượng DB).
 * `sot://notes`: Trả về toàn bộ ghi chú tri thức đã lưu trữ.
 * `sot://node/{node_id}`: Resource Template cho phép đọc nội dung đầy đủ (source code snippet, signature, caller/callee list) của một node bất kỳ theo ID.
@@ -285,7 +285,7 @@ SOT-Graph MCP Server cung cấp các MCP Resources trực tiếp:
 Lệnh CLI thực thi qua binary `sotgraph`. Hỗ trợ toàn diện cờ toàn cục:
 * `--root <PATH>`: Thiết lập thư mục gốc dự án (mặc định: thư mục hiện tại).
 * `--db <PATH>`: Thiết lập đường dẫn SQLite DB tùy chỉnh (mặc định: `.sot/sot.db`).
-* `-V, --version`: Hiển thị phiên bản SOT-Graph.
+* `-V, --version`: Hiển thị phiên bản sotgraph.
 
 ---
 
@@ -370,7 +370,7 @@ sotgraph search "User" --json
 ```
 
 #### `sotgraph embed`
-Xây dựng chỉ mục vector embeddings (yêu cầu cài đặt extra `pip install 'sot-graph[vector]'`).
+Xây dựng chỉ mục vector embeddings (yêu cầu cài đặt extra `pip install 'sotgraph[vector]'`).
 ```bash
 sotgraph embed --limit 5000
 ```
@@ -549,7 +549,7 @@ sotgraph providers sync codebase-memory          # Kích hoạt đồng bộ hó
 ```
 
 #### `sotgraph import-scip`
-Nạp trực tiếp chỉ mục SCIP từ compiler vào CSDL SOT-Graph.
+Nạp trực tiếp chỉ mục SCIP từ compiler vào CSDL sotgraph.
 ```bash
 sotgraph import-scip index.scip --provider scip-typescript
 ```
@@ -579,7 +579,7 @@ sotgraph vacuum --dry-run
 ```
 
 #### `sotgraph setup`
-Tự động cấu hình các AI Coding Harness (Pi/OMP, OpenCode, Antigravity, Claude, ZCode) để kết nối trực tiếp với SOT-Graph, đồng thời cài đặt git post-merge hooks để tự động reconcile.
+Tự động cấu hình các AI Coding Harness (Pi/OMP, OpenCode, Antigravity, Claude, ZCode) để kết nối trực tiếp với sotgraph, đồng thời cài đặt git post-merge hooks để tự động reconcile.
 ```bash
 sotgraph setup --harness all
 sotgraph setup --hooks    # Cài đặt hook git tự động sync đồ thị sau mỗi lần git pull/merge
@@ -654,7 +654,7 @@ sotgraph mcp
 1. **Cài đặt Git Hook:**  
    Chạy `sotgraph setup --hooks`. Hệ thống sẽ tạo hook `post-merge` và `post-checkout` trong `.git/hooks/`.
 2. **Vận hành:**  
-   Mỗi khi lập trình viên `git pull` hoặc đổi branch, SOT-Graph sẽ tự động chạy `sotgraph reconcile` đồng bộ lại các file vừa thay đổi trong chưa đầy 1 giây mà không cần can thiệp thủ công.
+   Mỗi khi lập trình viên `git pull` hoặc đổi branch, sotgraph sẽ tự động chạy `sotgraph reconcile` đồng bộ lại các file vừa thay đổi trong chưa đầy 1 giây mà không cần can thiệp thủ công.
 
 ---
-*Tài liệu được tổng hợp và biên soạn theo kiến trúc SOT-Graph v0.3.0.*
+*Tài liệu được tổng hợp và biên soạn theo kiến trúc sotgraph v0.3.0.*

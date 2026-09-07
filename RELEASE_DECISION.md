@@ -1,7 +1,7 @@
-# Release Decision: SOT-Graph v0.3.0 Precision Gate & Flexible Impact-Assurance
+# Release Decision: sotgraph v0.3.0 Precision Gate & Flexible Impact-Assurance
 
 > **SUPERSEDED (2026-09-04)**: This v0.3.0 decision is superseded by the independent reassessment in
-> `plan/sot-graph-reassessment-roadmap-523e9cf-2026-09-04.md`. The current verdict is
+> `plan/sotgraph-reassessment-roadmap-523e9cf-2026-09-04.md`. The current verdict is
 > **CONDITIONAL_GO / HUMAN_GATED**: autonomous refactoring is NOT certified, and all
 > impact-assurance verdicts remain advisory — human review is required before acting on them.
 > The text below is preserved as a historical record of the 2026-09-02 gate decision.

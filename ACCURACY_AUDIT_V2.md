@@ -1,4 +1,4 @@
-# SOT-Graph Precision & Reliability Audit Report (v0.3.0)
+# sotgraph Precision & Reliability Audit Report (v0.3.0)
 
 **Date**: 2026-08-25  
 **Baseline Commit**: `d6706f641be58405891bac7011686bb23fc89d8d`  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-An exhaustive precision, reliability, and security audit was conducted across the SOT-Graph core knowledge engine. Prior to this release, heuristic edge resolution and trust verification exhibited several critical failure modes:
+An exhaustive precision, reliability, and security audit was conducted across the sotgraph core knowledge engine. Prior to this release, heuristic edge resolution and trust verification exhibited several critical failure modes:
 1. **Python Lexical Binding Shadowing**: Local variables, comprehension loop targets, lambda bindings, and function parameters with identical names to imported modules generated false confirmed cross-file edges.
 2. **Comment / String Literal Span Collisions**: Verifier regex matching could mistakenly assign `EXACT_SPAN` verdicts to commented-out declarations (`// function target() {}`) or string constants.
 3. **Stale JIT Candidate Retention**: Deleted disk symbols were not systematically purged from in-memory trust verifier candidate lists during JIT reconcile passes.
@@ -62,4 +62,4 @@ This release establishes an **independent frozen evaluation oracle** (`evaluatio
 **Verdict**: 🟢 **GO**
 - Independent verification harness passes 100% across all 5 language fixtures.
 - All 333 unit, property, and metamorphic tests pass without errors.
-- SOT-Graph is certified for high-precision autonomous code navigation, refactoring blast-radius analysis, and token-bounded context packing.
+- sotgraph is certified for high-precision autonomous code navigation, refactoring blast-radius analysis, and token-bounded context packing.

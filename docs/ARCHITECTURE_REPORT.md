@@ -1,6 +1,6 @@
-# SOT-GRAPH — BÁO CÁO KIẾN TRÚC & PHÂN TÍCH HỆ THỐNG TOÀN DIỆN
+# sotgraph — BÁO CÁO KIẾN TRÚC & PHÂN TÍCH HỆ THỐNG TOÀN DIỆN
 
-> **Nguồn phân tích:** Single Source of Truth (`sot-graph` AST & Graph Analytics Engine)  
+> **Nguồn phân tích:** Single Source of Truth (`sotgraph` AST & Graph Analytics Engine)  
 > **Mục tiêu:** Bóc tách kiến trúc tổng thể, phân rã 100% modules & chức năng con, phân tích State Machine, luồng điều phối đa tiến trình, và lộ trình tối ưu hóa P0/P1/P2.  
 > **Pattern & Modularity:** Modular Layered Architecture (Python 3.10+) — Modularity Score (Q = 0.420) — 🟢 **STRONG MODULARITY**
 
@@ -9,7 +9,7 @@
 ## 1. TỔNG QUAN HỆ THỐNG & SƠ ĐỒ CONTAINER TỔNG THỂ (C4-CONTAINER HLD)
 
 ### 1.1 Bản chất & Định vị Hệ thống
-`sot-graph` là tầng tri thức phần mềm cục bộ (Local Knowledge Layer) không phụ thuộc daemon ngoài (Zero-Daemon, Standalone SQLite WAL + FTS5), đóng vai trò làm **Single Source of Truth (SSOT)** cho các AI Coding Agents (Oh My Pi, OpenCode, Claude Code, Cursor, Antigravity).
+`sotgraph` là tầng tri thức phần mềm cục bộ (Local Knowledge Layer) không phụ thuộc daemon ngoài (Zero-Daemon, Standalone SQLite WAL + FTS5), đóng vai trò làm **Single Source of Truth (SSOT)** cho các AI Coding Agents (Oh My Pi, OpenCode, Claude Code, Cursor, Antigravity).
 
 - **Vấn đề cốt lõi giải quyết:** Triệt tiêu hoàn toàn hiện tượng *Phantom Anchors* (vị trí file ảo), *Stale Context* (mã nguồn đã bị xóa/đổi tên/refactor nhưng bộ nhớ AI vẫn trỏ vào), và *Cold Start Redundancy* (AI code lại tiện ích đã có sẵn ở project khác).
 - **Nguyên lý bất biến:**
@@ -98,11 +98,11 @@ graph TD
 
 ## 2. PHÂN RÃ CHI TIẾT 100% MODULES & TÍNH NĂNG CON (FEATURE TAXONOMY)
 
-Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sot-graph`, toàn bộ codebase gồm 12 Bounded Functional Modules được tổ chức thành 4 cụm kiến trúc độc lập:
+Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sotgraph`, toàn bộ codebase gồm 12 Bounded Functional Modules được tổ chức thành 4 cụm kiến trúc độc lập:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                      SOT-GRAPH CODEBASE TAXONOMY                         │
+│                      sotgraph CODEBASE TAXONOMY                         │
 ├────────────────────────────┬────────────────────────────┬────────────────┤
 │ CỤM 1: GIAO DIỆN & HARNESS │ CỤM 2: CORE RECONCILER     │ CỤM 3: GRAPH   │
 │ • CLI Dispatcher           │ • Reconciler & Workers     │ • Analytics    │
@@ -140,11 +140,11 @@ Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sot-graph`,
   3. **Async / Sync Dual API:** Cung cấp cả sync call và `asyncio.to_thread` facade cho non-blocking stdio loop.
 
 #### Module 1.3: `Multi-Harness Adapters & Native Extensions`
-* **Thư mục mã nguồn:** `src/sot_graph/adapters/`, `.omp/extensions/sot-graph.ts`
+* **Thư mục mã nguồn:** `src/sot_graph/adapters/`, `.omp/extensions/sotgraph.ts`
 * **User Roles:** AI Harnesses (OMP, OpenCode, Claude Code, Cursor, Windsurf, Google Gemini / Antigravity)
 * **Entities / Models chính:** `HarnessInstaller`, `OmpAdapter`, `OpencodeAdapter`, `ClaudeAdapter`, `AntigravityAdapter`
 * **Chức năng chi tiết:**
-  1. **OMP Native Extension (`sot-graph.ts`):** Khởi tạo background async tool wrapper không chặn event-loop của harness.
+  1. **OMP Native Extension (`sotgraph.ts`):** Khởi tạo background async tool wrapper không chặn event-loop của harness.
   2. **OpenCode Plugin (`opencode_plugin.ts`):** Tự động phát hiện thay đổi file (`file.edited`) để kích hoạt background incremental reconcile.
   3. **Auto-Discovery & Rules Injection:** Tự động hợp nhất cấu hình JSON (`.mcp.json`, `settings.json`) và chèn quy tắc `RULES.md` vào bộ nhớ AI.
 
@@ -368,7 +368,7 @@ sequenceDiagram
 
 ## 7. KẾT LUẬN & HƯỚNG DẪN TRÍCH XUẤT TIẾP THEO
 
-Kiến trúc của dự án **sot-graph** đạt mức độ trưởng thành cao, tuân thủ chặt chẽ các ranh giới phân tầng, vận hành an toàn với mô hình SQLite nhúng và cơ chế đa tiến trình độc lập.
+Kiến trúc của dự án **sotgraph** đạt mức độ trưởng thành cao, tuân thủ chặt chẽ các ranh giới phân tầng, vận hành an toàn với mô hình SQLite nhúng và cơ chế đa tiến trình độc lập.
 
 **Các tài liệu & artifact liên quan:**
 - Báo cáo Fact Bundle chi tiết: `.sot/bundle/`

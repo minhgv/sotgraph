@@ -1,6 +1,6 @@
-# SOT-Graph Agent Workflow & Operational Guidelines (v0.3.0)
+# sotgraph Agent Workflow & Operational Guidelines (v0.3.0)
 
-> **Standard Operating Procedures (SOP) and Behavioral Protocols for AI Coding Agents utilizing `sot-graph` as a Verified Single Source of Truth (SSOT) Multi-Provider Knowledge Layer (Schema v8).**
+> **Standard Operating Procedures (SOP) and Behavioral Protocols for AI Coding Agents utilizing `sotgraph` as a Verified Single Source of Truth (SSOT) Multi-Provider Knowledge Layer (Schema v8).**
 
 ---
 
@@ -9,7 +9,7 @@
 1. [Overview & Core Philosophy](#1-overview--core-philosophy)
 2. [Multi-Provider Evidence Ledger & Trust Veracity](#2-multi-provider-evidence-ledger--trust-veracity)
 3. [North-Star Response Envelope Contract](#3-north-star-response-envelope-contract)
-4. [SOT-Graph 5-Stage Agent Operational Protocol](#4-sot-graph-5-stage-agent-operational-protocol)
+4. [sotgraph 5-Stage Agent Operational Protocol](#4-sotgraph-5-stage-agent-operational-protocol)
    - [Stage 1: Orientation & Discovery](#stage-1-orientation--discovery)
    - [Stage 2: Compiler Indexing & SCIP Ingestion](#stage-2-compiler-indexing--scip-ingestion)
    - [Stage 3: Dependency Tracing & Context Packaging](#stage-3-dependency-tracing--context-packaging)
@@ -32,13 +32,13 @@ Autonomous AI coding agents operating across multi-thousand-line codebases often
 2. **Context Window Exhaustion:** Ingesting dozens of raw source files sequentially (>100 lines each) to discover relationships, wasting thousands of input tokens.
 3. **Refactoring Blind Spots:** Modifying a core symbol without auditing upstream callers, causing subtle cross-module breakage.
 
-`sot-graph` addresses these challenges by establishing the **Physical Filesystem as the Absolute Ground Truth**, mapped through an embedded, zero-daemon SQLite storage layer (Schema v8) with sub-millisecond retrieval, deterministic AST parsing across 12+ languages, SCIP compiler index ingestion, and a real-time **Multi-Provider Trust Verdict Engine**.
+`sotgraph` addresses these challenges by establishing the **Physical Filesystem as the Absolute Ground Truth**, mapped through an embedded, zero-daemon SQLite storage layer (Schema v8) with sub-millisecond retrieval, deterministic AST parsing across 12+ languages, SCIP compiler index ingestion, and a real-time **Multi-Provider Trust Verdict Engine**.
 
 ---
 
 ## 2. Multi-Provider Evidence Ledger & Trust Veracity
 
-`sot-graph` maintains a structured evidence ledger distinguishing fast heuristic extractions from compiler-backed semantic indices:
+`sotgraph` maintains a structured evidence ledger distinguishing fast heuristic extractions from compiler-backed semantic indices:
 
 ```json
 {
@@ -92,7 +92,7 @@ Agents MUST extract output from `.data` while checking `.completeness` and `.pro
 
 ---
 
-## 4. SOT-Graph 5-Stage Agent Operational Protocol
+## 4. sotgraph 5-Stage Agent Operational Protocol
 
 ```mermaid
 flowchart TD
@@ -240,7 +240,7 @@ Configure MCP in `~/.claude/mcp.json` or `.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "sot-graph": {
+    "sotgraph": {
       "command": "sotgraph",
       "args": ["mcp"],
       "env": {}
@@ -267,7 +267,7 @@ Configure MCP in `~/.claude/mcp.json` or `.cursor/mcp.json`:
 
 ## 9. Dual-Target Markdown, LaTeX & Unicode Rendering Rules
 
-All AI Agents and reports generated using SOT-Graph MUST adhere to these rendering guardrails:
+All AI Agents and reports generated using sotgraph MUST adhere to these rendering guardrails:
 
 ### 1. Mermaid Diagrams
 - **Double Quote Labels:** Wrap every Node label and Subgraph title in double quotes: `NODE["Label"]`, `subgraph ID ["Title"]`.

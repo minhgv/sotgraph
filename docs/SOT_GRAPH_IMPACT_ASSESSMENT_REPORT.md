@@ -1,8 +1,8 @@
-# Báo Cáo Khung Đánh Giá Tác Động & Chấm Điểm Mức Độ Rủi Ro (Risk Assessment Framework) trong SOT-Graph
+# Báo Cáo Khung Đánh Giá Tác Động & Chấm Điểm Mức Độ Rủi Ro (Risk Assessment Framework) trong sotgraph
 
-> **Tài liệu Kỹ thuật Chuyên sâu về Cơ chế Phân tích Tác động Thay đổi (Change Impact Analysis), Thang điểm Rủi ro (Risk Scoring Engine) và Cơ sở Nghiên cứu Khoa học / Tiêu chuẩn Công nghiệp của SOT-Graph.**  
+> **Tài liệu Kỹ thuật Chuyên sâu về Cơ chế Phân tích Tác động Thay đổi (Change Impact Analysis), Thang điểm Rủi ro (Risk Scoring Engine) và Cơ sở Nghiên cứu Khoa học / Tiêu chuẩn Công nghiệp của sotgraph.**  
 > **Phiên bản:** 1.0.0  
-> **Phạm vi áp dụng:** SOT-Graph Core AST Engine, MCP Server, CLI, và AI Coding Agent Harnesses (Oh My Pi, OpenCode, Claude Code).  
+> **Phạm vi áp dụng:** sotgraph Core AST Engine, MCP Server, CLI, và AI Coding Agent Harnesses (Oh My Pi, OpenCode, Claude Code).  
 > **Đối tượng:** Software Architects, Tech Leads, Security Engineers, AI Coding Agents.
 
 ---
@@ -24,11 +24,11 @@ Trong kỹ nghệ phần mềm hiện đại, việc đánh giá tác động th
 1. **Đánh giá cảm tính (Subjective Guessing):** Dựa hoàn toàn vào trực giác của lập trình viên hoặc reviewer khi đọc diff, dẫn đến việc bỏ sót các liên kết ngầm (cross-module dependencies) hoặc đánh giá thấp mức độ nguy hiểm của các thay đổi quy mô nhỏ nhưng chạm vào symbol cốt lõi.
 2. **Đo đạc thô sơ (Primitive Metrics):** Chỉ đếm số dòng code thay đổi (Lines of Code - LOC) mà không hiểu cấu trúc cú pháp (AST) hay quan hệ ngữ nghĩa (Semantic Call Graph).
 
-**SOT-Graph (Single Source of Truth Knowledge Graph)** giải quyết triệt để vấn đề này bằng cách thiết lập **Khung Đánh giá Rủi ro Đa Tầng (Multi-Tier Risk Assessment Framework)**. Hệ thống kết hợp giữa siêu dữ liệu Git (Git Churn) và Đồ thị tri thức AST (AST Knowledge Graph) được lưu trữ và tối ưu hóa dưới dạng Single-file SQLite. Kết quả đánh giá là các chỉ số hoàn toàn **định lượng, tiền định (deterministic), minh bạch về lý do (explainable)** và được bảo chứng bởi các nghiên cứu thực nghiệm hàng đầu thế giới (Microsoft Research, IEEE TSE, ACM OOPSLA, NIST, OWASP).
+**sotgraph (Single Source of Truth Knowledge Graph)** giải quyết triệt để vấn đề này bằng cách thiết lập **Khung Đánh giá Rủi ro Đa Tầng (Multi-Tier Risk Assessment Framework)**. Hệ thống kết hợp giữa siêu dữ liệu Git (Git Churn) và Đồ thị tri thức AST (AST Knowledge Graph) được lưu trữ và tối ưu hóa dưới dạng Single-file SQLite. Kết quả đánh giá là các chỉ số hoàn toàn **định lượng, tiền định (deterministic), minh bạch về lý do (explainable)** và được bảo chứng bởi các nghiên cứu thực nghiệm hàng đầu thế giới (Microsoft Research, IEEE TSE, ACM OOPSLA, NIST, OWASP).
 
 ```mermaid
 flowchart TD
-    subgraph SOT_Graph_Risk_Framework["Khung Đánh Giá Rủi Ro SOT-Graph"]
+    subgraph SOT_Graph_Risk_Framework["Khung Đánh Giá Rủi Ro sotgraph"]
         direction TB
         
         subgraph Tier1["Tầng 1: Hồi cứu Nhanh (Fast Retrospective)"]
@@ -179,7 +179,7 @@ Người dùng thường đặt câu hỏi: *Liệu có mâu thuẫn giữa Cơ 
 
 ```mermaid
 graph LR
-    subgraph Funnel["Mô Hình Phễu Đảm Bảo Chất Lượng SOT-Graph"]
+    subgraph Funnel["Mô Hình Phễu Đảm Bảo Chất Lượng sotgraph"]
         direction LR
         Dev["Lập trình viên / AI"] -->|Code Diff| P2["Cơ chế 2: sotgraph diff-impact\n(Kính hiển vi AST)"]
         P2 -->|An toàn: Merge| Repo["Kho lưu trữ Git"]
@@ -206,13 +206,13 @@ Nhờ sự phân tầng này:
 
 ## 6. Cơ sở Khoa học & Tiêu chuẩn Nghiên cứu Quốc tế
 
-Toàn bộ các tham số, trọng số và điều kiện phân ngưỡng của SOT-Graph được xây dựng dựa trên 3 nhánh công trình khoa học đã được thẩm định đồng đẳng (*Peer-reviewed*):
+Toàn bộ các tham số, trọng số và điều kiện phân ngưỡng của sotgraph được xây dựng dựa trên 3 nhánh công trình khoa học đã được thẩm định đồng đẳng (*Peer-reviewed*):
 
 ### 6.1. Nhánh Nghiên cứu Biến động Mã & Đảm bảo Chất lượng Tức thì (JIT-QA)
 
 1. **Nghiên cứu Microsoft Research về Relative Code Churn (Nagappan & Ball, ICSE 2005 / IEEE TSE 2007)**:
    - *Tên bài báo:* *"Use of Relative Code Churn Measures to Predict System Defect Density"*.
-   - *Đóng góp:* Chứng minh bằng thực nghiệm trên hàng triệu dòng lệnh của Windows Server rằng lượng biến động mã (*Code Churn*) có mối tương quan mạnh nhất với mật độ lỗi phát sinh sau phát hành (R² > 0.8), vượt trội hoàn toàn so với độ phức tạp chu trình McCabe (*Cyclomatic Complexity*). Đây là cơ sở cho các mốc churn > 250 và > 800 dòng của SOT-Graph.
+   - *Đóng góp:* Chứng minh bằng thực nghiệm trên hàng triệu dòng lệnh của Windows Server rằng lượng biến động mã (*Code Churn*) có mối tương quan mạnh nhất với mật độ lỗi phát sinh sau phát hành (R² > 0.8), vượt trội hoàn toàn so với độ phức tạp chu trình McCabe (*Cyclomatic Complexity*). Đây là cơ sở cho các mốc churn > 250 và > 800 dòng của sotgraph.
 2. **Mô hình Dự đoán Lỗi Tức thì JIT (Kamei et al., IEEE TSE 2013)**:
    - *Tên bài báo:* *"A Large-Scale Empirical Study of Just-In-Time Quality Assurance"*.
    - *Đóng góp:* Khảo sát 14 dự án mã nguồn mở và thương mại quy mô lớn (> 12.000 commit). Nghiên cứu chỉ ra rằng các yếu tố **Change Size** (kích thước thay đổi), **File Dispersion** (số file bị sửa rải rác) và **Entropy** là những yếu tố quyết định gây ra hiện tượng *Cognitive Overload* ở người duyệt mã, khiến tỷ lệ lọt lỗi tăng vọt khi số file > 5.
@@ -230,12 +230,12 @@ Toàn bộ các tham số, trọng số và điều kiện phân ngưỡng của
    - *Đóng góp:* Chuẩn hóa metric **CBO (Coupling Between Objects)** và **Afferent Coupling**. Ngưỡng liên kết ≥ 5 được thừa nhận rộng rãi là điểm cảnh báo tái cấu trúc do chi phí kiểm thử và bảo trì tăng đột biến.
 3. **Hệ Thống Phân Tích Tác Động Chianti (Ren et al., OOPSLA 2004 / Ryder & Tip, IEEE Software 2001)**:
    - *Tên bài báo:* *"Chianti: A Tool for Change Impact Analysis of Java Programs"*.
-   - *Đóng góp:* Đặt nền móng cho kỹ thuật bóc tách diff thành các nguyên tử thay đổi AST (*Atomic Changes*) và dùng đồ thị gọi ngược (*Reverse Call Graph Traversal*) để cô lập chính xác các Test Cases bị tác động. SOT-Graph kế thừa hoàn toàn mô hình toán học này trong `DiffImpactEngine`.
+   - *Đóng góp:* Đặt nền móng cho kỹ thuật bóc tách diff thành các nguyên tử thay đổi AST (*Atomic Changes*) và dùng đồ thị gọi ngược (*Reverse Call Graph Traversal*) để cô lập chính xác các Test Cases bị tác động. sotgraph kế thừa hoàn toàn mô hình toán học này trong `DiffImpactEngine`.
 
 ### 6.3. Tiêu chuẩn An toàn Thông tin & Kiến trúc Phần mềm Công nghiệp
 
 1. **NIST SP 800-218 (Secure Software Development Framework - SSDF)**:
-   - *Khuyến nghị:* Nhiệm vụ **PW.4 (Review Software Architecture)** và **PW.7 (Review Code for Security Vulnerabilities)** yêu cầu phân loại bề mặt tấn công (*Attack Surface*). Các thay đổi chạm vào cơ chế kiểm soát danh tính (Authentication), phân quyền (Authorization), mật mã học (Cryptography) và toàn vẹn cơ sở dữ liệu (Database Schemas) phải tự động kích hoạt mức độ bảo đảm cao (*High Assurance Level*). Đây là căn cứ của nhóm `CRITICAL_PATTERNS` trong SOT-Graph.
+   - *Khuyến nghị:* Nhiệm vụ **PW.4 (Review Software Architecture)** và **PW.7 (Review Code for Security Vulnerabilities)** yêu cầu phân loại bề mặt tấn công (*Attack Surface*). Các thay đổi chạm vào cơ chế kiểm soát danh tính (Authentication), phân quyền (Authorization), mật mã học (Cryptography) và toàn vẹn cơ sở dữ liệu (Database Schemas) phải tự động kích hoạt mức độ bảo đảm cao (*High Assurance Level*). Đây là căn cứ của nhóm `CRITICAL_PATTERNS` trong sotgraph.
 2. **OWASP Application Security Verification Standard (ASVS v4.0)**:
    - Yêu cầu mọi biến đổi trong các module kiểm soát truy cập (V4 Access Control) và mã hóa dữ liệu (V6 Stored Cryptography) phải có báo cáo tác động độc lập trước khi đẩy lên môi trường Production.
 3. **ISO/IEC 25010 (Software Product Quality Model)**:
@@ -252,17 +252,17 @@ Cài đặt script kiểm tra tự động trước khi kỹ sư hoặc AI Agent
 ```bash
 #!/usr/bin/env bash
 # .git/hooks/pre-push
-echo "🔍 Đang chạy SOT-Graph Diff Impact Audit..."
+echo "🔍 Đang chạy sotgraph Diff Impact Audit..."
 sotgraph diff-impact --json > /tmp/sot_diff.json
 
 RISK_LEVEL=$(jq -r '.summary.risk_level' /tmp/sot_diff.json)
 if [ "$RISK_LEVEL" == "HIGH" ]; then
-    echo "❌ Push bị chặn! SOT-Graph phát hiện mức độ rủi ro HIGH:"
+    echo "❌ Push bị chặn! sotgraph phát hiện mức độ rủi ro HIGH:"
     jq -r '.summary' /tmp/sot_diff.json
     echo "Vui lòng tham vấn Tech Lead hoặc bổ sung bài kiểm thử tự động."
     exit 1
 fi
-echo "✅ SOT-Graph Audit Passed (Risk Level: $RISK_LEVEL)"
+echo "✅ sotgraph Audit Passed (Risk Level: $RISK_LEVEL)"
 exit 0
 ```
 
@@ -275,7 +275,7 @@ Trong các môi trường Agent tự trị (như Oh My Pi, OpenCode, Claude Code
 ---
 
 > **Tài liệu tham chiếu nội bộ:**  
-> - `sot-graph`: Core AST Engine & CLI (`~/.local/bin/sotgraph`)
+> - `sotgraph`: Core AST Engine & CLI (`~/.local/bin/sotgraph`)
 > - SQLite Schema: `.sot/sot.db` (`graph_nodes`, `graph_edges`, `file_journal`)  
 > - MCP Tool Specifications: `xd://mcp__sot_graph_sot_diff_impact`, `xd://mcp__sot_graph_sot_git_history`  
 > - Đối chiếu với GitNexus, CodeGraph, Codebase-Memory-MCP: [`docs/IMPACT_ASSESSMENT_COMPARISON.md`](IMPACT_ASSESSMENT_COMPARISON.md)

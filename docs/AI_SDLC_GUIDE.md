@@ -1,20 +1,20 @@
-# Applying sot-graph Across the AI-Assisted Software Development Life Cycle (AI SDLC)
+# Applying sotgraph Across the AI-Assisted Software Development Life Cycle (AI SDLC)
 
-> **Comprehensive Guide to Integrating `sot-graph` as the Single Source of Truth Knowledge Layer for AI Coding Agents.**  
+> **Comprehensive Guide to Integrating `sotgraph` as the Single Source of Truth Knowledge Layer for AI Coding Agents.**  
 > *Eliminate Phantom Anchors, prevent path hallucinations, eradicate Cold Start Redundancy, and constrain Blast Radius during active coding loops.*
 
 ---
 
 ## 📑 Table of Contents
 1. [Context & Core Challenges in AI SDLC](#-1-context--core-challenges-in-ai-sdlc)
-2. [Detailed 6 Phases of AI SDLC with sot-graph](#-2-detailed-6-phases-of-ai-sdlc-with-sot-graph)
+2. [Detailed 6 Phases of AI SDLC with sotgraph](#-2-detailed-6-phases-of-ai-sdlc-with-sotgraph)
    - [Phase 1: Discovery & Architecture Scoping](#phase-1-discovery--architecture-scoping)
    - [Phase 2: Generation & Active Development Loop](#phase-2-generation--active-development-loop)
    - [Phase 3: Refactoring & Blast Radius Mitigation](#phase-3-refactoring--blast-radius-mitigation)
    - [Phase 4: Code Review & CI/CD Verification Gate](#phase-4-code-review--cicd-verification-gate)
    - [Phase 5: Knowledge Retention & Architecture Decision Records (ADR)](#phase-5-knowledge-retention--architecture-decision-records-adr)
    - [Phase 6: Maintenance, Graph Hygiene & Database Optimization](#phase-6-maintenance-graph-hygiene--database-optimization)
-3. [Comparison Matrix: Traditional AI SDLC vs AI SDLC with sot-graph](#-3-comparison-matrix-traditional-ai-sdlc-vs-ai-sdlc-with-sot-graph)
+3. [Comparison Matrix: Traditional AI SDLC vs AI SDLC with sotgraph](#-3-comparison-matrix-traditional-ai-sdlc-vs-ai-sdlc-with-sotgraph)
 4. [Automated CI/CD & Git Hooks Integration](#-4-automated-cicd--git-hooks-integration)
 5. [Sample Agent Configuration (AGENTS.md)](#-5-sample-agent-configuration-agentsmd)
 6. [Token Economy & Cost Efficiency Analysis](#-6-token-economy--cost-efficiency-analysis)
@@ -39,15 +39,15 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 └──────────────────────────────┴─────────────────────────────┴────────────────────────────┘
 ```
 
-`sot-graph` was engineered to provide a **Physically Verified Knowledge Layer**. By anchoring the **Filesystem as the Single Source of Truth (SSOT)**, backed by **SQLite FTS5 + WAL** and **in-process deterministic graph algorithms**, `sot-graph` seamlessly guides agents across all 6 phases of software engineering.
+`sotgraph` was engineered to provide a **Physically Verified Knowledge Layer**. By anchoring the **Filesystem as the Single Source of Truth (SSOT)**, backed by **SQLite FTS5 + WAL** and **in-process deterministic graph algorithms**, `sotgraph` seamlessly guides agents across all 6 phases of software engineering.
 
 ---
 
-## 🚀 2. Detailed 6 Phases of AI SDLC with sot-graph
+## 🚀 2. Detailed 6 Phases of AI SDLC with sotgraph
 
 ```
                   ┌────────────────────────────────────────────────────────┐
-                  │              AI SDLC WITH SOT-GRAPH KNOWLEDGE LAYER    │
+                  │              AI SDLC WITH sotgraph KNOWLEDGE LAYER    │
                   └────────────────────────────────────────────────────────┘
                                               │
     ┌─────────────────────────────────────────┼─────────────────────────────────────────┐
@@ -75,7 +75,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - When given a user prompt (e.g., *"Implement JWT token validation with role-based access control"*), agents often jump straight to writing code from scratch, unaware that `src/auth/` or `utils/` already contains HMAC signing, claims parsing, or expiration validation helpers.
 - Primitive `grep`/`find` scans flood the LLM context window with thousands of irrelevant lines, burning tokens and degrading reasoning depth.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **Rapid Verified Search (`sotgraph search` / MCP `sot_search`):**
    The agent queries the entire codebase via SQLite FTS5 (BM25 ranking) in a single command:
    ```bash
@@ -99,7 +99,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - **Phantom Anchors**: A developer renames `src/services/user_service.py` to `src/core/services/user.py`. The agent remembers the old path from previous turns and generates `from src.services.user_service import UserService` → immediate runtime failure.
 - **Cross-Import & Out-of-Order Indexing**: File A imports a class from File B before File B has been indexed, breaking relationship graphs.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **Auto-Rehome Mechanism (`[REBUILT]`):**
    When the agent looks up `UserService`, if the old path is missing, `verifier.py` scans disk basenames, detects the relocated file at `src/core/services/user.py`, updates SQLite, and returns `[REBUILT]`. The agent writes the correct import on the first pass!
 2. **Two-Way Pending Edge Resolution (`db.resolve_pending_edges`):**
@@ -115,7 +115,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 - When asked to *"Refactor `process_payment(amount)` to `process_payment(amount, currency, idempotency_key)`"*, the agent typically updates the signature and 1 or 2 nearby call sites.
 - Dozens of indirect callers across other packages are overlooked, creating silent regressions in staging.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **2-hop Blast Radius Analysis (`sotgraph explore` / MCP `sot_explore`):**
    Before touching the function, the agent runs:
    ```bash
@@ -141,7 +141,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 #### The Real-World Challenge
 - When multiple developers and agents merge PRs into `main`, files get deleted but architectural knowledge remains stale, resulting in **Architectural Drift**.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **Deep Drift Auditing (`sotgraph verify --deep` / MCP `sot_verify_drift`):**
    In CI/CD pipelines or pre-commit checks, execute:
    ```bash
@@ -160,7 +160,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 #### The Real-World Challenge
 - **Context Reset**: Every new chat session wipes agent memory. A hard-fought lesson regarding PostgreSQL deadlock handling resolved yesterday is repeated as a bug by another agent today.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **Virtual Knowledge Anchors (`sotgraph insert` & `[NOPATH]`):**
    Upon solving a complex bug or agreeing on an architectural standard, the agent persists an ADR directly into SQLite:
    ```bash
@@ -183,7 +183,7 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 #### The Real-World Challenge
 - Over months of active development with thousands of file mutations, graph databases can accumulate orphaned nodes, fragmented B-Trees, and degraded FTS index speed.
 
-#### How `sot-graph` Solves It
+#### How `sotgraph` Solves It
 1. **Safe Database Pruning (`sotgraph clean`):**
    - Supports `--dry-run` to preview deleted records safely without modifying disk:
      ```bash
@@ -203,9 +203,9 @@ However, contemporary AI coding agents suffer from **3 Critical Failure Modes**:
 
 ---
 
-## 📊 3. Comparison Matrix: Traditional AI SDLC vs AI SDLC with sot-graph
+## 📊 3. Comparison Matrix: Traditional AI SDLC vs AI SDLC with sotgraph
 
-| Evaluation Criterion | Traditional AI SDLC (Without sot-graph) | AI SDLC with sot-graph |
+| Evaluation Criterion | Traditional AI SDLC (Without sotgraph) | AI SDLC with sotgraph |
 | :--- | :--- | :--- |
 | **Path Grounding Accuracy** | **Poor (Prone to Hallucinations)**: Agents guess stale paths or write code against deleted files. | **High (Span-Verified)**: Every returned node is physically verified on disk by `TrustVerifier`; verdicts are advisory and scope-bounded. |
 | **Code Reuse Capability** | **Low**: Frequently reinvents existing utilities (Cold Start Redundancy). | **High**: `sotgraph search` with FTS5 BM25 locates existing utilities in milliseconds (in-process SQLite; measured p50 ≈ 49 ms at 5,000 files). |
@@ -224,23 +224,23 @@ Automatically reconciles the knowledge graph and prevents commits when drift is 
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
-echo "[sot-graph] Reconciling knowledge graph before commit..."
+echo "[sotgraph] Reconciling knowledge graph before commit..."
 ./bin/sotgraph reconcile --batch-size 64
 
 # Integrity verification
 ./bin/sotgraph verify
 if [ $? -ne 0 ]; then
-  echo "[sot-graph] ❌ Verification failed. Please resolve discrepancies."
+  echo "[sotgraph] ❌ Verification failed. Please resolve discrepancies."
   exit 1
 fi
-echo "[sot-graph]  Knowledge graph is fully in sync with filesystem."
+echo "[sotgraph]  Knowledge graph is fully in sync with filesystem."
 ```
 
 ### 2. GitHub Actions Workflow (`.github/workflows/sot_verification.yml`)
 Audits architecture and updates structural reports automatically on every Pull Request:
 
 ```yaml
-name: SOT-Graph Architecture Audit
+name: sotgraph Architecture Audit
 
 on:
   push:
@@ -287,7 +287,7 @@ jobs:
 Add the following protocol to `AGENTS.md` or `.cursorrules` in your project root so that all AI Coding Agents (Oh My Pi, Claude Code, Cursor, Windsurf) adhere to the knowledge reuse workflow:
 
 ```markdown
-## SOT-Graph Knowledge Reuse & Architecture Protocol
+## sotgraph Knowledge Reuse & Architecture Protocol
 
 Before implementing any code changes, new features, or refactoring:
 
@@ -314,9 +314,9 @@ Before implementing any code changes, new features, or refactoring:
 
 ## 💰 6. Token Economy & Cost Efficiency Analysis
 
-A fundamental operational question: **"When integrating sot-graph into a codebase, what is the token overhead?"**
+A fundamental operational question: **"When integrating sotgraph into a codebase, what is the token overhead?"**
 
-> **Core Finding:** `sot-graph` itself consumes **0 LLM Tokens** (0.00 USD) for indexing, storage, and retrieval, while enabling AI Agents to **SAVE between 65% and 90% of token ingestion into the Context Window** across the software lifecycle.
+> **Core Finding:** `sotgraph` itself consumes **0 LLM Tokens** (0.00 USD) for indexing, storage, and retrieval, while enabling AI Agents to **SAVE between 65% and 90% of token ingestion into the Context Window** across the software lifecycle.
 
 ---
 
@@ -333,7 +333,7 @@ Unlike cloud RAG or vector database solutions (which consume continuous API cred
 
 ### 2. Quantifying Context Window Token Ingestion
 
-When agents interact with `sot-graph` via CLI or MCP Stdio protocol, payloads injected into the Context Window are extremely compact:
+When agents interact with `sotgraph` via CLI or MCP Stdio protocol, payloads injected into the Context Window are extremely compact:
 
 | CLI Command / MCP Tool | Returned Data Payload | Context Tokens Ingested |
 | :--- | :--- | :---: |
@@ -353,7 +353,7 @@ Consider a typical real-world development task: **"Add Role-Based Access Control
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │             TOKEN CONSUMPTION COMPARISON DURING A SINGLE AGENT SESSION                 │
 ├─────────────────────────────────────────────┬──────────────────────────────────────────┤
-│    WITHOUT SOT-GRAPH (TRADITIONAL)          │           WITH SOT-GRAPH                 │
+│    WITHOUT sotgraph (TRADITIONAL)          │           WITH sotgraph                 │
 ├─────────────────────────────────────────────┼──────────────────────────────────────────┤
 │ 1. Agent runs grep/find, gets 40 matches    │ 1. Agent runs `sotgraph search`               │
 │    -> Ingests 4,000 tokens of raw output.   │    -> Ingests 250 tokens of FTS5 hits.   │
@@ -382,7 +382,7 @@ Consider a typical real-world development task: **"Add Role-Based Access Control
 ### 4. Key Economic Benefits in Production
 
 1. **Context Window Hygiene & LLM Reasoning Preservation:**
-   Flooding the Context Window with tens of thousands of irrelevant code tokens causes *Context Window Degradation*, impairing LLM logical reasoning and increasing syntax errors. `sot-graph` feeds only physically grounded, relevant lines, enabling coding sessions to run productively all day without memory saturation.
+   Flooding the Context Window with tens of thousands of irrelevant code tokens causes *Context Window Degradation*, impairing LLM logical reasoning and increasing syntax errors. `sotgraph` feeds only physically grounded, relevant lines, enabling coding sessions to run productively all day without memory saturation.
 
 2. **Debug Loop Elimination:**
    Whenever an agent generates a patch targeting a hallucinated path (Phantom Anchor) or breaks an indirect dependency, the developer or agent spends 3 to 5 extra prompt turns troubleshooting. Eliminating errors at the discovery stage saves millions of prompt tokens across an engineering organization.

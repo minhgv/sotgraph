@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cẩm Nang Toàn Diện SOT-Graph: MCP Tools & CLI</title>
+  <title>Cẩm Nang Toàn Diện sotgraph: MCP Tools & CLI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -592,7 +592,7 @@
     <div class="sidebar-header">
       <div class="brand-title">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/></svg>
-        SOT-GRAPH
+        sotgraph
       </div>
       <div class="brand-subtitle">Knowledge Layer v0.3.0</div>
     </div>
@@ -641,7 +641,7 @@
     <!-- Hero Section -->
     <section class="hero-banner">
       <div class="hero-tag">Verified Knowledge Graph</div>
-      <h1 class="hero-title">SOT-Graph: Cẩm Nang Toàn Diện MCP Tools & CLI</h1>
+      <h1 class="hero-title">sotgraph: Cẩm Nang Toàn Diện MCP Tools & CLI</h1>
       <p class="hero-desc">
         Hạ tầng tri thức duy nhất (Single Source of Truth) kết nối trực tiếp với cây cú pháp trừu tượng (AST) của mã nguồn đa ngôn ngữ. Ngăn chặn triệt để hiện tượng AI ảo tưởng (hallucination) và bảo vệ an toàn tuyệt đối khi lập trình, tái cấu trúc mã nguồn.
       </p>
@@ -670,10 +670,10 @@
     <section id="tong-quan">
       <h2>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        1. Tổng Quan về SOT-Graph
+        1. Tổng Quan về sotgraph
       </h2>
       <p>
-        Trong quy trình phát triển phần mềm hiện đại với các AI Coding Agents (như Claude Code, OpenCode, Antigravity, Pi/OMP), hai trở ngại lớn nhất là <strong>sự cạn kiệt cửa sổ ngữ cảnh (Context Exhaustion)</strong> và <strong>ảo tưởng mã nguồn (Hallucination)</strong>. SOT-Graph ra đời như một giải pháp nền tảng cung cấp lớp tri thức xác thực tuyệt đối.
+        Trong quy trình phát triển phần mềm hiện đại với các AI Coding Agents (như Claude Code, OpenCode, Antigravity, Pi/OMP), hai trở ngại lớn nhất là <strong>sự cạn kiệt cửa sổ ngữ cảnh (Context Exhaustion)</strong> và <strong>ảo tưởng mã nguồn (Hallucination)</strong>. sotgraph ra đời như một giải pháp nền tảng cung cấp lớp tri thức xác thực tuyệt đối.
       </p>
 
       <div class="mermaid-wrapper">
@@ -684,7 +684,7 @@ flowchart TD
         GIT["Git Repository & Diff History"]
     end
 
-    subgraph ENG["SOT-Graph Engine Core"]
+    subgraph ENG["sotgraph Engine Core"]
         EXT["AST Extractor (Tree-sitter / Regex)"]
         REC["Reconciler (JIT & File Watcher)"]
         VRF["Trust Verifier (Hash & Coverage)"]
@@ -717,7 +717,7 @@ flowchart TD
     MCP --> AI
     CLI --> DEV
         </pre>
-        <div class="diagram-caption">Sơ đồ 1: Luồng kiến trúc tổng thể và chu trình dữ liệu trong SOT-Graph</div>
+        <div class="diagram-caption">Sơ đồ 1: Luồng kiến trúc tổng thể và chu trình dữ liệu trong sotgraph</div>
       </div>
 
       <h4>Các Trụ Cột Kỹ Thuật Đột Phá:</h4>
@@ -736,7 +736,7 @@ flowchart TD
         2. Mô Hình Bằng Chứng & Hệ Nhãn Niềm Tin (Trust Model)
       </h2>
       <p>
-        Mọi kết quả trả về từ SOT-Graph đều được phân loại trạng thái vật lý trên đĩa cứng ngay tại thời điểm gọi qua hệ thống nhãn niềm tin (Trust Verdicts):
+        Mọi kết quả trả về từ sotgraph đều được phân loại trạng thái vật lý trên đĩa cứng ngay tại thời điểm gọi qua hệ thống nhãn niềm tin (Trust Verdicts):
       </p>
 
       <div class="table-container">
@@ -829,7 +829,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_search
+            sotgraph_sot_search
           </div>
           <span class="tool-category-badge">Định vị / Tra cứu</span>
         </div>
@@ -843,7 +843,7 @@ flowchart TD
             <li class="param-item"><span class="param-name">threshold</span> <span class="param-type">(number, mặc định: 0.5)</span>: Ngưỡng coverage để xác nhận [STRONG].</li>
           </ul>
           <pre><code>// Ví dụ gọi MCP Tool
-sot-graph_sot_search({
+sotgraph_sot_search({
   query: "ContractCrosscheck",
   scope: "Modules/Api",
   limit: 5
@@ -855,7 +855,7 @@ sot-graph_sot_search({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_map
+            sotgraph_sot_map
           </div>
           <span class="tool-category-badge">Bản đồ kiến trúc</span>
         </div>
@@ -867,7 +867,7 @@ sot-graph_sot_search({
             <li class="param-item"><span class="param-name">max_tokens</span> <span class="param-type">(integer, mặc định: 1024)</span>: Giới hạn số lượng token cho bản đồ trả về.</li>
           </ul>
           <pre><code>// Ví dụ gọi MCP Tool
-sot-graph_sot_map({
+sotgraph_sot_map({
   focus: "ContractService,PartnerController",
   max_tokens: 1500
 })</code></pre>
@@ -878,7 +878,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_notes
+            sotgraph_sot_notes
           </div>
           <span class="tool-category-badge">Tri thức lưu trữ</span>
         </div>
@@ -899,7 +899,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_explore
+            sotgraph_sot_explore
           </div>
           <span class="tool-category-badge">Duyệt đồ thị</span>
         </div>
@@ -918,7 +918,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_usages
+            sotgraph_sot_usages
           </div>
           <span class="tool-category-badge">Find All References</span>
         </div>
@@ -936,7 +936,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_implementations
+            sotgraph_sot_implementations
           </div>
           <span class="tool-category-badge">Kế thừa / Đa hình</span>
         </div>
@@ -953,7 +953,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_pack
+            sotgraph_sot_pack
           </div>
           <span class="tool-category-badge">Context Packaging</span>
         </div>
@@ -975,7 +975,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_architecture_report
+            sotgraph_sot_architecture_report
           </div>
           <span class="tool-category-badge">Kiến trúc C4</span>
         </div>
@@ -993,7 +993,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_communities
+            sotgraph_sot_communities
           </div>
           <span class="tool-category-badge">Phân cụm Louvain</span>
         </div>
@@ -1006,7 +1006,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_bundle
+            sotgraph_sot_bundle
           </div>
           <span class="tool-category-badge">Fact Bundler</span>
         </div>
@@ -1022,7 +1022,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_trace
+            sotgraph_sot_trace
           </div>
           <span class="tool-category-badge">Full-Stack Trace</span>
         </div>
@@ -1040,7 +1040,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_ui_tree
+            sotgraph_sot_ui_tree
           </div>
           <span class="tool-category-badge">Frontend UI AST</span>
         </div>
@@ -1053,7 +1053,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_backend_flow
+            sotgraph_sot_backend_flow
           </div>
           <span class="tool-category-badge">Backend Steps</span>
         </div>
@@ -1066,7 +1066,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_solution_inventory
+            sotgraph_sot_solution_inventory
           </div>
           <span class="tool-category-badge">Stage 1 Discovery</span>
         </div>
@@ -1079,7 +1079,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_solution_steps
+            sotgraph_sot_solution_steps
           </div>
           <span class="tool-category-badge">Stage 2 Manpower</span>
         </div>
@@ -1092,7 +1092,7 @@ sot-graph_sot_map({
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_solution_bundle
+            sotgraph_sot_solution_bundle
           </div>
           <span class="tool-category-badge">Downstream SSOT</span>
         </div>
@@ -1142,7 +1142,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_diff_impact
+            sotgraph_sot_diff_impact
           </div>
           <span class="tool-category-badge">Git Diff Blast Radius</span>
         </div>
@@ -1162,7 +1162,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_scope_receipt
+            sotgraph_sot_scope_receipt
           </div>
           <span class="tool-category-badge">Giao thức P7.1</span>
         </div>
@@ -1175,7 +1175,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_diff_impact_receipt
+            sotgraph_sot_diff_impact_receipt
           </div>
           <span class="tool-category-badge">Giao thức P7.2</span>
         </div>
@@ -1188,7 +1188,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_git_history
+            sotgraph_sot_git_history
           </div>
           <span class="tool-category-badge">Chấm điểm rủi ro</span>
         </div>
@@ -1201,7 +1201,7 @@ flowchart TD
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_verify_drift
+            sotgraph_sot_verify_drift
           </div>
           <span class="tool-category-badge">Kiểm tra lệch đĩa</span>
         </div>
@@ -1215,7 +1215,7 @@ flowchart TD
 sequenceDiagram
     autonumber
     actor Agent as AI Coding Agent
-    participant SOT as SOT-Graph (MCP)
+    participant SOT as sotgraph (MCP)
     participant FS as Codebase Filesystem
     participant Git as Git Repo
 
@@ -1247,7 +1247,7 @@ sequenceDiagram
         <div class="tool-header">
           <div class="tool-name">
             <span class="badge badge-strong">MCP</span>
-            sot-graph_sot_providers_sync
+            sotgraph_sot_providers_sync
           </div>
           <span class="tool-category-badge">Đồng bộ External</span>
         </div>
@@ -1257,7 +1257,7 @@ sequenceDiagram
       </div>
 
       <h3 id="mcp-resources">Tài Nguyên Trực Tiếp (MCP Resources & Subscriptions)</h3>
-      <p>Bên cạnh các Tools, SOT-Graph cung cấp các điểm cuối tài nguyên MCP chuẩn hóa:</p>
+      <p>Bên cạnh các Tools, sotgraph cung cấp các điểm cuối tài nguyên MCP chuẩn hóa:</p>
       <ul>
         <li><code>sot://stats</code>: Trả về thống kê tổng quát về đồ thị (số node, số cạnh, tệp tin, kích thước CSDL).</li>
         <li><code>sot://notes</code>: Danh sách toàn bộ các ghi chú tri thức đã lưu.</li>
@@ -1273,7 +1273,7 @@ sequenceDiagram
         4. Chi Tiết Hệ Thống Câu Lệnh CLI
       </h2>
       <p>
-        Bộ công cụ dòng lệnh (CLI) của SOT-Graph được thực thi qua lệnh <code>sotgraph</code>. Đây là công cụ chủ lực cho lập trình viên trên Terminal, kịch bản tự động hóa (Bash scripts) và CI/CD Pipelines.
+        Bộ công cụ dòng lệnh (CLI) của sotgraph được thực thi qua lệnh <code>sotgraph</code>. Đây là công cụ chủ lực cho lập trình viên trên Terminal, kịch bản tự động hóa (Bash scripts) và CI/CD Pipelines.
       </p>
 
       <h3 id="cli-vong-doi">Nhóm Lệnh Vòng Đời & Đồng Bộ CSDL</h3>

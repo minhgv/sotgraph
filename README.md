@@ -16,6 +16,57 @@
 
 See [development readiness and migration audit](docs/DEVELOPMENT_READINESS.md).
 
+> **Renamed: `sot-graph` → `sotgraph`.** The CLI is `sotgraph`, the PyPI
+> distribution is `sotgraph`, and the Python import package remains `sot_graph`.
+> Per-repo `.sot/` databases, stored notes, and `~/.sotgraph/engine-store` are
+> unaffected by the rename. The legacy PyPI project `sot-graph` (≤ 0.3.2) is the
+> same tool before the rename — migrate with
+> `pip uninstall sot-graph && pipx install sotgraph`. See
+> [RELEASE_NOTES_v0.3.3.md](docs/RELEASE_NOTES_v0.3.3.md) for what changed.
+
+## Installation & Quick Start (one shot)
+
+One package, one command. The CBM extractor engine is fetched, digest-verified,
+and activated by sotgraph itself — **you never install codebase-memory
+separately** (details in [CBM Extractor](#cbm-extractor--codebase-memory-engine-auto-bootstrapped)).
+
+```bash
+# Isolated CLI (recommended)
+pipx install sotgraph          # or: uv tool install sotgraph
+
+# Plain pip
+pip install sotgraph
+
+# Straight from git (no PyPI needed)
+pipx install git+https://github.com/minhgv/sotgraph.git
+```
+
+Provision every AI-agent harness integration and bootstrap the CBM engine with
+the same command:
+
+```bash
+sotgraph setup --harness all   # adapters + skills + MCP config + engine bootstrap
+sotgraph --version
+sotgraph engine --store ~/.sotgraph/engine-store status   # verify pinned engine artifact
+```
+
+On first run, `sotgraph setup` performs the **trusted engine bootstrap**: it
+downloads the platform-pinned `codebase-memory` binary declared in
+`engine_pins.json`, verifies sha256 + size, stages it into
+`~/.sotgraph/engine-store`, and promotes it. This is the only sanctioned
+retrieval path — no PATH discovery, no unpinned URLs, never
+download-on-query. Opt out with `SOT_ENGINE_BOOTSTRAP=off` and bootstrap later
+with `sotgraph engine --store ~/.sotgraph/engine-store bootstrap`.
+
+Then index your first repository and confirm health:
+
+```bash
+cd ~/code/my-project
+sotgraph reconcile        # incremental index into .sot/sot.db
+sotgraph doctor           # schema v8 + FTS sync + orphan audit
+sotgraph search "Database" -n 5
+```
+
 ## Development checkout
 
 ```bash
@@ -86,6 +137,51 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ---
 
+## CBM Extractor — codebase-memory Engine (Auto-Bootstrapped)
+
+sotgraph ships two complementary extraction tiers, and installing sotgraph
+provisions both:
+
+1. **Builtin tree-sitter AST extractor** — always available, zero
+   dependencies; the fast per-language heuristic tier behind `reconcile`
+   (`AST_HEURISTIC_PARSER` in the Schema v8 provenance ledger).
+2. **CBM engine (`codebase-memory`, protocol `artifacts-v1`)** — an external
+   extractor and evidence provider consulted for symbols, callgraph, usages,
+   impact, and broad-language discovery. Its telemetry is joined into the
+   `provider_runs` / `provider_evidence` tables and surfaced by
+   `sot cross-check`; sotgraph talks to it through an internal MCP stdio
+   client with a per-account runtime namespace
+   (`$TMPDIR/sotgraph-engine-<uid>`, mode 0700).
+
+**One-shot install, no separate CBM setup.** The engine binary is never pip-
+or npm-installed. It is pinned per platform in
+`src/sot_graph/providers/engine_pins.json` (currently `engine-v2026.09.07`,
+engine commit `e477a32`, for darwin-arm64 / linux-arm64 / linux-x86_64),
+fetched only at `sotgraph setup` or explicit command time, verified against
+the pinned sha256 + size before staging, and promoted via the artifact store
+under `~/.sotgraph/engine-store` (digest-addressed, rollback-safe).
+
+Engine lifecycle commands (all require the trusted store):
+
+```bash
+sotgraph engine --store ~/.sotgraph/engine-store bootstrap   # fetch pinned artifact
+sotgraph engine --store ~/.sotgraph/engine-store status      # verify, no spawn
+sotgraph engine --store ~/.sotgraph/engine-store doctor      # identity + limits
+sotgraph engine --store ~/.sotgraph/engine-store mcp-probe   # stdio handshake probe
+sotgraph engine --store ~/.sotgraph/engine-store rollback    # switch verified digest
+```
+
+Environment knobs: `SOT_ENGINE_BOOTSTRAP=off` disables auto-bootstrap;
+`SOT_ENGINE_TOKEN` / `GH_TOKEN` / `GITHUB_TOKEN` authenticate the pinned
+release download when the mirror requires it.
+
+> Platform note: pinned artifacts exist for darwin-arm64, linux-arm64, and
+> linux-x86_64 today. On any other host, `bootstrap` fails closed with the
+> list of available platforms — the builtin tree-sitter extractor keeps
+> working everywhere.
+
+---
+
 ## 1-Command AI Agent Harness Provisioning (`sotgraph setup`)
 
 `sotgraph` automatically provisions MCP tools, extensions, and SSOT agent rules across all major AI coding harnesses:
@@ -109,11 +205,16 @@ sotgraph setup --harness all --workspace-only
 
 | Harness | Configuration Files & Artifacts | Integration Highlights |
 | :--- | :--- | :--- |
-| **Pi Harness / Oh My Pi (OMP)** | `~/.omp/agent/extensions/sot-graph.ts`<br>`.omp/extensions/sot-graph.ts`<br>`.omp/skills/sot-graph/SKILL.md`<br>`.omp/RULES.md`<br>`.omp/rules/sot-graph.md` | Full `xd://sot_*` tool devices, SSOT system prompt rules, and background subagent knowledge reuse |
+| **Pi Harness / Oh My Pi (OMP)** | `~/.omp/agent/extensions/sotgraph.ts`<br>`.omp/extensions/sotgraph.ts`<br>`.omp/skills/sotgraph/SKILL.md`<br>`.omp/RULES.md`<br>`.omp/rules/sotgraph.md` | Full `xd://sot_*` tool devices, SSOT system prompt rules, and background subagent knowledge reuse |
 | **Claude Code & Cursor** | `~/.claude/CLAUDE.md`<br>`.claude/CLAUDE.md` | SSOT Knowledge Reuse Protocol, Blast Radius Pre-Check, and Token-Bounded Context packaging |
-| **Google Antigravity** | `~/.gemini/GEMINI.md`<br>`.gemini/GEMINI.md`<br>`.gemini/skills/sot-graph/SKILL.md` | Single-Source-of-Truth directives, pure-read search, and architectural fact bundles |
-| **OpenCode** | `~/.config/opencode/opencode.json`<br>`~/.config/opencode/skill/sot-graph/SKILL.md`<br>`~/.config/opencode/plugins/sot-graph/index.ts`<br>`.opencode/opencode.json`<br>`.opencode/skills/sot-graph/SKILL.md` | OpenCode skill integration, local MCP server configuration, and file permissions |
-| **ZCode IDE** | `~/.zcode/config.json`<br>`~/.zcode/skills/sot-graph/SKILL.md`<br>`~/.zcode/commands/sot-*.md`<br>`.zcode/config.json`<br>`.zcode/skills/sot-graph/SKILL.md`<br>`.zcode/commands/sot-*.md` | MCP server registration, slash command suite (`/sot-search`, `/sot-map`, `/sot-explore`, `/sot-usages`, `/sot-rename`), and IDE skill |
+| **Google Antigravity** | `~/.gemini/GEMINI.md`<br>`.gemini/GEMINI.md`<br>`.gemini/skills/sotgraph/SKILL.md` | Single-Source-of-Truth directives, pure-read search, and architectural fact bundles |
+| **OpenCode** | `~/.config/opencode/opencode.json`<br>`~/.config/opencode/skill/sotgraph/SKILL.md`<br>`~/.config/opencode/plugins/sotgraph/index.ts`<br>`.opencode/opencode.json`<br>`.opencode/skills/sotgraph/SKILL.md` | OpenCode skill integration, local MCP server configuration, and file permissions |
+| **ZCode IDE** | `~/.zcode/config.json`<br>`~/.zcode/skills/sotgraph/SKILL.md`<br>`~/.zcode/commands/sot-*.md`<br>`.zcode/config.json`<br>`.zcode/skills/sotgraph/SKILL.md`<br>`.zcode/commands/sot-*.md` | MCP server registration, slash command suite (`/sot-search`, `/sot-map`, `/sot-explore`, `/sot-usages`, `/sot-rename`), and IDE skill |
+
+Legacy artifacts from pre-rename setups (`sot-graph.ts` extensions,
+`skills/sot-graph/`, `rules/sot-graph.md`, MCP server keys named `sot-graph`)
+are migrated or removed automatically by `sotgraph setup` — foreign files with
+the same names are never touched.
 
 ### Native OMP/OpenCode Adapter Safety
 

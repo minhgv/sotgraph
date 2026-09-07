@@ -1,17 +1,17 @@
-# SOT-Graph Capability Matrix & Trust Ceilings
+# sotgraph Capability Matrix & Trust Ceilings
 
-This document defines the verified technical capabilities, language support tiers, provider integration boundaries, trust ceilings, and known architectural gaps for **SOT-Graph v0.3.0**.
+This document defines the verified technical capabilities, language support tiers, provider integration boundaries, trust ceilings, and known architectural gaps for **sotgraph v0.3.0**.
 
 ---
 
 ## 1. Architectural Model & Verification Philosophy
 
-SOT-Graph operates as a **Verified Code Evidence and Impact-Assurance Layer**. It differentiates itself from traditional code indexers by enforcing strict verification invariants before elevating candidate edges to verified assertions:
+sotgraph operates as a **Verified Code Evidence and Impact-Assurance Layer**. It differentiates itself from traditional code indexers by enforcing strict verification invariants before elevating candidate edges to verified assertions:
 
 1. **Physical Filesystem as Single Source of Truth (SSOT)**: Filesystem state, content hashes, and line spans supersede all cached or external provider metadata.
 2. **Deterministic Evidence Verification**: Candidate symbols, calls, and relations are verified against current worktree source code, snapshot fingerprints, and lexical declaration spans.
-3. **Fail-Closed Assurance**: If coverage is incomplete, parse gaps exist, or ambiguity remains unresolved, SOT-Graph abstains or issues `PARTIAL`/`HEURISTIC` verdicts rather than generating unverified positive or negative claims.
-4. **Honest Scope Ceilings**: SOT-Graph guarantees bounded impact assurance within the verified AST/compiler scope; it does not claim unbounded runtime completeness over dynamic reflection or metaprogramming.
+3. **Fail-Closed Assurance**: If coverage is incomplete, parse gaps exist, or ambiguity remains unresolved, sotgraph abstains or issues `PARTIAL`/`HEURISTIC` verdicts rather than generating unverified positive or negative claims.
+4. **Honest Scope Ceilings**: sotgraph guarantees bounded impact assurance within the verified AST/compiler scope; it does not claim unbounded runtime completeness over dynamic reflection or metaprogramming.
 
 ---
 
@@ -119,7 +119,7 @@ UNVERIFIABLE   ──> Target or file is outside active indexed boundary or unpa
 
 ## 6. Known Architectural Gaps & Boundary Handling
 
-SOT-Graph enforces honest, fail-closed handling when encountering language features that transcend static closed-world AST analysis:
+sotgraph enforces honest, fail-closed handling when encountering language features that transcend static closed-world AST analysis:
 
 ### 6.1 Dynamic Dispatch & Polymorphism
 - **Gap**: Virtual method invocation on runtime-injected interfaces or abstract base types without concrete type derivation.
@@ -150,5 +150,5 @@ To prevent accidental breakage of public interfaces, asserting **"0 callers"** o
 5. **No Truncation**: Output hard caps were not triggered during evidence collection.
 6. **No Intersecting Dynamic Gaps**: The target symbol does not lie within a reflection or dynamic dispatch boundary.
 
-If any single condition is unfulfilled, SOT-Graph outputs:
+If any single condition is unfulfilled, sotgraph outputs:
 > *"No callers found within reported scope and active provider capabilities; completeness is unproven beyond verified AST boundaries."*

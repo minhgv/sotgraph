@@ -1,8 +1,8 @@
-# Báo Cáo So Sánh Chuyên Sâu: Đánh Giá Tác Động Thay Đổi (Change Impact Analysis) & Phân Loại Rủi Ro giữa SOT-Graph, GitNexus, CodeGraph và Codebase-Memory-MCP
+# Báo Cáo So Sánh Chuyên Sâu: Đánh Giá Tác Động Thay Đổi (Change Impact Analysis) & Phân Loại Rủi Ro giữa sotgraph, GitNexus, CodeGraph và Codebase-Memory-MCP
 
 > **Tài liệu Phân tích Kỹ thuật & Đối chiếu Khung Đánh giá Tác động (CIA Framework Benchmark)**  
 > **Phiên bản:** 1.0.0  
-> **Phạm vi đối chiếu:** `sot-graph`, `gitnexus`, `codegraph`, `codebase-memory-mcp`.  
+> **Phạm vi đối chiếu:** `sotgraph`, `gitnexus`, `codegraph`, `codebase-memory-mcp`.  
 > **Đối tượng:** Software Architects, Tech Leads, Security Engineers, AI Coding Agent Developers.
 
 ---
@@ -10,7 +10,7 @@
 ## 📑 Mục Lục
 1. [Bối cảnh & Tóm tắt Điều hành](#1-bối-cảnh--tóm-tắt-điều-hành)
 2. [Chi tiết Kiến trúc & Phương pháp Đánh giá của Từng Hệ thống](#2-chi-tiết-kiến-trúc--phương-pháp-đánh-giá-của-từng-hệ-thống)
-   - [2.1. SOT-Graph: Đa Tầng, Chuẩn Hóa Điểm Định Lượng & Rào Chắn Nghiêm Ngặt](#21-sot-graph-đa-tầng-chuẩn-hóa-điểm-định-lượng--rào-chắn-nghiêm-ngặt)
+   - [2.1. sotgraph: Đa Tầng, Chuẩn Hóa Điểm Định Lượng & Rào Chắn Nghiêm Ngặt](#21-sotgraph-đa-tầng-chuẩn-hóa-điểm-định-lượng--rào-chắn-nghiêm-ngặt)
    - [2.2. GitNexus: Bán Kính Nổ Theo Tầng Sâu & Trọng Số Tin Cậy](#22-gitnexus-bán-kính-nổ-theo-tầng-sâu--trọng-số-tin-cậy)
    - [2.3. CodeGraph: Duyệt Đồ Thị Thuần Túy & Nguyên Tắc "Honest Edges"](#23-codegraph-duyệt-đồ-thị-thuần-túy--nguyên-tắc-honest-edges)
    - [2.4. Codebase-Memory-MCP: Lập Bản Đồ Diff Siêu Tốc & Gắn Nhãn Rủi Ro 4 Cấp](#24-codebase-memory-mcp-lập-bản-đồ-diff-siêu-tốc--gắn-nhãn-rủi-ro-4-cấp)
@@ -49,14 +49,14 @@ flowchart TD
         end
 
         subgraph SOTGraph_Cat ["4. Multi-Tier Formal Scoring"]
-            SG["SOT-Graph"]
+            SG["sotgraph"]
             SG_D["Công thức chuẩn hóa 0-100<br/>Gaussian Cutoff cho God Nodes<br/>NIST/OWASP Path Rules<br/>Hard Gates cho AI Agent"]
         end
     end
 ```
 
 ### Tóm tắt nhanh:
-1. **`sot-graph`**: Sở hữu hệ thống đánh giá tác động **toàn diện và có cơ sở toán học / tiêu chuẩn bảo mật khắt khe nhất** (kết hợp Tiền kiểm pre-merge 0-100 điểm, Hồi cứu commit history, Chẩn đoán kiến trúc vĩ mô phân phối chuẩn Gaussian, và Rào chắn Scope Receipts P8).
+1. **`sotgraph`**: Sở hữu hệ thống đánh giá tác động **toàn diện và có cơ sở toán học / tiêu chuẩn bảo mật khắt khe nhất** (kết hợp Tiền kiểm pre-merge 0-100 điểm, Hồi cứu commit history, Chẩn đoán kiến trúc vĩ mô phân phối chuẩn Gaussian, và Rào chắn Scope Receipts P8).
 2. **`gitnexus`**: Tập trung vào **độ sâu lan tỏa (d = 1, 2, 3) và tác động lên luồng nghiệp vụ (Business Processes)**, gắn điểm tin cậy phần trăm (*confidence score*) cho từng liên kết để loại trừ quan hệ mập mờ.
 3. **`codebase-memory-mcp`**: Tối ưu hóa **tốc độ thực thi siêu nhanh (sub-millisecond)** bằng binary tĩnh viết bằng C/Go, tự động quét Git diff chưa commit và gán nhãn rủi ro 4 mức (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`) dựa trên độ sâu gọi và các điểm nóng (*hotspots*).
 4. **`codegraph`**: Tiếp cận theo hướng **đo đạc hình học thuần túy (Graph Traversal Metrics)**, trả về số lượng caller, số file bị chạm trong 3 hops và file test liên quan; **hoàn toàn không có bộ chấm điểm hay phân loại mức độ rủi ro**.
@@ -64,9 +64,9 @@ flowchart TD
 
 ## 2. Chi tiết Kiến trúc & Phương pháp Đánh giá của Từng Hệ thống
 
-### 2.1. SOT-Graph: Đa Tầng, Chuẩn Hóa Điểm Định Lượng & Rào Chắn Nghiêm Ngặt
+### 2.1. sotgraph: Đa Tầng, Chuẩn Hóa Điểm Định Lượng & Rào Chắn Nghiêm Ngặt
 
-SOT-Graph (Single Source of Truth Knowledge Graph) triển khai cơ chế CIA theo 3 cơ chế độc lập nhưng tương hỗ (được định nghĩa chi tiết tại `docs/SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md`):
+sotgraph (Single Source of Truth Knowledge Graph) triển khai cơ chế CIA theo 3 cơ chế độc lập nhưng tương hỗ (được định nghĩa chi tiết tại `docs/SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md`):
 
 #### A. Tiền kiểm Mã Nguồn (`sotgraph diff-impact` / `xd://mcp__sot_graph_sot_diff_impact`)
 - **Đầu vào:** Working tree chưa commit, staged diff, hoặc commit range (`git diff`).
@@ -164,7 +164,7 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
 
 ## 3. Bảng Đối Chiếu Kỹ Thuật 10 Chiều (10-Dimension Architectural Comparison Matrix)
 
-| # | Chiều Kỹ Thuật (Dimension) | **SOT-Graph** | **GitNexus** | **CodeGraph** | **Codebase-Memory-MCP** |
+| # | Chiều Kỹ Thuật (Dimension) | **sotgraph** | **GitNexus** | **CodeGraph** | **Codebase-Memory-MCP** |
 | :---: | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Ngôn ngữ & Runtime Engine** | Python 3.10+ / Embedded SQLite WAL | TypeScript / Node.js + WASM | TypeScript / Node.js (100% Local) | Single Static Binary (C / Go) |
 | **2** | **Phân tích Diff Chưa Commit (Pre-merge CIA)** | **CÓ** (`sotgraph diff-impact` / `xd://mcp__...`) | **CÓ** (`gitnexus detect-changes`) | **CÓ** (`codegraph affected / impact`) | **CÓ** (`detect_changes`) |
@@ -181,8 +181,8 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
 
 ## 4. So sánh Chuyên sâu về Thuật toán & Mô hình Toán học
 
-### 4.1. Khác biệt giữa Tính điểm Chuẩn hóa (SOT-Graph) vs Phân tầng Độ sâu (GitNexus)
-- **SOT-Graph áp dụng Mô hình Lũy tích Độc lập (Independent Additive Model with Sub-caps):**
+### 4.1. Khác biệt giữa Tính điểm Chuẩn hóa (sotgraph) vs Phân tầng Độ sâu (GitNexus)
+- **sotgraph áp dụng Mô hình Lũy tích Độc lập (Independent Additive Model with Sub-caps):**
   > `Risk Score = min(F × 5, 25) + min(N × 8, 30) + min(C × 4, 25) + min(A × 10, 20)`
   
   *Ưu điểm:* Cho ra một con số vô hướng duy nhất (0 – 100). Dễ dàng cấu hình ngưỡng chặn tự động trong pipeline CI/CD (`if score >= 60 then fail_pipeline`). Tránh hiện tượng một chỉ số cực lớn (ví dụ đổi tên 1 file làm ảnh hưởng 100 callers) làm che lấp các chiều rủi ro khác nhờ cơ chế điểm trần (*sub-caps*).
@@ -192,7 +192,7 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
   *Ưu điểm:* Rất trực quan cho lập trình viên và AI Agent khi tái cấu trúc mã nguồn. Agent biết chính xác phải sửa chữ ký hàm ở đâu (`d = 1`) và chỉ cần kiểm tra test ở đâu (`d = 3`).
 
 ### 4.2. Cơ sở Khoa học và Tiêu chuẩn Bảo mật
-- **SOT-Graph** được thiết kế bám sát các tiêu chuẩn nghiên cứu khoa học:
+- **sotgraph** được thiết kế bám sát các tiêu chuẩn nghiên cứu khoa học:
   - *Microsoft Research (Nagappan & Ball - ICSE 2005):* Chứng minh tương quan giữa mức độ phân tán code churn với tỷ lệ lỗi sau phát hành.
   - *Just-In-Time Quality Assurance (Kamei et al. - IEEE TSE 2013):* Đánh giá rủi ro trực tiếp trên từng delta thay vì toàn bộ repository.
   - *NIST SP 800-218 (Secure Software Development Framework - SSDF):* Giám sát nghiêm ngặt các thay đổi chạm vào tệp cấu hình triển khai, phân quyền và cơ sở dữ liệu.
@@ -207,7 +207,7 @@ CodeGraph (`colbymchenry/codegraph`) là giải pháp Code Knowledge Graph tập
 flowchart TD
     Start["Nhu cầu Phân tích Tác động Thay đổi (CIA)"] --> Q1{"Mục tiêu chính của bạn là gì?"}
 
-    Q1 -->|"Rào chắn CI/CD, Chặn Agent phá hỏng code, Chuẩn hóa rủi ro định lượng"| SG_Choice["Lựa chọn: SOT-Graph"]
+    Q1 -->|"Rào chắn CI/CD, Chặn Agent phá hỏng code, Chuẩn hóa rủi ro định lượng"| SG_Choice["Lựa chọn: sotgraph"]
     Q1 -->|"Khảo sát trực quan trên Web, Phân tích luồng nghiệp vụ theo độ sâu d=1,2,3"| GN_Choice["Lựa chọn: GitNexus"]
     Q1 -->|"Cần tốc độ cực nhanh < 1ms, Binary nhẹ không phụ thuộc runtime"| CBM_Choice["Lựa chọn: Codebase-Memory-MCP"]
     Q1 -->|"Dự án đa ngôn ngữ React Native/Swift, Cần quan hệ chính xác Honest Edges"| CG_Choice["Lựa chọn: CodeGraph"]
@@ -225,15 +225,15 @@ Trong một dự án quy mô lớn, các công cụ trên có thể phối hợp
 2. **Giai đoạn Thực thi & Sửa mã (Active Coding Loop):**
    - Sử dụng **`codebase-memory-mcp`** để truy vấn ký hiệu tức thời (< 1ms) với lượng tiêu thụ token tối thiểu.
 3. **Giai đoạn Nghiệm thu, Kiểm soát Rủi ro & Gatekeeper (Verification & Pre-merge Gate):**
-   - Bắt buộc kích hoạt **`sot-graph` (`sotgraph diff-impact`)** để tính điểm rủi ro 0 – 100, khóa hợp đồng API Frontend-Backend, phát hiện toàn bộ test suites cần chạy, và phát hành Scope Receipt đảm bảo AI Agent không bỏ sót lỗi tiềm ẩn.
+   - Bắt buộc kích hoạt **`sotgraph` (`sotgraph diff-impact`)** để tính điểm rủi ro 0 – 100, khóa hợp đồng API Frontend-Backend, phát hiện toàn bộ test suites cần chạy, và phát hành Scope Receipt đảm bảo AI Agent không bỏ sót lỗi tiềm ẩn.
 
 ---
 
 ## 6. Tài liệu Tham chiếu Chéo
-- 📘 **Báo cáo Khung Đánh giá Rủi ro SOT-Graph:** [`docs/SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md`](SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md)
-- ⚖️ **So sánh Chi tiết GitNexus vs SOT-Graph:** [`docs/GITNEXUS_VS_SOT_GRAPH.md`](GITNEXUS_VS_SOT_GRAPH.md)
-- 📊 **So sánh Đa bên SOT-Graph vs Graphify vs GitNexus:** [`docs/COMPARISONS.md`](COMPARISONS.md)
-- 🏛️ **Báo cáo Kiến trúc Tổng thể SOT-Graph:** [`docs/ARCHITECTURE_REPORT.md`](ARCHITECTURE_REPORT.md)
+- 📘 **Báo cáo Khung Đánh giá Rủi ro sotgraph:** [`docs/SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md`](SOT_GRAPH_IMPACT_ASSESSMENT_REPORT.md)
+- ⚖️ **So sánh Chi tiết GitNexus vs sotgraph:** [`docs/GITNEXUS_VS_SOT_GRAPH.md`](GITNEXUS_VS_SOT_GRAPH.md)
+- 📊 **So sánh Đa bên sotgraph vs Graphify vs GitNexus:** [`docs/COMPARISONS.md`](COMPARISONS.md)
+- 🏛️ **Báo cáo Kiến trúc Tổng thể sotgraph:** [`docs/ARCHITECTURE_REPORT.md`](ARCHITECTURE_REPORT.md)
 
 ---
-*Bản quyền tài liệu thuộc về Dự án SOT-Graph (Single Source of Truth Knowledge Graph). Biên soạn năm 2026.*
+*Bản quyền tài liệu thuộc về Dự án sotgraph (Single Source of Truth Knowledge Graph). Biên soạn năm 2026.*

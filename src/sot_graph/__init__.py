@@ -13,7 +13,7 @@ from .evidence import (
 from .extractor import parse_file_graph
 from .reconciler import Reconciler
 from .verifier import TrustVerifier, VerificationResult
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 __all__ = [
     "Database",

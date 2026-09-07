@@ -8,7 +8,7 @@ The prior checkout is not a dependency and must not be modified by migration wor
 The executable is now **`sotgraph`**, with no legacy alias installed. This is an
 intentional command-line breaking change: update automation and regenerate
 harness configuration with `sotgraph setup`. It avoids replacing the old CLI in
-another environment. The distribution `sot-graph`, import `sot_graph`, `.sot`
+another environment. The distribution `sotgraph`, import `sot_graph`, `.sot`
 storage, managed configuration names, MCP tool/resource identifiers and harness
 skill names remain compatibility APIs.
 They are not obsolete repository links.

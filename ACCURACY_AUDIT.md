@@ -1,4 +1,4 @@
-# SOT-Graph Precision & Accuracy Audit Report
+# sotgraph Precision & Accuracy Audit Report
 
 **Audit Target Baseline:** `d6706f641be58405891bac7011686bb23fc89d8d`  
 **Current Version:** v0.3.0  
@@ -9,11 +9,11 @@
 
 ## 1. Executive Summary
 
-A comprehensive, precision-first accuracy overhaul of the SOT-Graph codebase was performed across parser, reconciler, verifier, SCIP importer, context pack, and response envelope components.
+A comprehensive, precision-first accuracy overhaul of the sotgraph codebase was performed across parser, reconciler, verifier, SCIP importer, context pack, and response envelope components.
 
 All known baseline defect categories (false positive edges from shadowed parameter/local bindings in Python, comment string exact span false assignments, JIT reconcile stale candidate leakage upon node deletion, untrusted instruction injection in context packing, and SCIP caller symbol attribution) were identified, systematically isolated with failing regression tests, and repaired.
 
-The independent ground-truth evaluation suite (consisting of **1,098 ground-truth items: 858 positive relations and 240 negative relations** across Python, TypeScript, Go, Java, and Rust) verifies that SOT-Graph achieves **100.00% Strict Precision**, **91.72% Strict Recall**, **95.68% F1-Score**, and **0.00% False Positive Rate (100.00% Negative Accuracy)**.
+The independent ground-truth evaluation suite (consisting of **1,098 ground-truth items: 858 positive relations and 240 negative relations** across Python, TypeScript, Go, Java, and Rust) verifies that sotgraph achieves **100.00% Strict Precision**, **91.72% Strict Recall**, **95.68% F1-Score**, and **0.00% False Positive Rate (100.00% Negative Accuracy)**.
 
 ---
 
@@ -86,4 +86,4 @@ The independent ground-truth evaluation suite (consisting of **1,098 ground-trut
 
 **VERDICT: `GO`**
 
-SOT-Graph v0.3.0 is verified as a precision-first code compass for autonomous AI agents. The multi-provider graph, JIT verifier, AST scope analyzers, and context pack mechanisms satisfy all precision gates with **zero false positive hallucinations (100.00% precision)**.
+sotgraph v0.3.0 is verified as a precision-first code compass for autonomous AI agents. The multi-provider graph, JIT verifier, AST scope analyzers, and context pack mechanisms satisfy all precision gates with **zero false positive hallucinations (100.00% precision)**.

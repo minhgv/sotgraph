@@ -1,4 +1,4 @@
-# SOT-Graph — Audit Bugs & Kế hoạch Đánh giá Tự động theo Module
+# sotgraph — Audit Bugs & Kế hoạch Đánh giá Tự động theo Module
 
 > Ngày: 2026-09-03 · Commit base: `7dd9e54` · Baseline: **932/932 test pass** (101s) — mọi finding dưới đây đều là defect mà bộ test hiện tại *chưa phát hiện*, được xác minh trực tiếp trên code.
 
@@ -43,7 +43,7 @@ Kết quả audit: **~20 P1** (hành vi sai) và **~45 P2** (perf/robustness). P
 11. **`cli.py:2096` + `diff_impact.py:256-263` — default `HEAD~1` phân tích nhầm commit.** Single target diff `target~1..target` → lệnh mặc định chạy `HEAD~2..HEAD~1`, tức blast radius của commit *lùi 2*, không phải commit mới nhất hay working tree.
 12. **`diff_impact.py:378` — dòng content chứa chữ "differ" bị coi là binary.** `"differ" in line` chạy trên mọi dòng diff (kể cả `+`/`-`), một dòng log/doc chứa "differ" tắt toàn bộ hunk còn lại của file đó → under-report blast radius.
 13. **`diff_impact.py:1006-1007,1030-1031,1136` — substring matching thổi phồng impact.** API endpoint match `LIKE '%sym%'` (`get` khớp `getUserController`); test discovery `path LIKE '%test%'` khớp `src/latest/`, `contest.py` — mâu thuẫn với `_is_test_path()` chặt hơn ngay trong cùng file.
-14. **`solution.py:426-438,240,476` — nội dung bịa trình bày như "SOT-Graph Verified AST Slicer".** Symbol không tìm thấy → trả template 10 bước thanh toán Unipay (msisdn/BCCS/POSTPAID_LIMIT_EXCEEDED) cho *bất kỳ* symbol nào; `_scan_related_features` chèn row "Webhook & Sync" bịa. Đây là đúng failure mode mà tool tồn tại để chống lại. *(Probe đã xác nhận: BUG_PRESENT.)*
+14. **`solution.py:426-438,240,476` — nội dung bịa trình bày như "sotgraph Verified AST Slicer".** Symbol không tìm thấy → trả template 10 bước thanh toán Unipay (msisdn/BCCS/POSTPAID_LIMIT_EXCEEDED) cho *bất kỳ* symbol nào; `_scan_related_features` chèn row "Webhook & Sync" bịa. Đây là đúng failure mode mà tool tồn tại để chống lại. *(Probe đã xác nhận: BUG_PRESENT.)*
 15. **`repo_map.py:133` — `_estimate_tokens` dùng hằng số chưa định nghĩa `_CHARS_PER_TOKEN`** → NameError khi gọi (hiện là dead code nhưng là bẫy sống). *(Probe: BUG_PRESENT.)*
 
 ### 2.5 surfaces

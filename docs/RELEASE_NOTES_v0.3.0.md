@@ -1,4 +1,4 @@
-# SOT-Graph Release Notes — v0.3.0
+# sotgraph Release Notes — v0.3.0
 
 **Release Tag**: `v0.3.0`  
 **Theme**: Verified Code Evidence & Impact-Assurance Layer  
@@ -8,9 +8,9 @@
 
 ## 1. Overview & Vision
 
-SOT-Graph v0.3.0 marks a major architectural evolution: transitioning from a passive structural indexer into an active **Verified Code Evidence and Impact-Assurance Layer** for AI coding agents and autonomous workflows.
+sotgraph v0.3.0 marks a major architectural evolution: transitioning from a passive structural indexer into an active **Verified Code Evidence and Impact-Assurance Layer** for AI coding agents and autonomous workflows.
 
-In complex, multi-language codebases, AI coding agents frequently struggle with hallucinated call sites, unverified caller assumptions, and blind refactoring regressions. SOT-Graph v0.3.0 solves this by introducing deterministic AST verification, snapshot-bound evidence ledgers, multi-provider federation, and formal pre/post-change assurance receipts.
+In complex, multi-language codebases, AI coding agents frequently struggle with hallucinated call sites, unverified caller assumptions, and blind refactoring regressions. sotgraph v0.3.0 solves this by introducing deterministic AST verification, snapshot-bound evidence ledgers, multi-provider federation, and formal pre/post-change assurance receipts.
 
 ---
 
@@ -58,7 +58,7 @@ In complex, multi-language codebases, AI coding agents frequently struggle with 
 - **Risk-Tiered Gating**: Enforces `verify` tier for local private edits and `audit` tier for public API modifications, renames, and deletions.
 
 ### 🤖 P8: OMP Closed-Loop Delivery Workflow
-- Integrated SOT-Graph into Oh My Pi (OMP) as a mandatory code sensor and scope verifier.
+- Integrated sotgraph into Oh My Pi (OMP) as a mandatory code sensor and scope verifier.
 - Established the 8-step delivery loop:
   `Scope Receipt -> Todo Plan -> Source/LSP Confirmation -> Surgical Edit -> Targeted Tests -> Diff-Impact Receipt -> Reconcile -> Reviewer Closure`.
 - Eradicated unqualified claims; enforced honest capability ceilings and fail-closed abstentions.
@@ -74,8 +74,8 @@ In complex, multi-language codebases, AI coding agents frequently struggle with 
 
 ### Via `uv` / `pip`
 ```bash
-# Install or upgrade sot-graph
-uv pip install --upgrade sot-graph
+# Install or upgrade sotgraph
+uv pip install --upgrade sotgraph
 ```
 
 ### Verification
@@ -135,5 +135,5 @@ sot providers lifecycle
 ## 5. Backward Compatibility & Upgrades
 
 - **Schema v8 Compatibility**: Existing `.sot/sot.db` files are fully compatible. No manual SQLite schema migrations are required.
-- **Graceful Degradation**: If external providers (Codebase Memory, SCIP) are unavailable, SOT-Graph automatically falls back to its builtin Tree-sitter AST engine with complete functionality.
+- **Graceful Degradation**: If external providers (Codebase Memory, SCIP) are unavailable, sotgraph automatically falls back to its builtin Tree-sitter AST engine with complete functionality.
 - **User Notes**: Persisted architectural notes (`kind == 'note'`) are preserved across database reconciliations and cache cleanups.

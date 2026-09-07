@@ -10,7 +10,7 @@ wraps it into a dependency-light GitHub workflow (only `gh`, `git`, and
 ## 1. Use the action from another repository
 
 Copy `.github/actions/diff-impact/` into your repo (or reference it after
-checking out sot-graph), then:
+checking out sotgraph), then:
 
 ```yaml
 name: blast-radius
@@ -39,7 +39,7 @@ jobs:
 
 Behavior:
 
-- Installs `sot-graph` from PyPI (`uv tool install`, then `pip`), falling
+- Installs `sotgraph` from PyPI (`uv tool install`, then `pip`), falling
   back to `pip install git+<this repo>` when PyPI is unavailable/lagging.
 - Runs `sotgraph reconcile --workers 4`, then
   `sotgraph diff-impact <base> --format github` (engine steps fail the job).

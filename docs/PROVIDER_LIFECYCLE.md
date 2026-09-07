@@ -30,7 +30,7 @@ Bất biến:
 
 1. **Freeze evidence** — chuyển `provider_policy` sang `builtin_only` cho query mới; ledger giữ nguyên rows cũ.
 2. **Record pre-state** — `sotgraph providers detect --format json > pre.json`.
-3. **Upgrade binary** — cài version mới ngoài sot-graph; không có auto-update.
+3. **Upgrade binary** — cài version mới ngoài sotgraph; không có auto-update.
 4. **Re-probe** — `sotgraph providers detect`: installed + healthy + version mới.
 5. **Contract check** — adapter so version với `contract_version`; lệch → abstain.
 6. **Shadow one query** — chạy đúng MỘT federated query qua CLI; soát `schema_drift`/`abstain` trước khi mở rộng.
