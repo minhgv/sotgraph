@@ -2622,7 +2622,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_diff.add_argument("--depth", type=int, default=2, help="Reverse call graph walk depth (default: 2)")
     p_diff.add_argument("--staged", action="store_true", help="Analyze staged changes (--cached)")
     p_diff.add_argument("--working-tree", action="store_true", help="Analyze unstaged working tree changes")
-    p_diff.add_argument("--auto-reconcile", action="store_true", help="Reconcile knowledge graph before analyzing impact")
+    p_diff.add_argument("--auto-reconcile", action=argparse.BooleanOptionalAction, default=True,
+                        help="Reconcile knowledge graph before analyzing impact (default: on; --no-auto-reconcile to skip)")
     p_diff.add_argument("-o", "--output", default=None, help="Output markdown file path")
     p_diff.add_argument("--json", action="store_true", help="Output raw JSON format")
     p_diff.add_argument("--format", default=None,
@@ -2648,6 +2649,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_log.add_argument("--no-impact", dest="impact", action="store_false", help="Disable knowledge graph symbol impact analysis")
     p_log.add_argument("-o", "--output", default=None, help="Output markdown file path")
     p_log.add_argument("--json", action="store_true", help="Output raw JSON format")
+    # JIT freshness gate for query commands: reconcile only when the
+    # index is stale (default), or force/skip per call.
+    for _p in (p_search, p_exp, p_usg, p_imp, p_map, p_pack, p_trace):
+        _p.add_argument("--reconcile", choices=("auto", "force", "off"), default="auto",
+                        help="JIT freshness gate before this query (default: auto — reconcile only when the index is stale)")
+
     return parser
 
 
@@ -2770,6 +2777,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                           f"{summary.failed} failed.")
                 except (OSError, sqlite3.Error) as exc:
                     print(f"   ⚠ Auto-reconcile failed: {exc}; run `sotgraph reconcile` manually.")
+
+        if args.command in ("search", "explore", "usages", "implementations",
+                            "map", "pack", "trace"):
+            from sot_graph.freshness import ensure_fresh
+            _fresh = ensure_fresh(db_path, root,
+                                  getattr(args, "reconcile", "auto"), writer=db)
+            _rec = _fresh.get("reconcile") or {}
+            if _rec.get("status") == "success" and _rec.get("performed"):
+                print(f"↻ JIT reconcile: {_rec.get('updated', 0)} indexed/updated, "
+                      f"{_rec.get('deleted', 0)} deleted ({_rec.get('duration_ms', 0)} ms)",
+                      file=sys.stderr)
+            elif _rec.get("status") == "failed":
+                print(f"⚠️  JIT reconcile failed ({_rec.get('error', 'unknown')}); "
+                      "answering from the possibly-stale index", file=sys.stderr)
 
         if args.command == "search":
             return cmd_search(args, db, root)

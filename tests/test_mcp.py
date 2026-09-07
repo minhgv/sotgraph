@@ -138,18 +138,25 @@ class TestMcpService(unittest.TestCase):
                 )
 
     def test_diff_impact_reconcile_error_keeps_error_envelope(self):
+        # JIT freshness contract: a failed reconcile NEVER blocks the
+        # query — the response answers from the stale graph and keeps the
+        # error in the graph_freshness envelope.
         with patch(
             "sot_graph.reconciler.Reconciler.reconcile",
             side_effect=RuntimeError("not exposed"),
         ):
-            with self.assertRaises(McpServiceError) as raised:
-                self.service.diff_impact(
-                    target="HEAD",
-                    auto_reconcile=True,
-                    format="json",
-                )
+            response = self.service.diff_impact(
+                target="HEAD",
+                auto_reconcile=True,
+                format="json",
+            )
 
-        self.assertEqual(raised.exception.code, "reconcile_failed")
+        self.assertTrue(response["ok"])
+        self.assertEqual(response["status"], "success")
+        reconcile = response["graph_freshness"]["reconcile"]
+        self.assertFalse(reconcile["performed"])
+        self.assertEqual(reconcile["status"], "failed")
+        self.assertIn("not exposed", reconcile["error"])
 
 
 class TestMcpDebtR5(unittest.TestCase):

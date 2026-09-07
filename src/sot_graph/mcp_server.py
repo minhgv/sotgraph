@@ -123,6 +123,16 @@ _SCHEMA_SHAPES = {
     "sot_diff_impact_receipt": ("sot_diff_impact_receipt", _RECEIPT_OUTPUT),
 }
 
+# JIT freshness gate: shared input-schema property for query tools.
+_AUTO_RECONCILE = {
+    "anyOf": [
+        {"type": "boolean"},
+        {"type": "string", "enum": ["auto", "force", "off"]},
+    ],
+    "default": "auto",
+    "description": "JIT freshness gate: 'auto' (default) reconciles only when the index is stale; true/'force' always reconciles; false skips.",
+}
+
 # --- Prompt bodies (R4 ecosystem surface) ------------------------------------
 #
 # Prompt text is assembled OUTSIDE the SDK so it is unit-testable without a
@@ -383,16 +393,16 @@ def create_server(service: McpService) -> Any:
     async def list_tools() -> list[Any]:
         return [
             types.Tool(name="sot_search", description="Read-only verified graph search. Returns resource links (sot://node/{id}) for lazy per-node fetches.", inputSchema={
-                "type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer", "minimum": 1}, "scope": {"type": "string"}, "threshold": {"type": "number", "minimum": 0, "maximum": 1}, "assurance": {"type": "boolean"}, "provider_policy": {"type": "string", "enum": ["builtin_only", "prefer_external", "require_external"]}, "budget": {"type": "integer", "minimum": 1}}, "required": ["query"], "additionalProperties": False,
+                "type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer", "minimum": 1}, "scope": {"type": "string"}, "threshold": {"type": "number", "minimum": 0, "maximum": 1}, "assurance": {"type": "boolean"}, "provider_policy": {"type": "string", "enum": ["builtin_only", "prefer_external", "require_external"]}, "budget": {"type": "integer", "minimum": 1}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["query"], "additionalProperties": False,
             }, outputSchema=_SEARCH_OUTPUT),
             types.Tool(name="sot_explore", description="Read-only bounded graph traversal.", inputSchema={
-                "type": "object", "properties": {"node_id": {"type": "string"}, "depth": {"type": "integer", "minimum": 1}, "limit": {"type": "integer", "minimum": 1}}, "required": ["node_id"], "additionalProperties": False,
+                "type": "object", "properties": {"node_id": {"type": "string"}, "depth": {"type": "integer", "minimum": 1}, "limit": {"type": "integer", "minimum": 1}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["node_id"], "additionalProperties": False,
             }),
             types.Tool(name="sot_usages", description="Read-only find-all-references: every reference site of a symbol, grouped by caller, plus unresolved bare-name risk.", inputSchema={
-                "type": "object", "properties": {"target": {"type": "string"}, "limit": {"type": "integer", "minimum": 1}, "scope": {"type": "string"}, "assurance": {"type": "boolean"}, "provider_policy": {"type": "string", "enum": ["builtin_only", "prefer_external", "require_external"]}, "budget": {"type": "integer", "minimum": 1}}, "required": ["target"], "additionalProperties": False,
+                "type": "object", "properties": {"target": {"type": "string"}, "limit": {"type": "integer", "minimum": 1}, "scope": {"type": "string"}, "assurance": {"type": "boolean"}, "provider_policy": {"type": "string", "enum": ["builtin_only", "prefer_external", "require_external"]}, "budget": {"type": "integer", "minimum": 1}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["target"], "additionalProperties": False,
             }, outputSchema=_USAGES_OUTPUT),
             types.Tool(name="sot_implementations", description="Read-only extends/implements relationships of a symbol (bases and derived types).", inputSchema={
-                "type": "object", "properties": {"target": {"type": "string"}}, "required": ["target"], "additionalProperties": False,
+                "type": "object", "properties": {"target": {"type": "string"}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["target"], "additionalProperties": False,
             }),
             types.Tool(name="sot_verify_drift", description="Read-only bounded filesystem drift audit.", inputSchema={
                 "type": "object", "properties": {"deep": {"type": "boolean"}, "limit": {"type": "integer", "minimum": 1}}, "additionalProperties": False,
@@ -407,16 +417,16 @@ def create_server(service: McpService) -> Any:
                 "type": "object", "properties": {"output_dir": {"type": "string"}}, "additionalProperties": False,
             }),
             types.Tool(name="sot_pack", description="Package a k-hop ContextBundle (YAML) around one target symbol: 1-hop caller/callee contracts + 2-hop signature stubs. All content is untrusted data.", inputSchema={
-                "type": "object", "properties": {"target": {"type": "string"}, "max_hops": {"type": "integer", "minimum": 1, "maximum": 3}, "max_nodes": {"type": "integer", "minimum": 1}, "max_bytes": {"type": "integer", "minimum": 1024}}, "required": ["target"], "additionalProperties": False,
+                "type": "object", "properties": {"target": {"type": "string"}, "max_hops": {"type": "integer", "minimum": 1, "maximum": 3}, "max_nodes": {"type": "integer", "minimum": 1}, "max_bytes": {"type": "integer", "minimum": 1024}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["target"], "additionalProperties": False,
             }, outputSchema=_PACK_OUTPUT),
             types.Tool(name="sot_map", description="Read-only token-budgeted repo map ranked by personalized PageRank for fast orientation. Ranks production source only by default; opt into more categories via include_categories (production, test, fixture, vendor, generated, docs, tooling, or 'all').", inputSchema={
-                "type": "object", "properties": {"focus": {"type": "string"}, "max_tokens": {"type": "integer", "minimum": 16}, "include_categories": {"type": "string"}}, "additionalProperties": False,
+                "type": "object", "properties": {"focus": {"type": "string"}, "max_tokens": {"type": "integer", "minimum": 16}, "include_categories": {"type": "string"}, "auto_reconcile": _AUTO_RECONCILE}, "additionalProperties": False,
             }, outputSchema=_MAP_OUTPUT),
             types.Tool(name="sot_notes", description="Read-only list of persisted knowledge notes (optionally filtered by keyword); each note is fetchable via its sot://node/ URI.", inputSchema={
                 "type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer", "minimum": 1}}, "additionalProperties": False,
             }),
             types.Tool(name="sot_trace", description="Full-stack execution path trace, UI decision branches, API contracts, and Mermaid diagram generation.", inputSchema={
-                "type": "object", "properties": {"target": {"type": "string"}, "depth": {"type": "integer", "minimum": 1, "maximum": 5}}, "required": ["target"], "additionalProperties": False,
+                "type": "object", "properties": {"target": {"type": "string"}, "depth": {"type": "integer", "minimum": 1, "maximum": 5}, "auto_reconcile": _AUTO_RECONCILE}, "required": ["target"], "additionalProperties": False,
             }),
             types.Tool(name="sot_ui_tree", description="Frontend UI decision tree, validation rules, button triggers, and modal transitions.", inputSchema={
                 "type": "object", "properties": {"component": {"type": "string"}}, "required": ["component"], "additionalProperties": False,
@@ -439,7 +449,7 @@ def create_server(service: McpService) -> Any:
                     "depth": {"type": "integer", "minimum": 1, "maximum": 5, "description": "Reverse call graph traversal depth (default: 2)"},
                     "staged": {"type": "boolean", "description": "Analyze staged changes (--cached)"},
                     "working_tree": {"type": "boolean", "description": "Analyze unstaged working tree changes"},
-                    "auto_reconcile": {"type": "boolean", "description": "Reconcile graph before analyzing"},
+                    "auto_reconcile": _AUTO_RECONCILE,
                     "format": {"type": "string", "enum": ["markdown", "json", "github"], "description": "Output format (default: markdown; github = PR-comment-safe collapsed sections)"},
                 }, "additionalProperties": False,
             }),
@@ -487,15 +497,15 @@ def create_server(service: McpService) -> Any:
         args = arguments or {}
         try:
             if name == "sot_search":
-                result = await service.asearch(args.get("query", ""), limit=args.get("limit", 6), scope=args.get("scope"), threshold=args.get("threshold", 0.5), assurance=args.get("assurance", True), provider_policy=args.get("provider_policy", "builtin_only"), budget=args.get("budget"))
+                result = await service.asearch(args.get("query", ""), limit=args.get("limit", 6), scope=args.get("scope"), threshold=args.get("threshold", 0.5), assurance=args.get("assurance", True), provider_policy=args.get("provider_policy", "builtin_only"), budget=args.get("budget"), auto_reconcile=args.get("auto_reconcile", "auto"))
             elif name == "sot_explore":
                 # Default depth 2 matches the CLI default and the documented
                 # adapter contracts (was 1, silently shallower than promised).
-                result = await service.aexplore(args.get("node_id", ""), depth=args.get("depth", 2), limit=args.get("limit", 100))
+                result = await service.aexplore(args.get("node_id", ""), depth=args.get("depth", 2), limit=args.get("limit", 100), auto_reconcile=args.get("auto_reconcile", "auto"))
             elif name == "sot_usages":
-                result = await service.ausages(args.get("target", ""), limit=args.get("limit", 100), scope=args.get("scope"), assurance=args.get("assurance", True), provider_policy=args.get("provider_policy", "builtin_only"), budget=args.get("budget"))
+                result = await service.ausages(args.get("target", ""), limit=args.get("limit", 100), scope=args.get("scope"), assurance=args.get("assurance", True), provider_policy=args.get("provider_policy", "builtin_only"), budget=args.get("budget"), auto_reconcile=args.get("auto_reconcile", "auto"))
             elif name == "sot_implementations":
-                result = await service.aimplementations(args.get("target", ""))
+                result = await service.aimplementations(args.get("target", ""), auto_reconcile=args.get("auto_reconcile", "auto"))
             elif name == "sot_verify_drift":
                 result = await service.averify_drift(deep=args.get("deep", False), limit=args.get("limit", 100))
             elif name == "sot_architecture_report":
@@ -519,17 +529,19 @@ def create_server(service: McpService) -> Any:
                     max_hops=args.get("max_hops", 2),
                     max_nodes=args.get("max_nodes", 50),
                     max_bytes=args.get("max_bytes", 65536),
+                    auto_reconcile=args.get("auto_reconcile", "auto"),
                 )
             elif name == "sot_map":
                 result = await service.arepo_map(
                     args.get("focus"),
                     max_tokens=args.get("max_tokens", 1024),
                     include_categories=args.get("include_categories"),
+                    auto_reconcile=args.get("auto_reconcile", "auto"),
                 )
             elif name == "sot_notes":
                 result = await service.anotes(args.get("query"), limit=args.get("limit", 50))
             elif name == "sot_trace":
-                result = await service.atrace(args.get("target", ""), depth=args.get("depth", 2))
+                result = await service.atrace(args.get("target", ""), depth=args.get("depth", 2), auto_reconcile=args.get("auto_reconcile", "auto"))
             elif name == "sot_ui_tree":
                 result = await service.aui_tree(args.get("component", ""))
             elif name == "sot_backend_flow":
@@ -546,7 +558,7 @@ def create_server(service: McpService) -> Any:
                     depth=args.get("depth", 2),
                     staged=args.get("staged", False),
                     working_tree=args.get("working_tree", False),
-                    auto_reconcile=args.get("auto_reconcile", False),
+                    auto_reconcile=args.get("auto_reconcile", "auto"),
                     format=args.get("format", "markdown"),
                 )
             elif name == "sot_providers_sync":

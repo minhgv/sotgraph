@@ -362,6 +362,17 @@ class McpService:
             writer.close()
 
 
+    def _freshness(self, auto_reconcile: Any) -> Dict[str, Any]:
+        """Staleness-gated JIT reconcile envelope (never raises)."""
+        from sot_graph.freshness import ensure_fresh
+        return ensure_fresh(self.db_path, self.project_root, auto_reconcile)
+
+    def _run_fresh(self, operation: Any, fresh: Dict[str, Any]) -> Any:
+        out = self._run(operation)
+        if isinstance(out, dict):
+            out.setdefault("graph_freshness", fresh)
+        return out
+
     def _bounded(self, value: Any, maximum: int, default: int = 1) -> int:
         try:
             number = int(value)
@@ -757,7 +768,7 @@ class McpService:
     def search(self, query: str, *, limit: int = 6, scope: Optional[str] = None,
                threshold: float = 0.5, assurance: bool = True,
                provider_policy: str = "builtin_only",
-               budget: Optional[int] = None) -> Dict[str, Any]:
+               budget: Optional[int] = None, auto_reconcile: Any = "auto") -> Dict[str, Any]:
         if not isinstance(query, str) or not query.strip():
             raise McpServiceError("invalid_argument", "query must not be empty")
         if len(query) > 1000:
@@ -778,6 +789,7 @@ class McpService:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1") from exc
         if not 0 <= threshold <= 1:
             raise McpServiceError("invalid_argument", "threshold must be between 0 and 1")
+        fresh = self._freshness(auto_reconcile)
         managed_fields = _managed_read_fields(
             self.project_root, "search", query, provider_policy, limit, scope,
         )
@@ -910,16 +922,18 @@ class McpService:
                              "not a repo-coverage or exhaustiveness claim"),
                 },
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def explore(self, node_id: str, *, depth: int = 2, limit: int = 100,
-                cancel_check: Optional[Callable[[], bool]] = None) -> Dict[str, Any]:
+                cancel_check: Optional[Callable[[], bool]] = None,
+                auto_reconcile: Any = "auto") -> Dict[str, Any]:
         if not isinstance(node_id, str) or not node_id.strip():
             raise McpServiceError("invalid_argument", "node_id must not be empty")
         if len(node_id) > 512:
             raise McpServiceError("invalid_argument", "node_id exceeds 512 characters")
         depth = self._bounded(depth, self.limits.explore_depth)
         limit = self._bounded(limit, self.limits.explore_nodes)
+        fresh = self._freshness(auto_reconcile)
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
             row = conn.execute("SELECT id,path,kind,symbol,label,body,keywords,line_start FROM graph_nodes WHERE id = ?", (node_id,)).fetchone()
             if row is None:
@@ -995,7 +1009,7 @@ class McpService:
                 "snapshot": snapshot,
                 "stale_files": stale,
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def _resolve_target_row(self, conn: sqlite3.Connection, target: str) -> sqlite3.Row:
         row = conn.execute(
@@ -1016,7 +1030,7 @@ class McpService:
 
     def usages(self, target: str, *, limit: int = 100, scope: Optional[str] = None,
                assurance: bool = True, provider_policy: str = "builtin_only",
-               budget: Optional[int] = None) -> Dict[str, Any]:
+               budget: Optional[int] = None, auto_reconcile: Any = "auto") -> Dict[str, Any]:
         """Reference sites of a symbol grouped by caller (find-all-references)."""
         if scope is not None and (not isinstance(scope, str) or len(scope) > 4096):
             raise McpServiceError("invalid_argument", "scope exceeds 4096 characters")
@@ -1032,6 +1046,7 @@ class McpService:
             )
         if budget is not None:
             limit = self._bounded(budget, limit)
+        fresh = self._freshness(auto_reconcile)
         managed_fields = _managed_read_fields(
             self.project_root, "usages", target, provider_policy, limit, scope,
         )
@@ -1088,7 +1103,7 @@ class McpService:
                 "stale_files": stale,
             })
         try:
-            return self._run(op)
+            return self._run_fresh(op, fresh)
         except McpServiceError as exc:
             if provider_policy == "builtin_only":
                 raise
@@ -1104,8 +1119,9 @@ class McpService:
                 details=managed_fields,
             ) from None
 
-    def implementations(self, target: str) -> Dict[str, Any]:
+    def implementations(self, target: str, *, auto_reconcile: Any = "auto") -> Dict[str, Any]:
         """extends/implements edges of a symbol, both directions."""
+        fresh = self._freshness(auto_reconcile)
         if not isinstance(target, str) or not target.strip():
             raise McpServiceError("invalid_argument", "target must not be empty")
         if len(target) > 512:
@@ -1132,12 +1148,14 @@ class McpService:
                 "pending_derived": [_pen(e) for e in data["pending_derived"]],
                 "providers": self._providers(conn),
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def repo_map(self, focus: Optional[str] = None, *, max_tokens: int = 1024,
-                 include_categories: Optional[str] = None) -> Dict[str, Any]:
+                 include_categories: Optional[str] = None,
+                 auto_reconcile: Any = "auto") -> Dict[str, Any]:
         """Token-budgeted repo map ranked by personalized PageRank."""
         from sot_graph.repo_map import build_repo_map, parse_include_categories
+        fresh = self._freshness(auto_reconcile)
 
         if focus is not None and not isinstance(focus, str):
             raise McpServiceError("invalid_argument", "focus must be a string")
@@ -1174,7 +1192,7 @@ class McpService:
                 "filters": result["filters"],
                 "providers": self._providers(conn),
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def notes(self, query: Optional[str] = None, *, limit: int = 50) -> Dict[str, Any]:
         """List persisted knowledge notes (optionally filtered by keyword)."""
@@ -1431,8 +1449,10 @@ class McpService:
         max_nodes: int = 50,
         max_bytes: int = 65_536,
         max_tokens: Optional[int] = None,
+        auto_reconcile: Any = "auto",
     ) -> Dict[str, Any]:
         """Build a k-hop ContextBundle (read-only) for agent prompt registers."""
+        fresh = self._freshness(auto_reconcile)
         from sot_graph.pack import PackError, build_bundle, render_yaml
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
@@ -1461,15 +1481,17 @@ class McpService:
                 "limits": bundle["limits"],
                 "providers": self._providers(conn),
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def trace(
         self,
         target: str,
         *,
         depth: int = 2,
+        auto_reconcile: Any = "auto",
     ) -> Dict[str, Any]:
         """Extract Full-Stack execution path, UI decisions, API bindings, and Mermaid diagrams."""
+        fresh = self._freshness(auto_reconcile)
         from sot_graph.trace import trace_fullstack
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
@@ -1483,7 +1505,7 @@ class McpService:
                 "providers": self._providers(conn),
                 **res,
             })
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def ui_tree(
         self,
@@ -1596,7 +1618,7 @@ class McpService:
         self,
         target: str = "HEAD",
         depth: int = 2,
-        auto_reconcile: bool = False,
+        auto_reconcile: Any = "auto",
         format: str = "markdown",
         staged: bool = False,
         working_tree: bool = False,
@@ -1611,9 +1633,9 @@ class McpService:
             format_diff_impact_github,
             format_diff_impact_markdown,
         )
-        reconcile_result = (
-            self._reconcile_before_analysis() if auto_reconcile else None
-        )
+        fresh = self._freshness(auto_reconcile)
+        performed = bool((fresh.get("reconcile") or {}).get("performed"))
+        reconcile_result = fresh.get("reconcile") if performed else None
 
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
@@ -1686,7 +1708,7 @@ class McpService:
                     engine_view(receipt), repo_root=self.project_root,
                 )
             return self._fits_response(payload)
-        return self._run(op)
+        return self._run_fresh(op, fresh)
 
     def scope_receipt(
         self,
