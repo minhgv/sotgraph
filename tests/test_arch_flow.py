@@ -7,6 +7,8 @@ tests are pure in-memory fakes.
 from __future__ import annotations
 
 import argparse
+import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -223,6 +225,30 @@ def test_flow_render_deterministic_and_self_contained(tmp_path: Path) -> None:
         assert "http://" not in h1 and "https://" not in h1 and "fetch(" not in h1
         assert "truncated" not in h1  # uncapped view has no badge
         assert "step" in h1 and "ENTRY" in h1
+    finally:
+        db.close()
+
+
+def test_flow_passport_blob_parsable_and_counts(tmp_path: Path) -> None:
+    db = _seed_db(tmp_path)
+    try:
+        view = build_flow_view(db, "cmd_search", project="p")
+        html = generate_flow_html(db, "cmd_search", project="p")
+        match = re.search(
+            r'<script type="application/json" id="arch-data">(.*?)</script>',
+            html,
+            re.S,
+        )
+        assert match, "passport JSON blob missing from flow HTML"
+        blob = json.loads(match.group(1))
+        assert len(blob) == len(view["nodes"])
+        refs = sum(len(n["in"]) + len(n["out"]) for n in blob)
+        assert refs == 2 * len(view["edges"])
+        by_id = {n["id"]: n for n in blob}
+        cli = by_id["n:cli"]
+        assert len(cli["out"]) == 2 and cli["in"] == []
+        assert cli["step"] == 1 and cli["evidence"] == "src/pkg/cli.py:10"
+        assert "step" in cli and "tier" not in cli
     finally:
         db.close()
 

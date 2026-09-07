@@ -4,6 +4,8 @@ tokens per contract §4.4. Pure in-memory fakes — no DB, no network.
 """
 from __future__ import annotations
 
+import json
+import re
 from typing import Any, Dict, List
 
 import pytest
@@ -11,6 +13,16 @@ import pytest
 from sot_graph.analytics.graph import AnalyticsGraph
 from sot_graph.export.arch_html import build_arch_view, generate_arch_html, render_html, validate
 from sot_graph.export.arch_layout import CARD_H, CARD_W, layout_tiered, tier_assign
+
+_ARCH_DATA_RE = re.compile(
+    r'<script type="application/json" id="arch-data">(.*?)</script>', re.S
+)
+
+
+def _extract_blob(html: str) -> list:
+    match = _ARCH_DATA_RE.search(html)
+    assert match, "passport JSON blob missing from HTML"
+    return json.loads(match.group(1))
 
 
 def _fake_graph() -> AnalyticsGraph:
@@ -121,3 +133,39 @@ def test_fail_closed_on_dangling_edge() -> None:
 def test_verdict_omitted_when_absent() -> None:
     view = build_arch_view(_fake_graph(), "T", "p")
     assert all("verdict" not in n for n in view["nodes"])
+
+
+def test_passport_blob_parsable_and_counts() -> None:
+    view = build_arch_view(_fake_graph(), "T", "p")
+    blob = _extract_blob(render_html(view))
+    assert len(blob) == len(view["nodes"])
+    refs = sum(len(n["in"]) + len(n["out"]) for n in blob)
+    assert refs == 2 * len(view["edges"])
+    by_id = {n["id"]: n for n in blob}
+    # storage:db receives from reconciler, evidence, envelope (calls) + scip
+    # (adapter); sends one imports edge to storage:snapshot.
+    assert len(by_id["storage:db"]["in"]) == 4
+    assert len(by_id["storage:db"]["out"]) == 1
+    assert by_id["cli:run"]["tier"] == "cli"
+    assert {o["node"] for o in by_id["cli:run"]["out"]} == {"cmd_search", "reconciler"}
+
+
+def test_passport_blob_edge_endpoints_use_labels() -> None:
+    view = build_arch_view(_fake_graph(), "T", "p")
+    blob = _extract_blob(render_html(view))
+    db = next(n for n in blob if n["id"] == "storage:db")
+    assert {"kind": "adapter", "node": "scip"} in db["in"]
+    assert {"kind": "imports", "node": "snapshot"} in db["out"]
+
+
+def test_interaction_markup_and_static_js() -> None:
+    html = generate_arch_html(_fake_graph(), title="T", project="p")
+    assert 'id="arch-search"' in html and 'id="search-count"' in html
+    assert 'id="passport"' in html and 'id="passport-close"' in html
+    assert 'data-id="storage:db"' in html
+    assert "data-search=" in html
+    assert '<g class="edge" data-src=' in html
+    assert "edge-chip" in html and "focus-ring" in html
+    assert "@media print" in html
+    assert "prefers-reduced-motion" in html
+    assert not re.search(r"https?://|fetch\(", html)

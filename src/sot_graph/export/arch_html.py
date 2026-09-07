@@ -14,6 +14,7 @@ does not expose verdicts today, so the field is simply omitted when absent.
 from __future__ import annotations
 
 import html as html_lib
+import json
 from typing import Any, Dict, List, Optional, Tuple
 
 from sot_graph.analytics.graph import AnalyticsGraph
@@ -194,7 +195,56 @@ svg { display:block; background:var(--canvas); }
 .lane-label { fill:var(--muted); font-size:10px; letter-spacing:2px;
               text-transform:uppercase; }
 .lane-band { fill:none; stroke:var(--border); stroke-dasharray:4 4; }
+#arch-search { background:var(--surface); color:var(--ink); border:1px solid var(--border);
+               border-radius:6px; padding:6px 10px; font:inherit; font-size:12px;
+               width:220px; }
+#arch-search::placeholder { color:var(--muted); }
+#search-count { color:var(--muted); font-size:11px; min-width:48px; }
+input:focus-visible, #theme-toggle:focus-visible, #passport-close:focus-visible {
+               outline:2px solid #22D3EE; outline-offset:2px; }
+.card { cursor:pointer; }
+.card, .edge { transition:opacity 150ms ease; }
+.card.dim { opacity:0.15; }
+.edge.dim { opacity:0.12; }
+.edge path { transition:stroke-opacity 150ms ease; }
+.edge:hover path { stroke-opacity:0.9; }
+.edge-chip { opacity:0; pointer-events:none; transition:opacity 150ms ease; }
+.edge:hover .edge-chip { opacity:1; }
+.edge-chip rect { fill:var(--surface); stroke:var(--border); }
+.edge-chip text { fill:var(--ink); font-size:10px; text-anchor:middle;
+                  font-family:inherit; letter-spacing:1px; }
+.card .focus-ring { fill:none; stroke:#22D3EE; stroke-width:2; opacity:0;
+                    pointer-events:none; transition:opacity 150ms ease; }
+.card.focused .focus-ring { opacity:1; }
+#passport { position:fixed; top:0; right:0; height:100vh; width:320px; max-width:90vw;
+            background:var(--surface); border-left:1px solid var(--border);
+            padding:16px; overflow-y:auto; z-index:20;
+            transform:translateX(102%); transition:transform 150ms ease; }
+#passport.open { transform:translateX(0); }
+#passport-close { float:right; background:none; border:1px solid var(--border);
+                  border-radius:6px; color:var(--muted); cursor:pointer;
+                  font:inherit; font-size:11px; padding:2px 8px; }
+#passport-close:hover { color:var(--ink); }
+.p-title { font-size:14px; font-weight:700; margin-bottom:12px; word-break:break-all; }
+.p-row { display:flex; gap:8px; font-size:11px; padding:2px 0; }
+.p-k { color:var(--muted); text-transform:uppercase; letter-spacing:1px;
+       min-width:64px; flex-shrink:0; }
+.p-v { word-break:break-all; }
+.p-sec { margin-top:14px; border-top:1px solid var(--border); padding-top:8px; }
+.p-h { color:var(--muted); font-size:10px; letter-spacing:2px;
+       text-transform:uppercase; margin-bottom:4px; }
 @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+@media print {
+  :root { --canvas:#FFFFFF !important; --surface:#FFFFFF !important;
+          --border:#CBD5E1 !important; --ink:#0F172A !important;
+          --muted:#475569 !important; }
+  #theme-toggle, #arch-search, #search-count, #legend, #passport, .badge {
+          display:none !important; }
+  body { background:#FFFFFF; }
+  #stage { overflow:visible; padding:0; }
+  svg { width:100% !important; height:auto !important; }
+  @page { size:landscape; margin:10mm; }
+}
 """
 
 
@@ -253,11 +303,21 @@ def _render_edges(view: Dict[str, Any]) -> List[str]:
             dx = max(20, abs(x2 - x1) // 2)
             path = "M %d %d C %d %d, %d %d, %d %d" % (x1, y1, x1 + dx, y1, x2 - dx, y2, x2, y2)
         dash_attr = ' stroke-dasharray="' + dash + '"' if dash else ""
+        mx, my = (x1 + x2) // 2, (y1 + y2) // 2
+        chip = (
+            '<g class="edge-chip"><rect x="%d" y="%d" width="54" height="16" rx="4"/>'
+            '<text x="%d" y="%d">%s</text></g>'
+            % (mx - 27, my - 8, mx, my + 4, _esc(kind))
+        )
         parts.append(
-            '<path d="' + path + '" fill="none" stroke="' + color
+            '<g class="edge" data-src="' + _esc(e["src"]) + '" data-dst="'
+            + _esc(e["dst"]) + '">'
+            + '<path d="' + path + '" fill="none" stroke="' + color
             + '" stroke-opacity="0.35" stroke-width="1.2" marker-end="url(#arr-'
             + kind + ')"' + dash_attr + "><title>" + _esc(e["src"] + " -" + kind
             + "-> " + e["dst"]) + "</title></path>"
+            + chip
+            + "</g>"
         )
     return parts
 
@@ -298,9 +358,12 @@ def _render_nodes(view: Dict[str, Any]) -> List[str]:
                 % (x + CARD_W // 2, y, color, x + CARD_W // 2, y + 4, color, int(n["step"]))
             )
         parts.append(
-            '<g class="card" tabindex="0">'
+            '<g class="card" tabindex="0" data-id="' + _esc(n["id"])
+            + '" data-search="' + _esc((n["label"] + " " + n["id"]).lower()) + '">'
             + ring
-            + '<rect x="%d" y="%d" width="%d" height="%d" rx="8" stroke="%s"/>'
+            + '<rect class="focus-ring" x="%d" y="%d" width="%d" height="%d" rx="10"/>'
+            % (x - 4, y - 4, CARD_W + 8, CARD_H + 8)
+            + '<rect class="body" x="%d" y="%d" width="%d" height="%d" rx="8" stroke="%s"/>'
             % (x, y, CARD_W, CARD_H, color)
             + "<title>" + _esc(tip) + "</title>"
             + '<text x="%d" y="%d" font-size="11" font-weight="700">%s</text>'
@@ -353,6 +416,149 @@ def _render_lane_labels(view: Dict[str, Any]) -> List[str]:
     return parts
 
 
+def _passport_blob(view: Dict[str, Any]) -> str:
+    """Deterministic JSON payload powering the client-side passport panel.
+
+    Built entirely from the IR in sorted order — the inline JS only reads and
+    displays it, never recomputes. ``</`` is escaped as ``<\\/`` (valid JSON)
+    so the payload can never close its own ``<script>`` tag.
+    """
+    nodes = sorted(view["nodes"], key=lambda n: str(n["id"]))
+    label_of = {str(n["id"]): str(n.get("label") or n["id"]) for n in nodes}
+    incoming: Dict[str, List[Dict[str, str]]] = {str(n["id"]): [] for n in nodes}
+    outgoing: Dict[str, List[Dict[str, str]]] = {str(n["id"]): [] for n in nodes}
+    for e in view["edges"]:
+        src, dst = str(e["src"]), str(e["dst"])
+        kind = str(e.get("kind") or "calls")
+        outgoing.setdefault(src, []).append(
+            {"kind": kind, "node": label_of.get(dst, dst)}
+        )
+        incoming.setdefault(dst, []).append(
+            {"kind": kind, "node": label_of.get(src, src)}
+        )
+    payload: List[Dict[str, Any]] = []
+    for n in nodes:
+        nid = str(n["id"])
+        entry: Dict[str, Any] = {
+            "id": nid,
+            "label": label_of[nid],
+            "layout": str(view.get("layout") or "tiered"),
+            "role": str(n.get("role") or ""),
+            "in": sorted(
+                incoming.get(nid) or [], key=lambda r: (r["kind"], r["node"])
+            ),
+            "out": sorted(
+                outgoing.get(nid) or [], key=lambda r: (r["kind"], r["node"])
+            ),
+        }
+        for key in ("tier", "step", "symbols", "loc", "verdict", "evidence"):
+            if n.get(key) is not None:
+                entry[key] = n[key]
+        payload.append(entry)
+    return json.dumps(payload, sort_keys=True).replace("</", "<\\/")
+
+
+_JS = r"""
+(function(){
+"use strict";
+var doc=document,root=doc.documentElement;
+var DATA={nodes:[]};
+try{DATA=JSON.parse(doc.getElementById("arch-data").textContent);}catch(e){DATA={nodes:[]};}
+var BYID={};
+DATA.nodes.forEach(function(n){BYID[n.id]=n;});
+var tog=doc.getElementById("theme-toggle");
+tog.addEventListener("click",function(){
+  var toLight=root.getAttribute("data-theme")!=="light";
+  root.setAttribute("data-theme",toLight?"light":"dark");
+  tog.textContent=toLight?"\u25d1 DARK":"\u25d0 LIGHT";
+});
+var panel=doc.getElementById("passport"),pbody=doc.getElementById("passport-body");
+function el(tag,cls,text){
+  var e=doc.createElement(tag);
+  if(cls){e.className=cls;}
+  if(text!=null){e.textContent=text;}
+  return e;
+}
+function row(key,val){
+  var d=el("div","p-row");
+  d.appendChild(el("span","p-k",key));
+  d.appendChild(el("span","p-v",String(val)));
+  return d;
+}
+function section(title,items){
+  if(!items||!items.length){return null;}
+  var w=el("div","p-sec");
+  w.appendChild(el("div","p-h",title));
+  items.forEach(function(it){w.appendChild(row(it.kind,it.node));});
+  return w;
+}
+function openPanel(id){
+  var n=BYID[id];
+  if(!n){return;}
+  pbody.textContent="";
+  pbody.appendChild(el("div","p-title",n.label));
+  var m=el("div","p-meta");
+  m.appendChild(row(n.layout==="flow"?"step":"tier",n.layout==="flow"?n.step:(n.tier||"-")));
+  if(n.role){m.appendChild(row("role",n.role));}
+  if(n.symbols!=null){m.appendChild(row("symbols",n.symbols));}
+  if(n.loc!=null){m.appendChild(row("loc",n.loc));}
+  if(n.verdict){m.appendChild(row("verdict",n.verdict));}
+  if(n.evidence){m.appendChild(row("evidence",n.evidence));}
+  pbody.appendChild(m);
+  var sec=section("INCOMING",n.in);
+  if(sec){pbody.appendChild(sec);}
+  sec=section("OUTGOING",n.out);
+  if(sec){pbody.appendChild(sec);}
+  if(!(n.in&&n.in.length)&&!(n.out&&n.out.length)){
+    pbody.appendChild(el("div","p-h","no references"));
+  }
+  panel.classList.add("open");
+}
+function closePanel(){panel.classList.remove("open");}
+var cards=[].slice.call(doc.querySelectorAll(".card"));
+function setActive(card){
+  cards.forEach(function(c){c.classList.toggle("focused",c===card);});
+  if(card){openPanel(card.getAttribute("data-id"));}else{closePanel();}
+}
+cards.forEach(function(c){
+  c.addEventListener("click",function(ev){ev.stopPropagation();setActive(c);});
+  c.addEventListener("keydown",function(ev){
+    if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();setActive(c);}
+  });
+});
+doc.getElementById("stage").addEventListener("click",function(){setActive(null);});
+doc.getElementById("passport-close").addEventListener("click",function(ev){
+  ev.stopPropagation();setActive(null);
+});
+var input=doc.getElementById("arch-search"),counter=doc.getElementById("search-count");
+var edges=[].slice.call(doc.querySelectorAll(".edge"));
+function applySearch(){
+  var q=input.value.trim().toLowerCase(),matched={},m=0;
+  cards.forEach(function(c){
+    var hit=!q||c.getAttribute("data-search").indexOf(q)>=0;
+    c.classList.toggle("dim",!hit);
+    if(hit){matched[c.getAttribute("data-id")]=true;m++;}
+  });
+  edges.forEach(function(g){
+    var keep=q&&matched[g.getAttribute("data-src")]&&matched[g.getAttribute("data-dst")];
+    g.classList.toggle("dim",!!q&&!keep);
+  });
+  counter.textContent=q?m+"/"+cards.length:"";
+}
+input.addEventListener("input",applySearch);
+doc.addEventListener("keydown",function(ev){
+  var tag=(doc.activeElement&&doc.activeElement.tagName)||"";
+  if(ev.key==="/"&&tag!=="INPUT"&&tag!=="TEXTAREA"){
+    ev.preventDefault();input.focus();
+  }else if(ev.key==="Escape"){
+    if(input.value){input.value="";applySearch();}
+    else if(panel.classList.contains("open")){setActive(null);}
+  }
+});
+})();
+"""
+
+
 def render_html(view: Dict[str, Any]) -> str:
     """Render the view to one self-contained HTML string (no external refs)."""
     w, h = int(view["canvas"][0]), int(view["canvas"][1])
@@ -382,12 +588,11 @@ def render_html(view: Dict[str, Any]) -> str:
         + "".join(_render_nodes(view))
         + "</svg>"
     )
-    js = (
-        '<script>(function(){var b=document.getElementById("theme-toggle");'
-        "b.addEventListener(\"click\",function(){var r=document.documentElement;"
-        "var toLight=r.getAttribute(\"data-theme\")!==\"light\";"
-        "r.setAttribute(\"data-theme\",toLight?\"light\":\"dark\");"
-        "b.textContent=toLight?\"\\u25d1 DARK\":\"\\u25d0 LIGHT\";});})();</script>"
+    js = "<script>" + _JS + "</script>"
+    blob = (
+        '<script type="application/json" id="arch-data">'
+        + _passport_blob(view)
+        + "</script>"
     )
     truncation = view.get("truncation") or {}
     badge = ""
@@ -407,9 +612,16 @@ def render_html(view: Dict[str, Any]) -> str:
         '<span class="meta">from: ' + _esc(view.get("generated_from", "")) + "</span>"
         '<span class="meta">' + metrics + "</span>"
         + badge
-        + '<button id="theme-toggle" type="button">&#9680; LIGHT</button></header>'
+        + '<button id="theme-toggle" type="button">&#9680; LIGHT</button>'
+        + '<input id="arch-search" type="search" autocomplete="off" spellcheck="false"'
+        + ' placeholder="Filter (press / )" aria-label="Filter nodes">'
+        + '<span id="search-count" aria-live="polite"></span></header>'
         + _legend_html(flow=flow)
         + '<div id="stage">' + svg + "</div>"
+        + '<aside id="passport" aria-label="Node passport">'
+        + '<button id="passport-close" type="button" aria-label="Close panel">X</button>'
+        + '<div id="passport-body"></div></aside>'
+        + blob
         + js
         + "</body></html>"
     )
