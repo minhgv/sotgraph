@@ -86,3 +86,16 @@ Never upload `dist/sot_graph-*` leftovers — they normalize to the legacy
 - Flip the README "From PyPI" note (remove the "once the first `v*` tag is
   pushed" caveat).
 - Add a `docs/RELEASE_NOTES_vX.Y.Z.md` for user-visible changes.
+
+## Unreleased
+
+- New command `sotgraph arch` renders architecture and flow views as a single
+  self-contained, deterministic HTML file (zero dependencies, offline).
+  - `sotgraph arch [-o architecture.html] [--scope <dir>]` — tiered layout by
+    module role.
+  - `sotgraph arch --flow "<target>" [--depth N] [--max-nodes M]
+    [--lanes module] [-o flow.html]` — top-down flow with step numbers,
+    decision branches, and optional module swimlanes.
+  - Interactions: `/` search, click-to-inspect node passports, dark/light
+    toggle. Unknown flow targets exit 2 without writing a file; truncated
+    views carry a shown/total badge.

@@ -1,6 +1,6 @@
 # Hợp đồng triển khai nhiều giai đoạn — Arch HTML Renderer (`sotgraph arch`)
 
-Ngày chốt: 2026-09-07 · Phương án: A điều chỉnh (đề xuất trong phiên làm việc cùng ngày) · Trạng thái: **đang thực thi**
+Ngày chốt: 2026-09-07 · Phương án: A điều chỉnh (đề xuất trong phiên làm việc cùng ngày) · Trạng thái: **hoàn tất 2026-09-07 (GĐ1–GĐ4) — GĐ5 tùy chọn chưa duyệt**
 
 ## 1. Mục tiêu
 
@@ -83,31 +83,31 @@ ArchView {
 ### Giai đoạn 1 — Nền tảng: IR + tiered layout + HTML tĩnh + CLI
 **Sản phẩm**: `arch_html.py` + `arch_layout.py` (tiered) + subcommand `arch`; render architecture page có node card, edge SVG, header metrics, legend, dark/light toggle; chưa có JS tương tác phức tạp.
 **Nghiệm thu**:
-- [ ] `uv run sotgraph arch -o /tmp/a1.html` trên repo này chạy sạch, file tồn tại, mở offline được.
-- [ ] Determinism: chạy 2 lần → `shasum -a 256` trùng nhau (I3).
-- [ ] `uv run python -m pytest tests/test_arch_html.py tests/test_arch_layout.py -q` — 0 failed.
-- [ ] I1/I2/I7/I9 pass (grep, git diff uv.lock, identity, ruff+pyright scoped).
+- [x] `uv run sotgraph arch -o /tmp/a1.html` trên repo này chạy sạch, file tồn tại, mở offline được.
+- [x] Determinism: chạy 2 lần → `shasum -a 256` trùng nhau (I3).
+- [x] `uv run python -m pytest tests/test_arch_html.py tests/test_arch_layout.py -q` — 0 failed.
+- [x] I1/I2/I7/I9 pass (grep, git diff uv.lock, identity, ruff+pyright scoped).
 
 ### Giai đoạn 2 — Flow mode: trích luồng + layout bậc thang
 **Sản phẩm**: flow IR builder từ trace/explore/be-flow; layout flow (BFS-depth + barycenter + số bước + branch diamond + swimlane); flags `--flow/--depth/--max-nodes/--lanes`; badge truncation + `INSUFFICIENT_SAMPLING`.
 **Nghiệm thu**:
-- [ ] `uv run sotgraph arch --flow "cmd_search" --depth 3 -o /tmp/f1.html` — vẽ đúng đường gọi của một lệnh thật; soi HTML thấy số bước + nhãn cạnh.
-- [ ] Budget: `--max-nodes 5` với target rộng → badge truncation đúng số shown/total.
-- [ ] Target không tồn tại trong index → exit khác 0 kèm thông báo honest (I5), hoặc render với badge INSUFFICIENT_SAMPLING theo thiết kế — chốt: **exit 2 + message**, không sinh file.
-- [ ] Determinism cho flow (I3); pytest thêm ca: >1 entry bị validator chặn (I8).
+- [x] `uv run sotgraph arch --flow "cmd_search" --depth 3 -o /tmp/f1.html` — vẽ đúng đường gọi của một lệnh thật; soi HTML thấy số bước + nhãn cạnh.
+- [x] Budget: `--max-nodes 5` với target rộng → badge truncation đúng số shown/total.
+- [x] Target không tồn tại trong index → exit khác 0 kèm thông báo honest (I5), hoặc render với badge INSUFFICIENT_SAMPLING theo thiết kế — chốt: **exit 2 + message**, không sinh file.
+- [x] Determinism cho flow (I3); pytest thêm ca: >1 entry bị validator chặn (I8).
 
 ### Giai đoạn 3 — Tương tác & polish
 **Sản phẩm**: search dim, passport panel (in/out refs + verdict + evidence), hover nhãn cạnh, focus ring, print stylesheet, prefers-reduced-motion.
 **Nghiệm thu**:
-- [ ] Mở file: `/` focus search, gõ "cli" dim node khác; click node → panel đúng in/out counts khớp DB (`sotgraph usages` đối chiếu 1 node bất kỳ).
-- [ ] Không network call (I2/I4); determinism vẫn giữ (I3).
+- [x] Mở file: `/` focus search, gõ "cli" dim node khác; click node → panel đúng in/out counts khớp DB (`sotgraph usages` đối chiếu 1 node bất kỳ).
+- [x] Không network call (I2/I4); determinism vẫn giữ (I3).
 
 ### Giai đoạn 4 — Validation gate hoàn chỉnh + tests + docs + CI
 **Sản phẩm**: validators đủ điều khoản I8; bộ pytest đầy đủ (determinism, validator fail-closed, budget, honesty, tier heuristic); README mục mới + RELEASE.md; toàn bộ CI xanh trên commit cuối.
 **Nghiệm thu**:
-- [ ] Full suite local: ≥ số test hiện tại + các test mới, 0 failed.
-- [ ] Push main → CI & Release xanh (không cần tag).
-- [ ] Docs nêu đúng cú pháp 2 chế độ; identity audit sạch.
+- [x] Full suite local: ≥ số test hiện tại + các test mới, 0 failed.
+- [x] Push main → CI & Release xanh (không cần tag).
+- [x] Docs nêu đúng cú pháp 2 chế độ; identity audit sạch.
 
 ### Giai đoạn 5 — (tùy chọn, chỉ làm khi user duyệt riêng) MCP `sot_arch` + delta view
 Mở rộng MCP surface để agent gọi trực tiếp; delta view dùng snapshot head_sha. Ngoài phạm vi hợp đồng này.

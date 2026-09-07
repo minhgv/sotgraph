@@ -383,7 +383,20 @@ sotgraph export --format graphrag -o graphrag_dataset.json
 sotgraph export --format obsidian -o .sot/obsidian_vault
 ```
 
-### 9. Git Diff Blast Radius & Commit Risk Analysis
+### 9. Architecture & Flow Views
+Renders a single self-contained, deterministic HTML file — zero dependencies, fully offline (`file://`).
+
+```bash
+# Tiered architecture view of the whole repo (or a --scope subdirectory)
+sotgraph arch [-o architecture.html] [--scope <dir>]
+
+# Flow view of a module/symbol/feature (default depth 3, node budget 60)
+sotgraph arch --flow "<target>" [--depth N] [--max-nodes M] [--lanes module] [-o flow.html]
+```
+
+Interactions: press `/` to search, click a node for its evidence passport, toggle dark/light theme. Honesty: an unknown `--flow` target exits 2 with no file written; when the node budget truncates the view, a badge reports shown/total.
+
+### 10. Git Diff Blast Radius & Commit Risk Analysis
 ```bash
 # Analyze blast radius and upstream caller impact for working tree changes
 sotgraph diff-impact --working-tree
