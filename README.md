@@ -7,10 +7,10 @@
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](pyproject.toml)
 [![SQLite: WAL + FTS5](https://img.shields.io/badge/SQLite-FTS5%20%2B%20WAL-orange.svg)](src/sot_graph/db.py)
 [![Schema: v8 Multi-Provider](https://img.shields.io/badge/Schema-v8%20Multi--Provider-purple.svg)](src/sot_graph/db.py)
-[![Tests: 1014 collected](https://img.shields.io/badge/Tests-1014%20collected-brightgreen.svg)](tests/)
+[![Tests: 2294 collected](https://img.shields.io/badge/Tests-2294%20collected-brightgreen.svg)](tests/)
 [![Quality Gates: Passing](https://img.shields.io/badge/Quality%20Gates-Passing%20(%3E%3D85%25%20Core%20%7C%20%3E%3D90%25%20Receipts)-success.svg)](scripts/quality_gates.sh)
 [![Architecture: Zero-Daemon](https://img.shields.io/badge/Architecture-Zero--Daemon-purple.svg)](#database-architecture--durability)
-[![Tree-Sitter: 10 Grammars](https://img.shields.io/badge/Tree--Sitter-10%20Grammars-success.svg)](src/sot_graph/ts_extract.py)
+[![Tree-Sitter: 21 Grammars](https://img.shields.io/badge/Tree--Sitter-21%20Grammars-success.svg)](src/sot_graph/ts_extract.py)
 
 ---
 
@@ -118,7 +118,7 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 
 ## Polyglot AST Engine (Tree-sitter Grammars)
 
-`sotgraph` includes native concrete syntax tree extractors across 10+ major programming languages:
+`sotgraph` registers 21 tree-sitter grammars (TypeScript and TSX counted separately; GraphQL needs its own package install) across 19 language families, plus the Python stdlib AST tier:
 
 | Language | Extractor Engine | Key AST Constructs |
 | :--- | :--- | :--- |
@@ -132,8 +132,18 @@ It replaces slow, blind, and hallucination-prone text grepping with an increment
 | **PHP** | `tree-sitter-php>=0.23` | Classes, Interfaces, Traits, Enums, Methods, Functions |
 | **Kotlin** | `tree-sitter-kotlin>=0.7` | Classes, Interfaces, Objects, Companion Objects, Extension Functions |
 | **Swift** | `tree-sitter-swift>=0.7` | Protocols, Structs, Classes, Extensions, Actor Declarations |
+| **C** | `tree-sitter-c>=0.23` | Functions, Structs, Unions, Enums, Preprocessor Defines |
+| **C++** | `tree-sitter-cpp>=0.23` | Classes, Namespaces, Templates, Functions, Using Declarations |
+| **Dart** | `tree-sitter-dart>=0.1.0` | Classes, Extensions, Mixins, Enums, Functions |
+| **Scala** | `tree-sitter-scala>=0.26.0` | Classes, Traits, Objects, Case Classes, Def Declarations |
+| **Elixir** | `tree-sitter-elixir>=0.3.0` | Modules, Def Macros, Protocols, Function Heads |
+| **Lua** | `tree-sitter-lua>=0.5.0` | Functions, Local Functions, Table Fields, Methods |
+| **Zig** | `tree-sitter-zig>=1.1.0` | Functions, Structs, Enums, Const Declarations, Tests |
+| **Julia** | `tree-sitter-julia>=0.23.0` | Structs, Functions, Modules, Abstract Types, Macros |
+| **SQL** | `tree-sitter-sql>=0.3.0` | Tables, Views, CREATE Statements, Functions, Indexes |
+| **GraphQL** | `tree-sitter-graphql` (not in the default extra) | Type Definitions, Interfaces, Unions, Enums, Schemas |
 
-*(Other languages such as Ruby, Dart, C/C++ are supported via high-fidelity token state machines).*
+*(Ruby is supported via a high-fidelity token state machine; every language also falls back to the builtin tokenizer tier when its grammar package is not installed).*
 
 ---
 
@@ -170,6 +180,11 @@ sotgraph engine --store ~/.sotgraph/engine-store doctor      # identity + limits
 sotgraph engine --store ~/.sotgraph/engine-store mcp-probe   # stdio handshake probe
 sotgraph engine --store ~/.sotgraph/engine-store rollback    # switch verified digest
 ```
+
+Additional lifecycle subcommands (all store-gated, `sotgraph engine --help`
+for full flags): `import`, `promote`, `uninstall`, `disable`, `config-status`,
+`config-doctor`, `register`, `prepare`, `probe`, `sync`, `search`,
+`runtime-status`.
 
 Environment knobs: `SOT_ENGINE_BOOTSTRAP=off` disables auto-bootstrap;
 `SOT_ENGINE_TOKEN` / `GH_TOKEN` / `GITHUB_TOKEN` authenticate the pinned
@@ -331,8 +346,24 @@ sotgraph providers doctor
 # Synchronize index for a specific provider
 sotgraph providers sync codebase-memory
 
+# Resolve the effective provider for a capability with policy precedence
+sotgraph providers resolve symbols --json
+
+# Show provider lifecycle state (registration, health, last run)
+sotgraph providers lifecycle codebase-memory
+
+# Cross-check builtin graph claims against external provider evidence
+sotgraph providers cross-check [--provider codebase-memory]
+
 # Generate PRE-change bounded impact scope receipt (P7.1)
 sotgraph scope-receipt "Pipeline.process" --depth 2 --change-kind local-body --json
+
+# Inspect stored receipts (P7.1/P7.2) and diff before/after snapshots
+sotgraph receipt show <receipt-id>
+sotgraph receipt diff <before-id> <after-id>
+
+# Lint public trust claims in docs against the claim registry (SG-110)
+sotgraph claims lint
 ```
 
 ### 6. Full-Stack Execution Tracing & Solution Workflows
@@ -381,6 +412,10 @@ sotgraph export --format graphrag -o graphrag_dataset.json
 
 # Export Obsidian Markdown Vault with [[wikilinks]]
 sotgraph export --format obsidian -o .sot/obsidian_vault
+
+# Export raw JSON graph or GraphML (for Gephi/Cytoscape/yEd)
+sotgraph export --format json -o graph.json
+sotgraph export --format graphml -o graph.graphml
 ```
 
 ### 9. Architecture & Flow Views
@@ -389,6 +424,9 @@ Renders a single self-contained, deterministic HTML file — zero dependencies, 
 ```bash
 # Tiered architecture view of the whole repo (or a --scope subdirectory)
 sotgraph arch [-o architecture.html] [--scope <dir>]
+
+# Layered system view: one card per module/package with aggregated edge weights
+sotgraph arch --level module [-o system.html]
 
 # Flow view of a module/symbol/feature (default depth 3, node budget 60)
 sotgraph arch --flow "<target>" [--depth N] [--max-nodes M] [--lanes module] [-o flow.html]
@@ -420,7 +458,7 @@ sotgraph diff-impact HEAD~1 --format github
 
 ## Model Context Protocol (MCP) Server
 
-`sotgraph` exposes 22 structured MCP tools, 2 reusable prompts, and resources over standard I/O for AI coding agents:
+`sotgraph` exposes 23 structured MCP tools, 2 reusable prompts, and resources over standard I/O for AI coding agents:
 
 ```bash
 # Start MCP server over stdio
@@ -437,6 +475,7 @@ sotgraph mcp
 | `sot_usages` | Find indexed references grouped by caller + bare-name shadowing risk | `target` (str) | `limit` (int, default 100), `scope` (str), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
 | `sot_implementations`| Extends and implements type hierarchy relationships | `target` (str) | — |
 | `sot_verify_drift` | Non-destructive filesystem vs database drift check | — | `deep` (bool), `limit` (int) |
+| `sot_cross_check` | Classify builtin graph claims vs external provider evidence (agreements / builtin-only / external-only / conflicts) joined on canonical symbol identity | — | `provider` (str), `sample_limit` (int, 1-500, default 20) |
 | `sot_architecture_report` | Architectural analysis with god nodes and modularity metrics | — | `scope` (str), `min_size` (int), `sigma` (float) |
 | `sot_communities` | Louvain / Label Propagation community detection with cohesion scores | — | `scope` (str), `min_size` (int) |
 | `sot_pack` | ContextBundle (YAML/JSON) with 1-hop contracts and 2-hop signature stubs | `target` (str) | `max_hops` (int, 1-3), `max_nodes` (int), `max_bytes` (int), `max_tokens` (int) |
@@ -515,10 +554,10 @@ machines. sotgraph remains fully functional without the engine (builtin AST extr
 
 ## Verification & Test Suite
 
-The test suite includes **1014 collected tests** covering unit functionality, multi-OS file locking, stateful Hypothesis property testing, fault injection (WAL crash simulation, disk-full ENOSPC simulation, mid-batch connection drops), cross-language AST extractions, and multi-provider trust chain boundary enforcement:
+The test suite includes **2294 collected tests** covering unit functionality, multi-OS file locking, stateful Hypothesis property testing, fault injection (WAL crash simulation, disk-full ENOSPC simulation, mid-batch connection drops), cross-language AST extractions, and multi-provider trust chain boundary enforcement:
 
 ```bash
-# Run full test suite with pytest (1014 collected; 2 win32-only tests skip on macOS/Linux)
+# Run full test suite with pytest (2294 collected; win32-gated suites skip per-platform)
 pytest tests/ -v --strict-markers
 
 # Run end-to-end quality gates script (Ruff + Pyright + Bandit + Pip-Audit + Coverage)
@@ -541,9 +580,10 @@ pytest tests/property/test_invariants.py -v
 `sotgraph` acknowledges and credits the following open-source projects:
 
 1. **[Graphify](https://github.com/voidshard/graphify)** (MIT License): AST extraction logic foundation and multi-language tokenizers (`src/sot_graph/_vendor/graphify/`).
-2. **[Tree-sitter](https://tree-sitter.github.io/tree-sitter/)** (MIT License): Incremental concrete syntax tree parsing system for polyglot AST extractors.
-3. **[D3.js](https://d3js.org/)** (ISC / BSD-3-Clause License): Standalone force-directed graph visualizer (`sotgraph viz`).
-4. **[SQLite](https://www.sqlite.org/)** (Public Domain): Embedded relational, FTS5 full-text indexing, and Write-Ahead Logging (WAL) engine.
+2. **[codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)** (MIT License): The `codebase-memory` engine — external extractor and evidence provider auto-bootstrapped by sotgraph (protocol `artifacts-v1`; mirrored source at `minhgv/sotgraph-cbm`). We respect its upstream project and authentic history.
+3. **[Tree-sitter](https://tree-sitter.github.io/tree-sitter/)** (MIT License): Incremental concrete syntax tree parsing system for polyglot AST extractors.
+4. **[D3.js](https://d3js.org/)** (ISC / BSD-3-Clause License): Standalone force-directed graph visualizer (`sotgraph viz`).
+5. **[SQLite](https://www.sqlite.org/)** (Public Domain): Embedded relational, FTS5 full-text indexing, and Write-Ahead Logging (WAL) engine.
 
 ---
 

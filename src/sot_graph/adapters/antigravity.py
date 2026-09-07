@@ -56,11 +56,11 @@ Ground Gemini and Antigravity agent actions in physical filesystem reality using
 | **Database Doctor** | `sotgraph doctor` | `CLI only` |
 | **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `CLI only` |
 | **Vacuum Database** | `sotgraph vacuum [--analyze]` | `CLI only` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `CLI only` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_notes` (query/list) |
 | **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `CLI only` |
 | **Architecture Report** | `sotgraph report [-o report.md]` | `sot_architecture_report` |
 | **Interactive Viz** | `sotgraph viz [-o graph.html]` | `CLI only` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `CLI only` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | `CLI only` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `sot_bundle` |
 | **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
@@ -70,6 +70,14 @@ Ground Gemini and Antigravity agent actions in physical filesystem reality using
 | **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `sot_solution_bundle` |
 | **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | `CLI only` |
+| **MCP Server** | `sotgraph mcp` | `CLI only` |
+| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `sot_providers_sync`, `sot_cross_check` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
+| **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |
+| **Receipt Explorer** | `sotgraph receipt <show/diff>` | `CLI only` |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | `CLI only` |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | `CLI only` |
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
 | **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |

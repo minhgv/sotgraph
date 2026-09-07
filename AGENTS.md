@@ -83,11 +83,11 @@ When requested to review or synthesize architecture documentation:
 | **Database Doctor** | `sotgraph doctor [--json]` | `CLI only` |
 | **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `CLI only` |
 | **Vacuum Database** | `sotgraph vacuum [--analyze]` | `CLI only` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `CLI only` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_notes` (query/list) |
 | **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `sot_communities` |
 | **Architecture Report** | `sotgraph report [-o report.md]` | `sot_architecture_report` |
 | **Interactive Viz** | `sotgraph viz [-o graph.html]` | `CLI only` |
-| **Export Graph** | `sotgraph export -f <graphrag\|obsidian\|scip>` | `CLI only` |
+| **Export Graph** | `sotgraph export -f <graphrag\|obsidian\|json\|graphml\|scip>` | `CLI only` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/]` | `sot_bundle` |
 | **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
@@ -100,4 +100,13 @@ When requested to review or synthesize architecture documentation:
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
 | **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |
+| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI only |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | CLI only |
+| **MCP Server** | `sotgraph mcp` | CLI only |
+| **Providers Admin** | `sotgraph providers <detect\|list\|doctor\|resolve\|lifecycle\|cross-check\|sync>` | `sot_providers_sync`, `sot_cross_check` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
+| **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |
+| **Receipt Explorer** | `sotgraph receipt <show\|diff>` | CLI only |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | CLI only |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap\|status\|doctor\|...>` | CLI only |
 

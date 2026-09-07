@@ -55,7 +55,7 @@ When to use:
 | **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `xd://sot_cluster` |
 | **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
 | **Interactive Viz** | `sotgraph viz [-o graph.html]` | `xd://sot_viz` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | `xd://sot_export` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
 | **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `xd://sot_ui_tree` |
@@ -65,6 +65,14 @@ When to use:
 | **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
 | **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | `CLI only` |
+| **MCP Server** | `sotgraph mcp` | `CLI only` |
+| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `CLI only` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `CLI only` |
+| **Diff Receipt (P7.2)** | — | `CLI only` |
+| **Receipt Explorer** | `sotgraph receipt <show/diff>` | `CLI only` |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | `CLI only` |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | `CLI only` |
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
 | **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |

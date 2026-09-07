@@ -39,6 +39,7 @@ replacement for verifying against disk.
 | **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `sot_map` |
 | **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `sot_explore` |
 | **Inspect Usages** | `sotgraph usages "<symbol>"` | `sot_usages` |
+| **Import SCIP Index** | `sotgraph import-scip <path>` | CLI only |
 | **Implementations** | `sotgraph implementations "<interface>"` | `sot_implementations` |
 | **Rename Impact** | `sotgraph rename "<symbol>" --to <new_name>` | `CLI only` |
 | **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `sot_pack` |
@@ -48,11 +49,11 @@ replacement for verifying against disk.
 | **Database Doctor** | `sotgraph doctor` | `CLI only` |
 | **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `CLI only` |
 | **Vacuum Database** | `sotgraph vacuum [--analyze]` | `CLI only` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `CLI only` |
-| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `CLI only` |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_notes` (query/list) |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `sot_communities` |
 | **Architecture Report** | `sotgraph report [-o report.md]` | `sot_architecture_report` |
 | **Interactive Viz** | `sotgraph viz [-o graph.html]` | `CLI only` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `CLI only` |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | `CLI only` |
 | **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `sot_bundle` |
 | **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
 | **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
@@ -65,6 +66,14 @@ replacement for verifying against disk.
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
 | **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | CLI only |
+| **MCP Server** | `sotgraph mcp` | CLI only |
+| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `sot_providers_sync`, `sot_cross_check` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
+| **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |
+| **Receipt Explorer** | `sotgraph receipt <show/diff>` | CLI only |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | CLI only |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | CLI only |
 
 ## 7 Operational Protocols for Agents
 
