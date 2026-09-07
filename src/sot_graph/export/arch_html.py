@@ -1,4 +1,4 @@
-"""Self-contained architecture HTML renderer (stage 1: tiered arch view).
+"""Self-contained architecture HTML renderer (tiered + flow views).
 
 Builds a typed IR (:func:`build_arch_view`), validates it fail-closed
 (:func:`validate`), and renders a single deterministic HTML file with inline
@@ -20,6 +20,7 @@ from sot_graph.analytics.graph import AnalyticsGraph
 from sot_graph.export.arch_layout import (
     CARD_H,
     CARD_W,
+    LANE_BAND,
     TIERS,
     TIER_LABELS,
     layout_tiered,
@@ -143,6 +144,17 @@ def validate(view: Dict[str, Any]) -> List[str]:
         x, y = int(xy[0]), int(xy[1])
         if not (0 <= x <= w - CARD_W and 0 <= y <= h - CARD_H):
             violations.append(f"node outside canvas: {nid} at ({x}, {y})")
+    if view.get("layout") == "flow":
+        entries = [n for n in nodes if n.get("entry")]
+        if len(entries) != 1:
+            violations.append(
+                f"flow view must flag exactly one entry node, found {len(entries)}"
+            )
+        steps = sorted({int(n.get("step", 0)) for n in nodes})
+        if steps != list(range(1, len(steps) + 1)):
+            violations.append(
+                "flow step numbers are not contiguous from 1: " + str(steps)
+            )
     return violations
 
 
@@ -176,6 +188,12 @@ svg { display:block; background:var(--canvas); }
 .card .sub { fill:var(--muted); }
 .tier-label { fill:var(--muted); font-size:11px; letter-spacing:2px;
               text-transform:uppercase; }
+.badge { border:1px solid #FBBF24; color:#FBBF24; border-radius:6px;
+         padding:4px 10px; font-size:11px; letter-spacing:1px;
+         text-transform:uppercase; }
+.lane-label { fill:var(--muted); font-size:10px; letter-spacing:2px;
+              text-transform:uppercase; }
+.lane-band { fill:none; stroke:var(--border); stroke-dasharray:4 4; }
 @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
 """
 
@@ -184,16 +202,25 @@ def _esc(value: Any) -> str:
     return html_lib.escape(str(value), quote=True)
 
 
-def _legend_html() -> str:
+def _legend_html(flow: bool = False) -> str:
     items: List[str] = []
-    for t in TIERS:
+    if flow:
         items.append(
-            '<span class="item"><span class="sw" style="background:'
-            + _TIER_COLORS[t]
-            + '"></span>'
-            + _esc(TIER_LABELS[t])
-            + "</span>"
+            '<span class="item"><span class="sw" style="background:#22D3EE"></span>ENTRY</span>'
         )
+        items.append(
+            '<span class="item"><span class="sw" style="background:var(--surface);'
+            'border:1px solid #22D3EE"></span>STEP N</span>'
+        )
+    else:
+        for t in TIERS:
+            items.append(
+                '<span class="item"><span class="sw" style="background:'
+                + _TIER_COLORS[t]
+                + '"></span>'
+                + _esc(TIER_LABELS[t])
+                + "</span>"
+            )
     for kind in ("calls", "imports", "adapter", "api"):
         color, dash = _KIND_STYLE[kind]
         line_style = "dotted" if dash.startswith("2") else "dashed" if dash else "solid"
@@ -236,12 +263,20 @@ def _render_edges(view: Dict[str, Any]) -> List[str]:
 
 
 def _render_nodes(view: Dict[str, Any]) -> List[str]:
+    flow = view.get("layout") == "flow"
     parts: List[str] = []
     for n in view["nodes"]:
         x, y = view["positions"][n["id"]]
-        color = _TIER_COLORS.get(n["tier"], "#94A3B8")
+        color = "#94A3B8" if flow else _TIER_COLORS.get(n["tier"], "#94A3B8")
         ring = ""
-        if n.get("verdict"):
+        if flow and n.get("entry"):
+            color = "#22D3EE"
+            ring = (
+                '<rect x="%d" y="%d" width="%d" height="%d" rx="11" fill="none" '
+                'stroke="#22D3EE" stroke-width="2.5" stroke-opacity="0.95"/>'
+                % (x - 4, y - 4, CARD_W + 8, CARD_H + 8)
+            )
+        elif n.get("verdict"):
             v = str(n["verdict"]).upper()
             vc = _VERDICT_COLORS.get(v)
             if vc:
@@ -251,7 +286,17 @@ def _render_nodes(view: Dict[str, Any]) -> List[str]:
                     % (x - 3, y - 3, CARD_W + 6, CARD_H + 6, vc)
                 )
         sub = n["role"] + (f" · {n['symbols']} sym" if "symbols" in n else "")
+        if flow:
+            sub += " · entry" if n.get("entry") else f" · step {n['step']}"
         tip = n.get("evidence") or n["id"]
+        chip = ""
+        if flow:
+            chip = (
+                '<circle cx="%d" cy="%d" r="10" fill="var(--surface)" stroke="%s"/>'
+                '<text x="%d" y="%d" text-anchor="middle" font-size="10" '
+                'font-weight="700" fill="%s">%d</text>'
+                % (x + CARD_W // 2, y, color, x + CARD_W // 2, y + 4, color, int(n["step"]))
+            )
         parts.append(
             '<g class="card" tabindex="0">'
             + ring
@@ -262,6 +307,7 @@ def _render_nodes(view: Dict[str, Any]) -> List[str]:
             % (x + 12, y + 24, _esc(n["label"][:26]))
             + '<text class="sub" x="%d" y="%d" font-size="10">%s</text>'
             % (x + 12, y + 44, _esc(sub[:32]))
+            + chip
             + "</g>"
         )
     return parts
@@ -284,11 +330,40 @@ def _render_tier_labels(view: Dict[str, Any]) -> List[str]:
     return parts
 
 
+def _render_lane_labels(view: Dict[str, Any]) -> List[str]:
+    lanes = view.get("lanes") or []
+    if not lanes:
+        return []
+    pos = view["positions"]
+    _, h = int(view["canvas"][0]), int(view["canvas"][1])
+    parts: List[str] = []
+    for lane in lanes:
+        xs = [pos[nid][0] for nid in lane.get("nodes") or [] if nid in pos]
+        if not xs:
+            continue
+        x0, x1 = min(xs) - 8, max(xs) + CARD_W + 8
+        parts.append(
+            '<rect class="lane-band" x="%d" y="%d" width="%d" height="%d" rx="8"/>'
+            % (x0, LANE_BAND - 6, x1 - x0, max(1, h - LANE_BAND - 12))
+        )
+        parts.append(
+            '<text class="lane-label" x="%d" y="%d">%s</text>'
+            % (x0 + 6, LANE_BAND - 14, _esc(lane.get("label") or lane.get("id") or ""))
+        )
+    return parts
+
+
 def render_html(view: Dict[str, Any]) -> str:
     """Render the view to one self-contained HTML string (no external refs)."""
     w, h = int(view["canvas"][0]), int(view["canvas"][1])
     n_edges = len(view["edges"])
-    n_tiers = len({n["tier"] for n in view["nodes"]})
+    flow = view.get("layout") == "flow"
+    if flow:
+        n_steps = max((int(n["step"]) for n in view["nodes"]), default=0)
+        metrics = f"{len(view['nodes'])} nodes · {n_edges} edges · {n_steps} steps"
+    else:
+        n_tiers = len({n["tier"] for n in view["nodes"]})
+        metrics = f"{len(view['nodes'])} nodes · {n_edges} edges · {n_tiers} tiers"
     markers: List[str] = []
     for kind in ("calls", "imports", "adapter", "api"):
         color = _KIND_STYLE.get(kind, _KIND_STYLE["calls"])[0]
@@ -297,11 +372,12 @@ def render_html(view: Dict[str, Any]) -> str:
             'markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path '
             'd="M 0 0 L 10 5 L 0 10 z" fill="' + color + '"/></marker>'
         )
+    labels = _render_lane_labels(view) if flow else _render_tier_labels(view)
     svg = (
         '<svg width="' + str(w) + '" height="' + str(h) + '" viewBox="0 0 ' + str(w)
         + " " + str(h) + '" role="img" aria-label="' + _esc(view["title"]) + '">'
         + "<defs>" + "".join(markers) + "</defs>"
-        + "".join(_render_tier_labels(view))
+        + "".join(labels)
         + "".join(_render_edges(view))
         + "".join(_render_nodes(view))
         + "</svg>"
@@ -313,6 +389,14 @@ def render_html(view: Dict[str, Any]) -> str:
         "r.setAttribute(\"data-theme\",toLight?\"light\":\"dark\");"
         "b.textContent=toLight?\"\\u25d1 DARK\":\"\\u25d0 LIGHT\";});})();</script>"
     )
+    truncation = view.get("truncation") or {}
+    badge = ""
+    if truncation.get("capped"):
+        badge = (
+            '<span class="badge">truncated ' + str(truncation.get("shown", 0)) + "/"
+            + str(truncation.get("total", 0)) + " · widen --depth "
+            + str(truncation.get("hint_depth", 0)) + "</span>"
+        )
     head = (
         "<!DOCTYPE html><html lang=\"en\" data-theme=\"dark\"><head>"
         '<meta charset="utf-8">'
@@ -321,10 +405,10 @@ def render_html(view: Dict[str, Any]) -> str:
         "<header><h1>" + _esc(view["title"]) + "</h1>"
         '<span class="meta">project: ' + _esc(view["project"]) + "</span>"
         '<span class="meta">from: ' + _esc(view.get("generated_from", "")) + "</span>"
-        '<span class="meta">' + str(len(view["nodes"])) + " nodes · "
-        + str(n_edges) + " edges · " + str(n_tiers) + " tiers</span>"
-        '<button id="theme-toggle" type="button">&#9680; LIGHT</button></header>'
-        + _legend_html()
+        '<span class="meta">' + metrics + "</span>"
+        + badge
+        + '<button id="theme-toggle" type="button">&#9680; LIGHT</button></header>'
+        + _legend_html(flow=flow)
         + '<div id="stage">' + svg + "</div>"
         + js
         + "</body></html>"

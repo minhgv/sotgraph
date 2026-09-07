@@ -8,7 +8,8 @@ no wall-clock, stable dict iteration over sorted structures).
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from collections import deque
+from typing import Any, Dict, List, Optional, Tuple
 
 # Display order, top row -> bottom row.
 TIERS: Tuple[str, ...] = ("cli", "adapters", "providers", "core", "storage", "export")
@@ -168,5 +169,139 @@ def layout_tiered(
 
     canvas_w = int(width)
     canvas_h = int(y - (GUTTER_Y // 2) - GUTTER_Y + PAD_Y) if tier_seq else int(PAD_Y * 2)
+    positions["canvas"] = (canvas_w, canvas_h)
+    return positions
+
+
+LANE_BAND = 28  # top headroom reserved for swimlane labels
+
+
+def _flow_layers(
+    ids: List[str],
+    entry_id: str,
+    edges: List[Dict[str, Any]],
+    nodes: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, int]:
+    """Layer per node. When nodes carry an explicit ``step`` (flow IR built by
+    the extractor's BFS from the entry) it is trusted 1:1; otherwise layers
+    are recomputed as BFS depth from the entry (visited set terminates on
+    cycles), with nodes not reachable from the entry parked one layer below
+    the deepest reachable one."""
+    layer: Dict[str, int] = {}
+    idset = set(ids)
+    if entry_id in idset:
+        adj: Dict[str, List[str]] = {}
+        for e in edges:
+            s, d = str(e.get("src")), str(e.get("dst"))
+            if s in idset and d in idset:
+                adj.setdefault(s, []).append(d)
+        for nbrs in adj.values():
+            nbrs.sort()
+        layer[entry_id] = 0
+        queue: deque = deque([entry_id])
+        while queue:
+            cur = queue.popleft()
+            for nxt in adj.get(cur, []):
+                if nxt not in layer:
+                    layer[nxt] = layer[cur] + 1
+                    queue.append(nxt)
+    if layer:
+        deepest = max(layer.values())
+        for nid in ids:
+            layer.setdefault(nid, deepest + 1)
+    else:  # no entry on the canvas: deterministic flat layering by id
+        for i, nid in enumerate(sorted(ids)):
+            layer[nid] = 0
+    if nodes:
+        explicit = {
+            str(n["id"]): int(n["step"]) - 1
+            for n in nodes
+            if n.get("step") is not None
+        }
+        if explicit:
+            return {nid: explicit.get(nid, layer.get(nid, 0)) for nid in ids}
+    return layer
+
+
+def layout_flow(
+    nodes: List[Dict[str, Any]],
+    edges: List[Dict[str, Any]],
+    entry_id: str,
+    lanes: Optional[List[Dict[str, Any]]] = None,
+    width: int = 1440,
+) -> Dict[str, Any]:
+    """Top-down stepped layout: BFS layers from the entry, barycenter sweeps
+    within layers (same method as :func:`layout_tiered`), optional module
+    swimlanes that order nodes by lane inside each layer and reserve a label
+    band at the top. Deterministic: sorted iteration, integer pixel output."""
+    ids = [str(n["id"]) for n in nodes]
+    layer = _flow_layers(ids, entry_id, edges, nodes=nodes)
+
+    groups: Dict[int, List[str]] = {}
+    for nid in ids:
+        groups.setdefault(layer[nid], []).append(nid)
+    lane_index: Dict[str, int] = {}
+    if lanes:
+        for i, lane in enumerate(lanes):
+            for nid in lane.get("nodes") or []:
+                lane_index[str(nid)] = i
+
+    order: Dict[int, List[str]] = {}
+    for ln, members in groups.items():
+        order[ln] = sorted(
+            members,
+            key=lambda nid: (lane_index.get(nid, 1 << 30), nid),
+        )
+
+    neighbors: Dict[str, List[str]] = {nid: [] for nid in ids}
+    for e in edges:
+        s, d = str(e.get("src")), str(e.get("dst"))
+        if s in neighbors and d in neighbors and s != d:
+            neighbors[s].append(d)
+            neighbors[d].append(s)
+
+    layer_seq = sorted(order)
+    for _ in range(_SWEEP_COUNT):
+        for direction in (1, -1):
+            seq = layer_seq if direction == 1 else list(reversed(layer_seq))
+            for ln in seq:
+                ref: List[str] = []
+                for ol in layer_seq:
+                    if ol != ln:
+                        ref.extend(order[ol])
+                ref_pos = {n: i for i, n in enumerate(ref)}
+                nbr: Dict[str, List[str]] = {nid: [] for nid in order[ln]}
+                for e in edges:
+                    s, d = str(e.get("src")), str(e.get("dst"))
+                    if s in nbr and d not in nbr:
+                        nbr[s].append(d)
+                    if d in nbr and s not in nbr:
+                        nbr[d].append(s)
+                order[ln] = sorted(
+                    order[ln],
+                    key=lambda nid: (
+                        lane_index.get(nid, 1 << 30),
+                        _barycenter(nid, ref, nbr) if ref else 0.0,
+                        ref_pos.get(nid, 0),
+                        nid,
+                    ),
+                )
+
+    max_cols = max(1, (width - 2 * PAD_X) // (CARD_W + GUTTER_X))
+    positions: Dict[str, Tuple[int, int]] = {}
+    y = PAD_Y + (LANE_BAND if lanes else 0)
+    for ln in layer_seq:
+        ids_ln = order[ln]
+        rows = [ids_ln[i : i + max_cols] for i in range(0, len(ids_ln), max_cols)]
+        for row in rows:
+            x = PAD_X
+            for nid in row:
+                positions[nid] = (int(x), int(y))
+                x += CARD_W + GUTTER_X
+            y += CARD_H + GUTTER_Y
+        y += GUTTER_Y // 2  # breathing room between steps
+
+    canvas_w = int(width)
+    canvas_h = int(y - (GUTTER_Y // 2) - GUTTER_Y + PAD_Y) if layer_seq else int(PAD_Y * 2)
     positions["canvas"] = (canvas_w, canvas_h)
     return positions

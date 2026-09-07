@@ -2054,7 +2054,42 @@ def cmd_viz(args: argparse.Namespace, db: Database, root: str) -> int:
     return 0
 
 
+def _cmd_arch_flow(args: argparse.Namespace, db: Database, root: str) -> int:
+    from sot_graph.export.arch_flow import UnresolvedFlowTarget, generate_flow_html
+
+    project_name = os.path.basename(os.path.abspath(root))
+    out_path = args.output
+    if out_path == "architecture.html":
+        out_path = "flow.html"  # flow mode defaults to its own filename
+    try:
+        html_content = generate_flow_html(
+            db,
+            args.flow,
+            project=project_name,
+            depth=getattr(args, "depth", 3),
+            max_nodes=getattr(args, "max_nodes", 60),
+            lanes=getattr(args, "lanes", "none") or "none",
+        )
+    except UnresolvedFlowTarget as exc:
+        print(f"❌ {exc}", file=sys.stderr)
+        print("   no flow view written; check the target symbol name", file=sys.stderr)
+        return 2
+    out_dir = os.path.dirname(out_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    if getattr(args, "open", False):
+        import webbrowser
+
+        webbrowser.open("file://" + os.path.abspath(out_path))
+    print(f"🌊 Flow view for '{args.flow}' generated at: {out_path}")
+    return 0
+
+
 def cmd_arch(args: argparse.Namespace, db: Database, root: str) -> int:
+    if getattr(args, "flow", None):
+        return _cmd_arch_flow(args, db, root)
     from sot_graph.analytics.graph import AnalyticsGraph
     from sot_graph.export.arch_html import generate_arch_html
 
@@ -2380,9 +2415,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_viz.add_argument("--open", action="store_true", help="Automatically open visualizer in default web browser")
 
     # arch
-    p_arch = subparsers.add_parser("arch", help="Generate a deterministic tiered architecture HTML view")
-    p_arch.add_argument("-o", "--output", default="architecture.html", help="HTML output path (default: architecture.html)")
+    p_arch = subparsers.add_parser("arch", help="Generate a deterministic tiered architecture HTML view (or a flow view with --flow)")
+    p_arch.add_argument("-o", "--output", default="architecture.html", help="HTML output path (default: architecture.html; flow.html with --flow)")
     p_arch.add_argument("--scope", default=None, help="Scope architecture view to path or subdirectory")
+    p_arch.add_argument("--flow", default=None, metavar="TARGET", help="Render the operating flow of a module/symbol/feature instead of the tiered view")
+    p_arch.add_argument("--depth", type=int, default=3, help="Flow walk depth in hops (default: 3)")
+    p_arch.add_argument("--max-nodes", dest="max_nodes", type=int, default=60, help="Flow node budget before truncation (default: 60)")
+    p_arch.add_argument("--lanes", choices=("module", "none"), default="none", help="Group flow nodes into module swimlanes")
     p_arch.add_argument("--open", action="store_true", help="Automatically open the view in default web browser")
 
     # export
