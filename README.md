@@ -21,8 +21,9 @@ See [development readiness and migration audit](docs/DEVELOPMENT_READINESS.md).
 > Per-repo `.sot/` databases, stored notes, and `~/.sotgraph/engine-store` are
 > unaffected by the rename. The legacy PyPI project `sot-graph` (≤ 0.3.2) is the
 > same tool before the rename — migrate with
-> `pip uninstall sot-graph && pipx install sotgraph`. See
-> [RELEASE_NOTES_v0.3.3.md](docs/RELEASE_NOTES_v0.3.3.md) for what changed.
+> `pip uninstall sot-graph && pipx install sotgraph`. The rename details are in
+> [RELEASE_NOTES_v0.3.3.md](docs/RELEASE_NOTES_v0.3.3.md); the latest changes are in
+> [RELEASE_NOTES_v0.3.4.md](docs/RELEASE_NOTES_v0.3.4.md).
 
 ## Installation & Quick Start (one shot)
 
