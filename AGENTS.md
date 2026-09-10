@@ -103,7 +103,7 @@ Query surfaces self-heal a stale index instead of serving stale answers:
 | **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `sot_solution_inventory` |
 | **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table]` | `sot_solution_steps` |
 | **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `sot_solution_bundle` |
-| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2] [--auto-reconcile/--no-auto-reconcile]` | `sot_diff_impact` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2] [--auto-reconcile] [--no-auto-reconcile]` | `sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
 | **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
 | **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |

@@ -10,7 +10,7 @@ from sot_graph.adapters.migration import assign_server_entry, write_skill_dir
 
 ANTIGRAVITY_SKILL_MARKDOWN = """---
 name: sotgraph
-description: Single Source of Truth (SOT) verified knowledge graph for AI coding agents. Provides verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles).
+description: "Use for ANY codebase structural query: explore the codebase, understand the architecture, what functions exist, who calls this function, what does X call, trace the call chain, find callers, show dependencies, impact analysis, dead code, unused functions, refactor candidates. Single Source of Truth (SOT) verified knowledge graph for AI coding agents: verified codebase search with Trust Verdicts ([STRONG], [WEAK], [REBUILT]), AST cross-file dependency exploration, zero-daemon SQLite storage, self-healing synchronization, and graph analytics (Louvain clustering, God Node detection, HTML/GraphRAG/Obsidian export, Fact Bundles)."
 ---
 
 # /sotgraph (Single Source of Truth Knowledge Layer for Google Antigravity / Gemini CLI)
