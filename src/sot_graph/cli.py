@@ -1615,6 +1615,12 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
     print(f"   snapshot: {(payload['snapshot'].get('commit_sha') or '?')[:12]} "
           f"dirty={payload['snapshot'].get('dirty')} "
           f"digest={str(payload['snapshot'].get('descriptor_digest'))[:12]}…")
+    rec = payload["identity"].get("recovery")
+    if rec:
+        sel = payload["identity"].get("selected") or {}
+        shown = sel.get("fqn") or sel.get("symbol") or "?"
+        print(f"   target recovered: '{rec['query']}' → '{shown}' "
+              f"(via {rec.get('method')})")
     print(f"   callers: {len(payload['direct_callers'])}  "
           f"callees: {len(payload['direct_callees'])}  "
           f"transitive(depth {payload['transitive_impact']['depth']}): "
@@ -1625,8 +1631,14 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
     print(f"   assurance: {ass['status']} — {ass['risk']['rule']}")
     for rc in ass.get("reason_codes", []):
         print(f"   reason: {rc}")
-    if ass["rename_gate"].get("blocked"):
-        print(f"   🚫 rename gate BLOCKED: {ass['rename_gate']['reason']}")
+    gate = ass["rename_gate"]
+    if gate.get("blocked"):
+        print(f"   🚫 rename gate BLOCKED: {gate['reason']}")
+    elif (payload["request"]["kind_of_change"] in ("rename", "delete")
+          and gate.get("resolved")):
+        print(f"   ✅ rename gate passed: "
+              f"{gate.get('callers_found', 0)} caller(s) resolved within "
+              f"covered scope (scoped_coverage={gate.get('scoped_coverage')})")
     for item in ass["omp_confirmations"]:
         print(f"   ☐ {item}")
     # P0 vocabulary: hard stop only on ABSTAINED/UNVERIFIABLE (no bounded

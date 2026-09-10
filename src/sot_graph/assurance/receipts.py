@@ -65,7 +65,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.7"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger)
+RECEIPT_SCHEMA_VERSION = "1.8"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -449,6 +449,83 @@ def omp_confirmations_for(risk: Dict[str, Any], gate: Dict[str, Any]) -> List[st
     return items
 
 
+def _recover_identity(
+    db: Any, target: str,
+) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    """Second-chance identity resolution for agent-authored targets.
+
+    Mirrors pack's target-recovery grammar (``'func run — app.py:3'``,
+    ``'util.py:4'``) but keeps this module's decision semantics: the
+    recovered name is matched EXACTLY (optionally narrowed by the target's
+    path) — NO dominant-candidate auto-pick — and ambiguity stays a
+    surfaced decision. ``path:line`` containment resolves the innermost
+    node spanning the line. Returns ``(identity_dict, disclosure)``;
+    both None when no recovery applies.
+    """
+    # Lazy: pack is a heavy leaf module; importing here keeps the
+    # assurance package importable even if pack grows new deps.
+    from sot_graph.pack import (
+        _parse_target, _path_scope_sql, _resolve_by_path_line,
+    )
+
+    parsed = _parse_target(target)
+    if not parsed.rewritten:
+        return None, None
+    disclosure: Dict[str, Any] = {
+        "query": target, "symbol": parsed.symbol,
+        "path": parsed.path, "line": parsed.line,
+    }
+    columns = ("id", "label", "kind", "path", "line_start", "symbol", "fqn")
+    if parsed.symbol:
+        # No LIMIT (mirrors resolve_symbol_identity): this is a DECISION,
+        # not a truncating collection — UNIQUE needs exactly one row and
+        # any surplus means AMBIGUOUS, so a cap could never change the
+        # verdict, and the accounting sweep stays untriggered.
+        scope_sql, scope_params = _path_scope_sql(parsed.path)
+        try:
+            rows = db.conn.execute(
+                "SELECT id, label, kind, path, line_start, symbol, fqn "
+                f"FROM graph_nodes WHERE (symbol = ? OR fqn = ?) "
+                f"AND kind != 'file'{scope_sql}",
+                (parsed.symbol, parsed.symbol, *scope_params),
+            ).fetchall()
+        except Exception:  # noqa: BLE001 - a broken graph stays NOT_FOUND
+            rows = []
+        if rows:
+            disclosure["method"] = "normalized_symbol"
+            candidates = [dict(zip(columns, r)) for r in rows]
+            unique = len(candidates) == 1
+            return (
+                {
+                    "status": "UNIQUE" if unique else "AMBIGUOUS",
+                    "candidates": candidates,
+                    "selected": candidates[0] if unique else None,
+                },
+                disclosure,
+            )
+    if parsed.path is not None and parsed.line is not None:
+        # Pack row shape: id,path,kind,symbol,fqn,signature,label,body,
+        # line_start,line_end,col_start,col_end — reprojected onto the
+        # identity column shape used by resolve_symbol_identity.
+        pack_cols = ("id", "path", "kind", "symbol", "fqn", "signature",
+                     "label", "body", "line_start", "line_end",
+                     "col_start", "col_end")
+        row = (_resolve_by_path_line(db, parsed.path, parsed.line) or [None])[0]
+        if row:
+            disclosure["method"] = "path_line_containment"
+            packaged = dict(zip(pack_cols, row))
+            identity_row = {
+                key: packaged[key] for key in
+                ("id", "label", "kind", "path", "line_start", "symbol", "fqn")
+            }
+            return (
+                {"status": "UNIQUE", "candidates": [identity_row],
+                 "selected": identity_row},
+                disclosure,
+            )
+    return None, None
+
+
 def scope_receipt(
     db: Any,
     repo_root: str,
@@ -473,6 +550,15 @@ def scope_receipt(
     # check_rename_gate; this receipt-level universe is repo-wide.
     universe = compile_scope_universe(db, repo_root)
     identity = resolve_symbol_identity(db, target)
+    # Target recovery (P7.1 + pack grammar parity): a NOT_FOUND from the
+    # exact-match decision gets one second chance through the agent
+    # display-string/path:line grammar — still exact-match semantics,
+    # always disclosed via identity.recovery. AMBIGUOUS stays a decision.
+    recovery: Optional[Dict[str, Any]] = None
+    if identity["status"] == "NOT_FOUND":
+        recovered, recovery = _recover_identity(db, target)
+        if recovered is not None:
+            identity = recovered
     identity_status = identity["status"]
     row = identity["selected"]
     node_id = str((row or {}).get("id") or (row or {}).get("node_id") or "")
@@ -631,6 +717,7 @@ def scope_receipt(
             "status": identity_status,
             "candidates": identity["candidates"],
             "selected": row,
+            **({"recovery": recovery} if recovery else {}),
         },
         "assurance_facts": asdict(facts),
         "snapshot": snapshot_dict,
