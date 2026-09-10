@@ -483,12 +483,13 @@ def create_server(service: McpService) -> Any:
                     "depth": {"type": "integer", "minimum": 1},
             }, "required": ["target"], "additionalProperties": False,
             }, outputSchema=_RECEIPT_OUTPUT),
-            types.Tool(name="sot_diff_impact_receipt", description="POST-change diff-impact receipt (P7.2): wraps the diff engine result with a post-change snapshot, invalidated evidence, remaining gaps, and an explicit closure decision.", inputSchema={
+            types.Tool(name="sot_diff_impact_receipt", description="POST-change diff-impact receipt (P7.2 + P7.3): wraps the diff engine result with a post-change snapshot, invalidated evidence, remaining gaps, an explicit closure decision, and a resolution_ledger — pre/post disposition matrix (pass pre_receipt: a stored scope-receipt digest), dangling-reference sweep (rename/delete leftovers the graph can no longer resolve), and debt markers introduced on added lines.", inputSchema={
                 "type": "object", "properties": {
                     "target": {"type": "string"},
                     "depth": {"type": "integer", "minimum": 1, "maximum": 5},
                     "staged": {"type": "boolean"},
                     "working_tree": {"type": "boolean"},
+                    "pre_receipt": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "64-hex digest of a stored PRE-change scope receipt (.sot/receipts); attaches the disposition matrix to the resolution ledger"},
                 }, "additionalProperties": False,
             }, outputSchema=_RECEIPT_OUTPUT),
         ]
@@ -594,6 +595,7 @@ def create_server(service: McpService) -> Any:
                     depth=args.get("depth", 2),
                     staged=args.get("staged", False),
                     working_tree=args.get("working_tree", False),
+                    pre_receipt=args.get("pre_receipt"),
                 )
             else:
                 result = {"error": {"code": "unknown_tool", "message": "unknown MCP tool"}}

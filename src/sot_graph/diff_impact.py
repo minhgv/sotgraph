@@ -209,6 +209,11 @@ class GitDeltaExtractor:
 
     def __init__(self, repo_path: str = ".") -> None:
         self.repo_path = os.path.abspath(repo_path)
+        #: Raw unified-diff stdout of the last successful extract_diff
+        #: run ("" when none). Read-only convenience for collectors that
+        #: need the diff TEXT (P7.3 debt markers) without re-running git
+        #: or duplicating the target-argument ladder above.
+        self.last_diff_text: str = ""
 
     def run_git(self, args: List[str], timeout_sec: int = 30) -> Tuple[int, str, str]:
         """Run a git subcommand safely in repo_path."""
@@ -279,6 +284,7 @@ class GitDeltaExtractor:
                 ["diff", "--no-ext-diff", "--no-textconv", "-U0", target]
             )
 
+        self.last_diff_text = stdout if code == 0 else ""
         if code == 0 and stdout.strip():
             file_intervals, hunks = self.parse_unified_diff(stdout)
         else:

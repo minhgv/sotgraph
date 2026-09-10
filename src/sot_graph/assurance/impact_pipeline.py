@@ -192,6 +192,10 @@ class ImpactClaimRequest:
     #: (McpService.diff_impact). Digest-affecting by design: the receipt
     #: states who reconciled, not just that the graph is fresh.
     reconcile_provenance: str = "pipeline"
+    #: P7.3: optional PRE-change scope receipt (parsed payload) attached
+    #: for the resolution ledger's disposition matrix — cross-reference
+    #: only; its proof_scope never becomes post-change proof.
+    pre_receipt: Optional[Dict[str, Any]] = None
 
     def normalize(self) -> "ImpactClaimRequest":
         """Validate and canonicalize; pure (no I/O)."""
@@ -289,6 +293,7 @@ def run_impact_claim(
         depth=request.depth,
         staged=request.staged,
         working_tree=request.working_tree,
+        pre_receipt=request.pre_receipt,
         pre_snapshot=pre_snapshot.as_dict(),
     )
 

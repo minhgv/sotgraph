@@ -44,7 +44,7 @@ __all__ = [
 #: the version-history comment on ``RECEIPT_SCHEMA_VERSION``) render
 #: best-effort; anything else is refused.
 KNOWN_RECEIPT_SCHEMA_VERSIONS: Tuple[str, ...] = (
-    "1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8",
+    "1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
 )
 
 #: Explicit marker for a question the receipt's data cannot answer.

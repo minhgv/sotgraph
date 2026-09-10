@@ -57,6 +57,7 @@ from sot_graph.assurance import accounting
 from sot_graph.assurance.accounting import (
     ACCOUNTED_SITES,
     CHANGED_FILES_SOURCE,
+    DEBT_MARKERS_SOURCE,
     EDGES_SOURCE,
     EVIDENCE_SOURCE,
     LEDGER_RUNS_SOURCE,
@@ -492,6 +493,35 @@ class TestRegistryIdsSurfaceInReceipts:
         assert stats["truncated"] is True
         self._assert_reason(payload, EVIDENCE_SOURCE)
         EXERCISED_SOURCE_IDS.add(EVIDENCE_SOURCE)
+
+    def test_debt_markers_cap(self, tmp_path):
+        """P7.3: 51 TODO lines in one commit — one past the debt-marker
+        report cap; the enumeration stays exact (total 51) while the
+        reported list cuts at 50 and names DEBT_MARKERS_SOURCE."""
+        from test_impact_pipeline import _git, _make_repo
+
+        repo = _make_repo(tmp_path / "ac_debt")
+        lines = ["x = 1"]
+        lines += [f"v{i} = {i}  # TODO(p73): marker {i}" for i in range(51)]
+        (repo / "app.py").write_text("\n".join(lines) + "\n",
+                                     encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "debt")
+        db = _db_of(repo)
+        try:
+            payload = diff_impact_receipt(db, str(repo))
+        finally:
+            db.close()
+        debt = payload["resolution_ledger"]["debt_markers"]
+        assert debt["total"] == 51
+        assert len(debt["introduced"]) == 50
+        assert debt["truncated"] is True
+        stats = payload["collection_stats"]["debt_markers"]
+        assert stats["enumerated_count"] == 51
+        assert stats["returned_count"] == 50
+        self._assert_reason(payload, DEBT_MARKERS_SOURCE)
+        EXERCISED_SOURCE_IDS.add(DEBT_MARKERS_SOURCE)
 
     def test_coverage_complete(self):
         """Registry ⇆ triggers bijection: a NEW registry entry without a

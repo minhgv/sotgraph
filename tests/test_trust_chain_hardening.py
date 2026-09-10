@@ -1119,7 +1119,7 @@ def test_mcp_diff_impact_receipt_default_target_is_head(tmp_path: Path):
         captured = {}
 
         def fake_receipt(db, repo_root, *, target, depth, staged,
-                         working_tree, pre_snapshot=None):
+                         working_tree, pre_receipt=None, pre_snapshot=None):
             captured["target"] = target
             return {"ok": True, "kind": "diff_impact", "digest": "a" * 64}
 

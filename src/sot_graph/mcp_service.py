@@ -1749,13 +1749,36 @@ class McpService:
         depth: int = 2,
         staged: bool = False,
         working_tree: bool = False,
+        pre_receipt: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """POST-change diff-impact receipt (P7.2) over MCP."""
+        """POST-change diff-impact receipt (P7.2) over MCP.
+
+        ``pre_receipt`` (P7.3): optional 64-hex digest of a stored
+        PRE-change scope receipt, resolved from the repo's
+        ``.sot/receipts`` store and attached for the resolution ledger's
+        disposition matrix.
+        """
         from sot_graph.assurance.impact_pipeline import (
             ImpactClaimRequest,
             ReceiptStore,
             run_impact_claim,
         )
+
+        parsed_pre: Optional[Dict[str, Any]] = None
+        if pre_receipt:
+            import re as _re
+
+            store_dir = os.path.join(
+                self.project_root, ".sot", "receipts")
+            if not _re.fullmatch(r"[0-9a-f]{64}", str(pre_receipt)):
+                raise McpServiceError(
+                    "pre_receipt must be a 64-hex receipt digest")
+            try:
+                parsed_pre = ReceiptStore(store_dir).get(str(pre_receipt))
+            except KeyError:
+                raise McpServiceError(
+                    f"pre_receipt digest {pre_receipt} not found in "
+                    f"{store_dir}") from None
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
             view = cast(Database, _ConnView(conn))
@@ -1763,6 +1786,7 @@ class McpService:
                 ImpactClaimRequest(
                     target=target, depth=depth,
                     staged=staged, working_tree=working_tree,
+                    pre_receipt=parsed_pre,
                 ),
                 view, self.project_root,
             )

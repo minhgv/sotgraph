@@ -1730,6 +1730,13 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     staged = bool(getattr(args, "staged", False))
     working_tree = bool(getattr(args, "working_tree", False))
 
+    # P7.3: optional PRE-change scope receipt → disposition matrix in
+    # the resolution ledger. Accepted as a 64-hex digest (resolved from
+    # the repo's .sot/receipts store) or a receipt JSON file path.
+    pre_receipt = None
+    if getattr(args, "pre_receipt", None):
+        pre_receipt = _resolve_receipt_input(args.pre_receipt, root)
+
     # SG-105: ONE executor. The pipeline owns the PRE-change snapshot
     # capture (P1.g: before any reconcile mutates the index), the
     # optional auto-reconcile, and the receipt; this surface only
@@ -1741,6 +1748,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             staged=staged,
             working_tree=working_tree,
             auto_reconcile=bool(getattr(args, "auto_reconcile", False)),
+            pre_receipt=pre_receipt,
         ),
         db, root,
     )
@@ -1843,6 +1851,34 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             f"(dirty={pre_snap.get('dirty')}) → post {post_snapshot['descriptor_digest'][:19]} "
             f"(dirty={post_snapshot['dirty']})_"
         )
+        # P7.3 resolution ledger: the "what is left unresolved" summary.
+        rl = receipt.get("resolution_ledger") or {}
+        if rl:
+            disp = rl.get("dispositions") or {}
+            if disp.get("pre_receipt_attached"):
+                dc = disp.get("direct_callers") or {}
+                tc = disp.get("candidate_tests") or {}
+                print(
+                    f"resolution: {dc.get('addressed', 0)}/{dc.get('total', 0)} "
+                    "predicted caller(s) addressed; "
+                    f"{tc.get('addressed', 0)}/{tc.get('total', 0)} "
+                    "candidate test file(s) touched"
+                )
+            dang = rl.get("dangling_references") or {}
+            if dang.get("count"):
+                print(
+                    f"🚨 {dang['count']} dangling reference(s) left by the "
+                    "change — rename/delete leftovers the graph can no "
+                    "longer resolve"
+                )
+            debt = rl.get("debt_markers") or {}
+            if debt.get("total"):
+                suffix = " (list capped)" if debt.get("truncated") else ""
+                print(
+                    f"⚠️  {debt['total']} debt marker(s) introduced on added "
+                    f"lines{suffix} — TODO/FIXME/HACK/XXX/type-ignore/"
+                    "noqa/bare-except"
+                )
         # R5: bounded measurement must never be silent — surface receipt
         # warnings (e.g. partial closure over >RECEIPT_CITED_FILE_CAP diffs)
         # on stderr so text/CI output cannot bless partial evidence as whole.
@@ -2656,6 +2692,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Exit 1 unless the receipt assurance status is in the ASSURED set (ASSURED_WITHIN_SCOPE); default: advisory mode, always exit 0")
     p_diff.add_argument("--provider", default="builtin",
                         help="External evidence providers: builtin | auto | prefer:<name> | require:<name> | all (default: builtin)")
+    p_diff.add_argument("--pre-receipt", dest="pre_receipt", default=None,
+                        help="Digest (64-hex) or JSON file path of a stored PRE-change scope receipt; joins its predicted blast radius into the resolution ledger's disposition matrix")
 
     # log / commits
     p_log = subparsers.add_parser("log", aliases=["commits"], help="Inspect git commit history with automated risk scoring and impacted symbols")

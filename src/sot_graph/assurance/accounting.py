@@ -41,6 +41,7 @@ __all__ = [
     "LEDGER_RUNS_SOURCE",
     "TRANSITIVE_SOURCE",
     "CHANGED_FILES_SOURCE",
+    "DEBT_MARKERS_SOURCE",
     "LEDGER_UNION_SOURCE_PATTERN",
     "ledger_union_source",
     "is_ledger_union_source",
@@ -72,6 +73,11 @@ __all__ = [
 #: re-exports it for backward compatibility.)
 RECEIPT_CITED_FILE_CAP = 200
 
+#: P7.3 resolution ledger: debt-marker REPORT list cap. The enumeration
+#: itself is exact (every added line is scanned); only the reported list
+#: is capped, and the cut names DEBT_MARKERS_SOURCE (SG-107).
+DEBT_MARKER_REPORT_CAP = 50
+
 # ---------------------------------------------------------------------------
 # Stable source ids — these exact strings land in
 # ``facts.truncation_sources`` / reason codes, so they may be extended
@@ -83,6 +89,7 @@ EVIDENCE_SOURCE = "evidence_cap_50"
 LEDGER_RUNS_SOURCE = "ledger_runs_cap_200"
 TRANSITIVE_SOURCE = "transitive_cap_200"
 CHANGED_FILES_SOURCE = f"changed_files_cap_{RECEIPT_CITED_FILE_CAP}"
+DEBT_MARKERS_SOURCE = f"debt_markers_cap_{DEBT_MARKER_REPORT_CAP}"
 
 #: The evidence-union cap is caller-supplied, so its id is parametric:
 #: ``ledger_union_cap_<limit>`` (receipts use ``ledger_union_cap_5000``).
@@ -174,6 +181,15 @@ ACCOUNTED_SITES: Tuple[AccountingSite, ...] = (
         sql_backed=False,
         description="changed files measured by one post-change receipt",
     ),
+    AccountingSite(
+        source_id=DEBT_MARKERS_SOURCE,
+        cap=DEBT_MARKER_REPORT_CAP,
+        module="resolution",
+        collector="debt_markers",
+        sql_backed=False,
+        description="debt-marker report list per post-change receipt "
+        "(enumeration of added lines is exact; only the list is capped)",
+    ),
 )
 
 #: Collectors whose SQL ``LIMIT`` is a LOOKUP, not a bounded collection:
@@ -199,6 +215,7 @@ LOGICAL_COLLECTION_SOURCES: Dict[str, str] = {
     "ledger_union": LEDGER_UNION_SOURCE_PATTERN,
     "changed_files": CHANGED_FILES_SOURCE,
     "invalidated_evidence": EVIDENCE_SOURCE,
+    "debt_markers": DEBT_MARKERS_SOURCE,
 }
 
 CAP_SOURCES_BY_ID: Dict[str, AccountingSite] = {

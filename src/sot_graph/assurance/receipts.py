@@ -35,6 +35,8 @@ from .coverage import (
 )
 from .accounting import (
     CHANGED_FILES_SOURCE,
+    DEBT_MARKER_REPORT_CAP,
+    DEBT_MARKERS_SOURCE,
     EDGES_SOURCE,
     EVIDENCE_SOURCE,
     LEDGER_RUNS_SOURCE,
@@ -65,7 +67,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.8"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics
+RECEIPT_SCHEMA_VERSION = "1.9"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -88,6 +90,7 @@ _LEDGER_RUNS_SOURCE = LEDGER_RUNS_SOURCE
 _TRANSITIVE_CAP = 200             # bounded transitive BFS walk
 _TRANSITIVE_SOURCE = TRANSITIVE_SOURCE
 _CHANGED_FILES_SOURCE = CHANGED_FILES_SOURCE
+_DEBT_MARKERS_SOURCE = DEBT_MARKERS_SOURCE
 
 
 _RELATION_FAMILIES = {
@@ -915,6 +918,37 @@ def diff_impact_receipt(
         snapshot_hash=str(scope_dig) if scope_dig is not None else None,
         stats_out=ledger_stats,
     )
+    # P7.3 resolution ledger: what the change LEFT UNRESOLVED. Computed
+    # before the facts so dangling references can feed unresolved_count,
+    # and before ensure_accounted so a cut debt-marker report can name
+    # its registered source.
+    resolution_errors: List[str] = []
+    caller_files = sorted({
+        str(c.get("path") or "")
+        for c in (getattr(result, "caller_impacts", None) or [])
+        if isinstance(c, dict)
+    } - {""})
+    from sot_graph.assurance.resolution import (
+        debt_markers as _debt_markers,
+        dangling_references as _dangling_references,
+        disposition_matrix as _disposition_matrix,
+    )
+    resolution_ledger: Dict[str, Any] = {
+        "dispositions": _disposition_matrix(pre_receipt, changed_files),
+        "dangling_references": _dangling_references(
+            db, cited_files, caller_files,
+            pre_receipt=pre_receipt, repo_root=repo_root,
+            errors_out=resolution_errors,
+        ),
+        "debt_markers": _debt_markers(
+            repo_root, target, staged=staged,
+            working_tree=working_tree, errors_out=resolution_errors,
+        ),
+    }
+    dangling_count = int(
+        resolution_ledger["dangling_references"]["count"])
+    debt_truncated = bool(
+        resolution_ledger["debt_markers"]["truncated"])
     # SG-107: every capped collection that actually cut its enumeration
     # names itself here — facts.truncated is no longer a single anonymous
     # flag but a list of named sources with per-collection accounting in
@@ -927,6 +961,8 @@ def diff_impact_receipt(
     for source in _ledger_truncation_sources(ledger_stats):
         if source not in truncation_sources:
             truncation_sources.append(source)
+    if debt_truncated and _DEBT_MARKERS_SOURCE not in truncation_sources:
+        truncation_sources.append(_DEBT_MARKERS_SOURCE)
     # SG-107 fail-closed accounting gate (P1-4), same contract as
     # scope_receipt: no unregistered truncation source can enter a
     # post-change receipt.
@@ -956,7 +992,13 @@ def diff_impact_receipt(
         # cap names itself in ``truncation_sources`` (SG-107).
         claim_profile="scoped",
         parser_failures=manifest_parser_failures,
-        unresolved_count=len(invalidated),
+        # P7.3: dangling references are UNRESOLVED problem rows — they
+        # demand action before closure, exactly like invalidated
+        # evidence, so they join unresolved_count (budget 0). Disposition
+        # "untouched" and debt markers stay ADVISORY (remaining_gaps
+        # only): the pre-receipt prediction is heuristic and markers are
+        # declared debt, not unresolved references.
+        unresolved_count=len(invalidated) + dangling_count,
         unresolved_budget=0,
         # SG-109: real conflict join — provider conflicts from the
         # evidence union surface here (decide() degrades CONFLICTED);
@@ -983,6 +1025,28 @@ def diff_impact_receipt(
         )
     if open_omp:
         remaining_gaps.append(f"{len(open_omp)} OMP confirmation(s) still open")
+    disp = resolution_ledger["dispositions"]
+    if disp["pre_receipt_attached"]:
+        untouched_callers = disp["direct_callers"]["untouched"]
+        if untouched_callers:
+            remaining_gaps.append(
+                f"{len(untouched_callers)} predicted direct caller(s) "
+                "untouched by the diff")
+        untouched_tests = disp["candidate_tests"]["untouched"]
+        if untouched_tests:
+            remaining_gaps.append(
+                f"{len(untouched_tests)} candidate test file(s) untouched "
+                "by the diff")
+    if dangling_count:
+        remaining_gaps.append(
+            f"{dangling_count} dangling reference(s) left by the change "
+            "(pending_edges UNRESOLVED/AMBIGUOUS within the diff's "
+            "scope)")
+    debt_total = int(resolution_ledger["debt_markers"]["total"])
+    if debt_total:
+        remaining_gaps.append(
+            f"{debt_total} debt marker(s) introduced on added lines "
+            "(TODO/FIXME/HACK/XXX/type-ignore/noqa/bare-except)")
     closure = "closed" if decision["status"] == "ASSURED_WITHIN_SCOPE" else "open"
     warnings: List[str] = []
     if changed_files_truncated:
@@ -991,6 +1055,7 @@ def diff_impact_receipt(
             f"{changed_files_total} changed files; closure evidence is partial"
         )
     warnings.extend(collection_errors)
+    warnings.extend(resolution_errors)
     payload: Dict[str, Any] = {
         "schema_version": RECEIPT_SCHEMA_VERSION,
         "kind": "diff_impact",
@@ -1016,6 +1081,7 @@ def diff_impact_receipt(
 
         "invalidated_evidence": invalidated,
         "invalidated_evidence_dead_count": dead_evidence_count,
+        "resolution_ledger": resolution_ledger,
         "collection_stats": {
             "changed_files": {
                 "enumerated_count": changed_files_total,
@@ -1027,6 +1093,14 @@ def diff_impact_receipt(
             "invalidated_evidence": merge_collection_stats(
                 evidence_stats, _EVIDENCE_PATH_CAP,
             ),
+            "debt_markers": {
+                "enumerated_count": debt_total,
+                "returned_count": len(
+                    resolution_ledger["debt_markers"]["introduced"]),
+                "cap": DEBT_MARKER_REPORT_CAP,
+                "truncated": debt_truncated,
+                "cursor_exhausted": not debt_truncated,
+            },
             **ledger_stats,
         },
         "post_change_snapshot": (
