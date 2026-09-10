@@ -13,8 +13,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 
 from sot_graph.envelope import compute_snapshot_generation
 from sot_graph.tokenizer import estimate_tokens, truncate_to_token_budget
@@ -107,28 +108,129 @@ def _dominant_candidate(db, row):
     return None
 
 
-def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
-    """Resolve a target by exact FQN, FQN suffix, then bare symbol.
+#: Declaration keywords agents prepend when hand-writing locator strings
+#: copied from tool output or their own file reading — ``'func main'``,
+#: ``'type struct Hub'``. None of these can start a stored symbol.
+_DECL_KEYWORDS = frozenset({
+    "func", "fn", "def", "type", "class", "struct", "interface",
+    "impl", "trait", "method", "enum", "var", "const", "package",
+})
+#: Trailing tokens of type-declaration display forms (``'type Hub struct'``).
+_TRAILING_DECL_KEYWORDS = frozenset({"struct", "interface"})
+#: Separators between a symbol and its location in agent display strings:
+#: em/en dash, pipe, or a spaced hyphen (unspaced hyphens stay path material).
+_TARGET_SEPARATOR_RE = re.compile(r"\s*[—–]\s*|\s+\|\s+|\s+-\s+")
 
-    Ambiguous matches are auto-resolved to the dominant candidate by inbound
-    edge count — never silently: the node dict carries
-    ``_ambiguous_auto_resolved`` plus the full ``_ambiguous_candidates`` list
-    so the bundle can surface the resolution explicitly. Raises
-    :class:`PackError` (with candidates) when no candidate wins.
+#: Bundle resolution.status vocabulary for target-recovery methods.
+_RESOLUTION_STATUS = {
+    "path_line_containment": "PATH_LINE_RESOLVED",
+    "normalized_symbol": "NORMALIZED_TARGET",
+}
+
+
+class _ParsedTarget(NamedTuple):
+    symbol: str                 # cleaned symbol ('' when input was only a locator)
+    path: Optional[str]         # '/'-normalized path, repo-relative or absolute
+    line: Optional[int]         # 1-based line, when the input carried one
+    rewritten: bool             # False only for an already-clean symbol/FQN
+
+
+def _split_locator(text: str) -> Tuple[Optional[str], Optional[int]]:
+    """Split ``'pkg/mod.go:19'`` / ``'mod.go#L19'`` into (path, line)."""
+    text = text.strip().strip("`'\"").replace("\\", "/")
+    match = re.search(r"[:#]L?(\d+)$", text)
+    if not match:
+        return (text or None), None
+    return text[: match.start()] or None, int(match.group(1))
+
+
+def _parse_target(target: str) -> _ParsedTarget:
+    """Split an agent-authored target into (symbol, path, line).
+
+    sotgraph never emits display strings, but agents routinely hand one to
+    pack anyway — ``'func main — backend/main.go:28'``,
+    ``'type struct Hub — hub.go:19'``, ``'src/x/pack.py:110'``. Parsing is
+    conservative: when nothing needs stripping the target comes back
+    untouched with ``rewritten=False`` so clean symbols keep their exact
+    legacy resolution path. FQNs never end in ``:<digits>``, so a trailing
+    line number is unambiguously a locator suffix.
     """
+    text = target.strip().strip("`'\"").strip()
+    parts = _TARGET_SEPARATOR_RE.split(text)
+    symbol_part = parts[0]
+    path_part = parts[-1] if len(parts) > 1 else ""
+    path, line = _split_locator(path_part) if path_part else (None, None)
+    if not path:
+        # No separator form; a bare ``path:line`` locator still deserves
+        # resolution — requires a path shape ('/' or an extension), never
+        # a dotted FQN without one.
+        maybe_path, maybe_line = _split_locator(symbol_part)
+        if maybe_path and maybe_line is not None and (
+            "/" in maybe_path or re.search(r"\.\w+:\d+$", symbol_part)
+        ):
+            path, line = maybe_path, maybe_line
+            symbol_part = maybe_path
+    words = symbol_part.split()
+    while len(words) > 1 and words[0].lower() in _DECL_KEYWORDS:
+        words.pop(0)
+    while len(words) > 1 and words[-1].lower() in _TRAILING_DECL_KEYWORDS:
+        words.pop()
+    symbol = " ".join(words)
+    symbol = re.sub(r"\([^)]*\)$", "", symbol).strip("`'\" ")
+    return _ParsedTarget(
+        symbol=symbol, path=path, line=line,
+        rewritten=bool(path) or symbol != target.strip(),
+    )
+
+
+def _path_scope_sql(path_scope: Optional[str]) -> Tuple[str, List[str]]:
+    """SQL fragment narrowing a graph_nodes query to ``path_scope``.
+
+    Stored paths may be absolute while agents paste repo-relative locators,
+    so scope by exact match or suffix (an absolute scope needs no leading
+    ``/`` in the LIKE pattern).
+    """
+    if not path_scope:
+        return "", []
+    like = f"%{path_scope}" if path_scope.startswith("/") else f"%/{path_scope}"
+    return " AND (path = ? OR path LIKE ?)", [path_scope, like]
+
+
+def _dedup_candidates(row: List[Any]) -> List[str]:
+    """Candidate display names (fqn, else symbol) for a PackError, deduped."""
+    return [c for c in dict.fromkeys(r[4] or r[3] for r in row[:10]) if c]
+
+
+def _resolve_by_name(
+    db, name: str, path_scope: Optional[str] = None,
+) -> Tuple[List[Any], bool, List[str]]:
+    """Name-resolution ladder: exact FQN → FQN suffix → bare symbol.
+
+    Each step is optionally narrowed to ``path_scope``. Ambiguity
+    semantics are unchanged from the pre-recovery ladder: a dominant
+    candidate (decisive inbound-edge margin) wins and is disclosed via the
+    returned ``auto_resolved`` flag plus candidates; otherwise
+    ``AMBIGUOUS_TARGET`` is raised with the candidates inline.
+    """
+    scope_sql, scope_params = _path_scope_sql(path_scope)
     row = db.conn.execute(
         "SELECT id,path,kind,symbol,fqn,signature,label,body,"
         "line_start,line_end,col_start,col_end FROM graph_nodes "
-        "WHERE fqn = ? AND kind != 'file' LIMIT 2", (target,)
+        f"WHERE fqn = ? AND kind != 'file'{scope_sql} LIMIT 2",
+        (name, *scope_params),
     ).fetchall()
     if len(row) > 1:
-        raise PackError("AMBIGUOUS_TARGET", f"fqn matches multiple nodes: {target}")
+        raise PackError(
+            "AMBIGUOUS_TARGET",
+            f"fqn matches multiple nodes: {name}",
+            candidates=_dedup_candidates(row),
+        )
     if not row:
         row = db.conn.execute(
             "SELECT id,path,kind,symbol,fqn,signature,label,body,"
             "line_start,line_end,col_start,col_end FROM graph_nodes "
-            "WHERE (fqn LIKE ? OR fqn LIKE ?) AND kind != 'file' LIMIT 11",
-            (f"%.{target}", f"{target}.%"),
+            f"WHERE (fqn LIKE ? OR fqn LIKE ?) AND kind != 'file'{scope_sql} LIMIT 11",
+            (f"%.{name}", f"{name}.%", *scope_params),
         ).fetchall()
     auto_resolved = False
     amb_candidates: List[str] = []
@@ -137,8 +239,8 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
         if dominant is None:
             raise PackError(
                 "AMBIGUOUS_TARGET",
-                f"target '{target}' matches {len(row)} nodes; qualify with a FQN",
-                candidates=[r[4] for r in row[:10]],
+                f"target '{name}' matches {len(row)} nodes; qualify with a FQN",
+                candidates=_dedup_candidates(row),
             )
         amb_candidates = [r[4] for r in row[:10]]
         row = [dominant]
@@ -147,21 +249,119 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
         row = db.conn.execute(
             "SELECT id,path,kind,symbol,fqn,signature,label,body,"
             "line_start,line_end,col_start,col_end FROM graph_nodes "
-            "WHERE symbol = ? AND kind != 'file' LIMIT 11", (target,)
+            f"WHERE symbol = ? AND kind != 'file'{scope_sql} LIMIT 11",
+            (name, *scope_params),
         ).fetchall()
         if len(row) > 1:
             dominant = _dominant_candidate(db, row)
             if dominant is None:
                 raise PackError(
                     "AMBIGUOUS_TARGET",
-                    f"symbol '{target}' is defined in {len(row)} places; use a FQN",
-                    candidates=[r[4] for r in row[:10]],
+                    f"symbol '{name}' is defined in {len(row)} places; use a FQN",
+                    candidates=_dedup_candidates(row),
                 )
             amb_candidates = [r[4] for r in row[:10]]
             row = [dominant]
             auto_resolved = True
+    return row, auto_resolved, amb_candidates
+
+
+def _resolve_by_path_line(db, path: str, line: int) -> List[Any]:
+    """Resolve a ``path:line`` locator to the innermost node containing it.
+
+    Stored paths may be absolute while the locator is repo-relative (or a
+    bare filename), so an exact match falls back to a shortest-suffix
+    match. The smallest containing span wins — the most specific symbol at
+    that line, e.g. a method over its enclosing type.
+    """
+    base = (
+        "SELECT id,path,kind,symbol,fqn,signature,label,body,"
+        "line_start,line_end,col_start,col_end FROM graph_nodes "
+        "WHERE kind != 'file' AND line_start IS NOT NULL AND line_end IS NOT NULL "
+        "AND line_start <= ? AND line_end >= ?"
+    )
+    row = db.conn.execute(
+        base + " AND path = ? ORDER BY (line_end - line_start), symbol LIMIT 11",
+        (line, line, path),
+    ).fetchall()
     if not row:
-        raise PackError("TARGET_NOT_FOUND", f"no indexed symbol matches '{target}'")
+        like = f"%{path}" if path.startswith("/") else f"%/{path}"
+        row = db.conn.execute(
+            base + " AND path LIKE ? "
+            "ORDER BY length(path), (line_end - line_start), symbol LIMIT 11",
+            (line, line, like),
+        ).fetchall()
+    return row[:1]
+
+
+def _fuzzy_candidates(db, parsed: _ParsedTarget, target: str) -> List[str]:
+    """Closest indexed names for a dead-end target, shortest-first.
+
+    Falls back to an 8-char prefix, then the fragment minus its last char,
+    so near-miss typos (``dispatchRequst`` → ``dispatchRequest``,
+    ``cmd_pak`` → ``cmd_pack``) still surface guidance.
+    """
+    if parsed.symbol:
+        fragment = parsed.symbol
+    elif parsed.path:
+        fragment = parsed.path.rsplit("/", 1)[-1].rsplit(".", 1)[0]
+    else:
+        fragment = target
+    # Keep '_': as a LIKE wildcard it single-char fuzzy-matches, which is
+    # exactly the typo tolerance wanted here. '%' would widen unboundedly.
+    fragment = fragment.rsplit(".", 1)[-1].replace("%", "").strip()
+    fragments = [
+        f for f in dict.fromkeys(
+            (fragment, fragment[:8], fragment[:-1])) if len(f) >= 3
+    ]
+    for frag in fragments:
+        rows = db.conn.execute(
+            "SELECT DISTINCT COALESCE(fqn, symbol) FROM graph_nodes "
+            "WHERE kind != 'file' AND (symbol LIKE ? OR fqn LIKE ?) "
+            "ORDER BY length(COALESCE(fqn, symbol)), COALESCE(fqn, symbol) LIMIT 3",
+            (f"%{frag}%", f"%{frag}%"),
+        ).fetchall()
+        names = [r[0] for r in rows if r[0]]
+        if names:
+            return names
+    return []
+
+
+def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
+    """Resolve a target by exact FQN, FQN suffix, then bare symbol.
+
+    Agent-authored display strings recover transparently: declaration
+    prefixes (``'func main'``), ``'kind name — path:line'`` locators, and
+    bare ``'path:line'`` references resolve to the indexed symbol. When a
+    locator carries both a name and a line, the name ladder runs scoped to
+    the path first (the agent asked for that name); ``path:line``
+    containment — the innermost node spanning the line — is the fallback.
+    Ambiguous matches are auto-resolved to the dominant candidate by
+    inbound edge count — never silently: the node dict carries
+    ``_ambiguous_auto_resolved`` plus the full ``_ambiguous_candidates``
+    list so the bundle can surface the resolution explicitly, and
+    ``_resolution_method`` discloses any target rewriting. Raises
+    :class:`PackError` (with candidates) when no candidate wins.
+    """
+    parsed = _parse_target(target)
+    row, auto_resolved, amb_candidates = _resolve_by_name(db, target)
+    resolution_method: Optional[str] = None
+    if not row and parsed.rewritten and parsed.symbol:
+        row, auto_resolved, amb_candidates = _resolve_by_name(
+            db, parsed.symbol, path_scope=parsed.path,
+        )
+        if row:
+            resolution_method = "normalized_symbol"
+    if not row and parsed.path and parsed.line is not None:
+        row = _resolve_by_path_line(db, parsed.path, parsed.line)
+        if row:
+            resolution_method = "path_line_containment"
+    if not row:
+        raise PackError(
+            "TARGET_NOT_FOUND",
+            f"no indexed symbol matches '{target}'",
+            candidates=_fuzzy_candidates(db, parsed, target),
+        )
     r = row[0]
     node = {
         "id": r[0], "path": r[1], "kind": r[2], "symbol": r[3], "fqn": r[4],
@@ -170,6 +370,8 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
         "_ambiguous_auto_resolved": auto_resolved,
         "_ambiguous_candidates": amb_candidates,
     }
+    if resolution_method:
+        node["_resolution_method"] = resolution_method
     return node, target
 
 
@@ -283,6 +485,7 @@ def build_bundle(
     """Build the ContextBundle structure; raises :class:`PackError` closed."""
     node, matched = _find_target(db, target)
     amb_candidates: List[str] = node.pop("_ambiguous_candidates", [])
+    resolution_method: Optional[str] = node.pop("_resolution_method", None)
 
     journal = db.conn.execute(
         "SELECT sha256, generation FROM file_journal WHERE path = ?",
@@ -330,17 +533,29 @@ def build_bundle(
     full_source, warnings = _slice_source_from_bytes(
         node, raw_bytes, total_size=total_size, read_cap=_MAX_SOURCE_READ_BYTES)
     resolution: Dict[str, Any] = {
-        "status": "AMBIGUOUS_AUTO_RESOLVED" if amb_candidates else "EXACT",
+        "status": "AMBIGUOUS_AUTO_RESOLVED" if amb_candidates else (
+            _RESOLUTION_STATUS.get(resolution_method, "EXACT")),
         "query": target,
         "selected_fqn": node["fqn"] or node["symbol"],
     }
     if amb_candidates:
         resolution["method"] = "dominant_inbound_edges"
         resolution["candidates"] = list(amb_candidates)
+    elif resolution_method:
+        resolution["method"] = resolution_method
     if node.pop("_ambiguous_auto_resolved", False):
         warnings.append(
             f"ambiguous_target_auto_resolved: '{target}' matched multiple nodes; "
             f"selected dominant candidate {node['fqn']} by inbound reference count"
+        )
+    if resolution_method == "path_line_containment":
+        warnings.append(
+            f"target_resolved_by_path_line: '{target}' → innermost node "
+            f"{node['fqn'] or node['symbol']} at {node['path']}:{node['line_start']}"
+        )
+    elif resolution_method == "normalized_symbol":
+        warnings.append(
+            f"target_normalized: '{target}' → '{node['fqn'] or node['symbol']}'"
         )
     truncated = False
     #: Which budget phase dropped the trusted-instructions seed (byte runs

@@ -1051,7 +1051,12 @@ def cmd_pack(args: argparse.Namespace, db: Database, root: str) -> int:
         )
     except PackError as exc:
         detail = f" candidates: {', '.join(exc.candidates)}" if exc.candidates else ""
-        print(f"❌ pack failed [{exc.code}]: {exc}{detail}")
+        hint = (
+            '\n  usage: sotgraph pack "<symbol|fqn>" | sotgraph pack "<path>:<line>"'
+            "\n  (get names from `sotgraph search` / `sotgraph map`)"
+            if exc.code == "TARGET_NOT_FOUND" else ""
+        )
+        print(f"❌ pack failed [{exc.code}]: {exc}{detail}{hint}")
         return 2
     if getattr(args, "json", False):
         # One interpretation shared with MCP: honesty fields come straight
@@ -2489,7 +2494,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_pack = subparsers.add_parser(
         "pack", help="Package a k-hop ContextBundle (YAML) for AI agent prompt registers")
-    p_pack.add_argument("target", help="Target symbol or fully-qualified name")
+    p_pack.add_argument("target", help="Target symbol, FQN, or 'path:line' locator (e.g. src/pkg/mod.go:28)")
     p_pack.add_argument("-o", "--output", default=None,
                         help="Write YAML to file (default: print to stdout)")
     p_pack.add_argument("--max-hops", type=int, default=2, help="Hop depth (default: 2)")
