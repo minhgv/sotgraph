@@ -23,7 +23,7 @@ See [development readiness and migration audit](docs/DEVELOPMENT_READINESS.md).
 > same tool before the rename — migrate with
 > `pip uninstall sot-graph && pipx install sotgraph`. The rename details are in
 > [RELEASE_NOTES_v0.3.3.md](docs/RELEASE_NOTES_v0.3.3.md); the latest changes are in
-> [RELEASE_NOTES_v0.3.5.md](docs/RELEASE_NOTES_v0.3.5.md).
+> [RELEASE_NOTES_v0.3.6.md](docs/RELEASE_NOTES_v0.3.6.md).
 
 ## Installation & Quick Start (one shot)
 

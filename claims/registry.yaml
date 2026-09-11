@@ -185,6 +185,7 @@ skip_files:
   - docs/RELEASE_NOTES_v0.3.3.md
   - docs/RELEASE_NOTES_v0.3.4.md
   - docs/RELEASE_NOTES_v0.3.5.md
+  - docs/RELEASE_NOTES_v0.3.6.md
   # Point-in-time internal audits that quote code/docs verbatim.
   - docs/ARCHITECTURE_REPORT.md
   - docs/MODULE_AUDIT_REPORT.md
