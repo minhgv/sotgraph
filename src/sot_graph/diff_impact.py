@@ -1655,16 +1655,30 @@ def format_diff_impact_github(result: DiffImpactResult, repo_root: Optional[str]
     return "\n".join(lines)
 
 
-def format_commit_history_markdown(result: CommitHistoryResult) -> str:
-    """Render CommitHistoryResult into a Markdown table with risk assessment badges."""
+def format_commit_history_markdown(
+    result: CommitHistoryResult,
+    verdicts: Optional[Dict[str, Any]] = None,
+) -> str:
+    """Render CommitHistoryResult into a Markdown table with risk assessment badges.
+
+    ``verdicts`` (W3): optional {full_sha: commit_verdict dict} — adds an
+    Outcome column showing the per-commit verdict (clear-fault /
+    still-hot / unknown) plus the underlying outcome label.
+    """
     breakdown = result.risk_breakdown
+    has_verdicts = verdicts is not None
+    header = "| Hash | Author | Date | Churn | Risk | Message | Reasons |"
+    sep = "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+    if has_verdicts:
+        header += " Outcome |"
+        sep += " :--- |"
     lines: List[str] = [
         "# SOT-Graph Commit History & Risk Assessment",
         "",
         f"**Total Commits Analyzed:** {result.total_commits} | 🔴 High Risk: {breakdown.get('HIGH', 0)} | 🟡 Medium Risk: {breakdown.get('MEDIUM', 0)} | 🟢 Low Risk: {breakdown.get('LOW', 0)}",
         "",
-        "| Hash | Author | Date | Churn | Risk | Message | Reasons |",
-        "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |",
+        header,
+        sep,
     ]
 
     for c in result.commits:
@@ -1675,9 +1689,17 @@ def format_commit_history_markdown(result: CommitHistoryResult) -> str:
         safe_author = _sanitize_cell(c.author)
         safe_date = _sanitize_cell(c.date[:10])
         safe_hash = _sanitize_cell(c.short_hash)
-        lines.append(
+        row = (
             f"| `{safe_hash}` | {safe_author} | {safe_date} | {churn_str} | {risk_icon} **{c.risk_level}** | {safe_msg} | {reasons_str} |"
         )
+        if has_verdicts:
+            v = (verdicts or {}).get(c.commit_hash) or {}
+            verdict = v.get("verdict", "unknown")
+            outcome = v.get("outcome", "?")
+            icon = {"clear-fault": "✅", "still-hot": "🔥", "unknown": "❓"}.get(
+                verdict, "❓")
+            row += f" {icon} {verdict} ({outcome}) |"
+        lines.append(row)
 
     lines.append("")
     return "\n".join(lines)

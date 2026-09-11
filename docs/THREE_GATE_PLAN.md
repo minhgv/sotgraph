@@ -241,3 +241,32 @@ MCP `test_results` param trên `sot_diff_impact_receipt`.
   Đây là lý do flow 3-gate khuyến nghị `scope-receipt` trước khi code.
 - `.sot/` internals pollute `changed_files` khi repo quên gitignore → STALE noise. Fixture
   mirror real usage (gitignore `.sot/`); engine-level filter là hardening → backlog W4.
+
+---
+
+## 10. W3 Results (executed 2026-09-11)
+
+**Delivered:** `commit_verdict()` + `verdicts_for_records()` + `records_from_summaries()`
+(outcome.py — verdict là pure mapping trên CommitOutcome); CLI `commit-verdict <sha>`
+(persist vào ReceiptStore, kind=`commit_verdict`) + `log --outcomes` cột verdict;
+MCP `sot_commit_verdict`.
+
+**Verdict semantics (fail-closed):** positive evidence thắng absence — reverted/fixup
+→ `still-hot` kể cả khi window chưa đủ; chỉ verdict dựa trên *không có* tín hiệu
+(clean→clear-fault) mới cần window_complete. `retouched` → `unknown` (churn là hotspot
+signal, không phải defect evidence — giữ still-hot precision có nghĩa). Mọi verdict có
+≥1 reason_code.
+
+**G3 replay trên repo này (287 commits):**
+- Distribution: clear-fault 29, still-hot 101, unknown 157 (unknown cao vì phần lớn
+  corpus có window incomplete hoặc retouch-only — fail-closed, không đoán).
+- still-hot precision vs labeler labels: **1.0** (by construction — verdict consume
+  đúng signal của labeler).
+- still-hot precision vs hand labels (22-commit sample): **0.778 < bar 0.8 → FAIL** —
+  cả 2 false positive (`4f0133a`, `85fd9dd`) chính là boundary cases W0 đã documented
+  của deterministic labeler. **Verdict không thể vượt precision của input** — bottleneck
+  nằm ở labeler, đúng chỗ W4 phải sửa (hunk→symbol semantic), không phải ở verdict layer.
+
+**Test:** `test_commit_verdict.py` 11 tests — pure mapping (mọi verdict có reason,
+positive-evidence-beats-window), integration repo với GIT_COMMITTER_DATE điều khiển
+window, CLI exit codes + not-in-window unknown, `log --outcomes` column.

@@ -494,6 +494,12 @@ def create_server(service: McpService) -> Any:
                     "test_results": {"type": "object", "description": "W2: caller-provided test outcome {'ran': int, 'failed': int, 'failures': [str]} — failures feed the safe_commit verdict"},
                 }, "additionalProperties": False,
             }, outputSchema=_RECEIPT_OUTPUT),
+            types.Tool(name="sot_commit_verdict", description="G3 commit monitoring (W3): verdict for one commit — clear-fault (no residual-defect evidence) | still-hot (reverted or needed follow-up repairs) | unknown (sha outside the collected window or insufficient evidence). Fail-closed: never guesses.", inputSchema={
+                "type": "object", "properties": {
+                    "sha": {"type": "string"},
+                    "limit": {"type": "integer", "minimum": 1, "maximum": 1000, "description": "history depth collected for outcome linkage (default 400)"},
+                }, "required": ["sha"], "additionalProperties": False,
+            }),
         ]
 
     @server.call_tool()
@@ -600,6 +606,11 @@ def create_server(service: McpService) -> Any:
                     working_tree=args.get("working_tree", False),
                     pre_receipt=args.get("pre_receipt"),
                     test_results=args.get("test_results"),
+                )
+            elif name == "sot_commit_verdict":
+                result = await service.acommit_verdict(
+                    args.get("sha", ""),
+                    limit=args.get("limit", 400),
                 )
             else:
                 result = {"error": {"code": "unknown_tool", "message": "unknown MCP tool"}}

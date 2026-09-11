@@ -1948,7 +1948,6 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
     from sot_graph.diff_impact import (
         analyze_commit_history,
         format_commit_history_markdown,
-        format_commit_history_json,
     )
 
     limit = getattr(args, "limit", 10)
@@ -1965,11 +1964,28 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
         with_impact=impact,
     )
 
+    # W3: --outcomes joins per-commit fault-resolution verdicts onto the
+    # history rows (the labeler needs the collected set to link
+    # follow-ups, so it maps the SAME summaries — no second git walk).
+    verdicts = None
+    if getattr(args, "outcomes", False):
+        from sot_graph.outcome import (
+            label_outcomes, records_from_summaries, commit_verdict,
+        )
+        records = records_from_summaries(res.commits, repo_path=root)
+        verdicts = {
+            o.sha: commit_verdict(o)
+            for o in label_outcomes(records)
+        }
+
     if getattr(args, "json", False):
-        print(format_commit_history_json(res))
+        payload = res.to_dict()
+        if verdicts is not None:
+            payload["verdicts"] = verdicts
+        print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
         return 0
 
-    md = format_commit_history_markdown(res)
+    md = format_commit_history_markdown(res, verdicts=verdicts)
     if getattr(args, "output", None):
         out_path = os.path.abspath(os.path.join(root, args.output)) if not os.path.isabs(args.output) else args.output
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -1979,6 +1995,76 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
     else:
         print(md)
     return 0
+
+
+def cmd_commit_verdict(args: argparse.Namespace, db: Database, root: str) -> int:
+    """W3 G3: verdict for one commit — did it leave residual defects?
+
+    Collects history, labels outcomes, then maps the target commit's
+    outcome to clear-fault | still-hot | unknown. A sha outside the
+    collected window reports ``unknown`` (fail-closed), never a guess.
+    The verdict payload is persisted content-addressed into the repo's
+    receipt store.
+    """
+    from sot_graph.outcome import (
+        collect_commit_records, label_outcomes, commit_verdict,
+    )
+    from sot_graph.assurance.impact_pipeline import ReceiptStore
+    from sot_graph.assurance.receipts import receipt_digest
+
+    sha_arg = str(getattr(args, "sha", "") or "").strip()
+    if not sha_arg:
+        print("❌ commit-verdict: sha must not be empty", file=sys.stderr)
+        return 1
+    limit = int(getattr(args, "limit", 400) or 400)
+
+    records = collect_commit_records(root, limit=limit, db=db)
+    outcomes = label_outcomes(records)
+    target = None
+    for o in outcomes:
+        if o.sha == sha_arg or o.short_sha == sha_arg \
+                or o.sha.startswith(sha_arg):
+            target = o
+            break
+    if target is None:
+        payload = {
+            "kind": "commit_verdict",
+            "sha": sha_arg,
+            "verdict": "unknown",
+            "reason_codes": [
+                f"not_in_collected_window:{limit} newest commits scanned"],
+        }
+        if getattr(args, "json", False):
+            print(json.dumps(payload, indent=2))
+        else:
+            print(f"❓ {sha_arg}: unknown — not among the {limit} "
+                  "newest collected commits")
+        return 0
+
+    verdict = commit_verdict(target)
+    receipt = dict(verdict)
+    receipt["kind"] = "commit_verdict"
+    receipt["digest"] = receipt_digest(receipt)
+    try:
+        stored = ReceiptStore(
+            os.path.join(root, ".sot", "receipts")).put(receipt)
+        print(f"verdict stored: .sot/receipts/{stored}.json",
+              file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001 - persistence is best-effort
+        print(f"⚠️  verdict store skipped: {exc}", file=sys.stderr)
+
+    if getattr(args, "json", False):
+        print(json.dumps(receipt, indent=2, default=str))
+    else:
+        icon = {"clear-fault": "✅", "still-hot": "🔥",
+                "unknown": "❓"}.get(verdict["verdict"], "❓")
+        print(f"{icon} {verdict['short_sha']}: {verdict['verdict']} "
+              f"(risk {verdict['risk_level']}, outcome "
+              f"{verdict['outcome']})")
+        for code in verdict["reason_codes"]:
+            print(f"   · {code}")
+    return 0
+
 
 def cmd_report(args: argparse.Namespace, db: Database, root: str) -> int:
     from sot_graph.analytics.graph import AnalyticsGraph
@@ -2744,6 +2830,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_log.add_argument("--no-impact", dest="impact", action="store_false", help="Disable knowledge graph symbol impact analysis")
     p_log.add_argument("-o", "--output", default=None, help="Output markdown file path")
     p_log.add_argument("--json", action="store_true", help="Output raw JSON format")
+    p_log.add_argument("--outcomes", action="store_true",
+                       help="W3: add an Outcome column — per-commit verdict (clear-fault/still-hot/unknown) over the outcome labeler")
+
+    # W3 G3: per-commit fault-resolution verdict
+    p_cv = subparsers.add_parser("commit-verdict",
+                               help="Verdict for one commit: did it leave residual defects? (clear-fault | still-hot | unknown)")
+    p_cv.add_argument("sha", help="Commit sha or prefix")
+    p_cv.add_argument("-n", "--limit", type=int, default=400,
+                      help="History depth to collect for outcome linkage (default: 400)")
+    p_cv.add_argument("--json", action="store_true", help="Output raw JSON verdict")
     # JIT freshness gate for query commands: reconcile only when the
     # index is stale (default), or force/skip per call.
     for _p in (p_search, p_exp, p_usg, p_imp, p_map, p_pack, p_trace):
@@ -2945,6 +3041,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return cmd_diff_impact(args, db, root)
         elif args.command in ("log", "commits"):
             return cmd_log(args, db, root)
+        elif args.command == "commit-verdict":
+            return cmd_commit_verdict(args, db, root)
         return 0
     except (LockBusy, RuntimeError) as exc:
         print(f"❌ {args.command} failed: {exc}", file=sys.stderr)

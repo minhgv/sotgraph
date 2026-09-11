@@ -1838,6 +1838,48 @@ class McpService:
 
         return self._run(op)
 
+    def commit_verdict(
+        self,
+        sha: str,
+        limit: int = 400,
+    ) -> Dict[str, Any]:
+        """W3 G3: per-commit fault-resolution verdict over MCP.
+
+        ``clear-fault`` (no residual-defect evidence), ``still-hot``
+        (reverted or needed follow-up repairs), or ``unknown`` when the
+        sha sits outside the collected window — fail-closed, never a
+        guess.
+        """
+        from sot_graph.outcome import (
+            collect_commit_records, commit_verdict as _verdict,
+            label_outcomes,
+        )
+
+        if not isinstance(sha, str) or not sha.strip():
+            raise McpServiceError("invalid_argument", "sha must not be empty")
+        if len(sha) > 64:
+            raise McpServiceError("invalid_argument", "sha exceeds 64 characters")
+        limit = self._bounded(limit, 1000, default=400)
+
+        def op(conn: sqlite3.Connection) -> Dict[str, Any]:
+            view = cast(Database, _ConnView(conn))
+            records = collect_commit_records(
+                self.project_root, limit=limit, db=view)
+            outcomes = label_outcomes(records)
+            for o in outcomes:
+                if o.sha == sha or o.short_sha == sha \
+                        or o.sha.startswith(sha):
+                    return self._fits_response(_verdict(o))
+            return self._fits_response({
+                "kind": "commit_verdict",
+                "sha": sha,
+                "verdict": "unknown",
+                "reason_codes": [
+                    f"not_in_collected_window:{limit} newest commits scanned"],
+            })
+
+        return self._run(op)
+
     def cross_check(
         self,
         provider: Optional[str] = None,
@@ -2017,6 +2059,8 @@ class McpService:
 
     async def adiff_impact_receipt(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.diff_impact_receipt, *args, **kwargs)
+    async def acommit_verdict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        return await self._async(self.commit_verdict, *args, **kwargs)
     async def across_check(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.cross_check, *args, **kwargs)
 

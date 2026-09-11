@@ -47,6 +47,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Tuple
 __all__ = [
     "OUTCOMES",
     "ADVERSE_OUTCOMES",
+    "COMMIT_VERDICTS",
     "CommitRecord",
     "CommitOutcome",
     "FIX_SUBJECT_RE",
@@ -54,9 +55,12 @@ __all__ = [
     "classify_subject",
     "parse_git_timestamp",
     "collect_commit_records",
+    "records_from_summaries",
     "label_outcomes",
     "aggregate_outcomes",
     "label_commit_outcomes",
+    "commit_verdict",
+    "verdicts_for_records",
 ]
 
 OUTCOMES: Tuple[str, ...] = ("clean", "fixup", "reverted", "retouched")
@@ -227,8 +231,20 @@ def collect_commit_records(
     result = engine.analyze_history(
         count=limit, author=author, since=since, db=db, with_impact=True
     )
+    return records_from_summaries(result.commits, repo_path=repo_path)
+
+
+def records_from_summaries(
+    commits: Sequence[Any],
+    repo_path: str = ".",
+) -> List[CommitRecord]:
+    """Map ``CommitSummary`` objects (from ``analyze_history``) to
+    ``CommitRecord`` — shared so surfaces that already ran the engine
+    (e.g. ``log --outcomes``) never pay for a second history walk.
+    Revert bodies are fetched lazily per candidate commit.
+    """
     records: List[CommitRecord] = []
-    for c in result.commits:
+    for c in commits:
         tags = classify_subject(c.message)
         body = ""
         if "revert" in tags:
@@ -605,3 +621,91 @@ def outcomes_from_hand_labels(
             r for r in matched if not r["match"]
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# W3 — commit verdict: "did this change leave residual defects?"
+# ---------------------------------------------------------------------------
+
+#: Verdict vocabulary for G3 monitoring. Escalation order:
+#: clear-fault (no residual-defect evidence) < still-hot (positive
+#: defect evidence: revert or follow-up repair) — `unknown` is NOT a
+#: middle level but the fail-closed floor for missing evidence.
+COMMIT_VERDICTS: Tuple[str, ...] = ("clear-fault", "still-hot", "unknown")
+
+
+def commit_verdict(outcome: CommitOutcome) -> Dict[str, Any]:
+    """Map one labeled outcome to a fault-resolution verdict (W3, G3).
+
+    Positive evidence wins over absence of evidence — a known revert or
+    follow-up repair needs no complete observation window, while a
+    "clean" declaration does (an unfinished window hides late fixups):
+
+      1. ``reverted_by`` non-empty → ``still-hot`` (the change was undone)
+      2. ``follow_up_shas`` non-empty → ``still-hot`` (needed a repair)
+      3. ``window_complete`` False → ``unknown`` (cannot trust absence)
+      4. ``retouched`` → ``unknown`` — churn is a hotspot signal, not
+         defect evidence (the labeler keeps it non-adverse by design)
+      5. ``clean`` → ``clear-fault`` (nothing adverse landed in window)
+
+    Every verdict carries ≥1 machine-readable reason code — the
+    monitoring surface never renders a bare guess.
+    """
+    reasons: List[str] = []
+    verdict = "unknown"
+    if outcome.reverted_by:
+        verdict = "still-hot"
+        reasons.append(
+            "reverted_by:" + ",".join(outcome.reverted_by))
+    elif outcome.follow_up_shas:
+        verdict = "still-hot"
+        reasons.append(
+            f"follow_up_repairs:{len(outcome.follow_up_shas)} "
+            "fix commit(s) landed after this change")
+        reasons.extend(
+            f"follow_up:{s[:12]}" for s in outcome.follow_up_shas)
+    elif not outcome.window_complete:
+        reasons.append(
+            f"insufficient_window:{outcome.window_days}d observation "
+            "window not fully elapsed — absence of follow-ups is not "
+            "measurable yet")
+    elif outcome.outcome == "retouched":
+        reasons.append(
+            f"hotspot_churn:{outcome.retouch_count} later retouch(es) — "
+            "repeated churn is a hotspot signal, not defect evidence")
+    elif outcome.outcome == "clean":
+        verdict = "clear-fault"
+        reasons.append(
+            "no_adverse_signals: no revert, follow-up repair, or "
+            "re-touch within the observation window")
+    else:
+        reasons.append(f"unclassified_outcome:{outcome.outcome}")
+    return {
+        "sha": outcome.sha,
+        "short_sha": outcome.short_sha,
+        "subject": outcome.subject,
+        "date": outcome.date,
+        "risk_level": outcome.risk_level,
+        "outcome": outcome.outcome,
+        "verdict": verdict,
+        "reason_codes": reasons,
+        "follow_up_shas": list(outcome.follow_up_shas),
+        "reverted_by": list(outcome.reverted_by),
+        "retouch_count": outcome.retouch_count,
+        "window_complete": outcome.window_complete,
+    }
+
+
+def verdicts_for_records(
+    records: Sequence[CommitRecord],
+    window_days: int = 14,
+    retouch_min: int = 2,
+    verify_fixup: Optional[
+        Callable[[CommitRecord, CommitRecord, List[str]], bool]
+    ] = None,
+) -> Dict[str, Dict[str, Any]]:
+    """Label all records then map each to its verdict — {sha: verdict}."""
+    outcomes = label_outcomes(
+        records, window_days=window_days, retouch_min=retouch_min,
+        verify_fixup=verify_fixup)
+    return {o.sha: commit_verdict(o) for o in outcomes}

@@ -1,0 +1,165 @@
+{
+  "benchmark": "g3-commit-verdict",
+  "environment": {
+    "python": "3.12.12"
+  },
+  "params": {
+    "limit": 400
+  },
+  "verdict_distribution": {
+    "clear-fault": 29,
+    "still-hot": 101,
+    "unknown": 157
+  },
+  "n": 287,
+  "still_hot_precision_vs_labels": 1.0,
+  "still_hot_precision_vs_hand": 0.7778,
+  "hand_rows": [
+    {
+      "sha": "4f0133a",
+      "expected": "clean",
+      "actual_verdict": "still-hot",
+      "match": false
+    },
+    {
+      "sha": "ac26089",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "efbdae9",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "af69288",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "5c859c4",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "6e408ab",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "3f926f3",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "85fd9dd",
+      "expected": "retouched",
+      "actual_verdict": "still-hot",
+      "match": false
+    },
+    {
+      "sha": "3536de4",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "1ff4e90",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "a5d50c0",
+      "expected": "fixup",
+      "actual_verdict": "still-hot",
+      "match": true
+    },
+    {
+      "sha": "b5cd002",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "cff1e42",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "86c97fc",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "c745b47",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "aacaade",
+      "expected": "retouched",
+      "actual_verdict": "unknown",
+      "match": true
+    },
+    {
+      "sha": "79b703a",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    },
+    {
+      "sha": "6a97f55",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    },
+    {
+      "sha": "29f2d4d",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    },
+    {
+      "sha": "994b619",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    },
+    {
+      "sha": "574ff34",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    },
+    {
+      "sha": "fac0025",
+      "expected": "clean",
+      "actual_verdict": "clear-fault",
+      "match": true
+    }
+  ],
+  "checks": {
+    "still_hot_precision_vs_labels": {
+      "passed": true,
+      "detail": "1.0 (bar 0.8)"
+    },
+    "still_hot_precision_vs_hand": {
+      "passed": false,
+      "detail": "0.7778 on 22 hand labels"
+    },
+    "every_verdict_has_reason": {
+      "passed": true,
+      "detail": "0 verdicts without reason_codes"
+    }
+  }
+}
