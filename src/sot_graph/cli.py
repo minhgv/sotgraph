@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import sys
 import time
 from typing import Any, Dict, List, Optional, Sequence, Tuple, cast
@@ -1786,22 +1787,66 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             print(f"❌ --test-report: {exc}", file=sys.stderr)
             return 1
 
-    # SG-105: ONE executor. The pipeline owns the PRE-change snapshot
-    # capture (P1.g: before any reconcile mutates the index), the
-    # optional auto-reconcile, and the receipt; this surface only
-    # projects and renders.
-    receipt = run_impact_claim(
-        ImpactClaimRequest(
-            target=target,
-            depth=depth,
-            staged=staged,
-            working_tree=working_tree,
-            auto_reconcile=bool(getattr(args, "auto_reconcile", False)),
-            pre_receipt=pre_receipt,
-            test_results=test_results,
-        ),
-        db, root,
-    )
+    # W8.3: in-process gate timeout (pre-commit hooks cannot rely on GNU
+    # `timeout` — absent on macOS/Windows). SIGALRM-based; POSIX only,
+    # elsewhere the flag is a disclosed no-op.
+    gate_timeout = int(getattr(args, "gate_timeout", 0) or 0)
+
+    class _GateTimeout(Exception):
+        pass
+
+    receipt: Dict[str, Any]
+    if gate_timeout > 0 and hasattr(signal, "SIGALRM"):
+        def _gate_alarm(signum, frame):
+            raise _GateTimeout()
+
+        signal.signal(signal.SIGALRM, _gate_alarm)
+        signal.alarm(gate_timeout)
+        try:
+            # SG-105: ONE executor. The pipeline owns the PRE-change
+            # snapshot capture (P1.g: before any reconcile mutates the
+            # index), the optional auto-reconcile, and the receipt.
+            receipt = run_impact_claim(
+                ImpactClaimRequest(
+                    target=target,
+                    depth=depth,
+                    staged=staged,
+                    working_tree=working_tree,
+                    auto_reconcile=bool(
+                        getattr(args, "auto_reconcile", False)),
+                    pre_receipt=pre_receipt,
+                    test_results=test_results,
+                ),
+                db, root,
+            )
+        except _GateTimeout:
+            signal.alarm(0)
+            strict = os.environ.get("SOTGRAPH_GATE_STRICT_TIMEOUT") == "1"
+            msg = (f"⏱️  diff-impact gate timed out after {gate_timeout}s — "
+                   + ("failing closed (SOTGRAPH_GATE_STRICT_TIMEOUT=1)"
+                      if strict else
+                      "advisory: proceeding (set "
+                      "SOTGRAPH_GATE_STRICT_TIMEOUT=1 to enforce)"))
+            print(msg, file=sys.stderr)
+            return 2 if strict else 0
+        finally:
+            signal.alarm(0)
+    else:
+        if gate_timeout > 0:
+            print("⚠️  --gate-timeout unsupported on this platform "
+                  "(no SIGALRM) — running unbounded", file=sys.stderr)
+        receipt = run_impact_claim(
+            ImpactClaimRequest(
+                target=target,
+                depth=depth,
+                staged=staged,
+                working_tree=working_tree,
+                auto_reconcile=bool(getattr(args, "auto_reconcile", False)),
+                pre_receipt=pre_receipt,
+                test_results=test_results,
+            ),
+            db, root,
+        )
     # The executor's reconcile failures are receipt warnings, not prints;
     # surface them on stderr in every format (bounded measurement must
     # never be silent — R5).
@@ -1993,6 +2038,37 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
         with_impact=impact,
     )
 
+    # W7: when a calibrated model exists, attach the learned bucket next
+    # to the heuristic one (additive — `risk_level` stays the heuristic
+    # so existing consumers never see a shape change). Learned values go
+    # into the JSON payload per commit; CommitSummary is a frozen-shape
+    # dataclass so extras ride a side-channel map.
+    model_block = None
+    learned_by_sha: Dict[str, Dict[str, Any]] = {}
+    try:
+        from sot_graph.calibration import load_model, commit_features
+        from sot_graph.outcome import records_from_summaries
+
+        model = load_model(root)
+        if model is not None:
+            for rec in records_from_summaries(res.commits, repo_path=root):
+                feats = commit_features(rec)
+                learned_by_sha[rec.sha] = {
+                    "learned_risk_level": model.level(feats),
+                    "learned_p_adverse": round(model.p_adverse(feats), 4),
+                }
+            model_block = {
+                "source": "learned",
+                "n_samples": model.n_samples,
+                "cv_logloss": model.cv_logloss,
+                "baseline_logloss": model.baseline_logloss,
+                "monotone_ok": model.monotone_ok,
+                "trained_at": model.trained_at,
+            }
+    except Exception as exc:  # noqa: BLE001 - model is advisory, never fatal
+        model_block = {"source": "unavailable",
+                       "reason": f"{type(exc).__name__}: {exc}"}
+
     # W3: --outcomes joins per-commit fault-resolution verdicts onto the
     # history rows (the labeler needs the collected set to link
     # follow-ups, so it maps the SAME summaries — no second git walk).
@@ -2011,6 +2087,13 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
         payload = res.to_dict()
         if verdicts is not None:
             payload["verdicts"] = verdicts
+        if model_block is not None:
+            payload["risk_model"] = model_block
+        if learned_by_sha:
+            for c in payload.get("commits") or []:
+                extra = learned_by_sha.get(c.get("commit_hash"))
+                if extra:
+                    c.update(extra)
         print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
         return 0
 
@@ -2023,6 +2106,53 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
         print(f"📜 Commit history report written to: {out_path}")
     else:
         print(md)
+    return 0
+
+
+def cmd_calibrate(args: argparse.Namespace, db: Database, root: str) -> int:
+    """W7: fit the learned risk model from labeled commit outcomes.
+
+    Writes .sot/risk_model.json on success; when the honesty gate fails
+    (too few samples, or the model did not beat base-rate CV) nothing is
+    written and the reason is reported — heuristic stays in charge.
+    """
+    from sot_graph.calibration import (
+        fit_model, save_model,
+    )
+    from sot_graph.outcome import (
+        collect_commit_records, label_outcomes, make_hunk_verifier,
+    )
+
+    limit = int(getattr(args, "limit", 400) or 400)
+    since = getattr(args, "since", None)
+    window_days = int(getattr(args, "window_days", 14) or 14)
+
+    records = collect_commit_records(root, limit=limit, since=since, db=db)
+    outcomes = label_outcomes(
+        records, window_days=window_days,
+        verify_fixup=make_hunk_verifier(root),
+    )
+    model, report = fit_model(records, outcomes)
+
+    if getattr(args, "json", False):
+        print(json.dumps({"kind": "calibrate", **report}, indent=2))
+    else:
+        print(f"📐 Calibration — {report['n_samples']} labeled commits "
+              f"({report['adverse']} adverse; "
+              f"{report['skipped_incomplete_window']} window-incomplete "
+              "excluded)")
+        if report["model_source"] == "learned":
+            print(f"   learned model: cv_logloss {report['cv_logloss']} "
+                  f"vs baseline {report['baseline_logloss']} "
+                  f"(monotone: {report['monotone_ok']})")
+            rates = report.get("bucket_adverse_rates") or {}
+            print(f"   bucket adverse rates: {rates}")
+        else:
+            print(f"   heuristic fallback: {report.get('reason')}")
+
+    if model is not None:
+        path = save_model(root, model)
+        print(f"   model written: {os.path.relpath(path, root)}")
     return 0
 
 
@@ -2479,6 +2609,18 @@ def cmd_setup(args: argparse.Namespace, root: str) -> int:
         print("   The graph now reconciles automatically after merge/checkout.")
         return 0
 
+    if getattr(args, "pre_commit_gate", False):
+        from sot_graph.adapters.hooks import install_precommit_gate
+
+        installed = install_precommit_gate(Path(root))
+        if not installed:
+            print("⚠ No .git directory found — pre-commit gate not installed.")
+            return 1
+        print(f"🪝 Installed pre-commit gate: {installed[0].name}")
+        print("   Staged diffs are gated by `diff-impact --gate-strict` "
+              "(timeout advisory; SOTGRAPH_GATE_STRICT_TIMEOUT=1 enforces).")
+        return 0
+
     global_install = not args.workspace_only
     workspace_install = not args.global_only
     harnesses = [args.harness] if args.harness != "all" else ["all"]
@@ -2690,6 +2832,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_setup.add_argument("--workspace-only", action="store_true", help="Install to current workspace only")
     p_setup.add_argument("--list", action="store_true", help="List supported harnesses")
     p_setup.add_argument("--hooks", action="store_true", help="Provision git post-merge/post-checkout hooks that reconcile the graph (no daemon)")
+    p_setup.add_argument("--pre-commit-gate", dest="pre_commit_gate", action="store_true", help="Provision a pre-commit hook that gates staged diffs via diff-impact --gate-strict (timeout advisory; SOTGRAPH_GATE_STRICT_TIMEOUT=1 to enforce)")
 
     p_pack = subparsers.add_parser(
         "pack", help="Package a k-hop ContextBundle (YAML) for AI agent prompt registers")
@@ -2859,6 +3002,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="JSON file {'ran': int, 'failed': int, 'failures': [str]} — failed tests feed the safe_commit verdict (W2)")
     p_diff.add_argument("--gate-strict", dest="gate_strict", action="store_true",
                         help="W2 safe-to-commit gate: exit 2 when the receipt's safe_commit verdict is 'block' (dangling references, unverifiable/stale/conflicted evidence, or failed provided tests). warn/pass still exit 0")
+    p_diff.add_argument("--gate-timeout", dest="gate_timeout", type=int, default=0,
+                        help="W8: abort the gate after N seconds (POSIX SIGALRM; no-op elsewhere). Timeout is advisory (exit 0) unless SOTGRAPH_GATE_STRICT_TIMEOUT=1")
 
     # log / commits
     p_log = subparsers.add_parser("log", aliases=["commits"], help="Inspect git commit history with automated risk scoring and impacted symbols")
@@ -2879,6 +3024,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_cv.add_argument("-n", "--limit", type=int, default=400,
                       help="History depth to collect for outcome linkage (default: 400)")
     p_cv.add_argument("--json", action="store_true", help="Output raw JSON verdict")
+    p_cal = subparsers.add_parser("calibrate",
+                                help="Fit the learned risk model from labeled commit outcomes (writes .sot/risk_model.json when the honesty gate passes)")
+    p_cal.add_argument("-n", "--limit", type=int, default=400,
+                       help="History depth to label (default: 400)")
+    p_cal.add_argument("--since", default=None,
+                       help="Label commits since date (e.g. '2.weeks')")
+    p_cal.add_argument("--window-days", type=int, default=14,
+                       help="Outcome observation window (default: 14)")
+    p_cal.add_argument("--json", action="store_true", help="Output raw JSON report")
     # JIT freshness gate for query commands: reconcile only when the
     # index is stale (default), or force/skip per call.
     for _p in (p_search, p_exp, p_usg, p_imp, p_map, p_pack, p_trace):
@@ -3082,6 +3236,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return cmd_log(args, db, root)
         elif args.command == "commit-verdict":
             return cmd_commit_verdict(args, db, root)
+        elif args.command == "calibrate":
+            return cmd_calibrate(args, db, root)
         return 0
     except (LockBusy, RuntimeError) as exc:
         print(f"❌ {args.command} failed: {exc}", file=sys.stderr)

@@ -405,6 +405,231 @@ def debt_markers(
     return result
 
 
+# ---------------------------------------------------------------------------
+# W6 — semantic_breaks: signature/contract changes with surviving callers.
+# ---------------------------------------------------------------------------
+
+
+def _git_show(repo_root: str, ref: str, path: str) -> Optional[str]:
+    """File content at ``ref`` (None when absent — new file / bad ref)."""
+    import subprocess
+
+    try:
+        out = subprocess.run(
+            ["git", "show", f"{ref}:{path}"], cwd=repo_root,
+            capture_output=True, text=True, timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return out.stdout if out.returncode == 0 else None
+
+
+def _base_ref_for(target: str, *, staged: bool, working_tree: bool) -> str:
+    """Pre-change revision for ``git show`` — mirrors the extractor's ladder."""
+    if staged or working_tree:
+        return "HEAD"
+    t = str(target or "HEAD")
+    for sep in ("...", ".."):
+        if sep in t:
+            return t.split(sep, 1)[0] or "HEAD"
+    return t or "HEAD"
+
+
+def _py_signatures(source: str) -> Dict[str, Dict[str, Any]]:
+    """qualname → signature facts via stdlib ast (Python only).
+
+    Signature facts: ordered ``params`` as (name, required, kind) where
+    kind is pos|kw|var|varkw, plus ``returns`` annotation text. A param
+    is required when it has no default and is not *args/**kwargs.
+    """
+    import ast
+
+    sigs: Dict[str, Dict[str, Any]] = {}
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError):
+        return sigs
+
+    def visit(node: ast.AST, prefix: str) -> None:
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                a = child.args
+                params: List[Tuple[str, bool, str]] = []
+                pos = list(a.posonlyargs) + list(a.args)
+                n_pos_req = len(pos) - len(a.defaults)
+                for i, p in enumerate(pos):
+                    params.append(
+                        (p.arg, i < n_pos_req, "pos"))
+                for i, p in enumerate(a.kwonlyargs):
+                    params.append(
+                        (p.arg, a.kw_defaults[i] is None, "kw"))
+                if a.vararg is not None:
+                    params.append((a.vararg.arg, False, "var"))
+                if a.kwarg is not None:
+                    params.append((a.kwarg.arg, False, "varkw"))
+                qn = f"{prefix}{child.name}"
+                sigs[qn] = {
+                    "params": params,
+                    "returns": (ast.unparse(child.returns)
+                                if child.returns is not None else None),
+                }
+                visit(child, qn + ".")
+            else:
+                visit(child, prefix +
+                      (f"{child.name}." if isinstance(child, ast.ClassDef)
+                       else ""))
+
+    visit(tree, "")
+    return sigs
+
+
+def _classify_signature_diff(
+    old: Dict[str, Any], new: Dict[str, Any],
+) -> str:
+    """breaking | compatible between two parsed signatures.
+
+    Breaking: a required param removed/renamed/reordered, a NEW required
+    param added, or *args/**kwargs dropped. Compatible: optional params
+    added, defaults changed, return-annotation changes (Python does not
+    enforce them — disclosed in known_blind_spots).
+    """
+    old_req = [(p[0], p[2]) for p in old["params"] if p[1]]
+    new_req = [(p[0], p[2]) for p in new["params"] if p[1]]
+    # Required set must be preserved exactly (same names, same order).
+    if old_req != new_req:
+        return "breaking"
+    # A removed/renamed named param is breaking for keyword callers even
+    # when it carried a default (f(a=1) → f(c=1) breaks f(a=...) calls).
+    old_named = {p[0] for p in old["params"] if p[2] in ("pos", "kw")}
+    new_named = {p[0] for p in new["params"] if p[2] in ("pos", "kw")}
+    if old_named - new_named:
+        return "breaking"
+    old_kinds = {p[2] for p in old["params"]}
+    new_kinds = {p[2] for p in new["params"]}
+    if "var" in old_kinds - new_kinds or "varkw" in old_kinds - new_kinds:
+        return "breaking"
+    return "compatible"
+
+
+def _public_symbol(qualname: str) -> bool:
+    """Public = every dotted component lacks the underscore prefix."""
+    return all(not part.startswith("_") for part in qualname.split("."))
+
+
+def semantic_breaks(
+    db: Any,
+    repo_root: str,
+    target: str,
+    *,
+    staged: bool = False,
+    working_tree: bool = False,
+    changed_files: Sequence[str] = (),
+    errors_out: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    """Contract-break sweep over changed Python files (W6).
+
+    For every changed ``.py`` file: old content via ``git show
+    <base>:<path>``, new content from the index (staged) or worktree.
+    A stdlib-``ast`` signature diff classifies each changed symbol
+    breaking|compatible; breaking symbols with surviving indexed callers
+    outside the diff's own files are ``callers_at_risk`` and feed
+    ``safe_commit`` as BLOCK; public symbols that vanished without any
+    indexed caller warn (external consumers are invisible to the graph).
+
+    Scope honesty: Python only — non-Python changed files are counted in
+    ``skipped_unsupported``; call sites built through dynamic dispatch,
+    ``*args`` unpacking, re-export aliases, or decorators are disclosed
+    blind spots, never claimed absent.
+    """
+    base = _base_ref_for(target, staged=staged, working_tree=working_tree)
+    result: Dict[str, Any] = {
+        "signature_changes": [],
+        "public_symbols_removed": [],
+        "counts": {"breaking": 0, "compatible": 0,
+                   "removed_public": 0},
+        "skipped_unsupported": 0,
+        "known_blind_spots": [
+            "python-only: non-python changed files are not analyzed",
+            "dynamic dispatch / getattr / *args call sites not visible",
+            "re-export aliases are not attributed to the origin module",
+            "return-annotation and default-value changes are classified "
+            "compatible (not enforced at runtime)",
+        ],
+    }
+    changed_set = {str(f) for f in changed_files}
+    for path in sorted(changed_set):
+        if not path.endswith(".py"):
+            result["skipped_unsupported"] += 1
+            continue
+        old_src = _git_show(repo_root, base, path)
+        if old_src is None:
+            continue  # new file — nothing pre-change to break
+        if staged:
+            # Index blob: `git show :path` (empty ref = stage-0 entry).
+            new_src = _git_show(repo_root, "", path)
+            if new_src is None:
+                new_src = None
+                try:
+                    with open(os.path.join(repo_root, path),
+                              encoding="utf-8", errors="replace") as fh:
+                        new_src = fh.read()
+                except OSError:
+                    new_src = ""
+        else:
+            try:
+                with open(os.path.join(repo_root, path),
+                          encoding="utf-8", errors="replace") as fh:
+                    new_src = fh.read()
+            except OSError:
+                new_src = ""
+        old_sigs = _py_signatures(old_src)
+        new_sigs = _py_signatures(new_src)
+        for qn in sorted(set(old_sigs) | set(new_sigs)):
+            if qn not in old_sigs:
+                continue  # added symbol — nothing to break
+            if qn not in new_sigs:
+                if _public_symbol(qn):
+                    result["public_symbols_removed"].append(
+                        {"symbol": qn, "file": path})
+                continue
+            cls = _classify_signature_diff(old_sigs[qn], new_sigs[qn])
+            if cls == "compatible":
+                result["counts"]["compatible"] += 1
+                continue
+            # Breaking — find surviving callers outside the diff.
+            callers: List[str] = []
+            bare = qn.rsplit(".", 1)[-1]
+            try:
+                rows = db.conn.execute(
+                    "SELECT DISTINCT src.path FROM graph_edges e "
+                    "JOIN graph_nodes d ON e.dst = d.id "
+                    "JOIN graph_nodes src ON e.src = src.id "
+                    "WHERE d.symbol = ? AND e.relation = 'calls'",
+                    (bare,),
+                ).fetchall()
+                changed_abs = {
+                    os.path.realpath(os.path.join(repo_root, f))
+                    for f in changed_set}
+                callers = sorted({
+                    os.path.relpath(str(r[0]), repo_root)
+                    for r in rows
+                    if os.path.realpath(str(r[0])) not in changed_abs})
+            except Exception as exc:  # noqa: BLE001
+                if errors_out is not None:
+                    errors_out.append(
+                        f"collection_error:semantic_breaks:{exc}")
+            result["signature_changes"].append({
+                "symbol": qn,
+                "file": path,
+                "classification": "breaking",
+                "callers_at_risk": callers,
+            })
+            result["counts"]["breaking"] += 1
+    result["counts"]["removed_public"] = len(
+        result["public_symbols_removed"])
+    return result
+
+
 #: The three strict-gate verdicts, weakest → strongest.
 SAFE_COMMIT_VERDICTS: Tuple[str, ...] = ("pass", "warn", "block")
 
@@ -424,6 +649,7 @@ def safe_commit_verdict(
     debt_introduced: int,
     dispositions: Dict[str, Any],
     test_results: Optional[Dict[str, Any]] = None,
+    semantic_breaks: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Composite "is it safe to commit?" verdict for the post-change gate (W2).
 
@@ -495,6 +721,32 @@ def safe_commit_verdict(
             f"{int(debt_introduced)} debt marker(s) introduced on added "
             "lines")
 
+    breaking_with_callers = 0
+    breaking_no_callers = 0
+    removed_public = 0
+    if semantic_breaks:
+        for ch in semantic_breaks.get("signature_changes") or []:
+            if ch.get("classification") != "breaking":
+                continue
+            if ch.get("callers_at_risk"):
+                breaking_with_callers += 1
+            else:
+                breaking_no_callers += 1
+        removed_public = len(
+            semantic_breaks.get("public_symbols_removed") or [])
+        if breaking_with_callers:
+            block_reasons.append(
+                f"{breaking_with_callers} breaking signature change(s) "
+                "with surviving callers outside this diff")
+        if breaking_no_callers:
+            warn_reasons.append(
+                f"{breaking_no_callers} breaking signature change(s) "
+                "with no indexed callers")
+        if removed_public:
+            warn_reasons.append(
+                f"{removed_public} public symbol(s) removed — external "
+                "consumers are invisible to the graph")
+
     verdict = ("block" if block_reasons
                else "warn" if warn_reasons else "pass")
     return {
@@ -510,5 +762,8 @@ def safe_commit_verdict(
             "tests_failed": tests_failed,
             "test_results_attached": test_results is not None,
             "pre_receipt_attached": attached,
+            "breaking_signature_changes_with_callers": breaking_with_callers,
+            "breaking_signature_changes_no_callers": breaking_no_callers,
+            "public_symbols_removed": removed_public,
         },
     }

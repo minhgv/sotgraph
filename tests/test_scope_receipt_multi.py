@@ -100,7 +100,7 @@ class TestMultiScopeReceipt:
         # Merged request block + per-target breakdown exist.
         assert m["request"]["targets"] == ["help", "run"]  # sorted
         assert set(m["per_target"]) == {"run", "help"}
-        assert m["schema_version"] == RECEIPT_SCHEMA_VERSION == "1.11"
+        assert m["schema_version"] == RECEIPT_SCHEMA_VERSION == "1.12"
         assert len(m["digest"]) == 64
 
     def test_multi_digest_differs_and_deterministic(self, multi_repo):

@@ -174,7 +174,7 @@ def calculate_fee(amount: int) -> int:
             # W1 bumped it to 1.10 (scope_receipt_multi per_target block);
             # W2 bumped it to 1.11 (safe_commit verdict block);
             # 2.0 is the reserved major-bump sentinel.
-            assert receipt["schema_version"] in ("1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "2.0")
+            assert receipt["schema_version"] in ("1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "2.0")
             assert "post_change_snapshot" in receipt
             assert receipt["post_change_snapshot"]["scope_digest"] is not None
             assert len(receipt["post_change_snapshot"]["content_digests"]) >= 1

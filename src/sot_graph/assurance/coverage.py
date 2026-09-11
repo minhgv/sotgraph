@@ -420,8 +420,17 @@ def build_scope_manifest(
     repo_root: str,
     target_paths: Sequence[str] = (),
     excluded_patterns: Sequence[str] = (),
+    scan_paths: Optional[Sequence[str]] = None,
 ) -> ScopeManifest:
-    """Build deterministic ScopeManifest for explicit bounded scope."""
+    """Build deterministic ScopeManifest for explicit bounded scope.
+
+    ``scan_paths`` bounds the dynamic-dispatch CONTENT scan (the only
+    file-read pass — O(repo) otherwise). ``None`` keeps the legacy
+    full-repo scan (reconcile/audit receipts — their job IS the full
+    inventory); an explicit list — including ``[]`` — scans exactly
+    those paths ∩ ``included``. The included/quarantined lists are
+    always journal-derived, never file-read dependent.
+    """
     import hashlib
 
     default_exclusions = sorted(set(list(_GENERATED_PARTS) + list(excluded_patterns)))
@@ -553,13 +562,39 @@ def build_scope_manifest(
             quarantined.append(p)
 
     included.sort()
+    # Missing-source detection is a cheap stat over every included file —
+    # a journaled path that vanished is quarantined regardless of scan
+    # scope, so shrinking the content scan never widens the claim.
+    existing: List[str] = []
     for inc in included:
-        abs_p = os.path.join(canonical_root, inc)
-        if not os.path.isfile(abs_p):
+        if not os.path.isfile(os.path.join(canonical_root, inc)):
             parser_errors.append(inc)
             quarantined.append(inc)
             unsupported.append(f"{inc}:missing_source")
-            continue
+        else:
+            existing.append(inc)
+    if scan_paths is None:
+        scan_set = existing
+    else:
+        # Normalize caller-supplied scan paths the same way targets are.
+        normalized: set[str] = set()
+        for sp in scan_paths:
+            if not sp:
+                continue
+            sp_str = str(sp)
+            try:
+                abs_sp = os.path.realpath(
+                    sp_str if os.path.isabs(sp_str)
+                    else os.path.join(canonical_root, sp_str)
+                )
+                normalized.add(
+                    _normalize_rel_path(os.path.relpath(abs_sp, canonical_root))
+                )
+            except Exception:
+                normalized.add(_normalize_rel_path(sp_str))
+        scan_set = [inc for inc in existing if inc in normalized]
+    for inc in scan_set:
+        abs_p = os.path.join(canonical_root, inc)
         lang = _language_of(inc)
         patterns = _DYNAMIC_PATTERNS.get(lang, [])
         if patterns:

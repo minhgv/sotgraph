@@ -71,4 +71,62 @@ def install_git_hooks(root: Path) -> List[Path]:
     return installed
 
 
-__all__ = ["install_git_hooks", "HOOK_MARKER", "LEGACY_HOOK_MARKERS", "HOOK_NAMES"]
+GATE_HOOK_MARKER = "# sotgraph: pre-commit safe-commit gate"
+GATE_HOOK_NAME = "pre-commit"
+
+
+def install_precommit_gate(root: Path, *, timeout_s: int = 30) -> List[Path]:
+    """Append a guarded pre-commit gate block; returns hook path (idempotent).
+
+    The hook runs the staged-diff receipt gate:
+
+      sotgraph diff-impact --staged --gate-strict --format json
+
+    Exit semantics:
+      * gate verdict ``block`` → exit 2 → commit refused;
+      * ``--gate-strict`` assurance/timeout: by default a TIMEOUT is
+        advisory (prints a warning, commit proceeds — a slow gate must
+        never wedge the commit loop); setting env
+        ``SOTGRAPH_GATE_STRICT_TIMEOUT=1`` fails closed instead.
+    """
+    hooks_dir = _hooks_dir(root)
+    if hooks_dir is None:
+        return []
+
+    src_dir = (root / "src").resolve()
+    # No external `timeout` binary (absent on macOS) — the gate carries
+    # its own SIGALRM timeout; on timeout the CLI itself decides
+    # advisory-vs-strict via SOTGRAPH_GATE_STRICT_TIMEOUT.
+    block = "\n".join([
+        GATE_HOOK_MARKER,
+        f'PYTHONPATH="{src_dir}" "{sys.executable}" -m sot_graph.cli '
+        'diff-impact --staged --gate-strict --format json '
+        f'--gate-timeout "${{SOTGRAPH_GATE_TIMEOUT:-{int(timeout_s)}}}" '
+        '>/dev/null 2>&1',
+        '_sot_rc=$?',
+        'if [ "$_sot_rc" -ne 0 ]; then',
+        '  echo "sotgraph gate: unsafe to commit — rerun '
+        '`sotgraph diff-impact --staged` for details" >&2; '
+        'exit "$_sot_rc";',
+        'fi',
+        "",
+    ])
+
+    hook = hooks_dir / GATE_HOOK_NAME
+    installed: List[Path] = []
+    existing = hook.read_text(encoding="utf-8", errors="replace") if hook.exists() else ""
+    if GATE_HOOK_MARKER not in existing:
+        with open(hook, "a", encoding="utf-8") as fh:
+            if existing and not existing.endswith("\n"):
+                fh.write("\n")
+            fh.write(block)
+        hook.chmod(0o755)
+        installed.append(hook)
+    return installed
+
+
+__all__ = [
+    "install_git_hooks", "install_precommit_gate",
+    "HOOK_MARKER", "LEGACY_HOOK_MARKERS", "HOOK_NAMES",
+    "GATE_HOOK_MARKER", "GATE_HOOK_NAME",
+]

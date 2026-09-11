@@ -371,3 +371,100 @@ digest → commit SHA → outcome verdict.
 **Test:** `tests/test_lineage_chain.py` 6 tests — full chain, commit-anchor
 ngược, scope-anchor xuôi, missing-scope disclosed, unresolvable ref fail-closed,
 CLI exit codes.
+
+---
+
+## W6 — Gate 2 semantic-break recall ✅
+
+**Mục tiêu:** gate 2 bắt được lỗi *vỡ contract* — không chỉ dangling/stale/debt.
+Hiện `safe_commit` mù hoàn toàn với trường hợp "đổi chữ ký hàm mà caller chưa
+sửa" — chính loại bug phát sinh nhiều nhất khi refactor.
+
+### Điều kiện cần & đủ (requirements)
+
+| # | Yêu cầu | Hiện có | Gap |
+|---|---|---|---|
+| 6.1 | So chữ ký pre vs post | `graph_nodes.signature` (pre, trong DB) + AST re-parse file diff (post) | cần extractor signature từ hunk mới |
+| 6.2 | Phân loại compatible vs breaking | — | rule: thêm param có default = compatible; bớt/reorder/rename required param, bỏ `*args`/`**kwargs`, đổi return annotation rõ = breaking |
+| 6.3 | Nối vào caller set | pre-change snapshot + graph_edges callers | symbol đổi chữ ký breaking + có indexed caller chưa được diff chạm → block; không caller nhưng public (không `_`-prefix, module-level) → warn |
+| 6.4 | Removed-symbol mở rộng | dangling net chỉ bắt khi có edge | symbol public bị xóa/rename mà không có caller indexed → warn `public_symbol_removed` |
+| 6.5 | Disclose giới hạn | — | `semantic_breaks.known_blind_spots`: dynamic dispatch, re-export alias, type-widening compatible |
+
+### Kiến trúc
+
+`resolution_ledger` thêm collector `semantic_breaks`:
+```json
+{"semantic_breaks": {
+  "signature_changes": [{"symbol","old_sig","new_sig","classification","callers_at_risk","files"}],
+  "public_symbols_removed": [...],
+  "counts": {"breaking": n, "compatible": n, "removed_public": n},
+  "known_blind_spots": [...] }}
+```
+`safe_commit_verdict` mở rộng: `breaking_change_with_callers>0` → block;
+`breaking_change_no_callers`/`public_symbol_removed` → warn.
+
+### Đo
+
+- Planted corpus (fixture repos): signature-breaking có caller → phải block;
+  thêm param default → pass; xóa private symbol → pass; xóa public không caller → warn.
+- Counter-corpus: gọi qua `*args`/`getattr` không được false-block.
+
+**Pass bar:** mọi planted breaking-change có caller bị block; 0 false-block trên
+compatible corpus; counter-corpus 0 false positive.
+
+**Test:** `tests/test_semantic_breaks.py` 8 tests — breaking+caller → block,
+optional param compatible, private removal pass, public removal warn, `*args`
+removal breaking, dynamic callsite counter-corpus, non-Python disclosed, new
+file skip. Receipt schema 1.12.
+
+## W7 — Risk recalibration từ outcome labels ✅
+
+**Mục tiêu:** thay trọng số heuristic tay bằng trọng số học từ chính history —
+với fallback honest khi data thiếu.
+
+### Requirements
+
+| # | Yêu cầu | Hiện có | Gap |
+|---|---|---|---|
+| 7.1 | Feature vector thống nhất train/predict | `_calculate_commit_risk` features (files, churn, critical paths, config, in-degree) | tách feature extraction ra pure function dùng chung |
+| 7.2 | Dataset builder | `outcome.py` labels (clean/fixup/reverted/retouched) | join commit→features→outcome trong 1 pass |
+| 7.3 | Learned model | — | per-feature monotone weights (isotonic-ish): fit bằng smoothed adverse-rate per feature bucket → normalized; model JSON versioned trong `.sot/risk_model.json` |
+| 7.4 | Honest fallback | — | n < 30 labeled commits → heuristic + `model_source: heuristic_fallback`; ≥30 → learned + `calibration: {n, cv_logloss, monotone}` |
+| 7.5 | Surface | `log --outcomes` | thêm `sotgraph calibrate` (build model), `log` tự dùng model nếu có |
+
+### Pass bar
+
+Trên corpus repo này + fixtures: learned buckets giữ thứ tự monotone
+(adverse LOW ≤ MED ≤ HIGH) và logloss ≤ heuristic baseline; n < ngưỡng thì
+report `heuristic_fallback` không giả vờ learned.
+
+**Test:** `tests/test_calibration.py` 8 tests — learned khi có signal, honest
+fallback n<30/single-class, window-incomplete excluded, deterministic fit,
+save/load roundtrip, heavy-commit ordering, `calibrate`→`log --json` learned
+fields. Repo này: 110 labeled → cv_logloss 0.396 vs baseline 0.692, monotone.
+
+## W8 — Zero-friction adoption ✅
+
+**Mục tiêu:** gate chạy nhanh đủ để default-on trong agent loop + pre-commit.
+
+### Requirements
+
+| # | Yêu cầu | Hiện có | Gap |
+|---|---|---|---|
+| 8.1 | Latency | profile: `build_scope_manifest` quét regex mọi file → 15.5s ngay cả diff rỗng | chỉ scan dynamic-pattern trên cited files; included/excluded lists giữ full-coverage từ journal (metadata only) |
+| 8.2 | Pre-commit hook | `setup --hooks` chỉ có post-merge/post-checkout | `setup --pre-commit-gate` cài hook chạy `diff-impact --staged --gate-strict`, timeout-bounded, marker idempotent như hooks hiện có |
+| 8.3 | Timeout policy | — | hook timeout → advisory warn exit 0 mặc định; `SOTGRAPH_GATE_STRICT_TIMEOUT=1` → fail closed |
+| 8.4 | MCP default-on | JIT gate auto đã có | `sot_diff_impact_receipt` document gate trong response (đã có safe_commit block) — chỉ cần đảm bảo digest/staleness không phá (W5 đã fix) |
+
+### Pass bar
+
+- `diff-impact --staged` trên repo này (clean index): < 2s tại p50 qua 3 lần chạy.
+- Hook test: staged breaking change → exit ≠ 0; clean → 0; timeout → policy đúng.
+- Manifest content equality: included_files/quarantined bằng y hệt pre-optimization
+  (dynamic-dispatch facts chỉ còn scoped cited — disclose trong manifest fields).
+
+**Test:** `tests/test_precommit_gate.py` 4 tests — idempotent install, no-git
+graceful, clean staged → exit 0, breaking staged → block. `--gate-timeout`
+SIGALRM + `SOTGRAPH_GATE_STRICT_TIMEOUT` policy; `build_scope_manifest`
+`scan_paths` bounds content scan. Repo này: `diff-impact --staged` p50 1.17s/3
+runs < 2s.

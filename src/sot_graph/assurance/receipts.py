@@ -69,7 +69,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.11"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1); 1.11 added the safe_commit block to the diff receipt — composite pass|warn|block verdict over dangling references, assurance status, dispositions, debt markers, and caller-provided test results (W2)
+RECEIPT_SCHEMA_VERSION = "1.12"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1); 1.11 added the safe_commit block to the diff receipt — composite pass|warn|block verdict over dangling references, assurance status, dispositions, debt markers, and caller-provided test results (W2); 1.12 added resolution_ledger.semantic_breaks — ast signature-diff classification (breaking|compatible) with callers_at_risk feeding safe_commit (breaking+callers→block, breaking-without-callers and public-symbol-removal→warn) (W6)
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -663,7 +663,8 @@ def scope_receipt(
     for source in _ledger_truncation_sources(ledger_stats):
         if source not in truncation_sources:
             truncation_sources.append(source)
-    manifest = build_scope_manifest(db, repo_root, affected_files)
+    manifest = build_scope_manifest(
+        db, repo_root, affected_files, scan_paths=list(affected_files))
     dynamic_unresolved = bool(dynamic_heavy) or bool(manifest.unsupported_constructs)
     manifest_parser_failures = len(manifest.parser_error_files)
     effective_parser_failures = max(
@@ -933,7 +934,8 @@ def scope_receipt_multi(
 
     first = subs[norm[0]]
     cov_facts = first["assurance_facts"]
-    manifest = build_scope_manifest(db, repo_root, affected_files)
+    manifest = build_scope_manifest(
+        db, repo_root, affected_files, scan_paths=list(affected_files))
     gates = {
         t: (check_rename_gate(db, repo_root, t, errors=None,
                               universe=shared_ctx["universe"])
@@ -1266,6 +1268,7 @@ def diff_impact_receipt(
         debt_markers as _debt_markers,
         dangling_references as _dangling_references,
         disposition_matrix as _disposition_matrix,
+        semantic_breaks as _semantic_breaks,
     )
     resolution_ledger: Dict[str, Any] = {
         "dispositions": _disposition_matrix(pre_receipt, changed_files),
@@ -1277,6 +1280,11 @@ def diff_impact_receipt(
         "debt_markers": _debt_markers(
             repo_root, target, staged=staged,
             working_tree=working_tree, errors_out=resolution_errors,
+        ),
+        "semantic_breaks": _semantic_breaks(
+            db, repo_root, target, staged=staged,
+            working_tree=working_tree, changed_files=changed_files,
+            errors_out=resolution_errors,
         ),
     }
     dangling_count = int(
@@ -1302,7 +1310,12 @@ def diff_impact_receipt(
     # post-change receipt.
     ensure_accounted(truncation_sources, where="diff_impact_receipt")
     provider_capability_ok = bool(diff_ledger.get("provider_capability_ok", True))
-    manifest = build_scope_manifest(db, repo_root, changed_files)
+    manifest = build_scope_manifest(
+        db, repo_root, changed_files,
+        # Content-scan only the cited evidence — an empty diff must not
+        # trigger a whole-repo regex sweep (~15s on this repo class).
+        scan_paths=list(cited_files),
+    )
     dynamic_unresolved = bool(manifest.unsupported_constructs)
     manifest_parser_failures = len(manifest.parser_error_files)
     facts = AssuranceFacts(
@@ -1391,6 +1404,7 @@ def diff_impact_receipt(
         debt_introduced=debt_total,
         dispositions=disp,
         test_results=test_results,
+        semantic_breaks=resolution_ledger["semantic_breaks"],
     )
     warnings: List[str] = []
     if changed_files_truncated:

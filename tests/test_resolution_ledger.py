@@ -345,8 +345,8 @@ class TestSchemaBlock:
             payload = diff_impact_receipt(db, str(repo))
         finally:
             db.close()
-        assert payload["schema_version"] == "1.11"
-        assert RECEIPT_SCHEMA_VERSION == "1.11"
+        assert payload["schema_version"] == "1.12"
+        assert RECEIPT_SCHEMA_VERSION == "1.12"
         from sot_graph.receipt_explorer import (
             KNOWN_RECEIPT_SCHEMA_VERSIONS,
             gate_receipt_version,
