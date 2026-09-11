@@ -1130,7 +1130,8 @@ class DiffImpactEngine:
                         )
                     )
 
-        # 2. Callers residing in test files
+        # 2. Callers residing in test files — W4(c): an import-linked
+        # test file is weaker evidence than a call-linked one.
         for c in caller_impacts:
             if self._is_test_path(c.path) or self._is_test_symbol(c.symbol):
                 key = f"caller:{c.id}"
@@ -1142,18 +1143,26 @@ class DiffImpactEngine:
                             path=c.path,
                             symbol=c.symbol,
                             kind=c.kind,
-                            impact_reason="calls_modified_node",
+                            impact_reason=(
+                                "imports_modified_module"
+                                if c.via_relation == "imports"
+                                else "calls_modified_node"
+                            ),
                             target_symbol=c.callee_symbol,
                         )
                     )
 
-        # 3. Test functions in DB referencing direct symbols
+        # 3. Test functions in DB referencing direct symbols.
+        # W4(c): split by edge relation — an `imports` edge is weaker
+        # evidence than a `calls`/`uses` edge (import-only tests may not
+        # exercise the changed symbol), so it keeps its own reason.
         for d in direct_nodes:
             if not d.symbol:
                 continue
             try:
                 rows = self.conn.execute(
-                    "SELECT n.id, n.path, n.symbol, n.kind FROM graph_edges e "
+                    "SELECT n.id, n.path, n.symbol, n.kind, e.relation "
+                    "FROM graph_edges e "
                     "JOIN graph_nodes n ON e.src = n.id "
                     "WHERE e.dst = ?",
                     (d.id,),
@@ -1162,19 +1171,74 @@ class DiffImpactEngine:
                         if self._is_test_path(r[1])
                         or self._is_test_symbol(r[2])]
                 for r in rows:
-                    key = f"db_edge:{r[0]}"
+                    key = f"db_edge:{r[0]}:{r[4]}"
                     if key not in seen_test_keys:
                         seen_test_keys.add(key)
+                        reason = (
+                            "imports_modified_module"
+                            if r[4] == "imports"
+                            else "calls_modified_node"
+                        )
                         test_impacts.append(
                             TestImpact(
                                 id=r[0],
                                 path=r[1],
                                 symbol=r[2],
                                 kind=r[3],
-                                impact_reason="calls_modified_node",
+                                impact_reason=reason,
                                 target_symbol=d.symbol,
                             )
                         )
+            except Exception:
+                pass
+
+        # 4. W4(c): import-driven impact — test files that IMPORT a
+        # changed module without calling any changed symbol. Weaker
+        # evidence than calls_modified_node: a test importing the module
+        # may exercise it transitively (the B7 miss was exactly this
+        # shape), so it is surfaced with its own reason instead of
+        # either silently dropped or silently merged into the call set.
+        changed_abs = {
+            f if os.path.isabs(f) else os.path.join(self.repo_path, f)
+            for f in changed_files
+            if not self._is_test_path(f)
+        }
+        for cf in changed_abs:
+            try:
+                rows = self.conn.execute(
+                    "SELECT DISTINCT sn.id, sn.path FROM graph_edges e "
+                    "JOIN graph_nodes dn ON e.dst = dn.id "
+                    "JOIN graph_nodes sn ON e.src = sn.id "
+                    "WHERE e.relation = 'imports' AND dn.path = ? "
+                    "AND sn.path != dn.path",
+                    (cf,),
+                ).fetchall()
+                for node_id, src_path in rows:
+                    if not self._is_test_path(src_path):
+                        continue
+                    key = f"import:{node_id}:{cf}"
+                    if key in seen_test_keys:
+                        continue
+                    # If the same test file already carries a call-driven
+                    # impact for this change, keep the stronger reason.
+                    already = any(
+                        t.path == src_path or os.path.join(
+                            self.repo_path, t.path) == src_path
+                        for t in test_impacts
+                    )
+                    if already:
+                        continue
+                    seen_test_keys.add(key)
+                    test_impacts.append(
+                        TestImpact(
+                            id=node_id,
+                            path=src_path,
+                            symbol="",
+                            kind="file",
+                            impact_reason="imports_modified_module",
+                            target_symbol=os.path.basename(cf),
+                        )
+                    )
             except Exception:
                 pass
 
@@ -1700,6 +1764,38 @@ def format_commit_history_markdown(
                 verdict, "❓")
             row += f" {icon} {verdict} ({outcome}) |"
         lines.append(row)
+
+    # W4(b): measured verdict calibration per risk level — turns the
+    # heuristic badge into an empirical statement over THIS slice of
+    # history (P(still-hot | risk_level) among verdicted commits).
+    if has_verdicts and verdicts:
+        per_level: Dict[str, Dict[str, int]] = {}
+        for c in result.commits:
+            v = (verdicts or {}).get(c.commit_hash)
+            if not v:
+                continue
+            row_lvl = per_level.setdefault(
+                c.risk_level, {"n": 0, "still": 0, "clear": 0, "unk": 0})
+            row_lvl["n"] += 1
+            key = {"still-hot": "still", "clear-fault": "clear"}.get(
+                v.get("verdict"), "unk")
+            row_lvl[key] += 1
+        if per_level:
+            parts = []
+            for lvl in ("HIGH", "MEDIUM", "LOW"):
+                r = per_level.get(lvl)
+                if not r or not r["n"]:
+                    continue
+                rate = round(100 * r["still"] / r["n"])
+                parts.append(f"{lvl} n={r['n']} still-hot {rate}%")
+            if parts:
+                lines.append("")
+                lines.append(
+                    "**Verdict calibration (this slice):** "
+                    + " | ".join(parts))
+                lines.append(
+                    "_still-hot = reverted or needed follow-up repairs; "
+                    "unknown = insufficient observation window._")
 
     lines.append("")
     return "\n".join(lines)

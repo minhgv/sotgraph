@@ -1989,8 +1989,26 @@ class Database:
             candidates = symbol_index.get(dst_symbol, [])
             chosen: Optional[Tuple[str, str]] = None
 
+            # Priority 0: Enclosing-scope (nested-definition) match. A bare
+            # call inside `def outer(): def get(): ...; get()` resolves to
+            # `outer.get` in the SAME file — the bare-name index only sees
+            # the qualified symbol `outer.get`, so without this slice the
+            # call leaks onto a same-named module function elsewhere. The
+            # enclosing symbol itself may be a plain function (no dot), so
+            # the check runs on every receiver-less src symbol.
+            if not receiver:
+                src_sym = src.split(":")[-1]
+                nested = [
+                    (nid, npath)
+                    for nid, npath in symbol_index.get(
+                        f"{src_sym}.{dst_symbol}", [])
+                    if npath == path
+                ]
+                if len(nested) == 1:
+                    chosen = nested[0]
+
             # Priority 1: Receiver Type & MRO Resolution
-            if receiver:
+            if chosen is None and receiver:
                 recv_cls = receiver.split(":")[-1]
                 chosen = lookup_class_method(recv_cls, dst_symbol)
                 if chosen is None and "." in src:
@@ -2014,15 +2032,16 @@ class Database:
                     ambiguous_updates.append(rowid)
                     ambiguous += 1
                     continue
-            # An ATTRIBUTE call is a method invoked on a local/parameter
-            # receiver of unknown type whose class-method lookup (Priority 1)
-            # already failed. Bare-name candidates here are module-level
-            # functions only (methods are indexed as 'Class.method'), and a
-            # method call never targets a free function: matching
-            # ``proxies.get()`` onto a unique module-level ``api.get`` is name
-            # coincidence, not evidence. Keep such rows pending/unresolved
-            # instead of fabricating cross-file edges.
-            attr_method_coincidence = call_kind == "ATTRIBUTE" and not imp
+            # A receiver-bearing call (obj.m() ATTRIBUTE, or self.m() /
+            # self.x.m() METHOD_CALL once receiver-class lookup above has
+            # failed) must never bare-match a module-level function:
+            # methods are indexed as 'Class.method', so bare candidates are
+            # free functions only — ``self.get()`` in a class without `get`
+            # linking to ``api.get`` is name coincidence, not evidence.
+            # Keep such rows pending/unresolved instead of fabricating
+            # cross-file edges.
+            attr_method_coincidence = (
+                call_kind in ("ATTRIBUTE", "METHOD_CALL") and not imp)
 
             # Priority 3b: Caller-file import fallback for legacy edges parked
             # without import_source. Filters multiple candidates by the

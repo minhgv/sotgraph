@@ -199,7 +199,7 @@ debug/attribution. Digest: union over sorted targets (order-invariant, content-a
 - `union_ge_best_single` = **1.0** PASS (union không bao giờ tệ hơn — đúng cấu trúc superset)
 - `precision_drop` = **15.4pt > bar 10pt → FAIL** — nhưng bar này thiết kế sai: union ⊇ single
   nên precision union *luôn* ≤ single theo cấu trúc. Đây là finding, không phải bug —
-  recall +4pt mean (có commit +14pt: d3999cd 89→100%) đổi lấy surface rộng hơn ~2x.
+  recall +4pt mean (có commit +14pt: d3999cd 89→100%, bounded — corpus G1) đổi lấy surface rộng hơn ~2x.
 - `partial_resolution_rate` = 20% — symbols của commit cũ không resolve trên current index
   (drift đúng như caveat đã ghi: graph phản ánh trạng thái hiện tại).
 
@@ -270,3 +270,67 @@ signal, không phải defect evidence — giữ still-hot precision có nghĩa).
 **Test:** `test_commit_verdict.py` 11 tests — pure mapping (mọi verdict có reason,
 positive-evidence-beats-window), integration repo với GIT_COMMITTER_DATE điều khiển
 window, CLI exit codes + not-in-window unknown, `log --outcomes` column.
+
+## W4 — Accuracy foundations ✅
+
+**Mục tiêu:** sửa ba lỗi độ chính xác được đo chứng minh — receiver collision
+(`get`/`update` family, Danh_gia priority 1), test-impact mập mờ import-vs-call
+(miss B7), và đưa risk badge thành con số đo được.
+
+### W4a — Receiver disambiguation: counter-corpus 5/5 → 0/5
+
+Corpus `tests/fault/wrong_edge_corpus/` + `tests/test_wrong_edge_corpus.py` gồm
+decoy module `api.get`/`api.update` + 7 case đối chứng. Đo trên repo trước fix
+phát hiện **3 leak thật**:
+
+| Case | Trước | Sau |
+|---|---|---|
+| `cfg.get()` / `obj.get()` (receiver không suy được) | UNRESOLVED ✓ | UNRESOLVED ✓ |
+| `self.get()` trong class thiếu `get` (`call_kind=METHOD_CALL`) | **→ api.get (sai)** | UNRESOLVED |
+| `self.s.get()` (attribute chain, receiver=class) | **→ api.get (sai)** | UNRESOLVED |
+| `def get()` lồng trong hàm (shadow) | **→ api.get (sai)** | → `case5.get` (nested) |
+| `s.get()` typed / `self.get()` trong Session / `api.get()` thật | đúng | đúng (giữ nguyên) |
+
+Hai sửa trong resolver `db.py`:
+1. Guard `attr_method_coincidence` mở rộng `ATTRIBUTE → METHOD_CALL`: method-call
+   thất bại class-lookup không được rơi xuống bare-name match — bare candidates
+   chỉ là module-level functions (`method` lưu dạng `Class.method`), link là
+   trùng tên ngẫu nhiên chứ không phải bằng chứng.
+2. Priority-0 enclosing-scope match: bare call trong `def outer()` thử
+   `symbol_index["outer.<dst>"]` cùng file trước mọi candidate — nested def
+   shadow đúng scope.
+
+### W4c — import- vs call-driven test impact
+
+Trước: mọi edge vào changed node (kể cả `imports`) đều gắn nhãn
+`calls_modified_node` — test file chỉ import module không phân biệt được với
+test gọi thẳng symbol bị sửa. Sau:
+
+- Traversal giữ `imports` trong `allowed_relations` (importer thật sự bị ảnh
+  hưởng khi signature đổi) nhưng `impact_reason` theo `via_relation` —
+  `imports_modified_module` cho import edge.
+- Section-3 DB-edge split theo `e.relation`.
+- Slice mới: file-level `imports` edge vào changed module (không cần symbol
+  direct node) → `imports_modified_module` — đây đúng shape miss B7
+  (`test_adapters.py` import module chứa `prepare_method` mà không call trực
+  tiếp): giờ surface được như evidence yếu thay vì bỏ sót hoặc gắn nhãn sai.
+
+Test `tests/test_test_impact_split.py` 3 tests: import-only test nhận reason
+import, call-test giữ reason call, không mislabel.
+
+### W4b — risk calibration (measured, không đoán)
+
+W0 baseline đã cho thấy level tách đều (adverse rate LOW 0.30 / MEDIUM 0.47 /
+HIGH 0.67 — monotone). Với n=16–90/bucket, re-fit threshold sẽ overfit — giữ
+nguyên heuristic, nhưng `log --outcomes` giờ in footer calibration **đo trên
+chính slice đang xem**: `HIGH n=6 still-hot 0% | MEDIUM n=5 still-hot 20%` —
+badge heuristic giờ đi kèm tỉ lệ thực đo, người đọc tự thấy level nào đang
+"cháy" thay vì tin badge.
+
+### Gates W4
+
+| Gate | Kết quả |
+|---|---|
+| Oracle F1 ≥ 0.95 (không regress) | `test_diff_impact_oracle` pass (F1=1.0 trên fixture) |
+| Wrong-edge counter-corpus | 5/5 → 0/5; real-call edges giữ nguyên |
+| Suite rộng | 2384 passed; fail còn lại đối chứng base `833b160` y hệt (pre-existing parity/env, không phải regression W4); 1 mock test cập nhật kwarg `test_results` |
