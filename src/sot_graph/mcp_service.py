@@ -222,8 +222,10 @@ class McpService:
         self.timeout_ms = max(1, int(timeout_ms))
         if not os.path.isdir(self.project_root):
             raise McpServiceError("invalid_root", "project root must be an existing directory")
-        if not os.path.isfile(self.db_path):
-            raise McpServiceError("database_unavailable", "SQLite database does not exist")
+        # NB: a missing .sot/sot.db must NOT kill the server process —
+        # MCP clients spawn us with an arbitrary cwd, so deferring the
+        # check to _connection keeps tools/list + initialize alive and
+        # reports database_unavailable per call instead of a dead server.
         self._closed = False
 
     def close(self) -> None:
@@ -307,6 +309,11 @@ class McpService:
     def _connection(self) -> sqlite3.Connection:
         if self._closed:
             raise McpServiceError("closed", "MCP service is closed")
+        if not os.path.isfile(self.db_path):
+            raise McpServiceError(
+                "database_unavailable",
+                f"no sotgraph index at {self.db_path} — run "
+                "`sotgraph reconcile` in the project root to create it")
         # URI mode=ro guarantees that this surface cannot create schema, WAL,
         # journal, or other files even when the caller supplies a new database.
         uri = "file:" + quote(self.db_path, safe="/") + "?mode=ro"
@@ -1862,9 +1869,11 @@ class McpService:
         limit = self._bounded(limit, 1000, default=400)
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
-            view = cast(Database, _ConnView(conn))
+            # NB: db=None — the verdict only needs files+risk, and the
+            # symbol-mapping queries would burn the shared 2s connection
+            # deadline during the git history walk.
             records = collect_commit_records(
-                self.project_root, limit=limit, db=view)
+                self.project_root, limit=limit, db=None)
             outcomes = label_outcomes(records)
             for o in outcomes:
                 if o.sha == sha or o.short_sha == sha \
@@ -1960,6 +1969,7 @@ class McpService:
         method: Any,
         *args: Any,
         cancel_event: Optional[threading.Event] = None,
+        timeout_ms: Optional[int] = None,
         **kwargs: Any,
     ) -> Any:
         event = cancel_event or threading.Event()
@@ -1977,7 +1987,7 @@ class McpService:
         try:
             return await asyncio.wait_for(
                 asyncio.to_thread(method, *args, **kwargs),
-                self.timeout_ms / 1000.0,
+                (timeout_ms or self.timeout_ms) / 1000.0,
             )
         except asyncio.TimeoutError as exc:
             event.set()
@@ -2060,7 +2070,10 @@ class McpService:
     async def adiff_impact_receipt(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.diff_impact_receipt, *args, **kwargs)
     async def acommit_verdict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
-        return await self._async(self.commit_verdict, *args, **kwargs)
+        # History collection is git-walk bound, not sqlite-bound: it
+        # needs a larger budget than the shared 2s graph-op deadline.
+        return await self._async(
+            self.commit_verdict, *args, timeout_ms=60_000, **kwargs)
     async def across_check(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.cross_check, *args, **kwargs)
 

@@ -21,6 +21,7 @@ TOOLS = {
     'trace', 'ui_tree', 'backend_flow', 'solution_inventory', 'solution_steps',
     'solution_bundle', 'diff_impact', 'providers_sync', 'cross_check',
     'git_history', 'scope_receipt', 'diff_impact_receipt',
+    'commit_verdict',
 }
 
 
