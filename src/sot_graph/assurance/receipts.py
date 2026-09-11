@@ -23,6 +23,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import time
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 from dataclasses import asdict
@@ -1069,6 +1070,20 @@ def scope_receipt_multi(
     return payload
 
 
+def _head_sha(repo_root: str) -> Optional[str]:
+    """HEAD sha at receipt-mint time (W5 lineage forward link)."""
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=repo_root,
+            capture_output=True, text=True, timeout=10,
+        )
+        sha = out.stdout.strip()
+        return sha if out.returncode == 0 and len(sha) >= 7 else None
+    except Exception:  # noqa: BLE001 - lineage enrichment is best-effort
+        return None
+
+
 def _jsonable(value: Any) -> Any:
     """Normalize an engine row to a JSON-safe dict (P0 contract sync)."""
     to_dict = getattr(value, "to_dict", None)
@@ -1434,6 +1449,16 @@ def diff_impact_receipt(
                               "snapshot to a fresh index generation"},
         "summary": summary_dict,
         "pre_receipt_digest": (pre_receipt or {}).get("digest"),
+        # W5 lineage: bind the receipt to the chain — the scope receipt it
+        # was minted against (backward link), the HEAD at mint time (the
+        # commit that eventually lands this diff is expected to be its
+        # direct child — forward link for `receipt chain`), and the mint
+        # timestamp for window reasoning.
+        "lineage": {
+            "scope_receipt_digest": (pre_receipt or {}).get("digest"),
+            "head_sha": _head_sha(repo_root),
+            "minted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        },
         "pre_change_snapshot": (
             _strip_volatile(pre_snapshot) if pre_snapshot else None
         ),

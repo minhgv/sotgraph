@@ -1605,6 +1605,17 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
         touches_auth=bool(getattr(args, "auth", False)),
         dynamic_heavy=bool(getattr(args, "dynamic", False)),
     )
+    # W5: persist content-addressed so `receipt chain` can resolve the
+    # scope→diff link later; persistence is best-effort, never fails the
+    # command.
+    try:
+        from sot_graph.assurance.impact_pipeline import ReceiptStore
+        stored = ReceiptStore(
+            os.path.join(root, ".sot", "receipts")).put(payload)
+        print(f"receipt stored: .sot/receipts/{stored}.json",
+              file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"⚠️  receipt store skipped: {exc}", file=sys.stderr)
     if getattr(args, "json", False):
         print(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
         return 0
@@ -1680,12 +1691,19 @@ def _resolve_receipt_input(ref: str, root: str) -> Dict[str, Any]:
                 f"no receipt store at {receipts_dir}; pass a receipt JSON "
                 "file path instead")
         try:
-            return ReceiptStore(receipts_dir).get(ref)
+            payload = ReceiptStore(receipts_dir).get(ref)
         except KeyError:
             raise FileNotFoundError(
                 f"digest {ref} not found in {receipts_dir}") from None
         except ReceiptIntegrityError as exc:
             raise ValueError(f"receipt failed integrity check: {exc}") from None
+        # Re-attach the caller-supplied content address: the store strips
+        # `digest` from stored bytes (the filename IS the address), so
+        # downstream consumers reading `payload["digest"]` — e.g. the
+        # diff receipt's pre_receipt_digest / lineage — get the value the
+        # payload had at mint time.
+        payload["digest"] = ref
+        return payload
     raise FileNotFoundError(
         f"{ref!r} is neither an existing receipt file nor a 64-hex digest")
 
@@ -1698,6 +1716,17 @@ def cmd_receipt(args: argparse.Namespace, root: str) -> int:
         gate_receipt_version,
         render_receipt,
     )
+    if args.receipt_subcommand == "chain":
+        from sot_graph.assurance.lineage import build_chain, render_chain
+        chain = build_chain(
+            root, args.ref,
+            limit=int(getattr(args, "limit", 400) or 400))
+        if getattr(args, "json", False):
+            print(json.dumps(chain, ensure_ascii=False, indent=2,
+                             default=str))
+        else:
+            print(render_chain(chain))
+        return 1 if chain.get("error") else 0
     try:
         old = _resolve_receipt_input(args.receipt, root)
         if args.receipt_subcommand == "show":
@@ -2756,6 +2785,16 @@ def build_parser() -> argparse.ArgumentParser:
         "diff", help="Field-level diff of TWO serialized receipts (before/after)")
     p_receipt_diff.add_argument("receipt", help="Old receipt: JSON file path or 64-hex digest")
     p_receipt_diff.add_argument("new_receipt", help="New receipt: JSON file path or 64-hex digest")
+    p_receipt_chain = receipt_subs.add_parser(
+        "chain",
+        help="W5 lineage dossier: scope receipt → diff receipt → commit → outcome verdict")
+    p_receipt_chain.add_argument(
+        "ref",
+        help="Anchor: receipt digest (full/prefix), receipt file path, or commit ref")
+    p_receipt_chain.add_argument(
+        "--limit", type=int, default=400,
+        help="Commit window scanned for matching/verdict (default: 400)")
+    p_receipt_chain.add_argument("--json", action="store_true", help="Print the chain as JSON")
     p_prov = subparsers.add_parser("providers", help="Detect, list, and diagnose evidence providers (read-only)")
     prov_subs = p_prov.add_subparsers(dest="providers_subcommand", required=True)
 

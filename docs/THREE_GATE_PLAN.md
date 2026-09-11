@@ -334,3 +334,40 @@ badge heuristic giờ đi kèm tỉ lệ thực đo, người đọc tự thấy
 | Oracle F1 ≥ 0.95 (không regress) | `test_diff_impact_oracle` pass (F1=1.0 trên fixture) |
 | Wrong-edge counter-corpus | 5/5 → 0/5; real-call edges giữ nguyên |
 | Suite rộng | 2384 passed; fail còn lại đối chứng base `833b160` y hệt (pre-existing parity/env, không phải regression W4); 1 mock test cập nhật kwarg `test_results` |
+
+## W5 — Integration: lineage/dossier chain ✅
+
+**Mục tiêu:** nối ba chốt thành một chuỗi truy vấn được — scope digest → diff
+digest → commit SHA → outcome verdict.
+
+### Thay đổi
+
+- **Lineage fields**: `diff_impact` receipt giờ mang `lineage{scope_receipt_digest,
+  head_sha, minted_at}` — `head_sha` là mỏ neo forward: commit đổ receipt đó đi
+  vào được kỳ vọng là con trực tiếp của head lúc mint.
+- **`sotgraph receipt chain <ref>`** (`assurance/lineage.py`): anchor bằng digest
+  receipt (đầy đủ/tiền tố), path file, hoặc commit sha. Lắp 3 mắt xích:
+  `scope_to_diff` (pre_receipt_digest resolve trong store), `diff_to_commit`
+  (target sha | child-of-head | file-subset, luôn ghi `matched_via`),
+  `commit_to_outcome` (verdict qua labeler W3). `complete` chỉ true khi cả ba
+  link có; link thiếu được liệt kê kèm hướng sửa — fail-closed, không đoán.
+- **Persist scope receipts**: `scope-receipt` giờ ghi content-addressed vào
+  `.sot/receipts/` (trước chỉ in) — không persist thì mắt xích scope→diff không
+  bao giờ resolve được.
+- **`_resolve_receipt_input`** gắn lại `digest` vào payload load từ store (store
+  bỏ key `digest` vì filename chính là địa chỉ) — sửa bug `pre_receipt_digest`
+  luôn None khi truyền `--pre-receipt <digest>`.
+- **CI recipe**: `docs/CI_RECIPE.md` — `log --since <tag> --outcomes`,
+  fail-on-still-hot snippet (đã verify đúng schema JSON thật), dossier query,
+  full 3-chốt flow.
+
+### Đo (dry-run)
+
+| Tập | Kết quả |
+|---|---|
+| E2E minted flow (test fixture, 6 scenarios) | chain complete — scope→diff→commit→verdict đủ cả 3 link; commit anchor tìm ngược được receipt đã sinh ra nó (matched_via=head_child) |
+| Historical receipts repo này (10 diff receipts mint trước W5) | 0/10 complete — tất cả thiếu scope link (chưa có cơ chế lúc mint); diff→commit resolve 7/10 (6 file_subset + 1 target); 3 receipt mint trên working-tree không bao giờ commit |
+
+**Test:** `tests/test_lineage_chain.py` 6 tests — full chain, commit-anchor
+ngược, scope-anchor xuôi, missing-scope disclosed, unresolvable ref fail-closed,
+CLI exit codes.
