@@ -354,6 +354,12 @@ def _service_of(repo: Path, budget: int = None):
 def _cli_diff_json(repo: Path, db, *extra: str) -> Dict[str, Any]:
     from sot_graph.cli import build_parser, cmd_diff_impact
 
+    # Parity pins the same request on every surface: the CLI flag defaults
+    # auto_reconcile ON while the executor/MCP requests default it OFF —
+    # inject --no-auto-reconcile unless the caller exercises the flag.
+    flags = {e for e in extra}
+    if "--auto-reconcile" not in flags and "--no-auto-reconcile" not in flags:
+        extra = (*extra, "--no-auto-reconcile")
     args = build_parser().parse_args(
         ["diff-impact", "--format", "json", *extra])
     buf = io.StringIO()
@@ -878,17 +884,19 @@ class TestCharacterizationResidualRisks:
             if mcp_wire[k] != data[k]
         )
         # Pin the KNOWN inconsistency surface: exactly one additive
-        # CLI-only key, zero removals, and at most TWO value divergences
-        # — both wall-clock volatile in the PAYLOAD while receipt_digest
+        # CLI-only key, zero removals, and at most THREE value divergences
+        # — all wall-clock volatile in the PAYLOAD while receipt_digest
         # strips them (so digests still match):
         #   summary.execution_time_ms        (float ms, per-surface run)
         #   post_change_snapshot.captured_at (int seconds; surfaces that
         #       capture across a second boundary disagree)
+        #   lineage.minted_at                (ISO wall-clock, per-mint)
         assert added == {"stale_files"}, (
             f"CLI-only fields beyond stale_files: {sorted(added)}"
         )
         assert not removed, f"MCP-only fields: {sorted(removed)}"
-        assert set(diverging) <= {"summary", "post_change_snapshot"}, (
+        assert set(diverging) <= {
+            "summary", "post_change_snapshot", "lineage"}, (
             "MCP vs CLI receipt normalization diverged in fields "
             f"{diverging} — capture exact per-field values for the "
             "path-normalization SG (e.g. absolute vs relative paths in "

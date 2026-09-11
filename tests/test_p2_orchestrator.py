@@ -407,7 +407,9 @@ class TestStaleDetectionShared:
             encoding="utf-8",
         )
         service = McpService(str(repo / ".sot" / "sot.db"), str(repo))
-        res = service.usages("target")
+        # auto_reconcile="off": probe-only mode — the JIT gate must not
+        # heal the drift before the query observes it.
+        res = service.usages("target", auto_reconcile="off")
         assert "app.py" in res["stale_files"], "stale cited file must surface via MCP"
 
 

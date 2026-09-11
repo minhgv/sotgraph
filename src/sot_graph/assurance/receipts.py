@@ -112,6 +112,13 @@ _TEST_PATH_MARKERS = ("test", "spec")
 #: stable across runs (SG-105).
 _VOLATILE_SNAPSHOT_KEYS = (
     "captured_at", "snapshot_id", "execution_time_ms", "elapsed_ms",
+    # W5 lineage: minted_at is wall-clock provenance, not evidenced state —
+    # two mints of the same change must digest identically.
+    "minted_at",
+    # JIT freshness envelope is per-call transport telemetry (probe counts,
+    # performed/skipped) — not evidenced state; including it would make the
+    # digest nondeterministic across identical content.
+    "graph_freshness",
 )
 
 

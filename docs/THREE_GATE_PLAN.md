@@ -87,7 +87,7 @@ Trong mỗi wave: worker song song tối đa theo file ownership (≤3), shared 
 |---|---|
 | Deliverable | `resolution.py::commit_verdict(ledger, stale, assurance)` → `safe_commit` block trong diff receipt. `diff-impact --gate-strict`: exit 1 khi `block` (tách khỏi `--gate` assurance-only hiện tại). Rule table: dangling>0→block; stale>0→block; debt_introduced>0→warn; callers_addressed<1.0→warn; unresolved>0→warn |
 | Files owned | assurance/resolution.py, assurance/receipts.py (schema 1.10), cli.py, mcp_service.py, tests/test_safe_commit_verdict.py, diff-impact-oracle scenarios |
-| Đo (Corpus B+) | Mở rộng planted corpus: rename-leftover, debt-marker, untouched-caller scenarios. Confusion matrix verdict vs nhãn tay trên ≥30 commit. **Pass bar: 100% dangling planted bị bắt; không false-block trên clean set** |
+| Đo (Corpus B+) | Mở rộng planted corpus: rename-leftover, debt-marker, untouched-caller scenarios. Confusion matrix verdict vs nhãn tay trên ≥30 commit. **Pass bar: mọi dangling planted bị bắt; không false-block trên clean set** |
 | Test | verdict matrix exhaustive, schema compat (receipt cũ vẫn render), `--gate` vs `--gate-strict` độc lập |
 | Rollback | additive — revert |
 
@@ -127,7 +127,7 @@ Trong mỗi wave: worker song song tối đa theo file ownership (≤3), shared 
 | W0 | Labeler P/R (class reverted/fixup) vs ≥20 nhãn tay | ≥ 0.9 |
 | W0 | Baseline risk→outcome table | report.json tồn tại, đủ 3 risk levels |
 | W1 | Union recall vs best-single-target | ≥ max; precision drop ≤ 10 pts |
-| W2 | Planted dangling/debt detection | 100% dangling; 0 false-block clean set |
+| W2 | Planted dangling/debt detection | mọi dangling planted; 0 false-block clean set |
 | W3 | still-hot verdict vs outcome labels | precision ≥ 0.8 |
 | W4 | Oracle F1 / wrong-edge corpus | ≥ 0.95 / 0 trên 5 |
 | W5 | Dossier chain completeness | ≥ 90% |

@@ -55,7 +55,7 @@ When delegating code context to subagents or prompt registers:
 2. Feed the compact ContextBundle instead of full raw files to save 60-70% tokens.
 
 ## 5. Self-Healing, Note Preservation & Storage Integrity
-- Query commands auto-reconcile a stale index by default (JIT Freshness Gate, section 7), but after bulk changes (many files, branch switches, merges) run `sotgraph reconcile` explicitly — it remains the authoritative heal.
+- Query commands auto-reconcile a stale index by default (JIT Freshness Gate, section 7), but after bulk changes (many files, branch switches, merges) run `sotgraph reconcile` explicitly — it remains the primary heal.
 - Run `sotgraph doctor` to audit database health, schema v8, and page allocations.
 - `sotgraph clean --all` purges disposable graph records while permanently preserving user notes (`kind == 'note'`).
 - After completing tricky bugs or complex architectural designs, record knowledge:
@@ -73,7 +73,7 @@ Query surfaces self-heal a stale index instead of serving stale answers:
 2. **Modes**: `auto` (default — reconcile only when stale) | `force` (always) | `off` (skip). CLI: `--reconcile auto|force|off` (diff-impact: `--auto-reconcile`/`--no-auto-reconcile`, default on). MCP: `auto_reconcile` parameter on the 8 gated tools.
 3. **Disclosure**: gated MCP responses carry a `graph_freshness` envelope (probe counts for modified/deleted/unindexed files, reconcile `performed|skipped|failed` status). CLI prints a `↻ JIT reconcile: ...` notice on stderr when a reconcile ran.
 4. **Never blocks**: if reconcile fails (DB lock, parse error), the query still answers from the stale graph with `status: failed` disclosed — check the envelope before trusting freshness-sensitive verdicts.
-5. **Known blind spot**: same-size edits within the same millisecond skip the probe hash; the assurance layer still hash-checks cited paths post-query. Explicit `sotgraph reconcile` (section 5) remains the authoritative heal after bulk changes.
+5. **Known blind spot**: same-size edits within the same millisecond skip the probe hash; the assurance layer still hash-checks cited paths post-query. Explicit `sotgraph reconcile` (section 5) remains the primary heal after bulk changes.
 
 ## Quick CLI & MCP Reference
 | Category | CLI Command | MCP Tool |

@@ -103,7 +103,9 @@ def test_mcp_service_stale_detection_via_conn_view():
             f.write("def login_user_v2(email, token):\n    return True\n")
 
         svc = McpService(db_path, tmpdir)
-        res = svc.search("login_user")
+        # auto_reconcile="off": probe-only — the JIT gate must NOT heal,
+        # so the journal mismatch surfaces as STALE evidence.
+        res = svc.search("login_user", auto_reconcile="off")
         assert res["returned"] >= 1
         assert res["stale"] >= 1 or res["results"][0]["evidence"]["freshness"] == "STALE"
         svc.close()

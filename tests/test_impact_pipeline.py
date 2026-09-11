@@ -427,6 +427,13 @@ class TestSurfaceWiring:
     def _cli_json(self, wiring_repo: Path, db, *extra: str) -> dict:
         from sot_graph.cli import build_parser, cmd_diff_impact
 
+        # Parity pins the same request on every surface: the CLI flag
+        # defaults auto_reconcile ON while ImpactClaimRequest defaults it
+        # OFF — inject --no-auto-reconcile unless the caller is explicitly
+        # exercising the flag itself.
+        flags = {e for e in extra}
+        if "--auto-reconcile" not in flags and "--no-auto-reconcile" not in flags:
+            extra = (*extra, "--no-auto-reconcile")
         args = build_parser().parse_args(
             ["diff-impact", "--format", "json", *extra]
         )
@@ -527,12 +534,19 @@ class TestSurfaceWiring:
         # Mutates graph journals via a real reconcile — keep last.
         db = _db_of(wiring_repo)
         try:
-            out = self._cli_json(wiring_repo, db)
+            # Documented CLI default is ON (AGENTS.md / parser default);
+            # the request block must reflect it verbatim.
+            from sot_graph.cli import build_parser, cmd_diff_impact
+            args = build_parser().parse_args(["diff-impact", "--format", "json"])
+            buf = io.StringIO()
+            with mock.patch("sys.stdout", buf):
+                code = cmd_diff_impact(args, db, str(wiring_repo))
+            env = json.loads(buf.getvalue())
+            assert code == 0
+            assert env["request"]["auto_reconcile"] is True
+            out = self._cli_json(wiring_repo, db, "--no-auto-reconcile")
             assert out["code"] == 0
             assert out["envelope"]["request"]["auto_reconcile"] is False
-            out = self._cli_json(wiring_repo, db, "--auto-reconcile")
-            assert out["code"] == 0
-            assert out["envelope"]["request"]["auto_reconcile"] is True
         finally:
             db.close()
 
@@ -576,6 +590,11 @@ def _cli_extra_args(req_kwargs: dict) -> list:
         extra.append("--staged")
     if req_kwargs.get("working_tree"):
         extra.append("--working-tree")
+    # Parity requires matching requests: the CLI flag defaults ON while
+    # ImpactClaimRequest defaults OFF — translate explicitly or the
+    # embedded request block differs and digests diverge.
+    if not req_kwargs.get("auto_reconcile", False):
+        extra.append("--no-auto-reconcile")
     return extra
 
 
