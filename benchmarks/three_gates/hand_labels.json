@@ -1,0 +1,28 @@
+{
+  "_methodology": "Stratified sample (every-4th fixup + retouched + window-complete clean picks). Each flagged pair inspected via git show --stat + diff region check on the claimed follow-up. Truth rule: fixup = the later fix plausibly repairs a fault THIS commit introduced (footprint + topic coherence), not mere file churn. retouched = re-touched >=2x in window without repair intent. Labeled 2026-09-11 against linkage code-files-v3.",
+  "_known_limits": "recall not measurable from this sample (all labeler-flagged commits + controls; missed fixups would need full-history annotation). reverted class: 0 occurrences in corpus — precision/recall not computable. 85fd9dd relabeled to retouched on re-inspection: the diff-impact merge-base fault predated it (the commit added the oracle that EXPOSED it, did not introduce it). 4f0133a is the residual boundary case: b5cd002's hunks literally intersect 4f0133a's mcp_server.py:420-422 edits (pack tool description text both commits rewrote) — region overlap cannot distinguish repair from adjacent doc edits.",
+  "sotgraph": {
+    "4f0133a": "clean",
+    "ac26089": "fixup",
+    "efbdae9": "fixup",
+    "af69288": "fixup",
+    "5c859c4": "fixup",
+    "6e408ab": "fixup",
+    "3f926f3": "retouched",
+    "85fd9dd": "retouched",
+    "3536de4": "retouched",
+    "1ff4e90": "fixup",
+    "a5d50c0": "fixup",
+    "b5cd002": "retouched",
+    "cff1e42": "retouched",
+    "86c97fc": "retouched",
+    "c745b47": "retouched",
+    "aacaade": "retouched",
+    "79b703a": "clean",
+    "6a97f55": "clean",
+    "29f2d4d": "clean",
+    "994b619": "clean",
+    "574ff34": "clean",
+    "fac0025": "clean"
+  }
+}

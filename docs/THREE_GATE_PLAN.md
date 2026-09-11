@@ -1,0 +1,174 @@
+# Kế hoạch 3-Gate Impact Assurance — Master Epic Blueprint
+
+> Mục tiêu: sotgraph trả lời được 3 câu hỏi của lập trình viên tại 3 chốt chặn —
+> **G1 (Plan, trước khi code)**: "Task này tác động đến đâu, rủi ro ra sao?"
+> **G2 (Sau code, trước commit)**: "Diff còn để lại bug/leftover không, commit an toàn chưa?"
+> **G3 (Giám sát repo)**: "Commit nào high/medium/low-risk, và commit đó đã dọn fault sạch chưa?"
+>
+> Blueprint-only: không chứa code. Level-2 JIT wave blueprint sẽ viết trước khi chạy từng wave.
+
+---
+
+## 1. Objective & Scope
+
+**In scope:** đánh giá định lượng 3 gate + lấp gap theo priority đo được.
+**Non-goals:** sotgraph KHÔNG chạy test (chỉ suggest + đối chiếu), KHÔNG thay LLM/human review,
+KHÔNG claim semantic correctness ("không còn bug" chỉ trong phạm vi graph chứng minh được —
+giữ nguyên fail-closed philosophy của CAPABILITY_MATRIX.md §7).
+
+**Invariant toàn epic:** mọi wave additive-only (flag/command/block mới); không breaking
+schema/CLI/contract; mỗi wave = đo baseline → implement → đo lại → test kiểm chứng.
+
+## 2. Architecture hiện trạng → đích
+
+```
+HIỆN CÓ (đã verify):
+  scope-receipt (P7.1) ──pre_receipt──> diff-impact receipt (P7.2)
+                                           │ resolution_ledger (P7.3):
+                                           │   dispositions / dangling_refs / debt_markers
+                                           └> ReceiptStore (.sot/receipts/, content-addressed)
+  log (CommitHistoryEngine): per-commit risk HIGH/MED/LOW — heuristic churn
+  benchmarks/: holdout (SG-204 oracle), diff-impact-oracle, exit_gates
+
+ĐÍCH:
+  [W0] outcome labeler ──┐
+                         ├─> bench_three_gates (harness đo 3 gate, report + --gate)
+  [W1] scope multi-target (G1)
+  [W2] safe_commit verdict (G2) ──> --gate-strict exit code
+  [W3] commit-verdict (G3): risk + outcome signals -> clear-fault|still-hot|unknown
+  [W4] edge quality + risk calibration (chỉ làm phần đo chứng minh cần)
+  [W5] lineage chain: scope-digest -> diff-digest -> sha -> outcome
+```
+
+## 3. Inter-module contracts
+
+| Contract | Producer → Consumer | Shape |
+|---|---|---|
+| `CommitOutcome` | `outcome.py` → bench harness, `commit-verdict` | `{sha, risk_level, touched_symbols[], outcome: clean\|fixup\|reverted\|retouched, follow_up_shas[], retouch_count, window_days, evidence}` |
+| `safe_commit` block | `resolution.py` → diff receipt (schema 1.9→1.10 minor) | `{verdict: pass\|warn\|block, failed_conditions[], dispositions:{callers_ratio, tests_ratio}, dangling_count, debt_introduced, stale_files}` — escalate chỉ một chiều pass→warn→block |
+| Multi-target scope | `receipts.scope_receipt` → CLI/MCP | `targets: [t1..tn]`; union blast radius; per-target `identity.recovery`; digest over sorted targets; back-compat single str |
+| `commit-verdict` | `outcome.py` → CLI/MCP/receipt | `{sha, risk, signals:{reverted_by[], follow_ups[], retouch_count, tests_touched_ratio}, verdict: clear-fault\|still-hot\|unknown, reason_codes[]}` — `unknown` khi evidence thiếu (fail-closed) |
+| `lineage` | `impact_pipeline.py` → receipt chain | `{pre_scope_digest, diff_digest, commit_sha, outcome_label}` |
+
+## 4. Wave DAG (thực hiện lần lượt)
+
+```
+W0 (đo lường nền) ──> W1 (G1) ──> W2 (G2) ──> W3 (G3) ──> W4 (accuracy) ──> W5 (tích hợp)
+   │                                                             ▲
+   └──────────── labels/calibration data ────────────────────────┘
+```
+
+W0 chặn W3 (cần labels) và W4 (cần calibration data). W5 chặn bởi W1–W3.
+Trong mỗi wave: worker song song tối đa theo file ownership (≤3), shared contract khóa trước dispatch.
+
+### W0 — Measurement foundation (P0)
+
+| Item | Detail |
+|---|---|
+| Deliverable | `src/sot_graph/outcome.py` (MỚI): `label_commit_outcomes(range, window=14d)` — revert detection (message regex + "This reverts commit"), fixup linkage theo symbol-overlap (Jaccard), re-touch count. `scripts/bench_three_gates.py` (MỚI) theo pattern `bench_holdout.py`. `benchmarks/three_gates/manifest.json` — corpus: repo này (self-dogfood) + history các holdout dev repos. |
+| Files owned | outcome.py, bench_three_gates.py, benchmarks/three_gates/, tests/test_outcome_labeler.py — **toàn file mới, zero sửa file cũ** |
+| Đo | Labeler vs ≥20 commit gán nhãn tay: precision/recall class `reverted`/`fixup` ≥ 0.9. Risk→outcome baseline table = input cho W4 |
+| Test | revert-msg parsing, symbol-overlap linkage, window boundary, empty-range edge cases |
+| Rollback | git revert (additive) |
+
+### W1 — G1 task-level scoping
+
+| Item | Detail |
+|---|---|
+| Deliverable | `scope_receipt` nhận `targets: list[str]` → union direct_callers/callees/transitive/affected_files/candidate_tests; per-target identity recovery; aggregate risk = max(level) + merged reason_codes. CLI `scope-receipt` repeatable `--target`; MCP `sot_scope_receipt` thêm `targets` |
+| Files owned | assurance/receipts.py, cli.py (parser block), mcp_service.py, mcp_server.py, tests/test_scope_receipt_multi.py |
+| Đo (Corpus C) | 24 query đã khóa (Danh_gia) + task từ commit-replay. Baseline: best-single-target recall vs actual fix diff. **Pass bar: union recall ≥ max single-target recall; precision drop ≤ 10 pts** |
+| Test | union dedup, digest stable trên sorted targets, per-target NOT_FOUND isolation, exit code giữ nguyên semantics |
+| Rollback | additive — revert |
+
+### W2 — G2 composite safe-to-commit verdict
+
+| Item | Detail |
+|---|---|
+| Deliverable | `resolution.py::commit_verdict(ledger, stale, assurance)` → `safe_commit` block trong diff receipt. `diff-impact --gate-strict`: exit 1 khi `block` (tách khỏi `--gate` assurance-only hiện tại). Rule table: dangling>0→block; stale>0→block; debt_introduced>0→warn; callers_addressed<1.0→warn; unresolved>0→warn |
+| Files owned | assurance/resolution.py, assurance/receipts.py (schema 1.10), cli.py, mcp_service.py, tests/test_safe_commit_verdict.py, diff-impact-oracle scenarios |
+| Đo (Corpus B+) | Mở rộng planted corpus: rename-leftover, debt-marker, untouched-caller scenarios. Confusion matrix verdict vs nhãn tay trên ≥30 commit. **Pass bar: 100% dangling planted bị bắt; không false-block trên clean set** |
+| Test | verdict matrix exhaustive, schema compat (receipt cũ vẫn render), `--gate` vs `--gate-strict` độc lập |
+| Rollback | additive — revert |
+
+### W3 — G3 commit-verdict + resolution quality (cần W0)
+
+| Item | Detail |
+|---|---|
+| Deliverable | `outcome.py::commit_verdict(sha)`: join risk engine + outcome signals → `clear-fault\|still-hot\|unknown` kèm reason_codes. CLI `commit-verdict <sha>` + `log --outcomes` cột verdict; persist verdict receipt vào ReceiptStore |
+| Files owned | outcome.py, cli.py, mcp_service.py, receipt_explorer.py (render), tests/test_commit_verdict.py |
+| Đo (Corpus A) | Precision/recall của `still-hot` vs nhãn follow-up/reverted; calibration table P(follow-up\|risk_level). **Pass bar: still-hot precision ≥ 0.8; mọi verdict có ≥1 reason_code; insufficient-evidence → unknown (không đoán)** |
+| Test | rule state machine, unknown-on-thin-evidence, window edge, receipt persistence round-trip |
+| Rollback | additive — revert |
+
+### W4 — Accuracy foundations (P2, chỉ làm phần đo chứng minh cần)
+
+| Item | Detail |
+|---|---|
+| Deliverable | (a) Receiver disambiguation cho high-collision names (get/update family — Danh_gia priority 1); (b) risk-score calibration từ labeled corpus W0; (c) tách import- vs call-driven test impact (fix miss B7) |
+| Files owned | extractor.py, db.py, diff_impact.py, benchmarks/oracle, tests/fault/ |
+| Đo | **Hard gates**: diff-impact-oracle F1 ≥ 0.95 (không regress); wrong-edge counter-corpus 5/5→0/5; holdout dev split không regress ở presence/impact/test_selection macro. Calibration: re-run W0 harness, báo cáo trước/sau |
+| Test | counter-corpus tests, threshold unit tests, B7-regression test |
+| Rollback | oracle gate fail = auto no-merge; threshold là constants dễ flip |
+
+### W5 — Integration
+
+| Item | Detail |
+|---|---|
+| Deliverable | `lineage` fields + `sotgraph receipt chain <digest>` (dossier plan→commit→outcome); `log --outcomes` trend; CI recipe doc (`log --since <tag> --outcomes`) |
+| Files owned | impact_pipeline.py, receipt_explorer.py, cli.py, docs/ |
+| Đo | End-to-end dry-run: dossier đầy đủ cho N commit gần nhất của repo này. **Pass bar: chain hoàn chỉnh ≥90% receipts có đủ cả 3 mắt xích** |
+| Rollback | additive — revert |
+
+## 5. Acceptance criteria tổng hợp
+
+| Wave | Gate metric | Pass bar |
+|---|---|---|
+| W0 | Labeler P/R (class reverted/fixup) vs ≥20 nhãn tay | ≥ 0.9 |
+| W0 | Baseline risk→outcome table | report.json tồn tại, đủ 3 risk levels |
+| W1 | Union recall vs best-single-target | ≥ max; precision drop ≤ 10 pts |
+| W2 | Planted dangling/debt detection | 100% dangling; 0 false-block clean set |
+| W3 | still-hot verdict vs outcome labels | precision ≥ 0.8 |
+| W4 | Oracle F1 / wrong-edge corpus | ≥ 0.95 / 0 trên 5 |
+| W5 | Dossier chain completeness | ≥ 90% |
+
+**Mọi wave** phải qua `scripts/quality_gates.sh` (ruff + pyright + coverage floor: core ≥85%, receipts ≥90%) trước khi đóng.
+
+## 6. Sequencing rationale
+
+Đo trước (W0) vì không cải thiện được thứ chưa đo; W1→W3 theo đúng thứ tự 3 chốt chặn của user;
+W4 đặt sau để chỉ sửa phần accuracy mà số liệu W0–W3 chứng minh là bottleneck (tránh sửa mò);
+W5 cuối vì lineage cần đủ 3 loại receipt.
+
+---
+
+## 7. W0 Results (executed 2026-09-11)
+
+**Delivered:** `src/sot_graph/outcome.py` (labeler), `scripts/bench_three_gates.py` (harness),
+`benchmarks/three_gates/{manifest,hand_labels,report}.{json,md}`, `tests/test_outcome_labeler.py` (22 tests).
+`.gitignore` +1 un-ignore line theo convention `benchmarks/holdout/`.
+
+**Labeler iterations (measured, not guessed):**
+- v1 file-overlap: fixup 183/284 (64%) — over-link qua god files.
+- v3 (+code-files, ≥2-shared/Jaccard≥0.34, -lockfiles, -perf): fixup 101.
+- v4 (+hunk-overlap verifier, gap=10): fixup 89, retouched 74, clean 121.
+
+**Baseline risk→outcome (window-complete, n=107):**
+
+| Risk | n | adverse_rate |
+|---|---|---|
+| HIGH | 45 | 84.4% |
+| MEDIUM | 41 | 41.5% |
+| LOW | 21 | 4.8% |
+
+Monotonic: yes → heuristic risk hiện tại có sức phân biệt thật (đầu vào calibration cho W3/W4).
+
+**Gate W0 — labeler vs 22 hand-labeled commits:** accuracy 0.9545.
+`fixup`: precision **0.875** / recall **1.0** → bar 0.9 **MISS** bởi 1 boundary case (`4f0133a`:
+hunk giao nhau thật tại `mcp_server.py:420-422` nhưng là edit docstring kề nhau, không phải repair).
+`reverted`: 0 samples trong corpus → không tính được (honest, corpus này không có revert).
+
+**Kết luận W0:** instrumentation xong, baseline có, limiter đã định vị (region-overlap ≠ repair
+khi hai commit sửa cùng đoạn text/schema — cần semantic judgment, nằm ngoài deterministic rules).
+Fixup precision 0.875 là ceiling đo được của deterministic labeler trên dev corpus này;
+đẩy tiếp cần hunk→symbol semantic hoặc LLM-assist — backlog cho W4, không block W1–W3.

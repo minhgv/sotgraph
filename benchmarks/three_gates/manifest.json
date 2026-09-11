@@ -1,0 +1,24 @@
+{
+  "benchmark": "three-gates",
+  "schema_version": 1,
+  "description": "W0 baseline: sotgraph log risk levels vs post-hoc commit outcomes (clean|fixup|reverted|retouched) labeled by sot_graph.outcome over real history. File-overlap linkage; revert scan unbounded, fixup/retouch bounded by window_days.",
+  "role": "development-regression",
+  "policy": {
+    "tuning_eligible": true,
+    "notes": "dev-split corpus: drives day-to-day gates; never reported as untouched-holdout results. External repos can be added as {name, path} once mirrored locally."
+  },
+  "min_commits": 200,
+  "params": {
+    "window_days": 14,
+    "retouch_min": 2,
+    "limit": 400
+  },
+  "repos": [
+    {
+      "name": "sotgraph",
+      "path": ".",
+      "limit": 400,
+      "window_days": 14
+    }
+  ]
+}

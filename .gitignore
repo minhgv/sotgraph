@@ -40,6 +40,7 @@ graphify-out/
 !benchmarks/exit_gates/sg202_followup/*.json
 !benchmarks/exit_gates/external/*.json
 !benchmarks/exit_gates/external/per_repo/*.json
+!benchmarks/three_gates/*.json
 !evaluation/exit_gates/fixtures/*.json
 sot_knowledge_graph.html
 sot_architecture_report.md
