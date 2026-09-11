@@ -68,7 +68,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.10"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1)
+RECEIPT_SCHEMA_VERSION = "1.11"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1); 1.11 added the safe_commit block to the diff receipt — composite pass|warn|block verdict over dangling references, assurance status, dispositions, debt markers, and caller-provided test results (W2)
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -1117,6 +1117,7 @@ def diff_impact_receipt(
     working_tree: bool = False,
     pre_receipt: Optional[Dict[str, Any]] = None,
     pre_snapshot: Optional[Dict[str, Any]] = None,
+    test_results: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """POST-change receipt wrapping the diff-impact engine (P7.2, P0).
 
@@ -1126,6 +1127,11 @@ def diff_impact_receipt(
     files as cited paths so ``scope_digest`` pins the POST-change file
     content (P0 Contract 2). ``pre_snapshot`` (captured BEFORE
     auto-reconcile) is embedded volatile-stripped for digest cross-ref.
+
+    ``test_results`` (W2): optional caller-provided outcome
+    ``{"ran": int, "failed": int, "failures": [str]}`` — failures feed
+    the ``safe_commit`` block verdict (block), never the assurance
+    status (tests are external evidence, not graph evidence).
     """
     from sot_graph.diff_impact import analyze_diff_impact
     from sot_graph.snapshot import capture_worktree_snapshot
@@ -1354,6 +1360,16 @@ def diff_impact_receipt(
             f"{debt_total} debt marker(s) introduced on added lines "
             "(TODO/FIXME/HACK/XXX/type-ignore/noqa/bare-except)")
     closure = "closed" if decision["status"] == "ASSURED_WITHIN_SCOPE" else "open"
+    from sot_graph.assurance.resolution import (
+        safe_commit_verdict as _safe_commit_verdict,
+    )
+    safe_commit = _safe_commit_verdict(
+        assurance_status=decision["status"],
+        dangling_count=dangling_count,
+        debt_introduced=debt_total,
+        dispositions=disp,
+        test_results=test_results,
+    )
     warnings: List[str] = []
     if changed_files_truncated:
         warnings.append(
@@ -1424,6 +1440,7 @@ def diff_impact_receipt(
         "remaining_gaps": remaining_gaps,
         "warnings": warnings,
         "closure_decision": closure,
+        "safe_commit": safe_commit,
         "omp_confirmations_remaining": open_omp,
         "assurance_facts": asdict(facts),
         "assurance": {

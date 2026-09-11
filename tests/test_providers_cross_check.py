@@ -396,7 +396,7 @@ class CrossCheckReceiptTests(unittest.TestCase):
         # overstate — the receipt must abstain with the explicit reason.
         receipt = cross_check_receipt(self.db, self.test_dir)
         self.assertEqual(receipt["kind"], "cross_check")
-        self.assertEqual(receipt["schema_version"], "1.10")
+        self.assertEqual(receipt["schema_version"], "1.11")
         self.assertEqual(receipt["schema_version"], RECEIPT_SCHEMA_VERSION)
         self.assertEqual(receipt["assurance"]["status"], "ABSTAINED")
         self.assertIn("no_external_evidence",

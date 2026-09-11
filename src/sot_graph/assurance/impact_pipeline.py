@@ -31,7 +31,7 @@ import json
 import re
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 __all__ = [
     "IMPACT_REQUEST_SCHEMA_VERSION",
@@ -196,6 +196,11 @@ class ImpactClaimRequest:
     #: for the resolution ledger's disposition matrix — cross-reference
     #: only; its proof_scope never becomes post-change proof.
     pre_receipt: Optional[Dict[str, Any]] = None
+    #: W2: optional caller-provided test outcome
+    #: ``{"ran": int, "failed": int, "failures": [str]}`` — failures
+    #: feed the safe_commit verdict (block); normalized below so a
+    #: `failures` list without a `failed` count still counts.
+    test_results: Optional[Dict[str, Any]] = None
 
     def normalize(self) -> "ImpactClaimRequest":
         """Validate and canonicalize; pure (no I/O)."""
@@ -223,8 +228,33 @@ class ImpactClaimRequest:
                 "ImpactClaimRequest.reconcile_provenance must be one of "
                 f"{RECONCILE_PROVENANCE_VALUES}, got {self.reconcile_provenance!r}"
             )
+        test_results = self.test_results
+        if test_results is not None:
+            if not isinstance(test_results, dict):
+                raise ValueError(
+                    "ImpactClaimRequest.test_results must be a dict like "
+                    "{'ran': int, 'failed': int, 'failures': [str]}"
+                )
+            failures = test_results.get("failures") or []
+            if not isinstance(failures, list):
+                raise ValueError(
+                    "ImpactClaimRequest.test_results.failures must be a list"
+                )
+            try:
+                ran = max(0, int(test_results.get("ran") or 0))
+                failed = max(0, int(test_results.get("failed") or 0))
+            except (TypeError, ValueError):
+                raise ValueError(
+                    "ImpactClaimRequest.test_results.ran/failed must be ints"
+                ) from None
+            failed = max(failed, len(failures))
+            test_results = {
+                "ran": ran, "failed": failed,
+                "failures": [str(f) for f in failures],
+            }
         return replace(
             self,
+            test_results=test_results,
             target=target,
             depth=depth,
             staged=staged,
@@ -295,6 +325,7 @@ def run_impact_claim(
         working_tree=request.working_tree,
         pre_receipt=request.pre_receipt,
         pre_snapshot=pre_snapshot.as_dict(),
+        test_results=request.test_results,
     )
 
     receipt["request"] = {
@@ -308,6 +339,9 @@ def run_impact_claim(
         # "pipeline" (the executor's own auto-reconcile) or "surface_pre"
         # (the surface reconciled on the writer path before this call).
         "reconcile_provenance": request.reconcile_provenance,
+        # W2: the verdict depends on caller-provided test results —
+        # disclose them so the digest covers the actual input set.
+        "test_results": request.test_results,
     }
     receipt["projection"] = build_projection(receipt)
     if reconcile_warnings:

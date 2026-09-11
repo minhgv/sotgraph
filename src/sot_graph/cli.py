@@ -1745,6 +1745,18 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     if getattr(args, "pre_receipt", None):
         pre_receipt = _resolve_receipt_input(args.pre_receipt, root)
 
+    # W2: caller-provided test outcomes feed the safe_commit verdict.
+    test_results = None
+    if getattr(args, "test_report", None):
+        try:
+            test_results = json.loads(
+                open(args.test_report, encoding="utf-8").read())
+            if not isinstance(test_results, dict):
+                raise ValueError("test report must be a JSON object")
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            print(f"❌ --test-report: {exc}", file=sys.stderr)
+            return 1
+
     # SG-105: ONE executor. The pipeline owns the PRE-change snapshot
     # capture (P1.g: before any reconcile mutates the index), the
     # optional auto-reconcile, and the receipt; this surface only
@@ -1757,6 +1769,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             working_tree=working_tree,
             auto_reconcile=bool(getattr(args, "auto_reconcile", False)),
             pre_receipt=pre_receipt,
+            test_results=test_results,
         ),
         db, root,
     )
@@ -1782,6 +1795,21 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     # status. --gate fails closed (exit 1) unless the receipt status is in
     # the ASSURED set, without suppressing the rendered report.
     assurance_status = str((receipt.get("assurance") or {}).get("status") or "")
+    # W2: --gate-strict reads the safe_commit composite verdict — block
+    # exits 2 with the reasons on stderr; warn still exits 0 (advisory
+    # conditions are printed, not blocking).
+    safe_commit = receipt.get("safe_commit") or {}
+    strict_blocked = (
+        bool(getattr(args, "gate_strict", False))
+        and safe_commit.get("verdict") == "block"
+    )
+    if getattr(args, "gate_strict", False):
+        verdict = str(safe_commit.get("verdict") or "unknown")
+        print(f"safe_commit verdict: {verdict}", file=sys.stderr)
+        for reason in safe_commit.get("block_reasons") or []:
+            print(f"  ⛔ {reason}", file=sys.stderr)
+        for reason in safe_commit.get("warn_reasons") or []:
+            print(f"  ⚠️  {reason}", file=sys.stderr)
     gate_failed = (
         bool(getattr(args, "gate", False)) and assurance_status not in ASSURED_STATUSES
     )
@@ -1850,7 +1878,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             print(payload_str)
         if fed is not None:
             _print_federation_notes(fed)
-        return 1 if gate_failed else 0
+        return 2 if strict_blocked else (1 if gate_failed else 0)
 
     if fmt == "text":
         pre_snap = receipt.get("pre_change_snapshot") or {}
@@ -1913,7 +1941,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     # stay redirect-safe for CI piping (warnings already go to stderr).
     if fmt == "text":
         _print_federation_notes(fed)
-    return 1 if gate_failed else 0
+    return 2 if strict_blocked else (1 if gate_failed else 0)
 
 
 def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
@@ -2702,6 +2730,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="External evidence providers: builtin | auto | prefer:<name> | require:<name> | all (default: builtin)")
     p_diff.add_argument("--pre-receipt", dest="pre_receipt", default=None,
                         help="Digest (64-hex) or JSON file path of a stored PRE-change scope receipt; joins its predicted blast radius into the resolution ledger's disposition matrix")
+    p_diff.add_argument("--test-report", dest="test_report", default=None,
+                        help="JSON file {'ran': int, 'failed': int, 'failures': [str]} — failed tests feed the safe_commit verdict (W2)")
+    p_diff.add_argument("--gate-strict", dest="gate_strict", action="store_true",
+                        help="W2 safe-to-commit gate: exit 2 when the receipt's safe_commit verdict is 'block' (dangling references, unverifiable/stale/conflicted evidence, or failed provided tests). warn/pass still exit 0")
 
     # log / commits
     p_log = subparsers.add_parser("log", aliases=["commits"], help="Inspect git commit history with automated risk scoring and impacted symbols")

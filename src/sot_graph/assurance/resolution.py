@@ -37,7 +37,7 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from sot_graph.assurance.accounting import DEBT_MARKER_REPORT_CAP
 
@@ -124,22 +124,29 @@ def disposition_matrix(
 
 
 def _pending_paths_where(
-    paths: List[str], repo_root: str = "",
+    paths: List[str], repo_root: str = "", repo_root_abs: str = "",
 ) -> Tuple[str, List[str]]:
-    """Build a path IN clause matching BOTH repo-relative and absolute.
+    """Build a path IN clause matching repo-relative AND absolute forms.
 
-    ``pending_edges.path`` follows the extractor's storage convention;
-    matching both forms keeps the sweep correct regardless of which side
-    normalized. Duplicate-safe: IN semantics.
+    ``pending_edges.path`` follows the extractor's storage convention —
+    absolute paths written under whatever root string the reconciler
+    saw. Matching therefore tries the repo-relative form plus BOTH the
+    raw and realpath'd roots: on symlinked checkouts (macOS ``/var`` →
+    ``/private/var``) the stored path keeps the raw form while a
+    realpath-only match would silently lose the whole sweep.
+    Duplicate-safe: IN semantics.
     """
     forms: List[str] = []
     seen = set()
-    root = _norm_path(repo_root)
+    # NB: roots must keep their leading "/" — _norm_path's lstrip("./")
+    # would silently demote an absolute root to a relative one and the
+    # IN clause could never match stored absolute paths.
+    roots = [str(r).replace("\\", "/") for r in (repo_root, repo_root_abs)]
     for p in paths:
         np = _norm_path(p)
         candidates = [np]
-        if root and not np.startswith("/"):
-            candidates.append(f"{root}/{np}")
+        if not np.startswith("/"):
+            candidates.extend(f"{r}/{np}" for r in roots if r)
         for candidate in candidates:
             if candidate and candidate not in seen:
                 seen.add(candidate)
@@ -166,7 +173,7 @@ def _node_symbol_exists(db: Any, symbol: str) -> bool:
 def dangling_references(
     db: Any,
     changed_files: List[str],
-    caller_files: List[str] = (),
+    caller_files: Sequence[str] = (),
     pre_receipt: Optional[Dict[str, Any]] = None,
     repo_root: str = "",
     errors_out: Optional[List[str]] = None,
@@ -202,6 +209,7 @@ def dangling_references(
     }
     merged: Dict[Tuple[str, str, str, str], Dict[str, Any]] = {}
     repo_root_abs = os.path.realpath(repo_root) if repo_root else ""
+    repo_root_raw = _norm_path(repo_root) if repo_root else ""
     changed_norm = frozenset(_norm_path(p) for p in changed_files if p)
 
     def _absorb(
@@ -228,7 +236,8 @@ def dangling_references(
         scope_paths = [
             p for p in (*changed_files, *caller_files) if p
         ]
-        where, params = _pending_paths_where(scope_paths, repo_root_abs)
+        where, params = _pending_paths_where(
+            scope_paths, repo_root_raw, repo_root_abs)
         if where:
             rows = db.conn.execute(
                 "SELECT path, src, dst_symbol, relation, line, "
@@ -394,3 +403,112 @@ def debt_markers(
     result["truncated"] = len(hits) > DEBT_MARKER_REPORT_CAP
     result["introduced"] = hits[:DEBT_MARKER_REPORT_CAP]
     return result
+
+
+#: The three strict-gate verdicts, weakest → strongest.
+SAFE_COMMIT_VERDICTS: Tuple[str, ...] = ("pass", "warn", "block")
+
+#: Assurance statuses where the gate cannot honestly say "safe":
+#: ABSTAINED/UNVERIFIABLE = not enough evidence to decide at all;
+#: CONFLICTED = live contradictions; STALE = evidence predates the
+#: current worktree (reconcile + re-run restores verifiability).
+_SAFE_COMMIT_BLOCK_STATUSES: Tuple[str, ...] = (
+    "ABSTAINED", "UNVERIFIABLE", "CONFLICTED", "STALE",
+)
+
+
+def safe_commit_verdict(
+    *,
+    assurance_status: str,
+    dangling_count: int,
+    debt_introduced: int,
+    dispositions: Dict[str, Any],
+    test_results: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Composite "is it safe to commit?" verdict for the post-change gate (W2).
+
+    Pure reducer over data the diff receipt already collected — never
+    queries the DB. Escalation is one-directional: pass → warn → block.
+
+    BLOCK (would leave a defect or cannot verify):
+      * ``dangling_count`` > 0 — references the change left unresolved
+        (the renamed/deleted symbol callers still cite);
+      * assurance status in ``_SAFE_COMMIT_BLOCK_STATUSES`` — the gate
+        itself lacks trustworthy evidence;
+      * caller-provided ``test_results`` report failures.
+
+    WARN (advisory — the change may be fine, but evidence is advisory):
+      * assurance status PARTIAL;
+      * pre-receipt dispositions still untouched (predicted callers /
+        tests the diff never reached — heuristic prediction, kept
+        advisory by the same contract as ``disposition_matrix``);
+      * debt markers introduced on added lines.
+
+    ``dispositions`` is the ``resolution_ledger["dispositions"]``
+    payload; when no pre-receipt was attached the untouched nets are
+    absent and the verdict discloses ``pre_receipt_attached: False`` so
+    operators know the rename/delete leftover sweep did not run.
+    """
+    block_reasons: List[str] = []
+    warn_reasons: List[str] = []
+
+    if int(dangling_count) > 0:
+        block_reasons.append(
+            f"{int(dangling_count)} dangling reference(s): code cites "
+            "symbols the graph can no longer resolve")
+    status = str(assurance_status or "")
+    if status in _SAFE_COMMIT_BLOCK_STATUSES:
+        block_reasons.append(
+            f"assurance status {status}: evidence insufficient, "
+            "contradictory, or stale — the gate cannot verify safety")
+    elif status == "PARTIAL":
+        warn_reasons.append(
+            "assurance PARTIAL: part of the evidence set is incomplete")
+
+    tests_failed = 0
+    if test_results is not None:
+        tests_failed = int(test_results.get("failed") or 0)
+        if tests_failed > 0:
+            block_reasons.append(
+                f"{tests_failed} provided test(s) failed")
+
+    attached = bool(dispositions.get("pre_receipt_attached"))
+    untouched_callers = 0
+    untouched_tests = 0
+    if attached:
+        untouched_callers = len(
+            (dispositions.get("direct_callers") or {}).get("untouched")
+            or [])
+        untouched_tests = len(
+            (dispositions.get("candidate_tests") or {}).get("untouched")
+            or [])
+        if untouched_callers:
+            warn_reasons.append(
+                f"{untouched_callers} predicted caller(s) untouched by "
+                "the diff")
+        if untouched_tests:
+            warn_reasons.append(
+                f"{untouched_tests} predicted test file(s) untouched by "
+                "the diff")
+    if int(debt_introduced) > 0:
+        warn_reasons.append(
+            f"{int(debt_introduced)} debt marker(s) introduced on added "
+            "lines")
+
+    verdict = ("block" if block_reasons
+               else "warn" if warn_reasons else "pass")
+    return {
+        "verdict": verdict,
+        "block_reasons": block_reasons,
+        "warn_reasons": warn_reasons,
+        "inputs": {
+            "assurance_status": status,
+            "dangling_count": int(dangling_count),
+            "debt_introduced": int(debt_introduced),
+            "untouched_callers": untouched_callers,
+            "untouched_tests": untouched_tests,
+            "tests_failed": tests_failed,
+            "test_results_attached": test_results is not None,
+            "pre_receipt_attached": attached,
+        },
+    }

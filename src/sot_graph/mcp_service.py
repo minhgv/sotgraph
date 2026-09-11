@@ -1778,6 +1778,7 @@ class McpService:
         staged: bool = False,
         working_tree: bool = False,
         pre_receipt: Optional[str] = None,
+        test_results: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """POST-change diff-impact receipt (P7.2) over MCP.
 
@@ -1785,6 +1786,9 @@ class McpService:
         PRE-change scope receipt, resolved from the repo's
         ``.sot/receipts`` store and attached for the resolution ledger's
         disposition matrix.
+
+        ``test_results`` (W2): optional ``{"ran": int, "failed": int,
+        "failures": [str]}`` — failures feed the safe_commit verdict.
         """
         from sot_graph.assurance.impact_pipeline import (
             ImpactClaimRequest,
@@ -1817,6 +1821,7 @@ class McpService:
                     target=target, depth=depth,
                     staged=staged, working_tree=working_tree,
                     pre_receipt=parsed_pre,
+                    test_results=test_results,
                 ),
                 view, self.project_root,
             )

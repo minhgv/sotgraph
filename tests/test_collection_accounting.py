@@ -384,7 +384,7 @@ class TestDigestStability:
             second = run_impact_claim(ImpactClaimRequest(), db, str(repo))
         finally:
             db.close()
-        assert first["schema_version"] == RECEIPT_SCHEMA_VERSION == "1.10"
+        assert first["schema_version"] == RECEIPT_SCHEMA_VERSION == "1.11"
         assert second["digest"] == first["digest"]
         assert first["digest"]
 

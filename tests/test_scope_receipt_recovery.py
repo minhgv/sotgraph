@@ -111,7 +111,7 @@ class TestIdentityRecovery:
 
     def test_schema_version_bumped(self, repo):
         payload = _receipt(repo, "run")
-        assert payload["schema_version"] == "1.10"
+        assert payload["schema_version"] == "1.11"
 
 
 class TestCliRendering:

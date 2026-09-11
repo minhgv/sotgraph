@@ -208,3 +208,36 @@ không phải delta-vs-single. Còn recall 87.5% cho file-set của task thực 
 "plan hoàn chỉnh" — ~12% file thực sự sửa nằm ngoài blast radius graph (siblings/edit cùng
 module không phải caller). Muốn nâng recall cần thêm nguồn: module-cohesion, test-map, hoặc
 symptom retrieval (Corpus C) — đúng định hướng W4.
+
+---
+
+## 9. W2 Results (executed 2026-09-11)
+
+**Delivered:** `safe_commit_verdict()` (resolution.py — pure reducer); `safe_commit` block trong
+diff receipt (schema 1.10→1.11); `ImpactClaimRequest.test_results` (validated + disclosed trong
+request block — digest-affecting); CLI `--gate-strict` (exit 2 on block) + `--test-report <json>`;
+MCP `test_results` param trên `sot_diff_impact_receipt`.
+
+**Verdict semantics (leo thang một chiều pass→warn→block):**
+- **block**: dangling refs > 0; status ∈ {ABSTAINED, UNVERIFIABLE, CONFLICTED, STALE}; test được
+  cung cấp có fail.
+- **warn**: status PARTIAL; pre-receipt dispositions còn untouched; debt markers mới.
+- `inputs` disclose `pre_receipt_attached` — biết rõ sweep nào đã chạy.
+
+**Bug thật W2 phát hiện + sửa (không phải test artifact):**
+- `_pending_paths_where` chỉ match path theo `realpath` root — trên checkout qua symlink
+  (macOS `/var`→`/private/var`) pending_edges lưu raw path → **toàn bộ dangling sweep bị miss
+  âm thầm**. Giờ match cả raw + realpath + relative forms.
+- `_norm_path` dùng `lstrip("./")` — strip cả "/" đầu của absolute path; giữ nguyên hàm (dùng
+  chỗ khác), sửa tại chỗ dùng trong pending-path builder.
+
+**Verification (planted-fault suite, `test_safe_commit_gate.py` — 21 tests):**
+- Fault "xóa hàm đang được gọi" bị chặn **cả hai đường**: caller-file-cùng-sửa (pending_edges
+  sweep) và caller-để-nguyên + pre-receipt (pre-change symbol net + leftover caller net).
+- Clean change → `pass`; debt marker → `warn`; test-report fail → `block`; untouched
+  dispositions → `warn`. CLI `--gate-strict` exit 2/0 đúng.
+- Blinding spot đã ghi: sweep không gắn pre-receipt chỉ nhìn pending rows **từ** file
+  changed/caller — caller hoàn toàn không đụng đến thì chỉ pre-receipt net mới bắt được.
+  Đây là lý do flow 3-gate khuyến nghị `scope-receipt` trước khi code.
+- `.sot/` internals pollute `changed_files` khi repo quên gitignore → STALE noise. Fixture
+  mirror real usage (gitignore `.sot/`); engine-level filter là hardening → backlog W4.

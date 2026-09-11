@@ -491,6 +491,7 @@ def create_server(service: McpService) -> Any:
                     "staged": {"type": "boolean"},
                     "working_tree": {"type": "boolean"},
                     "pre_receipt": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "64-hex digest of a stored PRE-change scope receipt (.sot/receipts); attaches the disposition matrix to the resolution ledger"},
+                    "test_results": {"type": "object", "description": "W2: caller-provided test outcome {'ran': int, 'failed': int, 'failures': [str]} — failures feed the safe_commit verdict"},
                 }, "additionalProperties": False,
             }, outputSchema=_RECEIPT_OUTPUT),
         ]
@@ -598,6 +599,7 @@ def create_server(service: McpService) -> Any:
                     staged=args.get("staged", False),
                     working_tree=args.get("working_tree", False),
                     pre_receipt=args.get("pre_receipt"),
+                    test_results=args.get("test_results"),
                 )
             else:
                 result = {"error": {"code": "unknown_tool", "message": "unknown MCP tool"}}
