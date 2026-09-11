@@ -1713,17 +1713,38 @@ class McpService:
     def scope_receipt(
         self,
         target: str,
+        targets: Optional[List[str]] = None,
         kind_of_change: str = "local-body",
         touches_auth: bool = False,
         dynamic_heavy: bool = False,
         depth: int = 2,
     ) -> Dict[str, Any]:
-        """PRE-change scope receipt for one edit target (P7.1) over MCP."""
-        from sot_graph.assurance.receipts import scope_receipt as _scope_receipt
+        """PRE-change scope receipt for one edit target (P7.1) over MCP.
 
-        if not isinstance(target, str) or not target.strip():
+        ``targets`` (W1): optional list of edit targets — produces a
+        task-level union receipt (``scope_receipt_multi``). Overrides
+        ``target`` when non-empty; capped at 8 to bound evidence cost.
+        """
+        from sot_graph.assurance.receipts import (
+            scope_receipt as _scope_receipt,
+            scope_receipt_multi as _scope_receipt_multi,
+        )
+
+        if targets:
+            if not isinstance(targets, list) or len(targets) > 8:
+                raise McpServiceError(
+                    "invalid_argument",
+                    "targets must be a list of at most 8 symbols")
+            for t in targets:
+                if not isinstance(t, str) or not t.strip():
+                    raise McpServiceError(
+                        "invalid_argument", "each target must be non-empty")
+                if len(t) > 512:
+                    raise McpServiceError(
+                        "invalid_argument", "target exceeds 512 characters")
+        elif not isinstance(target, str) or not target.strip():
             raise McpServiceError("invalid_argument", "target must not be empty")
-        if len(target) > 512:
+        if isinstance(target, str) and len(target) > 512:
             raise McpServiceError("invalid_argument", "target exceeds 512 characters")
         if kind_of_change not in ("local-body", "rename", "delete", "public-api"):
             raise McpServiceError(
@@ -1734,11 +1755,18 @@ class McpService:
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
             view = cast(Database, _ConnView(conn))
-            payload = _scope_receipt(
-                view, self.project_root, target,
-                kind_of_change=kind_of_change, touches_auth=touches_auth,
-                dynamic_heavy=dynamic_heavy, depth=depth,
-            )
+            if targets:
+                payload = _scope_receipt_multi(
+                    view, self.project_root, targets,
+                    kind_of_change=kind_of_change, touches_auth=touches_auth,
+                    dynamic_heavy=dynamic_heavy, depth=depth,
+                )
+            else:
+                payload = _scope_receipt(
+                    view, self.project_root, target,
+                    kind_of_change=kind_of_change, touches_auth=touches_auth,
+                    dynamic_heavy=dynamic_heavy, depth=depth,
+                )
             return self._fits_response(payload)
 
         return self._run(op)
@@ -1772,11 +1800,13 @@ class McpService:
                 self.project_root, ".sot", "receipts")
             if not _re.fullmatch(r"[0-9a-f]{64}", str(pre_receipt)):
                 raise McpServiceError(
+                    "invalid_argument",
                     "pre_receipt must be a 64-hex receipt digest")
             try:
                 parsed_pre = ReceiptStore(store_dir).get(str(pre_receipt))
             except KeyError:
                 raise McpServiceError(
+                    "not_found",
                     f"pre_receipt digest {pre_receipt} not found in "
                     f"{store_dir}") from None
 

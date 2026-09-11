@@ -125,6 +125,12 @@ class AssuranceFacts:
     gate_blocked: bool = False
     #: dynamic constructs that could not be statically resolved
     dynamic_dispatch_unresolved: bool = False
+    #: Multi-target scope receipts: number of targets whose identity
+    #: could not be resolved (NOT_FOUND/AMBIGUOUS) while at least one
+    #: target DID resolve. >0 caps the merged verdict at PARTIAL —
+    #: the unanswered targets' blast radius is unknown, so the merged
+    #: scope is incomplete (but not worthless).
+    partial_targets: int = 0
     #: Claim profile: "presence" | "absence" | "exhaustive"
     claim_profile: str = "absence"
 
@@ -153,6 +159,12 @@ def decide(facts: AssuranceFacts) -> Dict[str, Any]:
         )
         reasons.append(reason)
         candidate_statuses.append("ABSTAINED")
+
+    # 1b. multi-target partial resolution (W1): some targets resolved,
+    # some did not — the merged scope is incomplete, capped at PARTIAL.
+    if facts.partial_targets > 0:
+        reasons.append("targets_partially_resolved")
+        candidate_statuses.append("PARTIAL")
 
     # 2. snapshot binding
     if not facts.snapshot_bound:

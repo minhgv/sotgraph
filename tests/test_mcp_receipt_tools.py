@@ -90,7 +90,11 @@ class McpReceiptToolsTests(unittest.TestCase):
             tools = await client.list_tools()
             by_name = {t.name: t for t in tools.tools}
             scope = by_name["sot_scope_receipt"]
-            self.assertEqual(scope.inputSchema["required"], ["target"])
+            # W1 multi-target: `targets` overrides `target`, so neither
+            # is strictly required by the schema; the service validates
+            # "at least one non-empty target" itself.
+            self.assertEqual(scope.inputSchema["required"], [])
+            self.assertIn("targets", scope.inputSchema["properties"])
             self.assertEqual(
                 scope.inputSchema["properties"]["kind_of_change"]["enum"],
                 ["local-body", "rename", "delete", "public-api"],

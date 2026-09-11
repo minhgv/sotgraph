@@ -45,6 +45,7 @@ __all__ = [
 #: best-effort; anything else is refused.
 KNOWN_RECEIPT_SCHEMA_VERSIONS: Tuple[str, ...] = (
     "1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
+    "1.10",
 )
 
 #: Explicit marker for a question the receipt's data cannot answer.
@@ -105,6 +106,10 @@ _REASON_EXPLANATIONS: Dict[str, Tuple[str, str]] = {
     "target_ambiguous":
         ("the requested symbol resolved to multiple candidates",
          "disambiguate the target (module-qualified name) and re-run"),
+    "targets_partially_resolved":
+        ("a multi-target scope receipt could not resolve every target — "
+         "the merged blast radius is incomplete", "check per_target in "
+         "the receipt; fix or drop the unresolved target names and re-run"),
     "snapshot_unbound":
         ("the receipt is not content-bound to a worktree snapshot "
          "(no scope_digest)", "re-run the receipt command so it captures a "
@@ -442,7 +447,6 @@ def _render_remediation(lines: List[str], receipt: Dict[str, Any]) -> None:
     _section(lines, "Q6 REMEDIATION — how to raise the status")
     found = False
     assurance = receipt.get("assurance")
-    status = _pick(assurance, "status")
     codes = _pick(assurance, "reason_codes")
     if isinstance(codes, list) and codes:
         for code in codes:

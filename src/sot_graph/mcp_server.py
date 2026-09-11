@@ -474,14 +474,15 @@ def create_server(service: McpService) -> Any:
                     "format": {"type": "string", "enum": ["markdown", "json"], "description": "Output format (default: markdown)"},
                 }, "additionalProperties": False,
             }),
-            types.Tool(name="sot_scope_receipt", description="PRE-change scope receipt for one edit target (P7.1): resolved identity, snapshot binding, bounded impact, candidate tests, risk-based assurance, and OMP confirmations.", inputSchema={
+            types.Tool(name="sot_scope_receipt", description="PRE-change scope receipt for one or more edit targets (P7.1 + W1): resolved identity, snapshot binding, bounded impact, candidate tests, risk-based assurance, and OMP confirmations. Pass `targets` for a task-level union receipt (fail-closed: unresolved targets degrade to PARTIAL, never poison).", inputSchema={
                 "type": "object", "properties": {
                     "target": {"type": "string"},
+                    "targets": {"type": "array", "items": {"type": "string"}, "maxItems": 8, "description": "Multi-target mode: union blast radius for a whole task (overrides `target`)"},
                     "kind_of_change": {"type": "string", "enum": ["local-body", "rename", "delete", "public-api"]},
                     "touches_auth": {"type": "boolean"},
                     "dynamic_heavy": {"type": "boolean"},
                     "depth": {"type": "integer", "minimum": 1},
-            }, "required": ["target"], "additionalProperties": False,
+            }, "required": [], "additionalProperties": False,
             }, outputSchema=_RECEIPT_OUTPUT),
             types.Tool(name="sot_diff_impact_receipt", description="POST-change diff-impact receipt (P7.2 + P7.3): wraps the diff engine result with a post-change snapshot, invalidated evidence, remaining gaps, an explicit closure decision, and a resolution_ledger — pre/post disposition matrix (pass pre_receipt: a stored scope-receipt digest), dangling-reference sweep (rename/delete leftovers the graph can no longer resolve), and debt markers introduced on added lines.", inputSchema={
                 "type": "object", "properties": {
@@ -584,6 +585,7 @@ def create_server(service: McpService) -> Any:
             elif name == "sot_scope_receipt":
                 result = await service.ascope_receipt(
                     args.get("target", ""),
+                    targets=args.get("targets"),
                     kind_of_change=args.get("kind_of_change", "local-body"),
                     touches_auth=args.get("touches_auth", False),
                     dynamic_heavy=args.get("dynamic_heavy", False),

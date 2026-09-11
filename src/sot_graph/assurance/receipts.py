@@ -23,7 +23,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 from dataclasses import asdict
 from .coverage import (
@@ -53,6 +53,7 @@ from .state import CANONICAL_STATUSES, AssuranceFacts, decide
 __all__ = [
     "receipt_digest",
     "scope_receipt",
+    "scope_receipt_multi",
     "diff_impact_receipt",
     "reconcile_receipt",
     "audit_receipt",
@@ -67,7 +68,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.9"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count
+RECEIPT_SCHEMA_VERSION = "1.10"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1)
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -372,8 +373,13 @@ def check_rename_gate(
     repo_root: str,
     symbol: str,
     errors: Optional[List[str]] = None,
+    universe: Optional[Any] = None,
 ) -> Dict[str, Any]:
     """Blocking gate for public renames (P7 exit gate).
+
+    ``universe`` (W1): optional precomputed scope universe — identical
+    for every target in a multi-target receipt, so callers doing many
+    gates pass it in instead of paying the enumeration walk per symbol.
 
     A rename is blocked while CALLER COVERAGE is insufficient: '0
     callers' may only be claimed inside a bounded assured scope with
@@ -405,10 +411,11 @@ def check_rename_gate(
     # exactly 1.0 over the touched files (with PARTIAL no longer in the
     # numerator). scoped_fraction None (nothing measurable in scope)
     # fails closed as insufficient.
-    universe = compile_scope_universe(db, repo_root)
+    uni = universe if universe is not None else compile_scope_universe(
+        db, repo_root)
     sufficient = (
-        universe.enumeration_complete
-        and universe.parser_capability_complete is True
+        uni.enumeration_complete
+        and uni.parser_capability_complete is True
         and scoped_fraction == 1.0
     )
     zero_callers = len(callers) == 0
@@ -538,12 +545,19 @@ def scope_receipt(
     kind_of_change: str = "local-body",
     touches_auth: bool = False,
     dynamic_heavy: bool = False,
+    shared: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """PRE-change receipt for one edit target (P7.1, P0 Contract 1+3).
 
     Identity resolution is a DECISION (UNIQUE/AMBIGUOUS/NOT_FOUND, exact
     match only); an ambiguous or missing target ABSTAINS the receipt with
     an explicit reason code instead of silently picking ``LIMIT 1``.
+
+    ``shared`` (W1): optional precomputed repo-wide evidence context
+    ``{"universe", "cov", "ledger", "ledger_stats"}`` — these inputs are
+    target-independent, so ``scope_receipt_multi`` computes them once
+    and passes the same values to every per-target call. Omitting the
+    param keeps the historical fully-self-contained behavior.
     """
     # SG-108: the scope universe is compiled BEFORE any evidence query
     # ("manifest compiled before querying"). The receipt's absence facts
@@ -551,7 +565,10 @@ def scope_receipt(
     # from query RESULTS could never reveal what the queries missed.
     # Scoped restriction (target+caller paths) happens inside
     # check_rename_gate; this receipt-level universe is repo-wide.
-    universe = compile_scope_universe(db, repo_root)
+    shared_ctx = shared or {}
+    universe = shared_ctx.get("universe")
+    if universe is None:
+        universe = compile_scope_universe(db, repo_root)
     identity = resolve_symbol_identity(db, target)
     # Target recovery (P7.1 + pack grammar parity): a NOT_FOUND from the
     # exact-match decision gets one second chance through the agent
@@ -628,9 +645,13 @@ def scope_receipt(
     } | {
         f for f in affected_files if _looks_like_test(f, "")
     })
-    cov = repo_coverage(db, repo_root)
-    ledger_stats: Dict[str, Dict[str, Any]] = {}
-    ledger = _ledger_cross_check(db, repo_root, stats_out=ledger_stats)
+    cov = shared_ctx.get("cov")
+    if cov is None:
+        cov = repo_coverage(db, repo_root)
+    ledger_stats: Dict[str, Dict[str, Any]] = shared_ctx.get("ledger_stats") or {}
+    ledger = shared_ctx.get("ledger")
+    if ledger is None:
+        ledger = _ledger_cross_check(db, repo_root, stats_out=ledger_stats)
     for source in _ledger_truncation_sources(ledger_stats):
         if source not in truncation_sources:
             truncation_sources.append(source)
@@ -647,7 +668,8 @@ def scope_receipt(
         touches_auth=touches_auth,
         dynamic_heavy=dynamic_heavy or dynamic_unresolved,
     )
-    gate = (check_rename_gate(db, repo_root, target, errors=collection_errors)
+    gate = (check_rename_gate(db, repo_root, target,
+                              errors=collection_errors, universe=universe)
             if kind_of_change in ("rename", "delete") else
             {"symbol": target, "resolved": row is not None, "blocked": False,
              "reason": "rename gate not applicable"})
@@ -755,6 +777,290 @@ def scope_receipt(
             "status": decision["status"],
             "reason_codes": decision["reason_codes"],
             "decision": decision,
+        },
+    }
+    payload["digest"] = receipt_digest(
+        {k: v for k, v in payload.items() if k != "digest"}
+    )
+    return payload
+
+
+def _row_key(row: Any) -> Tuple[str, ...]:
+    """Dedup key for an evidence row: node id preferred, else location."""
+    if isinstance(row, dict):
+        rid = row.get("id") or row.get("node_id")
+        if rid:
+            return ("id", str(rid))
+        return ("ref", str(row.get("path")), str(row.get("symbol")),
+                str(row.get("line_start")))
+    return ("v", str(row))
+
+
+def _union_rows(lists: Sequence[List[Any]]) -> List[Any]:
+    """Union preserving first-seen order; dedup by :func:`_row_key`."""
+    seen: Set[Tuple[str, ...]] = set()
+    out: List[Any] = []
+    for lst in lists:
+        for row in lst:
+            key = _row_key(row)
+            if key not in seen:
+                seen.add(key)
+                out.append(row)
+    return out
+
+
+def scope_receipt_multi(
+    db: Any,
+    repo_root: str,
+    targets: Any,
+    *,
+    depth: int = 2,
+    kind_of_change: str = "local-body",
+    touches_auth: bool = False,
+    dynamic_heavy: bool = False,
+) -> Dict[str, Any]:
+    """PRE-change receipt for a TASK = several edit targets (W1).
+
+    One real task touches multiple symbols; this receipt runs the
+    single-target machinery per target and merges fail-closed:
+
+    - evidence collections are DEDUPED unions (callers, callees,
+      relations, transitive, files, tests) — the union is a superset of
+      every single-target surface by construction;
+    - a target that cannot be resolved does NOT poison the receipt: it
+      is isolated in ``per_target`` and contributes ``partial_targets``
+      to the merged decision (PARTIAL cap). If NO target resolves, the
+      merged identity fails and the verdict is ABSTAINED as usual;
+    - the merged assurance status re-runs the canonical ``decide()``
+      over merged facts — no new status vocabulary;
+    - ``rename_gate`` aggregates per-target gates (any blocked ⇒ blocked);
+    - ``risk`` takes the strictest level across targets
+      (audit > verify), ORs ``security_reviewer``, and only keeps
+      ``absence_assurance`` when every target allows it.
+
+    Back-compat: a 1-element target list returns the exact single-target
+    payload (``request.targets`` and ``per_target`` only appear for
+    multi-target runs). Accepts ``str`` or ``Sequence[str]``.
+    """
+    if isinstance(targets, str):
+        targets = [targets]
+    norm = sorted({t.strip() for t in targets if str(t).strip()})
+    if not norm:
+        raise ValueError("targets must be a non-empty sequence")
+    if len(norm) == 1:
+        return scope_receipt(
+            db, repo_root, norm[0], depth=depth,
+            kind_of_change=kind_of_change, touches_auth=touches_auth,
+            dynamic_heavy=dynamic_heavy,
+        )
+
+    # Repo-wide evidence context — universe enumeration, coverage, and
+    # the evidence-ledger cross-check are target-independent; compute
+    # them once and share across all per-target receipts (each ~16s
+    # call on this repo would otherwise pay the walk N times).
+    shared_ledger_stats: Dict[str, Any] = {}
+    shared_ctx: Dict[str, Any] = {
+        "universe": compile_scope_universe(db, repo_root),
+        "cov": repo_coverage(db, repo_root),
+        "ledger": _ledger_cross_check(
+            db, repo_root, stats_out=shared_ledger_stats),
+        "ledger_stats": shared_ledger_stats,
+    }
+    subs: Dict[str, Dict[str, Any]] = {
+        t: scope_receipt(
+            db, repo_root, t, depth=depth, kind_of_change=kind_of_change,
+            touches_auth=touches_auth, dynamic_heavy=dynamic_heavy,
+            shared=shared_ctx,
+        )
+        for t in norm
+    }
+
+    resolved = {t for t, s in subs.items()
+                if s["identity"]["status"] == "UNIQUE"}
+    failed = {t: s["identity"]["status"] for t, s in subs.items()
+              if s["identity"]["status"] != "UNIQUE"}
+    if not resolved:
+        merged_identity_status = (
+            "NOT_FOUND" if "NOT_FOUND" in failed.values() else "AMBIGUOUS"
+        )
+        partial_targets = 0
+    elif failed:
+        merged_identity_status = "UNIQUE"
+        partial_targets = len(failed)
+    else:
+        merged_identity_status = "UNIQUE"
+        partial_targets = 0
+
+    callers = _union_rows([s["direct_callers"] for s in subs.values()])
+    callees = _union_rows([s["direct_callees"] for s in subs.values()])
+    transitive = _union_rows(
+        [s["transitive_impact"]["nodes"] for s in subs.values()])
+    transitive_truncated = any(
+        s["transitive_impact"]["truncated"] for s in subs.values())
+    relations = {
+        name: _union_rows([s["relations"].get(name, [])
+                           for s in subs.values()])
+        for name in _RELATION_FAMILIES
+    }
+    affected_files = sorted({
+        f for s in subs.values() for f in s["affected_files"]})
+    candidate_tests = sorted({
+        t for s in subs.values() for t in s["candidate_tests"]})
+    stale_files = sorted({
+        f for s in subs.values() for f in s["stale_files"]})
+    warnings = sorted({
+        w for s in subs.values() for w in s["warnings"]})
+    truncation_sources = sorted({
+        src for s in subs.values()
+        for src in s["assurance_facts"]["truncation_sources"]})
+
+    # Merged snapshot must bind the union of cited paths — a per-target
+    # snapshot would only cover its own scope.
+    cited_paths = affected_files or sorted({
+        a["path"] for s in subs.values() for a in s["source_anchors"]})
+    snapshot_dict, merged_stale = assured_query_context(
+        db, repo_root, cited_paths)
+    stale_files = sorted(set(stale_files) | set(merged_stale))
+    snapshot_bound = bool(snapshot_dict.get("scope_digest"))
+
+    first = subs[norm[0]]
+    cov_facts = first["assurance_facts"]
+    manifest = build_scope_manifest(db, repo_root, affected_files)
+    gates = {
+        t: (check_rename_gate(db, repo_root, t, errors=None,
+                              universe=shared_ctx["universe"])
+            if kind_of_change in ("rename", "delete") else
+            {"symbol": t,
+             "resolved": subs[t]["identity"]["status"] == "UNIQUE",
+             "blocked": False, "reason": "rename gate not applicable"})
+        for t in norm
+    }
+    gate_blocked = any(g.get("blocked") for g in gates.values())
+    risks = [s["assurance"]["risk"] for s in subs.values()]
+    risk = {
+        "level": ("audit" if any(r["level"] == "audit" for r in risks)
+                  else "verify"),
+        "security_reviewer": any(r["security_reviewer"] for r in risks),
+        "absence_assurance": all(r["absence_assurance"] for r in risks),
+        "rule": "; ".join(dict.fromkeys(r["rule"] for r in risks)),
+    }
+    merged_gate = {
+        "blocked": gate_blocked,
+        "resolved": all(g.get("resolved") for g in gates.values()),
+        "per_target": gates,
+        "reason": (
+            f"{sum(1 for g in gates.values() if g.get('resolved'))}/"
+            f"{len(gates)} targets resolved; "
+            f"{sum(1 for g in gates.values() if g.get('blocked'))} blocked"
+            if kind_of_change in ("rename", "delete") else
+            "rename gate not applicable"
+        ),
+    }
+    facts = AssuranceFacts(
+        identity_status=merged_identity_status,
+        collection_error=any(
+            s["assurance_facts"]["collection_error"]
+            for s in subs.values()) or bool(warnings),
+        snapshot_bound=snapshot_bound,
+        stale_files=list(stale_files),
+        coverage_measured=cov_facts["coverage_measured"],
+        coverage_fraction=cov_facts["coverage_fraction"],
+        parser_failures=max(
+            s["assurance_facts"]["parser_failures"]
+            for s in subs.values()),
+        unresolved_count=max(
+            s["assurance_facts"]["unresolved_count"]
+            for s in subs.values()),
+        unresolved_budget=0,
+        open_conflicts=max(
+            s["assurance_facts"]["open_conflicts"] for s in subs.values()),
+        truncated=bool(truncation_sources),
+        truncation_sources=tuple(truncation_sources),
+        provider_capability_ok=all(
+            s["assurance_facts"]["provider_capability_ok"]
+            for s in subs.values()),
+        enumeration_complete=cov_facts["enumeration_complete"],
+        parser_capability_complete=cov_facts["parser_capability_complete"],
+        partial_ast_present=cov_facts["partial_ast_present"],
+        absence_claim=any(
+            s["assurance_facts"]["absence_claim"] for s in subs.values()),
+        gate_blocked=gate_blocked,
+        dynamic_dispatch_unresolved=any(
+            s["assurance_facts"]["dynamic_dispatch_unresolved"]
+            for s in subs.values()),
+        partial_targets=partial_targets,
+    )
+    decision = decide(facts)
+    confirmations = sorted({
+        c for s in subs.values()
+        for c in s["assurance"]["omp_confirmations"]})
+    payload: Dict[str, Any] = {
+        "schema_version": RECEIPT_SCHEMA_VERSION,
+        "kind": "scope",
+        "proof_scope": "pre_change_only",
+        "request": {
+            "targets": norm,
+            "kind_of_change": kind_of_change,
+            "depth": depth,
+            "touches_auth": touches_auth,
+            "dynamic_heavy": dynamic_heavy,
+        },
+        "manifest": asdict(manifest),
+        "scope_universe": first["scope_universe"],
+        "identity": {
+            "status": merged_identity_status,
+            "per_target": {t: s["identity"] for t, s in subs.items()},
+        },
+        "per_target": {
+            t: {
+                "status": s["assurance"]["status"],
+                "identity_status": s["identity"]["status"],
+                "digest": s["digest"],
+                "direct_callers": len(s["direct_callers"]),
+                "direct_callees": len(s["direct_callees"]),
+                "transitive": len(s["transitive_impact"]["nodes"]),
+                "affected_files": s["affected_files"],
+                "candidate_tests": len(s["candidate_tests"]),
+            }
+            for t, s in subs.items()
+        },
+        "assurance_facts": asdict(facts),
+        "snapshot": snapshot_dict,
+        "stale_files": stale_files,
+        "source_anchors": _union_rows(
+            [s["source_anchors"] for s in subs.values()]),
+        "direct_callers": callers,
+        "direct_callees": callees,
+        "relations": relations,
+        "transitive_impact": {
+            "depth": depth,
+            "nodes": transitive,
+            "truncated": transitive_truncated,
+        },
+        "collection_stats": {
+            "merged_targets": len(norm),
+            "any_truncated": bool(truncation_sources),
+            "truncation_sources": truncation_sources,
+        },
+        "affected_files": affected_files,
+        "candidate_tests": candidate_tests,
+        "providers": first["providers"],
+        "warnings": warnings,
+        "coverage": first["coverage"],
+        "assurance": {
+            "risk": risk,
+            "rename_gate": merged_gate,
+            "omp_confirmations": confirmations,
+            "status": decision["status"],
+            "reason_codes": decision["reason_codes"],
+            "decision": decision,
+            "per_target": {
+                t: {
+                    "status": s["assurance"]["status"],
+                    "reason_codes": s["assurance"]["reason_codes"],
+                }
+                for t, s in subs.items()
+            },
         },
     }
     payload["digest"] = receipt_digest(

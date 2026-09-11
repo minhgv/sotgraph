@@ -1595,11 +1595,11 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
     """PRE-change scope receipt (P7): bounded evidence before an edit."""
     import json
 
-    from sot_graph.assurance.receipts import scope_receipt
+    from sot_graph.assurance.receipts import scope_receipt_multi
 
-    target = (args.target or "").strip()
-    payload = scope_receipt(
-        db, root, target,
+    targets = args.target if isinstance(args.target, list) else [args.target]
+    payload = scope_receipt_multi(
+        db, root, targets,
         depth=int(getattr(args, "depth", 2) or 2),
         kind_of_change=getattr(args, "change_kind", "local-body"),
         touches_auth=bool(getattr(args, "auth", False)),
@@ -1609,7 +1609,8 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
         print(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
         return 0
     ass = payload["assurance"]
-    print(f"📋 Scope receipt — {payload['request']['target']} "
+    req_targets = payload["request"].get("targets") or [payload["request"]["target"]]
+    print(f"📋 Scope receipt — {', '.join(req_targets)} "
           f"(schema v{payload['schema_version']}, digest {payload['digest'][:12]}…)")
     print(f"   proof scope: {payload['proof_scope']} (never post-change proof)")
     print(f"   snapshot: {(payload['snapshot'].get('commit_sha') or '?')[:12]} "
@@ -1627,6 +1628,13 @@ def cmd_scope_receipt(args: argparse.Namespace, db: Database, root: str) -> int:
           f"{len(payload['transitive_impact']['nodes'])}")
     print(f"   affected files: {len(payload['affected_files'])}  "
           f"candidate tests: {len(payload['candidate_tests'])}")
+    per_target = payload.get("per_target")
+    if per_target:
+        for t, info in per_target.items():
+            flag = "" if info["status"] == "ASSURED_WITHIN_SCOPE" else " ⚠"
+            print(f"   ├ {t}: {info['status']}{flag} "
+                  f"(callers {info['direct_callers']}, "
+                  f"tests {info['candidate_tests']})")
     print(f"   {payload['coverage']['note']}")
     print(f"   assurance: {ass['status']} — {ass['risk']['rule']}")
     for rc in ass.get("reason_codes", []):
@@ -2614,8 +2622,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
     # scope-receipt (P7)
-    p_sr = subparsers.add_parser("scope-receipt", help="PRE-change bounded evidence receipt for one edit target")
-    p_sr.add_argument("target", help="Symbol to scope (e.g. 'Pipeline.process')")
+    p_sr = subparsers.add_parser("scope-receipt", help="PRE-change bounded evidence receipt for one or more edit targets")
+    p_sr.add_argument("target", nargs="+", help="Symbol(s) to scope — multiple targets union into one task-level receipt (e.g. 'Pipeline.process' 'Pipeline.run')")
     p_sr.add_argument("--depth", type=int, default=2, help="Transitive impact walk depth (default: 2)")
     p_sr.add_argument("--change-kind", default="local-body",
                       choices=["local-body", "public-api", "rename", "delete"],

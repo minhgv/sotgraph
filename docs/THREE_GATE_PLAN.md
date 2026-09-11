@@ -172,3 +172,39 @@ hunk giao nhau thật tại `mcp_server.py:420-422` nhưng là edit docstring k�
 khi hai commit sửa cùng đoạn text/schema — cần semantic judgment, nằm ngoài deterministic rules).
 Fixup precision 0.875 là ceiling đo được của deterministic labeler trên dev corpus này;
 đẩy tiếp cần hunk→symbol semantic hoặc LLM-assist — backlog cho W4, không block W1–W3.
+
+---
+
+## 8. W1 Results (executed 2026-09-11)
+
+**Delivered:** `scope_receipt_multi` (receipts.py, schema 1.9→1.10) — task-level union receipt;
+`AssuranceFacts.partial_targets` + canonical reason `targets_partially_resolved` (PARTIAL cap,
+không tự chế vocabulary); shared repo-wide context (`universe`/`cov`/`ledger` compute-once —
+multi call ~18s/3 targets thay vì ~48s); `check_rename_gate(universe=)` optional param;
+CLI `scope-receipt` nargs="+" + per-target breakdown; MCP `targets` array (cap 8);
+`tests/test_scope_receipt_multi.py` 9 tests; `scripts/bench_g1_scope.py` + `g1_report.json`.
+
+**Merge semantics:** collections = deduped unions; identity per-target isolated; mixed
+resolution → PARTIAL; all-unresolved → ABSTAINED; rename gate aggregates (any blocked ⇒
+blocked); risk = strictest level across targets. `per_target[t].affected_files` cho
+debug/attribution. Digest: union over sorted targets (order-invariant, content-addressed).
+
+**G1 replay trên repo này (15 commits, symbols từ touched_symbols → union scope):**
+
+| Metric | Union | Best single |
+|---|---|---|
+| mean recall vs changed files | **87.5%** | 83.5% |
+| mean precision | 13.0% | 28.4% |
+
+- `union_ge_best_single` = **1.0** PASS (union không bao giờ tệ hơn — đúng cấu trúc superset)
+- `precision_drop` = **15.4pt > bar 10pt → FAIL** — nhưng bar này thiết kế sai: union ⊇ single
+  nên precision union *luôn* ≤ single theo cấu trúc. Đây là finding, không phải bug —
+  recall +4pt mean (có commit +14pt: d3999cd 89→100%) đổi lấy surface rộng hơn ~2x.
+- `partial_resolution_rate` = 20% — symbols của commit cũ không resolve trên current index
+  (drift đúng như caveat đã ghi: graph phản ánh trạng thái hiện tại).
+
+**W1 finding cho W4:** bar đúng nên là "predicted-set size cap" hoặc precision floor tuyệt đối,
+không phải delta-vs-single. Còn recall 87.5% cho file-set của task thực = chưa đủ cho
+"plan hoàn chỉnh" — ~12% file thực sự sửa nằm ngoài blast radius graph (siblings/edit cùng
+module không phải caller). Muốn nâng recall cần thêm nguồn: module-cohesion, test-map, hoặc
+symptom retrieval (Corpus C) — đúng định hướng W4.
