@@ -403,8 +403,9 @@ def cmd_search(args: argparse.Namespace, db: Database, root: str) -> int:
         print(f"  {i:2d}. [{r['verdict']:^7}] {cov_str:^8} {r['label']}")
         if loc:
             print(f"      📍 File: {loc}")
-        first_line = r['body'].splitlines()[0][:110]
-        print(f"      💡 Content: {first_line}...")
+        first_lines = r['body'].splitlines()
+        if first_lines:
+            print(f"      💡 Content: {first_lines[0][:110]}...")
         ax = r.get("axes") or {}
         print(f"      🧭 anchor={ax.get('anchor_freshness', 'unknown')} "
               f"identity={ax.get('identity', 'unknown')} "
@@ -873,35 +874,71 @@ def cmd_insert(args: argparse.Namespace, db: Database) -> int:
 
 def cmd_reconcile(args: argparse.Namespace, reconciler: Reconciler) -> int:
     start_t = time.time()
+    payload: Dict[str, Any]
     try:
-        summary = reconciler.reconcile(
-            paths=args.paths,
-            workers=args.workers,
-            batch_size=args.batch_size,
-            force=getattr(args, "force", False),
-        )
+        if getattr(args, "paths", None):
+            # Targeted path reconcile: CBM indexes whole-repo only, so a
+            # scoped request stays on the builtin extractor (disclosed).
+            summary = reconciler.reconcile(
+                paths=args.paths,
+                workers=args.workers,
+                batch_size=args.batch_size,
+                force=getattr(args, "force", False),
+            )
+            payload = summary.as_dict()
+            payload["extractor"] = "tree-sitter-ast"
+        else:
+            from sot_graph.cbm import reconcile_dispatch
+            from sot_graph.config import load_config
+
+            cfg = load_config(reconciler.root_dir)
+            mode = (getattr(args, "mode", None)
+                    or getattr(args, "mode_override", None)
+                    or cfg.cbm_mode)
+            payload = reconcile_dispatch(
+                reconciler.db, reconciler, reconciler.root_dir,
+                extractor=getattr(args, "extractor", None) or cfg.extractor,
+                cbm_mode=mode,
+                workers=args.workers,
+                batch_size=args.batch_size,
+                force=getattr(args, "force", False),
+            )
     except KeyboardInterrupt:
         return 130
     elapsed = time.time() - start_t
     if getattr(args, "receipt", False):
         from sot_graph.assurance.receipts import reconcile_receipt
-        receipt = reconcile_receipt(reconciler.db, reconciler.root_dir, reconcile_result=summary.as_dict())
+        receipt = reconcile_receipt(reconciler.db, reconciler.root_dir, reconcile_result=payload)
         print(json.dumps(receipt, indent=2))
     elif args.json:
-        print(json.dumps(summary.as_dict(), sort_keys=True))
+        print(json.dumps(payload, sort_keys=True))
     else:
         conflict_note = (
-            f", {summary.conflicts} conflicts (stale snapshots re-queued)"
-            if summary.conflicts else ""
+            f", {payload.get('conflicts', 0)} conflicts (stale snapshots re-queued)"
+            if payload.get("conflicts") else ""
         )
+        extractor_note = f" [{payload.get('extractor', '?')}"
+        if payload.get("cbm_mode"):
+            extractor_note += f":{payload['cbm_mode']}"
+        extractor_note += "]"
+        if payload.get("extractor_fallback"):
+            extractor_note += f" (fallback: {payload['extractor_fallback']})"
+        gap_note = ""
+        if payload.get("extractor") == "codebase-memory":
+            gap_note = (
+                f", {payload.get('cbm_nodes', 0)} cbm nodes/"
+                f"{payload.get('cbm_edges', 0)} edges, "
+                f"{payload.get('gap_fill_published', 0)} gap-filled, "
+                f"{payload.get('parse_partial_files', 0)} parse-partial"
+            )
         print(
-            f"✅ Reconcile complete in {elapsed:.2f}s: "
-            f"{summary.updated} indexed/updated, "
-            f"{summary.unchanged} unchanged, "
-            f"{summary.deleted} purged, "
-            f"{summary.failed} failed{conflict_note}."
+            f"✅ Reconcile complete in {elapsed:.2f}s{extractor_note}: "
+            f"{payload.get('updated', 0)} indexed/updated, "
+            f"{payload.get('unchanged', 0)} unchanged, "
+            f"{payload.get('deleted', 0)} purged, "
+            f"{payload.get('failed', 0)} failed{conflict_note}{gap_note}."
         )
-    return 1 if summary.failed else 0
+    return 1 if payload.get("failed") else 0
 def _reconcile_single_repo(repo_dir: str, force: bool = False, workers: int = 1) -> dict:
     """Worker function executed for a single repository in batch reconcile."""
     start_t = time.monotonic()
@@ -1210,6 +1247,30 @@ def cmd_doctor(args: argparse.Namespace, db: Database, root: Optional[str] = Non
     print("=" * 55)
     status_icon = "✅ OK" if diag["quick_check"] == "ok" else "❌ CORRUPTED"
     print(f"  • SQLite Database   : {db.db_path}")
+    # When a codebase-memory store is bound, the rows above only cover the
+    # sot-owned slice (gap files + notes + ledger); disclose the engine's
+    # share so the small counts are not misread as the whole graph.
+    if root:
+        try:
+            from sot_graph.cbm import find_cbm_db, locate_project, _open_ro
+            cbm_path = find_cbm_db(root)
+            if cbm_path:
+                cconn = _open_ro(cbm_path)
+                try:
+                    proj = locate_project(cconn, root)
+                    if proj:
+                        cn = cconn.execute(
+                            "SELECT COUNT(*) FROM nodes WHERE project=?",
+                            (proj,)).fetchone()[0]
+                        ce = cconn.execute(
+                            "SELECT COUNT(*) FROM edges WHERE project=?",
+                            (proj,)).fetchone()[0]
+                        print(f"  • Engine Store      : codebase-memory "
+                              f"({cn:,} nodes / {ce:,} edges, read-through)")
+                finally:
+                    cconn.close()
+        except Exception:
+            pass
     print(f"  • Integrity Check   : {status_icon} (quick_check: {diag['quick_check']})")
     print(f"  • Journal Mode      : {diag['journal_mode']} (schema v{diag['schema_version']})")
     print(f"  • DB Storage Size   : {diag['db_size_bytes']:,} bytes ({diag['page_count']} pages @ {diag['page_size']}B)")
@@ -2720,34 +2781,55 @@ def build_parser() -> argparse.ArgumentParser:
     p_ins.add_argument("--keywords", default="", help="Comma-separated keywords")
 
     # reconcile
-    p_rec = subparsers.add_parser("reconcile", help="Idempotently sync graph with filesystem")
-    p_rec.add_argument("paths", nargs="*", help="Files or directories relative to --root")
-    p_rec.add_argument(
+    rec_base = argparse.ArgumentParser(add_help=False)
+    rec_base.add_argument("paths", nargs="*", help="Files or directories relative to --root")
+    rec_base.add_argument(
         "--workers",
         type=_positive_int,
         default=min(8, max(1, os.cpu_count() or 1)),
         help="Extraction worker processes (default: auto, max 8)",
     )
-    p_rec.add_argument(
+    rec_base.add_argument(
         "--batch-size",
         type=_positive_int,
         default=64,
         help="Files per deterministic transaction window (default: 64)",
     )
-    p_rec.add_argument("--json", action="store_true", help="Output summary as JSON")
-    p_rec.add_argument("--receipt", action="store_true", help="Emit a post-reconcile assurance receipt as JSON")
-    p_rec.add_argument(
+    rec_base.add_argument("--json", action="store_true", help="Output summary as JSON")
+    rec_base.add_argument("--receipt", action="store_true", help="Emit a post-reconcile assurance receipt as JSON")
+    rec_base.add_argument(
         "--force",
         action="store_true",
         help="Re-extract every file regardless of journal state (upgrade path "
              "for extractor changes; notes are preserved)",
     )
-    p_rec.add_argument(
+    rec_base.add_argument(
         "--all",
         dest="all_repos",
         action="store_true",
         help="Batch reconcile all repositories in root directory",
     )
+    rec_base.add_argument(
+        "--extractor", choices=("auto", "cbm", "builtin"), default=None,
+        help="Extraction layer: cbm = codebase-memory engine primary with "
+             "builtin gap-fill/fallback (default: .sot/config.toml extractor, 'auto')",
+    )
+    rec_base.add_argument(
+        "--mode", choices=("full", "moderate", "fast"), default=None,
+        help="CBM index mode override for this run (default: config cbm_mode)",
+    )
+    p_rec = subparsers.add_parser("reconcile", parents=[rec_base],
+        help="Idempotently sync graph with filesystem (cbm-primary, builtin fallback)")
+    p_rec.set_defaults(mode_override=None)
+    # Mode aliases stay invocable but hidden from `sotgraph --help` — the
+    # user-facing surface is one `reconcile` command with two opt-in flags,
+    # not a family of near-duplicate commands to remember.
+    p_rec_fast = subparsers.add_parser("reconcile-fast", parents=[rec_base],
+        help=argparse.SUPPRESS)
+    p_rec_fast.set_defaults(mode_override="fast")
+    p_rec_full = subparsers.add_parser("reconcile-full", parents=[rec_base],
+        help=argparse.SUPPRESS)
+    p_rec_full.set_defaults(mode_override="full")
     # batch-reconcile
     p_batch_rec = subparsers.add_parser("batch-reconcile", help="Batch reconcile multiple repositories concurrently")
     p_batch_rec.add_argument("directory", nargs="?", default=".", help="Parent directory containing repositories (default: current directory)")
@@ -3082,7 +3164,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # other database-touching command.
         return cmd_providers(args, root, db_path=db_path)
 
-    if args.command == "batch-reconcile" or (args.command == "reconcile" and getattr(args, "all_repos", False)):
+    if args.command == "batch-reconcile" or (args.command in ("reconcile", "reconcile-fast", "reconcile-full") and getattr(args, "all_repos", False)):
         target_dir = getattr(args, "directory", None) or root
         return cmd_batch_reconcile(args, target_dir)
 
@@ -3138,6 +3220,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return cmd_usages(args, db, root)
         finally:
             db.close()
+    store = None
     try:
         db = Database(db_path)
     except (LockBusy, RuntimeError) as exc:
@@ -3149,7 +3232,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if db.schema_was_reset:
             print("⚠️  LEGACY SCHEMA RESET: this project's index used an outdated schema "
                   "and was rebuilt empty.")
-            if args.command in ("reconcile", "clean"):
+            if args.command in ("reconcile", "reconcile-fast", "reconcile-full", "clean"):
                 # `reconcile` is about to refill the graph itself, and `clean` was
                 # explicitly asked to prune/reset — auto-refilling would undo it.
                 print("   Run `sotgraph reconcile` to repopulate the graph.")
@@ -3176,23 +3259,37 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 print(f"⚠️  JIT reconcile failed ({_rec.get('error', 'unknown')}); "
                       "answering from the possibly-stale index", file=sys.stderr)
 
+        # CBM-native read path: when a bound codebase-memory store satisfies
+        # the contract, read surfaces get CbmStore (cbm.db + TEMP VIEWs +
+        # sot.db attach) instead of the builtin-only Database — same shape,
+        # richer graph. Absence/mismatch degrades to Database silently.
+        if args.command in ("search", "explore", "usages", "implementations",
+                            "map", "pack", "trace", "diff-impact",
+                            "scope-receipt", "report", "bundle", "viz",
+                            "arch", "export", "ui-tree", "be-flow",
+                            "solution", "log", "commits", "commit-verdict",
+                            "calibrate", "cluster"):
+            from sot_graph.graphstore import open_store
+            store = open_store(root, db_path)
+        qdb = store if store is not None else db
+
         if args.command == "search":
-            return cmd_search(args, db, root)
+            return cmd_search(args, qdb, root)
         elif args.command == "explore":
-            return cmd_explore(args, db, root)
+            return cmd_explore(args, qdb, root)
         elif args.command == "usages":
-            return cmd_usages(args, db, root)
+            return cmd_usages(args, qdb, root)
         elif args.command == "implementations":
-            return cmd_implementations(args, db)
+            return cmd_implementations(args, qdb)
         elif args.command == "rename":
             return cmd_rename(args, db)
         elif args.command == "map":
-            return cmd_map(args, db, root)
+            return cmd_map(args, qdb, root)
         elif args.command == "embed":
             return cmd_embed(args, db)
         elif args.command == "insert":
             return cmd_insert(args, db)
-        elif args.command == "reconcile":
+        elif args.command in ("reconcile", "reconcile-fast", "reconcile-full"):
             return cmd_reconcile(args, reconciler)
         elif args.command == "clean":
             return cmd_clean(args, db, root)
@@ -3203,46 +3300,48 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         elif args.command == "doctor":
             return cmd_doctor(args, db, root)
         elif args.command == "report":
-            return cmd_report(args, db, root)
+            return cmd_report(args, qdb, root)
         elif args.command == "cluster":
-            return cmd_cluster(args, db)
+            return cmd_cluster(args, qdb)
         elif args.command == "viz":
-            return cmd_viz(args, db, root)
+            return cmd_viz(args, qdb, root)
         elif args.command == "arch":
-            return cmd_arch(args, db, root)
+            return cmd_arch(args, qdb, root)
         elif args.command == "export":
-            return cmd_export(args, db, root)
+            return cmd_export(args, qdb, root)
         elif args.command == "import-scip":
             return cmd_import_scip(args, db, root)
         elif args.command == "bundle":
-            return cmd_bundle(args, db, root)
+            return cmd_bundle(args, qdb, root)
         elif args.command == "pack":
-            return cmd_pack(args, db, root)
+            return cmd_pack(args, qdb, root)
         elif args.command == "watch":
             return cmd_watch(args, reconciler, root)
         elif args.command == "trace":
-            return cmd_trace(args, db, root)
+            return cmd_trace(args, qdb, root)
         elif args.command == "ui-tree":
-            return cmd_ui_tree(args, db)
+            return cmd_ui_tree(args, qdb)
         elif args.command == "be-flow":
-            return cmd_be_flow(args, db)
+            return cmd_be_flow(args, qdb)
         elif args.command == "solution":
-            return cmd_solution(args, db, root)
+            return cmd_solution(args, qdb, root)
         elif args.command == "scope-receipt":
-            return cmd_scope_receipt(args, db, root)
+            return cmd_scope_receipt(args, qdb, root)
         elif args.command == "diff-impact":
-            return cmd_diff_impact(args, db, root)
+            return cmd_diff_impact(args, qdb, root)
         elif args.command in ("log", "commits"):
-            return cmd_log(args, db, root)
+            return cmd_log(args, qdb, root)
         elif args.command == "commit-verdict":
-            return cmd_commit_verdict(args, db, root)
+            return cmd_commit_verdict(args, qdb, root)
         elif args.command == "calibrate":
-            return cmd_calibrate(args, db, root)
+            return cmd_calibrate(args, qdb, root)
         return 0
     except (LockBusy, RuntimeError) as exc:
         print(f"❌ {args.command} failed: {exc}", file=sys.stderr)
         return 1
     finally:
+        if store is not None:
+            store.close()
         db.close()
 
 

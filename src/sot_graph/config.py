@@ -9,6 +9,8 @@ Environment variables honored:
 
 * ``SOT_PROVIDERS_MODE``            -> ``providers_mode``   (auto | manual)
 * ``SOT_PROVIDERS_ALLOW_EXTERNAL``  -> ``allow_external``   (boolean)
+* ``SOT_EXTRACTOR``                 -> ``extractor``        (auto | cbm | builtin)
+* ``SOT_CBM_MODE``                  -> ``cbm_mode``         (full | moderate | fast)
 
 Unknown keys in the TOML file are silently ignored (forward compatibility).
 Simple type mistakes (e.g. a string where a list is required) raise
@@ -38,6 +40,8 @@ __all__ = [
     "CONFIG_RELATIVE_PATH",
     "ENV_PROVIDERS_MODE",
     "ENV_PROVIDERS_ALLOW_EXTERNAL",
+    "ENV_EXTRACTOR",
+    "ENV_CBM_MODE",
     "DEFAULT_PROVIDERS",
     "ProviderConfig",
     "SotConfig",
@@ -47,6 +51,8 @@ __all__ = [
 CONFIG_RELATIVE_PATH = os.path.join(".sot", "config.toml")
 ENV_PROVIDERS_MODE = "SOT_PROVIDERS_MODE"
 ENV_PROVIDERS_ALLOW_EXTERNAL = "SOT_PROVIDERS_ALLOW_EXTERNAL"
+ENV_EXTRACTOR = "SOT_EXTRACTOR"
+ENV_CBM_MODE = "SOT_CBM_MODE"
 
 _TRUTHY = {"1", "true", "yes", "on"}
 _FALSY = {"0", "false", "no", "off", ""}
@@ -54,6 +60,8 @@ _FALSY = {"0", "false", "no", "off", ""}
 _TOP_LEVEL_ENUMS: dict[str, tuple[str, ...]] = {
     "providers_mode": ("auto", "manual"),
     "conflict_policy": ("abstain", "prefer-exact", "prefer-fresh"),
+    "extractor": ("auto", "cbm", "builtin"),
+    "cbm_mode": ("full", "moderate", "fast"),
 }
 _TOP_LEVEL_BOOLS = ("allow_external",)
 _TOP_LEVEL_STRINGS = ("verification_provider",)
@@ -88,6 +96,8 @@ class SotConfig:
     allow_external: bool = False
     conflict_policy: str = "abstain"
     verification_provider: str = "sot-builtin"
+    extractor: str = "auto"
+    cbm_mode: str = "full"
     providers: dict[str, ProviderConfig] = field(default_factory=dict)
 
 
@@ -271,6 +281,13 @@ def load_config(repo_root: str, overrides: dict[str, Any] | None = None) -> SotC
                 f"environment variable {ENV_PROVIDERS_ALLOW_EXTERNAL}: expected "
                 f"a boolean ({'/'.join(sorted(_TRUTHY))} or {'/'.join(sorted(_FALSY))}), "
                 f"got {env_allow!r}"
+            )
+    for env_name, key in ((ENV_EXTRACTOR, "extractor"), (ENV_CBM_MODE, "cbm_mode")):
+        env_value = os.environ.get(env_name)
+        if env_value is not None:
+            scalars[key] = _coerce_enum(
+                f"environment variable {env_name}", key, env_value,
+                _TOP_LEVEL_ENUMS[key],
             )
 
     # Layer 4: explicit overrides (same shape as the TOML document).

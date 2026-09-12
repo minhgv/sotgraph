@@ -57,7 +57,7 @@ def staleness_probe(db_path: str, root: str) -> Dict[str, Any]:
     ``unindexed`` (supported file on disk with no journal row — invisible
     to journal-only checks). ``stale`` is the OR of the three counts.
     """
-    from sot_graph.db import Database
+    from sot_graph.graphstore import open_store
     from sot_graph.reconciler import Reconciler
 
     started = time.perf_counter()
@@ -66,7 +66,10 @@ def staleness_probe(db_path: str, root: str) -> Dict[str, Any]:
     journal_keys = set()
     checked = 0
 
-    db = Database(db_path, read_only=True)
+    # open_store probes the extractor contract: when a bound CBM store is
+    # present the journal view includes the engine's file_hashes, so the
+    # same probe covers whichever extractor produced the index.
+    db = open_store(root, db_path, read_only=True)
     try:
         reconciler = Reconciler(db, root)
         # The scan set defines what reconcile CAN re-examine. Journal rows
@@ -138,17 +141,27 @@ def staleness_probe(db_path: str, root: str) -> Dict[str, Any]:
 def reconcile_now(
     db_path: str, root: str, *, writer: Optional[Any] = None,
     workers: Optional[int] = None,
-) -> Dict[str, int]:
+) -> Dict[str, Any]:
     """Run one reconcile through the normal writer path; raises on failure."""
+    from sot_graph.cbm import reconcile_dispatch
+    from sot_graph.config import load_config
     from sot_graph.db import Database
     from sot_graph.reconciler import Reconciler
 
+    # A CbmStore cannot serve as the reconcile writer: graph-shape writes
+    # belong to the engine, journal/gap-fill writes to sot.db — always open
+    # the plain writer for this path.
+    if writer is not None and getattr(writer, "is_cbm", False):
+        writer = None
     own = writer is None
     db = Database(db_path) if own else writer
     try:
-        if workers is None:
-            return Reconciler(db, root).reconcile().as_dict()
-        return Reconciler(db, root).reconcile(workers=workers).as_dict()
+        cfg = load_config(root)
+        return reconcile_dispatch(
+            db, Reconciler(db, root), root,
+            extractor=cfg.extractor, cbm_mode=cfg.cbm_mode,
+            workers=workers,
+        )
     finally:
         if own:
             db.close()

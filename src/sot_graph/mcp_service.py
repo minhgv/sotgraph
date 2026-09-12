@@ -314,17 +314,35 @@ class McpService:
                 "database_unavailable",
                 f"no sotgraph index at {self.db_path} — run "
                 "`sotgraph reconcile` in the project root to create it")
-        # URI mode=ro guarantees that this surface cannot create schema, WAL,
-        # journal, or other files even when the caller supplies a new database.
-        uri = "file:" + quote(self.db_path, safe="/") + "?mode=ro"
+        conn: Optional[sqlite3.Connection] = None
         try:
-            conn = sqlite3.connect(uri, uri=True, timeout=self.timeout_ms / 1000.0)
-            conn.row_factory = sqlite3.Row
-            deadline = time.monotonic() + self.timeout_ms / 1000.0
-            conn.set_progress_handler(lambda: 1 if time.monotonic() >= deadline else 0, 1_000)
-            return conn
-        except (sqlite3.Error, OSError) as exc:
-            raise McpServiceError("database_unavailable", "unable to open read-only graph database") from exc
+            # open_store returns a CbmStore when a bound codebase-memory
+            # index satisfies the contract (cbm.db mode=ro + TEMP VIEWs
+            # recreating the sot read schema + sot.db attached), else a
+            # read-only Database. Both expose .conn — a sqlite3.Connection
+            # carrying the read schema the ops below expect.
+            from sot_graph.graphstore import open_store
+            conn = open_store(
+                self.project_root, self.db_path,
+                read_only=True, timeout_ms=self.timeout_ms,
+            ).conn
+        except (sqlite3.Error, OSError, RuntimeError):
+            # Legacy tolerance: this surface historically raw-connected
+            # without schema validation — a store that cannot satisfy the
+            # store factory (outdated user_version, partial schema) still
+            # opens read-only so queries degrade naturally per-op.
+            try:
+                uri = "file:" + quote(self.db_path, safe="/") + "?mode=ro"
+                conn = sqlite3.connect(
+                    uri, uri=True, timeout=self.timeout_ms / 1000.0)
+            except (sqlite3.Error, OSError) as exc:
+                raise McpServiceError(
+                    "database_unavailable",
+                    "unable to open read-only graph database") from exc
+        conn.row_factory = sqlite3.Row
+        deadline = time.monotonic() + self.timeout_ms / 1000.0
+        conn.set_progress_handler(lambda: 1 if time.monotonic() >= deadline else 0, 1_000)
+        return conn
 
     def _run(self, operation: Any) -> Any:
         conn = self._connection()
@@ -452,6 +470,35 @@ class McpService:
                         for r in rows
                     ]
         except Exception:
+            pass
+        # CBM-backed connection: the graph rows come from the engine's
+        # LSP-resolved store — report it ahead of the builtin extractor.
+        try:
+            cbm = conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE name='nodes_fts'"
+            ).fetchone()
+            if cbm:
+                providers = [{
+                    "name": "codebase-memory",
+                    "provider_name": "codebase-memory",
+                    "version": "unknown",
+                    "capability": "COMPILER_LSP_INDEX",
+                }]
+                try:
+                    gap = conn.execute(
+                        "SELECT 1 FROM graph_nodes WHERE id NOT LIKE 'cbm:%' "
+                        "LIMIT 1").fetchone()
+                except sqlite3.Error:
+                    gap = None
+                if gap:
+                    providers.append({
+                        "name": "tree-sitter-ast",
+                        "provider_name": "tree-sitter-ast",
+                        "version": "unknown",
+                        "capability": "AST_HEURISTIC_PARSER",
+                    })
+                return providers
+        except sqlite3.Error:
             pass
         default_name = "tree-sitter-ast"
         default_ver = "unknown"
@@ -829,10 +876,23 @@ class McpService:
         expr = " OR ".join(sorted(tokens))
 
         def op(conn: sqlite3.Connection) -> Dict[str, Any]:
-            sql = """SELECT k.id,k.path,k.kind,k.symbol,k.label,k.fqn,k.body,k.keywords,k.line_start,
-                      bm25(graph_fts) AS rank_score
-                      FROM graph_fts f JOIN graph_nodes k ON f.rowid=k.rowid
-                      WHERE graph_fts MATCH ?"""
+            # The FTS source differs by backend: builtin sot.db has
+            # graph_fts (rowid = graph_nodes.rowid); a CBM-backed conn has
+            # nodes_fts (rowid = nodes.id, surfaced through the graph_nodes
+            # TEMP VIEW whose ids are 'cbm:'-prefixed).
+            cbm = conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE name='nodes_fts'"
+            ).fetchone()
+            if cbm:
+                sql = """SELECT k.id,k.path,k.kind,k.symbol,k.label,k.fqn,k.body,k.keywords,k.line_start,
+                          bm25(nodes_fts) AS rank_score
+                          FROM nodes_fts f JOIN graph_nodes k ON k.id = 'cbm:'||f.rowid
+                          WHERE nodes_fts MATCH ?"""
+            else:
+                sql = """SELECT k.id,k.path,k.kind,k.symbol,k.label,k.fqn,k.body,k.keywords,k.line_start,
+                          bm25(graph_fts) AS rank_score
+                          FROM graph_fts f JOIN graph_nodes k ON f.rowid=k.rowid
+                          WHERE graph_fts MATCH ?"""
             params: List[Any] = [expr]
             if scope:
                 # Escape LIKE metacharacters so scope "_" matches a literal
