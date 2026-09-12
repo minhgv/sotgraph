@@ -1019,14 +1019,17 @@ export default function sotGraphExtension(pi: ExtensionAPI): void {
       triggerReconcile(path ? [path] : undefined);
     });
 
-    pi.on("session_start", async () => {
+    pi.on("session_start", () => {
       try {
         const cwd = process.cwd();
         const dbPath = join(cwd, ".sot", "sot.db");
         if (!existsSync(dbPath)) {
-          // Trigger initial silent reconcile through the trusted installed/PATH command.
+          // Trigger initial silent reconcile through the trusted installed/PATH
+          // command. Fire-and-forget: awaiting here would exceed the harness's
+          // 30s session_start handler budget on large/unindexed directories;
+          // the execFile child still runs to completion in the background.
           const bin = resolveSotBinary(cwd);
-          await runCmd(bin, ["reconcile"], cwd);
+          void runCmd(bin, ["reconcile"], cwd).catch(() => {});
         }
       } catch {
         // Non-blocking fallback
