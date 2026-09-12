@@ -100,6 +100,18 @@ def cmd_clean(args: argparse.Namespace, db: Database, root: str) -> int:
         "errors": [],
         "duration_ms": int((time.monotonic() - started) * 1000),
     }
+    # Under a bound codebase-memory store the engine-owned index is
+    # untouched by clean — read paths still serve it via the union views.
+    try:
+        from sot_graph.cbm import find_cbm_db
+        if find_cbm_db(root):
+            note = ("codebase-memory engine store untouched (.sot/cbm/cache) "
+                    "— it still serves read paths; `reconcile` rebuilds it")
+            payload["engine_store"] = note
+            if not args.json:
+                print(f"ℹ {note}")
+    except Exception:
+        pass
     if args.json:
         _maintenance_json(payload)
     else:
@@ -948,18 +960,24 @@ def _reconcile_single_repo(repo_dir: str, force: bool = False, workers: int = 1)
         db = Database(db_path)
         try:
             reconciler = Reconciler(db, abs_repo)
-            summary = reconciler.reconcile(force=force, workers=workers)
+            from sot_graph.cbm import reconcile_dispatch
+            from sot_graph.config import load_config
+            _cfg = load_config(abs_repo)
+            summary = reconcile_dispatch(
+                db, reconciler, abs_repo,
+                extractor=_cfg.extractor, cbm_mode=_cfg.cbm_mode,
+                workers=workers, force=force)
             st = db.stats()
             duration_ms = int((time.monotonic() - start_t) * 1000)
             return {
                 "repo": abs_repo,
                 "name": os.path.basename(abs_repo),
                 "status": "ok",
-                "scanned": summary.scanned,
-                "updated": summary.updated,
-                "unchanged": summary.unchanged,
-                "deleted": summary.deleted,
-                "failed": summary.failed,
+                "scanned": summary.get("scanned", 0),
+                "updated": summary.get("updated", 0),
+                "unchanged": summary.get("unchanged", 0),
+                "deleted": summary.get("deleted", 0),
+                "failed": summary.get("failed", 0),
                 "nodes": st.get("nodes", 0),
                 "edges": st.get("edges", 0),
                 "duration_ms": duration_ms,
@@ -2602,6 +2620,18 @@ def cmd_import_scip(args: argparse.Namespace, db: Database, root: str) -> int:
     if not os.path.isfile(index_path):
         print(f"❌ SCIP index file not found: {index_path}", file=sys.stderr)
         return 1
+    # Under a bound codebase-memory store, imported rows land in sot.db but
+    # are shadowed by engine coverage in the union views — they become
+    # visible only with `--extractor builtin`. Disclose rather than pretend.
+    try:
+        from sot_graph.cbm import find_cbm_db
+        if find_cbm_db(root):
+            print("⚠️  codebase-memory store is bound: imported rows are "
+                  "shadowed by engine coverage on read paths "
+                  "(reconcile --extractor builtin to make them authoritative)",
+                  file=sys.stderr)
+    except Exception:
+        pass
     importer = ScipImporter(db, project_root=root)
     try:
         p_name = getattr(args, "provider", None) or getattr(args, "provider_name", None)
@@ -3239,9 +3269,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             else:
                 print("   Rebuilding the index automatically (one-time)…")
                 try:
-                    summary = reconciler.reconcile()
-                    print(f"   ✅ Auto-reconciled: {summary.updated} indexed/updated, "
-                          f"{summary.failed} failed.")
+                    from sot_graph.cbm import reconcile_dispatch
+                    from sot_graph.config import load_config
+                    _cfg = load_config(root)
+                    summary = reconcile_dispatch(
+                        db, reconciler, root,
+                        extractor=_cfg.extractor, cbm_mode=_cfg.cbm_mode)
+                    print(f"   ✅ Auto-reconciled: {summary.get('updated', 0)} indexed/updated, "
+                          f"{summary.get('failed', 0)} failed.")
                 except (OSError, sqlite3.Error) as exc:
                     print(f"   ⚠ Auto-reconcile failed: {exc}; run `sotgraph reconcile` manually.")
 
@@ -3268,7 +3303,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                             "scope-receipt", "report", "bundle", "viz",
                             "arch", "export", "ui-tree", "be-flow",
                             "solution", "log", "commits", "commit-verdict",
-                            "calibrate", "cluster"):
+                            "calibrate", "cluster", "rename", "embed",
+                            "verify"):
             from sot_graph.graphstore import open_store
             store = open_store(root, db_path)
         qdb = store if store is not None else db
@@ -3282,10 +3318,31 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         elif args.command == "implementations":
             return cmd_implementations(args, qdb)
         elif args.command == "rename":
-            return cmd_rename(args, db)
+            return cmd_rename(args, qdb)
         elif args.command == "map":
             return cmd_map(args, qdb, root)
         elif args.command == "embed":
+            # Vectors are sot-owned: on a CbmStore the vec0/state tables
+            # must be schema-qualified ("sot.") — unqualified CREATEs
+            # would target the engine's read-only main schema.
+            if getattr(qdb, "is_cbm", False):
+                from sot_graph.vector import index_nodes, available as _va
+                from sot_graph.locking import LockBusy as _LB
+                if not _va():
+                    print("❌ sqlite-vec is not installed. Install with: pip install 'sotgraph[vector]'")
+                    return 2
+                try:
+                    with qdb.write_lock():
+                        stats = index_nodes(qdb.conn, cap=getattr(args, "limit", 5000), schema="sot.")
+                except (_LB, RuntimeError) as exc:
+                    print(f"❌ embed failed: {exc}", file=sys.stderr)
+                    return 1
+                print(
+                    f"✅ Embedded {stats['embedded']} graph nodes into the vector index "
+                    f"({stats['unchanged']} unchanged, {stats['pruned']} pruned; "
+                    "dim=256, HashEmbedder)."
+                )
+                return 0
             return cmd_embed(args, db)
         elif args.command == "insert":
             return cmd_insert(args, db)
@@ -3296,7 +3353,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         elif args.command == "vacuum":
             return cmd_vacuum(args, db)
         elif args.command == "verify":
-            return cmd_verify(args, reconciler)
+            # audit_drift is read-only; a store-backed reconciler audits the
+            # union journal (CBM file_hashes + sot gap rows), not just the
+            # sot-owned slice.
+            vrec = Reconciler(qdb, root) if store is not None else reconciler
+            return cmd_verify(args, vrec)
         elif args.command == "doctor":
             return cmd_doctor(args, db, root)
         elif args.command == "report":

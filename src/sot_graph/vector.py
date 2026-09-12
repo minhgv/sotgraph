@@ -89,7 +89,7 @@ def load_extension(conn) -> bool:
         return False
 
 
-def ensure_table(conn, dim: int = DEFAULT_DIM) -> bool:
+def ensure_table(conn, dim: int = DEFAULT_DIM, *, schema: str = "") -> bool:
     """Create the vec0 virtual table if the extension is usable.
 
     Also creates the ``vector_index_state`` bookkeeping table (R5) in the
@@ -99,11 +99,11 @@ def ensure_table(conn, dim: int = DEFAULT_DIM) -> bool:
     if not load_extension(conn):
         return False
     conn.execute(
-        f"CREATE VIRTUAL TABLE IF NOT EXISTS {_TABLE} USING vec0("
+        f"CREATE VIRTUAL TABLE IF NOT EXISTS {schema}{_TABLE} USING vec0("
         f"node_id TEXT PRIMARY KEY, embedding float[{dim}])"
     )
     conn.execute(
-        f"CREATE TABLE IF NOT EXISTS {_STATE_TABLE} ("
+        f"CREATE TABLE IF NOT EXISTS {schema}{_STATE_TABLE} ("
         "node_id TEXT PRIMARY KEY, embedded_hash TEXT NOT NULL, "
         "embedded_at INTEGER NOT NULL)"
     )
@@ -122,7 +122,8 @@ def _chunked(seq: List[Any], size: int = 500) -> "List[List[Any]]":
 
 
 def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
-                cap: Optional[int] = None) -> Dict[str, Any]:
+                cap: Optional[int] = None,
+                schema: str = "") -> Dict[str, Any]:
     """Incrementally (re)embed graph nodes into the vector table (R5).
 
     Returns a stats dict: ``embedded`` (nodes embedded by this call),
@@ -151,7 +152,7 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
     embedder = embedder or HashEmbedder()
     empty_stats = {"embedded": 0, "unchanged": 0, "pruned": 0,
                    "total_nodes": 0, "cap": 0, "truncated": False}
-    if not ensure_table(conn, embedder.dim):
+    if not ensure_table(conn, embedder.dim, schema=schema):
         return empty_stats
     effective_cap = int(cap) if cap is not None else DEFAULT_EMBED_CAP
     total_nodes = int(conn.execute(
@@ -169,11 +170,11 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
     }
     state = {
         str(r[0]): str(r[1]) for r in conn.execute(
-            f"SELECT node_id, embedded_hash FROM {_STATE_TABLE}"
+            f"SELECT node_id, embedded_hash FROM {schema}{_STATE_TABLE}"
         ).fetchall()
     }
     embedded_ids = {
-        str(r[0]) for r in conn.execute(f"SELECT node_id FROM {_TABLE}").fetchall()
+        str(r[0]) for r in conn.execute(f"SELECT node_id FROM {schema}{_TABLE}").fetchall()
     }
     # Vanished nodes plus nodes rotated out of the capped selection.
     stale_ids = sorted((set(state) | embedded_ids) - set(desired))
@@ -187,9 +188,9 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
     with conn:
         for chunk in _chunked(stale_ids):
             marks = ",".join("?" * len(chunk))
-            conn.execute(f"DELETE FROM {_TABLE} WHERE node_id IN ({marks})", chunk)
+            conn.execute(f"DELETE FROM {schema}{_TABLE} WHERE node_id IN ({marks})", chunk)
             conn.execute(
-                f"DELETE FROM {_STATE_TABLE} WHERE node_id IN ({marks})", chunk
+                f"DELETE FROM {schema}{_STATE_TABLE} WHERE node_id IN ({marks})", chunk
             )
         if to_embed:
             # vec0 virtual tables reject INSERT OR REPLACE on an existing
@@ -197,13 +198,13 @@ def index_nodes(conn, embedder: Optional[HashEmbedder] = None, *,
             reembed_ids = [row[0] for row in to_embed]
             for chunk in _chunked(reembed_ids):
                 marks = ",".join("?" * len(chunk))
-                conn.execute(f"DELETE FROM {_TABLE} WHERE node_id IN ({marks})", chunk)
+                conn.execute(f"DELETE FROM {schema}{_TABLE} WHERE node_id IN ({marks})", chunk)
             conn.executemany(
-                f"INSERT INTO {_TABLE}(node_id, embedding) VALUES (?, ?)",
+                f"INSERT INTO {schema}{_TABLE}(node_id, embedding) VALUES (?, ?)",
                 [(row[0], _vec_blob(vectors[i])) for i, row in enumerate(to_embed)],
             )
             conn.executemany(
-                f"INSERT OR REPLACE INTO {_STATE_TABLE}"
+                f"INSERT OR REPLACE INTO {schema}{_STATE_TABLE}"
                 "(node_id, embedded_hash, embedded_at) VALUES (?, ?, ?)",
                 [(row[0], desired[row[0]], now) for row in to_embed],
             )

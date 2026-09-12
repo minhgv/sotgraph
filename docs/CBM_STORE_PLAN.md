@@ -104,6 +104,26 @@ vẫn đi qua `graph_nodes` TEMP VIEW cho mọi cột output.
 - `insert`/notes: path='' → coverage-guard tự rơi về sot — notes luôn
   sot-owned, CbmStore chỉ đọc.
 
+### Command coverage audit (post-implementation)
+
+Routed qua `open_store` (CbmStore khi bound): search, explore, usages,
+implementations, map, pack, trace, diff-impact, scope-receipt, report,
+bundle, viz, arch, export, ui-tree, be-flow, solution, log, commits,
+commit-verdict, calibrate, cluster (save_communities → sot attach),
+rename (read-only), verify (union journal audit), embed (vec tables
+schema-qualified `sot.` — unqualified CREATE sẽ nhắm main=cbm ro và fail).
+
+Sot-side by design: insert (ghi note), reconcile/batch-reconcile
+(dispatch), clean (purge sot slice + disclose engine untouched),
+vacuum (sot.db file), import-scip (ghi sot — warn shadowed khi cbm bound),
+watch (builtin per-file; shadowed rows purge ở reconcile sau),
+doctor (sot stats + engine-store disclosure line), setup/providers/engine/
+receipt/claims (admin, không phụ thuộc graph rows).
+
+MCP: `_connection` → open_store + legacy raw-connect fallback (bare
+fixture dbs); ranker detect `nodes_fts`; `_reconcile_before_analysis` →
+reconcile_now → dispatch.
+
 ## Wave DAG & file ownership
 
 | Wave | Files | Nội dung |

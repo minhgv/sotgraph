@@ -413,6 +413,7 @@ def reconcile_dispatch(
         "gap_fill_deferred": deferred,
         "ownership_purged": purged,
         "parse_partial_files": partial_count,
+        "scanned": len(scan),
         "updated": gap_published,
         "unchanged": len(scan) - len(gap_paths),
         "deleted": purged,

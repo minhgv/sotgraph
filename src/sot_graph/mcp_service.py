@@ -365,12 +365,14 @@ class McpService:
         if self._closed:
             raise McpServiceError("closed", "MCP service is closed")
 
-        from sot_graph.reconciler import Reconciler
+        from sot_graph.freshness import reconcile_now
 
         writer = Database(self.db_path)
         try:
-            summary = Reconciler(writer, self.project_root).reconcile()
-            summary_dict = summary.as_dict()
+            # reconcile_now funnels through reconcile_dispatch: CBM-primary
+            # when an engine store is bound, builtin fallback otherwise.
+            summary_dict = reconcile_now(
+                self.db_path, self.project_root, writer=writer)
             if summary_dict.get("failed", 0):
                 status = "failed"
             elif summary_dict.get("conflicts", 0):
