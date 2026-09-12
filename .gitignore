@@ -5,6 +5,7 @@ __pycache__/
 
 # SOT-Graph database & cache
 .sot/
+.codebase-memory/
 *.db
 *.db-wal
 *.db-shm
