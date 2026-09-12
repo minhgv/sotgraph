@@ -77,6 +77,25 @@ vẫn đi qua `graph_nodes` TEMP VIEW cho mọi cột output.
 `cbm_mode = "full"|"moderate"|"fast"` (default full). Env:
 `SOT_EXTRACTOR`, `SOT_CBM_MODE`.
 
+### Engine acquisition (không cần cài tay)
+
+`resolve_engine_command` (chỉ trên write path, không bao giờ trên query):
+
+```
+cbm_command arg > PATH (pcfg.command) > managed artifact
+   > bootstrap_engine (pinned download, sha256+size verify) → artifact
+   > unavailable → builtin fallback + extractor_fallback disclosed
+```
+
+- `sotgraph setup` đã gọi `bootstrap_engine` từ trước (D4); giờ
+  `reconcile` tự bootstrap khi PATH binary + artifact đều vắng — pins
+  trong `engine_pins.json` (darwin-arm64, linux-arm64, linux-x86_64).
+- `SOT_ENGINE_BOOTSTRAP=off` hoặc `extractor=builtin` tắt hẳn.
+- Platform ngoài pin list → bootstrap fail → builtin (disclosed); build
+  từ source submodule `engines/codebase-memory-mcp` là công việc sau.
+- Reconcile payload reports `engine_source`: path | artifact |
+  bootstrapped.
+
 ### CLI
 
 - `sotgraph reconcile` — extractor dispatch (cbm primary khi auto).

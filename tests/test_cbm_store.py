@@ -354,6 +354,38 @@ def test_dispatch_cbm_disabled_falls_back(repo):
         db.close()
 
 
+def test_resolve_engine_command_order(repo, monkeypatch, tmp_path):
+    import shutil
+    from sot_graph.cbm import resolve_engine_command
+
+    class _Cfg:
+        command = ["cbm-mcp-x"]
+
+    # explicit arg wins outright
+    argv, src = resolve_engine_command(
+        repo["root"], _Cfg(), cbm_command=["/bin/echo"])
+    assert (argv, src) == (["/bin/echo"], "explicit")
+
+    # PATH hit beats the artifact
+    monkeypatch.setattr(shutil, "which", lambda name: f"/fake/{name}")
+    argv, src = resolve_engine_command(repo["root"], _Cfg())
+    assert src == "path" and argv == ["cbm-mcp-x"]
+
+    # PATH miss + artifact present → artifact (verified store path)
+    monkeypatch.setattr(shutil, "which", lambda name: None)
+    monkeypatch.setattr(
+        "sot_graph.cbm.artifact_command", lambda root: ["/store/artifact"])
+    argv, src = resolve_engine_command(repo["root"], _Cfg())
+    assert (argv, src) == (["/store/artifact"], "artifact")
+
+    # nothing anywhere, bootstrap disallowed → unavailable but keeps the
+    # configured argv so the spawn failure classifies honestly downstream
+    monkeypatch.setattr("sot_graph.cbm.artifact_command", lambda root: None)
+    argv, src = resolve_engine_command(
+        repo["root"], _Cfg(), allow_bootstrap=False)
+    assert src == "unavailable" and argv == ["cbm-mcp-x"]
+
+
 def test_dispatch_cbm_index_failure_falls_back(repo, monkeypatch):
     # Engine spawn/index failure degrades to builtin, never raises.
     from sot_graph import cbm as cbm_mod

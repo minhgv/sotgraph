@@ -307,6 +307,64 @@ def covered_paths(conn: sqlite3.Connection, project: str) -> set:
         return set()
 
 
+def artifact_command(root: str) -> Optional[List[str]]:
+    """Managed artifact argv when a verified engine build is promoted in
+    the user-level store; ``None`` otherwise. Never raises."""
+    try:
+        from sot_graph.providers.artifacts import ArtifactStore
+        from sot_graph.providers.bootstrap import default_store_root
+        desc = ArtifactStore(
+            default_store_root(), repo_path=root).resolve("codebase-memory")
+        return [desc.executable] if desc is not None else None
+    except Exception:
+        return None
+
+
+def resolve_engine_command(
+    root: str,
+    pcfg: Any = None,
+    cbm_command: Optional[Sequence[str]] = None,
+    *,
+    allow_bootstrap: bool = True,
+) -> Tuple[List[str], str]:
+    """Resolve the engine argv: explicit > PATH (configured) > managed
+    artifact > one-shot trusted bootstrap.
+
+    Returns ``(argv, source)`` where source is ``explicit`` | ``path`` |
+    ``artifact`` | ``bootstrapped`` | ``unavailable``. Bootstrap only runs
+    on this write path (never from queries) and respects
+    ``auto_bootstrap_allowed`` (``SOT_ENGINE_BOOTSTRAP=off``).
+    """
+    import shutil
+
+    if cbm_command:
+        return list(cbm_command), "explicit"
+
+    cfg_cmd = list(pcfg.command or []) if pcfg is not None else []
+    if cfg_cmd and shutil.which(cfg_cmd[0]):
+        return cfg_cmd, "path"
+
+    artifact = artifact_command(root)
+    if artifact:
+        return artifact, "artifact"
+
+    if allow_bootstrap:
+        try:
+            from sot_graph.providers.bootstrap import (
+                auto_bootstrap_allowed, bootstrap_engine)
+            if auto_bootstrap_allowed():
+                bootstrap_engine(repo_path=root)
+                artifact = artifact_command(root)
+                if artifact:
+                    return artifact, "bootstrapped"
+        except Exception:
+            pass
+
+    if cfg_cmd:
+        return cfg_cmd, "unavailable"
+    return [], "unavailable"
+
+
 def reconcile_dispatch(
     db: Any,
     reconciler: Any,
@@ -348,10 +406,10 @@ def reconcile_dispatch(
 
     cfg = load_config(root)
     pcfg = cfg.providers.get("codebase-memory")
-    command = list(cbm_command or (pcfg.command if pcfg else []) or [])
     if pcfg is not None and pcfg.enabled is False:
         return _builtin("cbm_disabled")
-    if not command:
+    command, source = resolve_engine_command(root, pcfg, cbm_command)
+    if source == "unavailable":
         return _builtin("cbm_unavailable")
 
     started = _time.monotonic()
@@ -405,6 +463,7 @@ def reconcile_dispatch(
 
     return {
         "extractor": "codebase-memory",
+        "engine_source": source,
         "cbm_mode": cbm_mode,
         "cbm_nodes": result.nodes,
         "cbm_edges": result.edges,
