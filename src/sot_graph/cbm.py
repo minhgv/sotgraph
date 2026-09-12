@@ -76,6 +76,11 @@ def cbm_cache_dir(root: str) -> str:
     return os.path.join(cbm_dir(root), "cache")
 
 
+def published_db_path(root: str) -> str:
+    """Snapshot readers actually open: ``<root>/.sot/cbm/published.db``."""
+    return os.path.join(cbm_dir(root), "published.db")
+
+
 def _iter_store_dbs(root: str) -> List[str]:
     cache = cbm_cache_dir(root)
     if not os.path.isdir(cache):
@@ -97,27 +102,81 @@ def _open_ro(db_path: str) -> sqlite3.Connection:
     return conn
 
 
-def find_cbm_db(root: str) -> Optional[str]:
-    """Locate the engine store bound to ``root`` inside the isolated cache.
+def _db_binds_root(db_path: str, canonical_root: str) -> bool:
+    """True when the store's ``projects.root_path`` binds ``root``.
 
     Discovery is by ``projects.root_path`` equality, never by filename
     guessing — the engine's name-derivation rules are its own.
     """
+    try:
+        conn = _open_ro(db_path)
+        try:
+            rows = conn.execute(
+                "SELECT root_path FROM projects WHERE root_path != ''"
+            ).fetchall()
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return False
+    return any(
+        os.path.realpath(r[0]) == canonical_root for r in rows if r[0]
+    )
+
+
+def _live_cbm_db(root: str) -> Optional[str]:
+    """The engine's live (writer-owned) store inside the isolated cache."""
     canonical = os.path.realpath(root)
     for db_path in _iter_store_dbs(root):
-        try:
-            conn = _open_ro(db_path)
-            try:
-                rows = conn.execute(
-                    "SELECT root_path FROM projects WHERE root_path != ''"
-                ).fetchall()
-            finally:
-                conn.close()
-        except sqlite3.Error:
-            continue
-        if any(os.path.realpath(r[0]) == canonical for r in rows if r[0]):
+        if _db_binds_root(db_path, canonical):
             return db_path
     return None
+
+
+def find_cbm_db(root: str) -> Optional[str]:
+    """Locate the store bound to ``root``: published snapshot first.
+
+    Readers only ever open ``.sot/cbm/published.db`` — the atomic copy
+    ``reconcile_dispatch`` publishes after each successful engine index —
+    so a query can never collide with an exclusive writer mid-index
+    (the engine store uses a rollback journal). Live cache dbs remain a
+    fallback for pre-publish stores (first-run discovery, external syncs).
+    """
+    canonical = os.path.realpath(root)
+    published = published_db_path(root)
+    if os.path.exists(published) and _db_binds_root(published, canonical):
+        return published
+    return _live_cbm_db(root)
+
+
+def publish_store(root: str, source_db: str) -> Optional[str]:
+    """Copy the engine store to the stable published snapshot.
+
+    ``Connection.backup`` yields a transactionally consistent copy (the
+    source's busy_timeout bounds lock waits); write-to-tmp + ``os.replace``
+    keeps the swap atomic so a reader mid-open never sees a partial file.
+    Returns the published path, or ``None`` on failure — callers disclose;
+    the previous generation stays readable.
+    """
+    target = published_db_path(root)
+    tmp = target + ".tmp"
+    try:
+        src = _open_ro(source_db)
+        try:
+            dst = sqlite3.connect(tmp)
+            try:
+                src.backup(dst)
+            finally:
+                dst.close()
+        finally:
+            src.close()
+        os.replace(tmp, target)
+        return target
+    except (sqlite3.Error, OSError):
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        return None
 
 
 def locate_project(conn: sqlite3.Connection, root: str) -> Optional[str]:
@@ -417,12 +476,22 @@ def reconcile_dispatch(
     if result.status != "indexed":
         return _builtin(f"cbm_index_failed:{result.status}")
 
+    # Publish a committed snapshot before any reader-facing work: the
+    # live engine store uses a rollback journal (one exclusive writer for
+    # the whole index transaction), so readers open the atomic copy and a
+    # query during the NEXT index run reads the previous generation
+    # instead of hitting SQLITE_BUSY.
+    live_db = _live_cbm_db(root)
+    published_ok = (
+        publish_store(root, live_db) is not None if live_db else False
+    )
+    cbm_db_path = find_cbm_db(root)
+
     # Ownership transfer + gap fill, keyed off the engine's own coverage.
     gap_published = 0
     deferred = 0
     purged = 0
     partial_count = 0
-    cbm_db_path = find_cbm_db(root)
     covered: set = set()
     if cbm_db_path:
         conn = _open_ro(cbm_db_path)
@@ -465,6 +534,7 @@ def reconcile_dispatch(
         "extractor": "codebase-memory",
         "engine_source": source,
         "cbm_mode": cbm_mode,
+        "store_published": published_ok,
         "cbm_nodes": result.nodes,
         "cbm_edges": result.edges,
         "cbm_duration_ms": result.duration_ms,

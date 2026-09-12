@@ -3290,6 +3290,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 print(f"↻ JIT reconcile: {_rec.get('updated', 0)} indexed/updated, "
                       f"{_rec.get('deleted', 0)} deleted ({_rec.get('duration_ms', 0)} ms)",
                       file=sys.stderr)
+            elif _rec.get("status") == "background":
+                spawned = "spawned" if _rec.get("spawned") else "already running"
+                print(f"↻ JIT reconcile: background reconcile {spawned} — "
+                      "serving current index snapshot", file=sys.stderr)
             elif _rec.get("status") == "failed":
                 print(f"⚠️  JIT reconcile failed ({_rec.get('error', 'unknown')}); "
                       "answering from the possibly-stale index", file=sys.stderr)

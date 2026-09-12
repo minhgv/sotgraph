@@ -30,13 +30,19 @@ def _bump_mtime(path: Path, seconds: float = 2.0) -> None:
 
 
 class _RepoFixture:
+    jit_mode = "blocking"  # async-mode coverage lives in AsyncJitTests
+
     def setUp(self) -> None:
         from sot_graph.db import Database
         from sot_graph.reconciler import Reconciler
 
         self.repo = Path(tempfile.mkdtemp())
         (self.repo / "app.py").write_text(APP_PY, encoding="utf-8")
-        self.db_path = str(self.repo / ".sot" / "sot.db")
+        sot_dir = self.repo / ".sot"
+        sot_dir.mkdir(exist_ok=True)
+        (sot_dir / "config.toml").write_text(
+            f'jit_mode = "{self.jit_mode}"\n', encoding="utf-8")
+        self.db_path = str(sot_dir / "sot.db")
         db = Database(self.db_path)
         try:
             Reconciler(db, str(self.repo)).reconcile(workers=1)
@@ -211,6 +217,101 @@ class McpServiceGateTests(_RepoFixture, unittest.TestCase):
                              "skipped_fresh")
         finally:
             svc.close()
+
+
+class AsyncJitTests(_RepoFixture, unittest.TestCase):
+    """jit_mode=async: stale probe spawns a background reconcile and
+    serves the current snapshot — the query never waits for indexing."""
+    jit_mode = "async"
+
+    def _make_stale(self) -> None:
+        target = self.repo / "app.py"
+        target.write_text("def run():\n    return 43\n", encoding="utf-8")
+        _bump_mtime(target)
+
+    def test_stale_spawns_background_and_serves_stale(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        self._make_stale()
+        calls = []
+        out = ensure_fresh(self.db_path, str(self.repo), "auto",
+                           spawn_fn=lambda root: calls.append(root) or True)
+        rec = out["reconcile"]
+        self.assertEqual(rec["status"], "background")
+        self.assertTrue(rec["spawned"])
+        self.assertEqual(rec["serving"], "stale")
+        self.assertEqual(rec["stale_total"], 1)
+        self.assertEqual(out["jit"], "async")
+        self.assertEqual(calls, [str(self.repo)])
+
+    def test_spawn_failure_still_serves_and_discloses(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        self._make_stale()
+
+        def _boom(_root):
+            raise OSError("no spawn")
+
+        out = ensure_fresh(self.db_path, str(self.repo), "auto",
+                           spawn_fn=_boom)
+        rec = out["reconcile"]
+        self.assertEqual(rec["status"], "background")
+        self.assertFalse(rec["spawned"])
+
+    def test_force_is_always_blocking(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        self._make_stale()
+        calls = []
+        out = ensure_fresh(self.db_path, str(self.repo), "force",
+                           spawn_fn=lambda _r: calls.append(1) or True)
+        self.assertEqual(out["reconcile"]["status"], "success")
+        self.assertEqual(out["jit"], "blocking")
+        self.assertEqual(calls, [])
+
+    def test_fresh_index_skips_spawn(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        calls = []
+        out = ensure_fresh(self.db_path, str(self.repo), "auto",
+                           spawn_fn=lambda _r: calls.append(1) or True)
+        self.assertEqual(out["reconcile"]["status"], "skipped_fresh")
+        self.assertEqual(calls, [])
+
+
+class BackgroundSpawnTests(unittest.TestCase):
+    """spawn_background_reconcile pid-lock debounce (real lock file,
+    stubbed Popen — no detached process in tests)."""
+
+    def setUp(self) -> None:
+        self.repo = Path(tempfile.mkdtemp())
+        (self.repo / ".sot").mkdir()
+
+    def test_fresh_live_lock_skips_spawn(self) -> None:
+        import json
+        import sot_graph.freshness as fm
+
+        lock = self.repo / ".sot" / "reconcile-bg.lock"
+        lock.write_text(json.dumps(
+            {"pid": os.getpid(), "started": fm.time.time()}))
+        self.assertFalse(fm.spawn_background_reconcile(str(self.repo)))
+
+    def test_dead_pid_lock_allows_spawn(self) -> None:
+        import json
+        from unittest import mock
+
+        import sot_graph.freshness as fm
+
+        lock = self.repo / ".sot" / "reconcile-bg.lock"
+        lock.write_text(json.dumps(
+            {"pid": 2**22 + 12345, "started": fm.time.time()}))
+        with mock.patch.object(fm.subprocess, "Popen") as popen:
+            popen.return_value.pid = 4242
+            self.assertTrue(fm.spawn_background_reconcile(str(self.repo)))
+            argv = popen.call_args[0][0]
+            self.assertIn("reconcile", argv)
+        holder = json.loads(lock.read_text())
+        self.assertEqual(holder["pid"], 4242)
 
 
 if __name__ == "__main__":

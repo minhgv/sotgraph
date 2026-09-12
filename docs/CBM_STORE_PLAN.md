@@ -108,9 +108,11 @@ cbm_command arg > PATH (pcfg.command) > managed artifact
 ### Caveats (disclosed)
 
 - cbm.db `journal_mode=delete` → writer exclusive trong index run
-  (15s-2min): query lúc đó → SQLITE_BUSY → busy_timeout + receipt
-  `indexing_in_progress` (cùng class LockBusy). Fork-side publish-snapshot
-  (atomic rename) = hardening sau.
+  (15s-2min). Đã giải quyết bằng publish-snapshot: sau mỗi index success,
+  `publish_store` copy live db → `.sot/cbm/published.db` (sqlite3 backup +
+  tmp/rename atomic). Readers chỉ mở published.db → query trong lúc index
+  đọc generation trước, không bao giờ SQLITE_BUSY. `store_published`
+  trong reconcile output disclose kết quả.
 - CBM edges không đảm bảo per-edge line → relation line NULL cho phần
   không có.
 - `explore`/`usages` completeness: pending_edges chứa cả heuristic edges
@@ -122,6 +124,13 @@ cbm_command arg > PATH (pcfg.command) > managed artifact
   dispatch re-index CBM đúng semantics.
 - `insert`/notes: path='' → coverage-guard tự rơi về sot — notes luôn
   sot-owned, CbmStore chỉ đọc.
+- JIT latency: CBM incremental ~15-20s quá nặng cho inline reconcile
+  trên read path. `jit_mode` (config/.sot/config.toml, env
+  `SOT_JIT_MODE`): `async` (default) — stale probe → spawn detached
+  `sotgraph reconcile` nền (pid-lockfile `.sot/reconcile-bg.lock`
+  debounce 180s, log `.sot/reconcile-bg.log` ≤1MB) + trả snapshot hiện
+  tại với `serving: "stale"`; `blocking` — inline như cũ. `force` mode
+  và gate path (`reconcile_now`, diff-impact) luôn blocking.
 
 ### Command coverage audit (post-implementation)
 

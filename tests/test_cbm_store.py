@@ -408,3 +408,64 @@ def test_dispatch_cbm_index_failure_falls_back(repo, monkeypatch):
         assert out.get("extractor_fallback") == "cbm_index_failed:error"
     finally:
         db.close()
+
+
+def test_publish_store_and_find_prefers_published(repo):
+    from sot_graph.cbm import publish_store, published_db_path
+
+    published = publish_store(repo["root"], repo["cbm"])
+    assert published == published_db_path(repo["root"])
+    assert os.path.exists(published)
+    # find_cbm_db now prefers the snapshot over the live store.
+    assert find_cbm_db(repo["root"]) == published
+    # The copy carries the full contract + generation token.
+    conn = sqlite3.connect(published)
+    try:
+        assert schema_probe(conn) == []
+        assert locate_project(conn, repo["root"]) == PROJECT
+        meta = dict(conn.execute("SELECT k, v FROM store_meta"))
+        assert meta["db_uid"] == "testuid123"
+        assert conn.execute("SELECT COUNT(*) FROM nodes").fetchone()[0] == 2
+    finally:
+        conn.close()
+
+
+def test_publish_failure_keeps_previous_snapshot(repo):
+    from sot_graph.cbm import publish_store, published_db_path
+
+    assert publish_store(repo["root"], repo["cbm"]) is not None
+    # A failing publish leaves the earlier generation readable.
+    assert publish_store(repo["root"], "/nonexistent/x.db") is None
+    assert os.path.exists(published_db_path(repo["root"]))
+    assert find_cbm_db(repo["root"]) == published_db_path(repo["root"])
+
+
+def test_dispatch_publishes_snapshot(repo, monkeypatch):
+    from sot_graph import cbm as cbm_mod
+    from sot_graph.cbm import published_db_path
+
+    class _Ok:
+        status = "indexed"
+        project = PROJECT
+        nodes = 2
+        edges = 4
+        not_indexed = 0
+        duration_ms = 5
+        skipped: list = []
+        parse_partial: list = []
+
+    monkeypatch.setattr(cbm_mod, "run_index", lambda *a, **k: _Ok())
+    db = Database(repo["sot"])
+    try:
+        rec = Reconciler(db, repo["root"])
+        out = reconcile_dispatch(
+            db, rec, repo["root"], extractor="auto",
+            cbm_command=["fake-cbm-binary"])
+        assert out["extractor"] == "codebase-memory"
+        assert out["store_published"] is True
+        published = published_db_path(repo["root"])
+        assert os.path.exists(published)
+        # Post-dispatch readers resolve the published snapshot.
+        assert find_cbm_db(repo["root"]) == published
+    finally:
+        db.close()

@@ -26,12 +26,23 @@ Known detection limits (deliberate trade-offs):
 
 from __future__ import annotations
 
+import json
 import os
+import subprocess
+import sys
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 _SAMPLE_CAP = 10
 _MODES = ("auto", "force", "off")
+
+#: Background-reconcile debounce lock (``jit_mode=async``): a fresh lock
+#: held by a live pid means a reconcile is already running — later stale
+#: probes serve the current snapshot instead of stacking spawns.
+_BG_LOCK_REL = os.path.join(".sot", "reconcile-bg.lock")
+_BG_LOG_REL = os.path.join(".sot", "reconcile-bg.log")
+_BG_LOCK_TTL_S = 180.0
+_BG_LOG_MAX_BYTES = 1_000_000
 
 
 def normalize_mode(value: Any, default: str = "auto") -> str:
@@ -167,12 +178,74 @@ def reconcile_now(
             db.close()
 
 
+def _pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except (PermissionError, OSError):
+        # PermissionError: exists but not ours. Other OSError (e.g.
+        # Windows, where sig=0 probing is unsupported): assume alive —
+        # the lock TTL bounds the debounce either way.
+        return True
+    return True
+
+
+def spawn_background_reconcile(root: str) -> bool:
+    """Spawn a detached ``sotgraph reconcile`` behind a pid-lock debounce.
+
+    Returns True when a new process launched; False when a live lock
+    holder is already reconciling or the spawn failed. Best-effort — the
+    caller serves the current index snapshot either way, so this never
+    raises.
+    """
+    lock_path = os.path.join(root, _BG_LOCK_REL)
+    now = time.time()
+    try:
+        with open(lock_path, "r", encoding="utf-8") as fh:
+            holder = json.load(fh)
+        pid = int(holder.get("pid") or 0)
+        started = float(holder.get("started") or 0)
+        if pid > 0 and 0 <= now - started < _BG_LOCK_TTL_S and _pid_alive(pid):
+            return False
+    except (OSError, ValueError):
+        pass
+
+    log_path = os.path.join(root, _BG_LOG_REL)
+    try:
+        os.makedirs(os.path.dirname(lock_path), exist_ok=True)
+        # Bounded log: truncate rather than append once it grows past cap.
+        log_mode = "ab" if (
+            os.path.exists(log_path)
+            and os.path.getsize(log_path) <= _BG_LOG_MAX_BYTES
+        ) else "wb"
+        log = open(log_path, log_mode)
+        try:
+            proc = subprocess.Popen(
+                [sys.executable, "-m", "sot_graph", "reconcile", "--json"],
+                cwd=root, stdin=subprocess.DEVNULL,
+                stdout=log, stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+        finally:
+            log.close()
+        tmp = lock_path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump({"pid": proc.pid, "started": now}, fh)
+        os.replace(tmp, lock_path)
+        return True
+    except OSError:
+        return False
+
+
 def ensure_fresh(
     db_path: str,
     root: str,
     mode: Any = "auto",
     *,
     writer: Optional[Any] = None,
+    blocking: Optional[bool] = None,
+    spawn_fn: Optional[Callable[[str], bool]] = None,
 ) -> Dict[str, Any]:
     """Staleness-gated JIT reconcile; returns an honest envelope, never raises.
 
@@ -180,6 +253,14 @@ def ensure_fresh(
     ``force`` (always reconcile), ``off`` (skip entirely). ``writer``
     lets a caller that already holds a writable Database reuse it for
     the reconcile instead of opening a second connection.
+
+    ``blocking`` selects inline vs background reconcile for ``auto``
+    mode (``force`` is always inline — an explicit reconcile request
+    must not return before it ran). ``None`` resolves the config's
+    ``jit_mode``: ``async`` answers from the current snapshot and spawns
+    a detached reconcile behind a pid-lock debounce, disclosing
+    ``serving: "stale"``; ``blocking`` keeps the inline behavior.
+    ``spawn_fn`` is injectable for tests.
     """
     normalized = normalize_mode(mode)
     envelope: Dict[str, Any] = {"mode": normalized}
@@ -195,6 +276,35 @@ def ensure_fresh(
     envelope["probe"] = probe
     if normalized == "auto" and not probe["stale"]:
         envelope["reconcile"] = {"performed": False, "status": "skipped_fresh"}
+        return envelope
+
+    if blocking is None:
+        if normalized == "force":
+            blocking = True
+        else:
+            try:
+                from sot_graph.config import load_config
+                blocking = load_config(root).jit_mode != "async"
+            except Exception:  # config error: correctness-first
+                blocking = True
+    envelope["jit"] = "blocking" if blocking else "async"
+    if not blocking:
+        spawn = spawn_fn or spawn_background_reconcile
+        spawned = False
+        try:
+            spawned = bool(spawn(root))
+        except Exception:  # spawn failure: disclose, still serve stale
+            spawned = False
+        envelope["reconcile"] = {
+            "performed": True,
+            "status": "background",
+            "spawned": spawned,
+            "serving": "stale",
+            "stale_total": sum(
+                probe[k]["count"]
+                for k in ("modified", "deleted", "unindexed")
+            ),
+        }
         return envelope
 
     started = time.perf_counter()
