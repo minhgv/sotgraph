@@ -69,6 +69,7 @@ class DaemonClientTests(unittest.TestCase):
         out = daemon_tool_call(self.root, "index_repository",
                                {"repo_path": self.root}, 30)
         self.assertIsNotNone(out)
+        assert out is not None
         self.assertEqual(out["structuredContent"]["status"], "indexed")
 
     def test_engine_error_is_none_for_fallback(self):
