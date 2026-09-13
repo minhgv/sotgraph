@@ -469,3 +469,64 @@ def test_dispatch_publishes_snapshot(repo, monkeypatch):
         assert find_cbm_db(repo["root"]) == published
     finally:
         db.close()
+
+
+def test_reconcile_paths_unchanged_not_published(repo):
+    # Zero-diff gap-fill must report 0 published — counting "unchanged"
+    # broke idempotency (every dispatch reported phantom updates).
+    db = Database(repo["sot"])
+    try:
+        rec = Reconciler(db, repo["root"])
+        published, deferred = rec.reconcile_paths(
+            [os.path.join(repo["root"], "src", "gap.py")])
+        assert published == 0
+        assert deferred == set()
+    finally:
+        db.close()
+
+
+def test_file_journal_excludes_engine_internals(repo):
+    # CBM journals its own artifacts (`.codebase-memory/.semantic-input/*`,
+    # `.sot/*`); they are not repo files and must never surface in the
+    # union journal — verify/probe would report them as phantom drift.
+    conn = sqlite3.connect(repo["cbm"])
+    try:
+        conn.executemany(
+            "INSERT INTO file_hashes VALUES (?,?,?,?,?)",
+            [(PROJECT, ".codebase-memory/.semantic-input/cfg-v1", "h", 1, 1),
+             (PROJECT, ".sot/config.toml", "h", 1, 1)],
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    store = _store(repo)
+    try:
+        paths = {
+            r[0] for r in store.conn.execute("SELECT path FROM file_journal")
+        }
+        assert not any(
+            ".codebase-memory" in p or f"{os.sep}.sot{os.sep}" in p
+            for p in paths
+        )
+        assert any(p.endswith("covered.py") for p in paths)
+    finally:
+        store.close()
+
+
+def test_batch_repo_stats_use_union_graph(repo, monkeypatch):
+    # _reconcile_single_repo must report union node/edge counts via
+    # open_store, not the sot-only slice.
+    from sot_graph import cbm as cbm_mod
+    from sot_graph.cli import _reconcile_single_repo
+
+    monkeypatch.setattr(
+        cbm_mod, "reconcile_dispatch",
+        lambda *a, **k: {
+            "scanned": 2, "updated": 0, "unchanged": 2,
+            "deleted": 0, "failed": 0, "extractor": "codebase-memory",
+        })
+    result = _reconcile_single_repo(repo["root"])
+    assert result["status"] == "ok"
+    # Union view: 2 cbm nodes + gap.py builtin nodes + 1 note.
+    assert result["nodes"] > 2
+    assert result["nodes"] != 0 and result["edges"] >= 0

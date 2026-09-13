@@ -565,9 +565,10 @@ class Reconciler:
         touching N files therefore costs one full-graph pass instead of
         N. LockBusy paths are deferred into the returned set (never
         dropped); any other failure skips just that path. Returns
-        ``(published, deferred)`` where published counts outcomes outside
-        ``("error", "excluded")``, mirroring the watcher's per-file
-        semantics.
+        ``(published, deferred)`` where published counts only outcomes
+        that mutated the index (``indexed``/``deleted``/``conflict``) —
+        ``unchanged`` files must not count, or a zero-diff run reports
+        phantom updates and triggers a pointless janitor pass.
         """
         from sot_graph.locking import LockBusy
 
@@ -581,7 +582,7 @@ class Reconciler:
                 continue
             except Exception:
                 continue
-            if outcome not in ("error", "excluded"):
+            if outcome not in ("error", "excluded", "unchanged"):
                 published += 1
         if published:
             resolver = getattr(self.db, "resolve_all_pending_edges", None)
@@ -841,33 +842,56 @@ class Reconciler:
         Read-only comparison of journaled records against the filesystem.
         Returns a list of drifted items: [{ 'path': ..., 'why': 'missing'|'mtime_size'|'hash' }].
         Safe to run in CI pipelines.
-        """
-        drift = []
-        for path in self.db.all_journal_paths():
-            if not os.path.exists(path) or not os.path.isfile(path):
-                drift.append({"path": path, "why": "missing"})
-                continue
 
+        The stat/hash probes are I/O-bound and embarrassingly parallel —
+        a single-threaded ``os.stat`` walk times out on 7k+ file repos —
+        so they run in a thread pool while journal lookups stay on the
+        owning connection's thread.
+        """
+        import stat as _stat
+        from concurrent.futures import ThreadPoolExecutor
+
+        paths = list(self.db.all_journal_paths())
+        if not paths:
+            return []
+
+        def _probe(path: str):
             try:
                 st = os.stat(path)
             except OSError:
+                return path, None, None
+            if not _stat.S_ISREG(st.st_mode):
+                return path, None, None
+            if deep:
+                try:
+                    with open(path, "rb") as handle:
+                        return path, st, hashlib.sha256(handle.read()).hexdigest()
+                except OSError:
+                    return path, st, "unreadable"
+            return path, st, None
+
+        probed: Dict[str, tuple] = {}
+        workers = min(32, (os.cpu_count() or 4) + 4)
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for path, st, sha in pool.map(_probe, paths):
+                probed[path] = (st, sha)
+
+        drift = []
+        for path in paths:
+            st, sha = probed[path]
+            if st is None:
+                drift.append({"path": path, "why": "missing"})
+                continue
+            if sha == "unreadable":
                 drift.append({"path": path, "why": "unreadable"})
                 continue
-
             prior = self.db.get_file_journal(path)
             if not prior:
                 drift.append({"path": path, "why": "unrecorded"})
                 continue
-
             if deep:
-                try:
-                    with open(path, "rb") as handle:
-                        current_sha = hashlib.sha256(handle.read()).hexdigest()
-                    if current_sha != prior["sha256"]:
-                        drift.append({"path": path, "why": "hash_mismatch"})
-                except Exception:
-                    drift.append({"path": path, "why": "unreadable"})
+                if sha != prior["sha256"]:
+                    drift.append({"path": path, "why": "hash_mismatch"})
             elif st.st_size != prior["size"] or int(st.st_mtime * 1000) != prior["mtime_ms"]:
                 drift.append({"path": path, "why": "mtime_size_mismatch"})
-
         return drift

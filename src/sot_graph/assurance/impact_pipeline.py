@@ -306,12 +306,25 @@ def run_impact_claim(
 
     reconcile_warnings: List[str] = []
     if request.auto_reconcile:
+        writer = db
+        owned_writer = False
+        if getattr(writer, "is_cbm", False):
+            # CbmStore refuses graph-shape writes (the engine owns
+            # extraction); reconcile through a plain Database on sot.db,
+            # the same posture every writer path takes.
+            from sot_graph.cli import default_db_path
+            from sot_graph.db import Database
+            writer = Database(default_db_path(repo_root))
+            owned_writer = True
         try:
-            Reconciler(db, repo_root).reconcile()
+            Reconciler(writer, repo_root).reconcile()
         except Exception as exc:  # noqa: BLE001 - degrade like the CLI
             reconcile_warnings.append(
                 f"auto_reconcile_failed:{type(exc).__name__}: {exc}"
             )
+        finally:
+            if owned_writer:
+                writer.close()
 
     # Exactly ONE engine per claim: the receipt constructs/invokes the
     # diff-impact engine (repo_root, db) exactly as the receipts path

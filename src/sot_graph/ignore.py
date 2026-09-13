@@ -36,6 +36,8 @@ DEFAULT_IGNORED_DIRS: Set[str] = {
     "DerivedData",
     "graphify-out",
     "sot_obsidian_vault",
+    # Engine-internal artifact dirs are never repo source files.
+    ".codebase-memory",
 }
 
 DEFAULT_IGNORED_PATTERNS: List[str] = [

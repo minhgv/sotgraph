@@ -24,6 +24,10 @@ classifiers = [
 ]
 dependencies = [
     "tomli>=1.1; python_version < '3.11'",
+    # Pure-Python, small footprint. Core dep because cluster/report/bundle
+    # fall back to a pure-Python Louvain that times out on >10k-node graphs
+    # when networkx is absent.
+    "networkx>=3.0",
 ]
 [project.urls]
 Homepage = "https://github.com/minhgv/sotgraph"

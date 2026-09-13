@@ -284,7 +284,9 @@ FROM sot.pending_edges WHERE {gap_guard}"""
        NULL AS parser_outcome,
        NULL AS parser_error
 FROM file_hashes f JOIN projects p ON p.name = f.project
-WHERE f.project = {p}"""
+WHERE f.project = {p}
+  AND f.rel_path NOT LIKE '.codebase-memory/%'
+  AND f.rel_path NOT LIKE '.sot/%'"""
         if sot:
             journal_base += f"""
 UNION ALL

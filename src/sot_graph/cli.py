@@ -967,7 +967,15 @@ def _reconcile_single_repo(repo_dir: str, force: bool = False, workers: int = 1)
                 db, reconciler, abs_repo,
                 extractor=_cfg.extractor, cbm_mode=_cfg.cbm_mode,
                 workers=workers, force=force)
-            st = db.stats()
+            # Report union graph stats, not sot-only rows: when a CBM
+            # engine store is bound, ~all nodes live in the published
+            # snapshot — db.stats() alone would report only gap-fill rows.
+            from sot_graph.graphstore import open_store
+            store = open_store(abs_repo, db_path, read_only=True)
+            try:
+                st = store.stats()
+            finally:
+                store.close()
             duration_ms = int((time.monotonic() - start_t) * 1000)
             return {
                 "repo": abs_repo,
@@ -2748,6 +2756,24 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", default=".", help="Project root directory (default: current dir)")
     parser.add_argument("--db", default=None, help="Custom SQLite DB path (default: .sot/sot.db)")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    # POSIX convention puts global flags after the subcommand too —
+    # `sotgraph map --root X` must work like `sotgraph --root X map`. A
+    # shared parent injected into every child parser keeps both orders;
+    # SUPPRESS defaults mean the subparser only sets the attribute when
+    # the user actually passes the flag (the main-parser value wins
+    # otherwise, since argparse applies defaults only to missing attrs).
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--root", default=argparse.SUPPRESS,
+                        help="Project root directory (default: current dir)")
+    common.add_argument("--db", default=argparse.SUPPRESS,
+                        help="Custom SQLite DB path (default: .sot/sot.db)")
+    _add_parser = subparsers.add_parser
+
+    def _add_with_common(name, **kwargs):
+        kwargs["parents"] = [common, *kwargs.get("parents", [])]
+        return _add_parser(name, **kwargs)
+
+    subparsers.add_parser = _add_with_common
     from sot_graph.providers.admin import add_parser as add_engine_parser
     add_engine_parser(subparsers)
 
