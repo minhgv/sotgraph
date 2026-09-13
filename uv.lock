@@ -2062,6 +2062,8 @@ wheels = [
 name = "sotgraph"
 source = { editable = "." }
 dependencies = [
+    { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "networkx", version = "3.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
@@ -2194,6 +2196,7 @@ requires-dist = [
     { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "mcp", marker = "extra == 'all'", specifier = ">=1.3,<2" },
     { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.3,<2" },
+    { name = "networkx", specifier = ">=3.0" },
     { name = "networkx", marker = "extra == 'analytics'", specifier = ">=3.0" },
     { name = "networkx", marker = "extra == 'dev'", specifier = ">=3.0" },
     { name = "protobuf", marker = "extra == 'all'", specifier = ">=4.21" },

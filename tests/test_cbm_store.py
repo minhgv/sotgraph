@@ -122,7 +122,9 @@ def _build_cbm_db(path: str, root: str) -> None:
 
     conn.execute(
         "INSERT INTO file_hashes VALUES (?,?,?,?,?)",
-        (PROJECT, "src/covered.py", "abc123", 1_700_000_000_000_000_000, 100))
+        # Far-future mtime: the engine recorded this file later than any
+        # sot journal stamp, so it owns the path under newest-wins.
+        (PROJECT, "src/covered.py", "abc123", 9_000_000_000_000_000_000, 100))
     conn.execute(
         "INSERT INTO index_coverage VALUES (?,?,?,?)",
         (PROJECT, "src/partial.py", "parse_partial", ""))
@@ -530,3 +532,53 @@ def test_batch_repo_stats_use_union_graph(repo, monkeypatch):
     # Union view: 2 cbm nodes + gap.py builtin nodes + 1 note.
     assert result["nodes"] > 2
     assert result["nodes"] != 0 and result["edges"] >= 0
+
+
+def test_newest_wins_sot_override(repo):
+    """A sot journal row stamped fresher than CBM's file_hashes mtime
+    flips ownership: sot rows surface, cbm rows hide, journal shows the
+    sot record — until the engine republishes and wins it back."""
+    covered_abs = os.path.join(repo["root"], "src", "covered.py")
+    fresher_ms = 9_500_000_000_000  # > file_hashes.mtime_ns/1e6 (9e15)
+
+    db = Database(repo["sot"])
+    try:
+        db.conn.execute(
+            "UPDATE file_journal SET mtime_ms = ? WHERE path = ?",
+            (fresher_ms, covered_abs))
+        db.conn.commit()
+    finally:
+        db.close()
+
+    store = _store(repo)
+    try:
+        rows = store.conn.execute(
+            "SELECT id, symbol FROM graph_nodes WHERE path = ?",
+            (covered_abs,)).fetchall()
+        assert rows, "sot-fresher path must surface sot rows"
+        # sot node ids are raw (no cbm: prefix); the builtin reconciler
+        # extracted a module node for covered.py.
+        assert all(not str(r[0]).startswith("cbm:") for r in rows)
+
+        jr = store.get_file_journal(covered_abs)
+        assert jr is not None and jr["mtime_ms"] == fresher_ms
+
+        # providers disclose tree-sitter now that its rows are visible.
+        kinds = {p["name"] for p in store.providers_present()}
+        assert "tree-sitter-ast" in kinds
+    finally:
+        store.close()
+
+
+def test_newest_wins_cbm_recovers_on_equal(repo):
+    """Once the engine republishes (mtime equal-or-newer), ownership
+    flips back to CBM — the shadowed sot rows disappear again."""
+    covered_abs = os.path.join(repo["root"], "src", "covered.py")
+    store = _store(repo)
+    try:
+        rows = store.conn.execute(
+            "SELECT id FROM graph_nodes WHERE path = ?",
+            (covered_abs,)).fetchall()
+        assert rows and all(str(r[0]).startswith("cbm:") for r in rows)
+    finally:
+        store.close()

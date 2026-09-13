@@ -126,11 +126,26 @@ cbm_command arg > PATH (pcfg.command) > managed artifact
   sot-owned, CbmStore chỉ đọc.
 - JIT latency: CBM incremental ~15-20s quá nặng cho inline reconcile
   trên read path. `jit_mode` (config/.sot/config.toml, env
-  `SOT_JIT_MODE`): `async` (default) — stale probe → spawn detached
-  `sotgraph reconcile` nền (pid-lockfile `.sot/reconcile-bg.lock`
-  debounce 180s, log `.sot/reconcile-bg.log` ≤1MB) + trả snapshot hiện
-  tại với `serving: "stale"`; `blocking` — inline như cũ. `force` mode
+  `SOT_JIT_MODE`): `async` (default) — two-tier: fast tier = builtin
+  `reconcile_paths` inline trên probed delta (≤`SOT_FAST_TIER_MAX`=64),
+  fresh ngay nhờ newest-wins views; slow tier = detached `sotgraph
+  reconcile` (pid-lockfile `.sot/reconcile-bg.lock` debounce 180s, log
+  `.sot/reconcile-bg.log` ≤1MB) chỉ khi đến hạn (published age ≥
+  `SOT_CBM_MIN_INTERVAL_S`=300s, hoặc có deletions — ghost engine rows
+  chỉ republish mới dọn được); `blocking` — inline như cũ. `force` mode
   và gate path (`reconcile_now`, diff-impact) luôn blocking.
+- Newest-wins ownership: `_sot_fresher` TEMP TABLE (sot journal mtime >
+  file_hashes mtime) lật ownership per-path — fast-tier builtin rows
+  hiện ngay trên path CBM-covered, CBM giành lại sau republish. Áp cho
+  cả 4 union views + `search_fts` (union `sot.graph_fts`; gap paths
+  giờ searchable) + `providers_present` disclosure.
+- Engine spawn floor (~3.7s init + ~12s cold in-session): per-repo
+  engine daemon giữ một MCP stdio session (`engine_daemon.py`,
+  `.sot/cbm/daemon.sock`, auto-start on first index, idle TTL 15min,
+  engine restart on crash). `run_index` thử daemon trước — measured
+  15.7s → ~4.5s warm — mọi daemon-level failure fallback cold spawn;
+  daemon là optimization, không phải dependency. Tool whitelist:
+  index_repository/detect_changes/index_status/check_index_coverage.
 
 ### Command coverage audit (post-implementation)
 

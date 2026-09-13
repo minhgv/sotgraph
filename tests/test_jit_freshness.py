@@ -229,7 +229,7 @@ class AsyncJitTests(_RepoFixture, unittest.TestCase):
         target.write_text("def run():\n    return 43\n", encoding="utf-8")
         _bump_mtime(target)
 
-    def test_stale_spawns_background_and_serves_stale(self) -> None:
+    def test_stale_fast_tier_refreshes_and_spawns_deep(self) -> None:
         from sot_graph.freshness import ensure_fresh
 
         self._make_stale()
@@ -237,12 +237,18 @@ class AsyncJitTests(_RepoFixture, unittest.TestCase):
         out = ensure_fresh(self.db_path, str(self.repo), "auto",
                            spawn_fn=lambda root: calls.append(root) or True)
         rec = out["reconcile"]
-        self.assertEqual(rec["status"], "background")
-        self.assertTrue(rec["spawned"])
-        self.assertEqual(rec["serving"], "stale")
+        # Small delta: fast tier heals inline — the query sees current
+        # content (serving fresh), deep refresh goes to background.
+        self.assertEqual(rec["status"], "refreshed")
+        self.assertEqual(rec["tier"], "fast")
+        self.assertEqual(rec["serving"], "fresh")
+        self.assertEqual(rec["background"], "spawned")
         self.assertEqual(rec["stale_total"], 1)
         self.assertEqual(out["jit"], "async")
         self.assertEqual(calls, [str(self.repo)])
+        # The journal is actually healed: a second probe finds no drift.
+        from sot_graph.freshness import staleness_probe
+        self.assertFalse(staleness_probe(self.db_path, str(self.repo))["stale"])
 
     def test_spawn_failure_still_serves_and_discloses(self) -> None:
         from sot_graph.freshness import ensure_fresh
@@ -255,8 +261,40 @@ class AsyncJitTests(_RepoFixture, unittest.TestCase):
         out = ensure_fresh(self.db_path, str(self.repo), "auto",
                            spawn_fn=_boom)
         rec = out["reconcile"]
-        self.assertEqual(rec["status"], "background")
-        self.assertFalse(rec["spawned"])
+        # Fast tier still healed; only the deep refresh failed.
+        self.assertEqual(rec["status"], "refreshed")
+        self.assertEqual(rec["background"], "spawn_failed")
+
+    def test_deletion_bypasses_interval_and_serves_stale(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        victim = self.repo / "app.py"
+        victim.unlink()  # file had a journal row → probe sees a delete
+        calls = []
+        out = ensure_fresh(self.db_path, str(self.repo), "auto",
+                           spawn_fn=lambda r: calls.append(r) or True)
+        rec = out["reconcile"]
+        # Deletions leave engine-side ghost rows the fast tier cannot
+        # remove — honest disclosure keeps serving=stale and forces the
+        # deep refresh even inside the publish interval.
+        self.assertEqual(rec["serving"], "stale")
+        self.assertEqual(rec["background"], "spawned")
+        self.assertEqual(calls, [str(self.repo)])
+
+    def test_recent_publish_debounces_deep_refresh(self) -> None:
+        from sot_graph.freshness import ensure_fresh
+
+        self._make_stale()
+        published = self.repo / ".sot" / "cbm" / "published.db"
+        published.parent.mkdir(parents=True, exist_ok=True)
+        published.write_bytes(b"x")  # fresh mtime = just published
+        calls = []
+        out = ensure_fresh(self.db_path, str(self.repo), "auto",
+                           spawn_fn=lambda r: calls.append(r) or True)
+        rec = out["reconcile"]
+        self.assertEqual(rec["status"], "refreshed")
+        self.assertEqual(rec["background"], "debounced")
+        self.assertEqual(calls, [])  # no CBM churn inside the interval
 
     def test_force_is_always_blocking(self) -> None:
         from sot_graph.freshness import ensure_fresh

@@ -3316,8 +3316,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 print(f"↻ JIT reconcile: {_rec.get('updated', 0)} indexed/updated, "
                       f"{_rec.get('deleted', 0)} deleted ({_rec.get('duration_ms', 0)} ms)",
                       file=sys.stderr)
+            elif _rec.get("status") == "refreshed":
+                _fast = _rec.get("fast") or {}
+                print(f"↻ JIT reconcile: {_fast.get('published', 0)} paths "
+                      f"refreshed ({_fast.get('duration_ms', 0)} ms) — "
+                      f"deep-graph refresh {_rec.get('background', '')}",
+                      file=sys.stderr)
             elif _rec.get("status") == "background":
-                spawned = "spawned" if _rec.get("spawned") else "already running"
+                _bg = _rec.get("background", "")
+                spawned = ("spawned" if _bg == "spawned"
+                           else _bg or "already running")
                 print(f"↻ JIT reconcile: background reconcile {spawned} — "
                       "serving current index snapshot", file=sys.stderr)
             elif _rec.get("status") == "failed":

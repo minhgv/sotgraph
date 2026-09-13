@@ -205,13 +205,49 @@ class CbmStore(Database):
         # into every union (dup nodes, zombie journal rows flagging
         # 'modified' on files CBM indexed fresh seconds ago).
         rel = f"replace(path, '{self.root_dir}/', '')"
-        gap_guard = (
-            f"{rel} NOT IN (SELECT file_path FROM nodes "
-            f"WHERE project = {p})"
-        )
-        fh_guard = (
-            f"{rel} NOT IN (SELECT rel_path FROM file_hashes "
-            f"WHERE project = {p})"
+        # Newest-wins ownership: a path belongs to whichever side journaled
+        # it most recently. CBM coverage alone no longer shadows sot rows
+        # forever — fast-tier reconcile stamps sot.file_journal with the
+        # file's current mtime, so its rows surface immediately; once the
+        # engine re-indexes and publishes, file_hashes.mtime_ns catches up
+        # and ownership flips back to the deep graph. The fresher set is
+        # materialized once per open (journal is small) so every view
+        # predicate stays a cheap IN/NOT IN instead of a correlated probe.
+        fresher = ""
+        if sot:
+            self.conn.execute(
+                f"""CREATE TEMP TABLE _sot_fresher AS
+SELECT replace(j.path, '{self.root_dir}/', '') AS rel
+FROM sot.file_journal j
+JOIN file_hashes fh
+  ON fh.project = {p}
+ AND fh.rel_path = replace(j.path, '{self.root_dir}/', '')
+WHERE j.mtime_ms > fh.mtime_ns / 1000000""")
+            self.conn.execute(
+                "CREATE INDEX _sot_fresher_idx ON _sot_fresher(rel)")
+            fresher = "_sot_fresher"
+            gap_guard = (
+                f"({rel} NOT IN (SELECT file_path FROM nodes "
+                f"WHERE project = {p}) OR {rel} IN "
+                f"(SELECT rel FROM {fresher}))"
+            )
+            fh_guard = (
+                f"({rel} NOT IN (SELECT rel_path FROM file_hashes "
+                f"WHERE project = {p}) OR {rel} IN "
+                f"(SELECT rel FROM {fresher}))"
+            )
+        else:
+            gap_guard = (
+                f"{rel} NOT IN (SELECT file_path FROM nodes "
+                f"WHERE project = {p})"
+            )
+            fh_guard = (
+                f"{rel} NOT IN (SELECT rel_path FROM file_hashes "
+                f"WHERE project = {p})"
+            )
+        cbm_fresh = (
+            f"AND {{expr}} NOT IN (SELECT rel FROM {fresher})"
+            if sot else ""
         )
 
         # Consumers assume ``path`` is absolute (arch prefix filters,
@@ -233,7 +269,7 @@ class CbmStore(Database):
        NULL AS col_end,
        CAST(COALESCE(strftime('%s', p.indexed_at), '0') AS INTEGER) AS updated_at
 FROM nodes n JOIN projects p ON p.name = n.project
-WHERE n.project = {p}"""
+WHERE n.project = {p} {cbm_fresh.format(expr='n.file_path')}"""
         if sot:
             nodes_base += f"""
 UNION ALL
@@ -247,7 +283,8 @@ FROM sot.graph_nodes WHERE {gap_guard}"""
        CASE e.type {relation_case} ELSE lower(e.type) END AS relation,
        CAST(json_extract(e.properties, '$.line') AS INTEGER) AS line
 FROM edges e JOIN nodes s ON s.id = e.source_id AND s.project = e.project
-WHERE e.project = {p} AND {resolved_cond}"""
+WHERE e.project = {p} AND {resolved_cond}
+  {cbm_fresh.format(expr='s.file_path')}"""
         if sot:
             edges_base += f"""
 UNION ALL
@@ -267,7 +304,8 @@ FROM sot.graph_edges WHERE {gap_guard}"""
                 AS INTEGER), 0) > 1
             THEN 'AMBIGUOUS' ELSE 'UNRESOLVED' END AS resolution_state
 FROM edges e JOIN nodes s ON s.id = e.source_id AND s.project = e.project
-WHERE e.project = {p} AND e.type = 'CALLS' AND NOT {resolved_cond}"""
+WHERE e.project = {p} AND e.type = 'CALLS' AND NOT {resolved_cond}
+  {cbm_fresh.format(expr='s.file_path')}"""
         if sot:
             pending_base += f"""
 UNION ALL
@@ -286,7 +324,8 @@ FROM sot.pending_edges WHERE {gap_guard}"""
 FROM file_hashes f JOIN projects p ON p.name = f.project
 WHERE f.project = {p}
   AND f.rel_path NOT LIKE '.codebase-memory/%'
-  AND f.rel_path NOT LIKE '.sot/%'"""
+  AND f.rel_path NOT LIKE '.sot/%'
+  {cbm_fresh.format(expr='f.rel_path')}"""
         if sot:
             journal_base += f"""
 UNION ALL
@@ -322,7 +361,9 @@ FROM sot.file_journal WHERE {fh_guard}"""
                     "SELECT 1 FROM sot.graph_nodes "
                     "WHERE replace(path, ?, '') NOT IN "
                     "(SELECT file_path FROM nodes WHERE project = ?) "
-                    "LIMIT 1", (self.root_dir + "/", self.project),
+                    "OR replace(path, ?, '') IN "
+                    "(SELECT rel FROM _sot_fresher) LIMIT 1",
+                    (self.root_dir + "/", self.project, self.root_dir + "/"),
                 ).fetchone()
             except sqlite3.Error:
                 row = None
@@ -354,6 +395,11 @@ FROM sot.file_journal WHERE {fh_guard}"""
         )
         params: List[Any] = [self.root_dir + "/",
                              " OR ".join(sorted(tokens)), self.project]
+        if self._sot_attached:
+            # Newest-wins: hide engine rows for paths a fresher sot
+            # journal now owns (they reappear after the next publish).
+            sql += (" AND k.file_path NOT IN "
+                    "(SELECT rel FROM _sot_fresher)")
         if scope:
             esc = scope.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             sql += " AND (k.file_path LIKE ? ESCAPE '\\')"
@@ -361,6 +407,29 @@ FROM sot.file_journal WHERE {fh_guard}"""
         sql += " ORDER BY bm25(nodes_fts) ASC LIMIT ?"
         params.append(limit * 3)
         rows = self.conn.execute(sql, params).fetchall()
+        if self._sot_attached:
+            # Union the sot-owned FTS rows under the same newest-wins
+            # predicate as the graph_nodes view — gap paths plus any
+            # path the fast tier journaled fresher than the snapshot.
+            rel_k = f"replace(k.path, '{self.root_dir}/', '')"
+            sot_sql = (
+                "SELECT k.id, k.path, lower(k.kind), k.symbol, k.fqn, k.label, "
+                "k.body, k.keywords, k.line_start, bm25(graph_fts) "
+                "FROM sot.graph_fts JOIN sot.graph_nodes k "
+                "ON graph_fts.rowid = k.rowid "
+                "WHERE graph_fts MATCH ? AND ("
+                f"{rel_k} NOT IN (SELECT file_path FROM nodes "
+                "WHERE project = ?) "
+                f"OR {rel_k} IN (SELECT rel FROM _sot_fresher))"
+            )
+            sot_params: List[Any] = [" OR ".join(sorted(tokens)),
+                                     self.project]
+            if scope:
+                sot_sql += " AND (k.path LIKE ? ESCAPE '\\')"
+                sot_params.append(f"%{esc}%")
+            sot_sql += " ORDER BY bm25(graph_fts) ASC LIMIT ?"
+            sot_params.append(limit * 3)
+            rows += self.conn.execute(sot_sql, sot_params).fetchall()
         flags = exact_bare_name_flags([r[3] for r in rows], parts_l)
 
         def _rank(pair):

@@ -1110,14 +1110,24 @@ def _post_change_stale_files(
     lets ``closure_decision`` reach "closed" instead of being dead logic.
     Unmeasurable or never-indexed files count as stale: the receipt must
     fail closed, never bless content it could not compare.
+
+    Ignore-matched paths (``.sot/`` internals, build outputs) are
+    skipped: they are tool artifacts the reconciler never journals by
+    design, so flagging them would turn the system's own bookkeeping
+    (daemon logs, index files) into perpetual false staleness.
     """
     import hashlib
     import os as _os
 
+    from sot_graph.ignore import GitIgnoreMatcher
+
+    matcher = GitIgnoreMatcher(repo_root)
     stale: List[str] = []
     for path in changed_files[:200]:
         try:
             disk_path = path if _os.path.isabs(path) else _os.path.join(repo_root, path)
+            if matcher.is_ignored(disk_path, is_dir=False):
+                continue
             prior = db.get_file_journal(disk_path) or db.get_file_journal(path)
             if prior is None or not prior.get("sha256"):
                 stale.append(path)  # added by the diff, not yet indexed

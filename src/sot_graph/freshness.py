@@ -44,6 +44,16 @@ _BG_LOG_REL = os.path.join(".sot", "reconcile-bg.log")
 _BG_LOCK_TTL_S = 180.0
 _BG_LOG_MAX_BYTES = 1_000_000
 
+#: Two-tier reconcile bounds (env-overridable; deliberately not config
+#: surface — these are tuning constants, not user policy):
+#: - fast tier runs builtin per-file reconcile inline only when the
+#:   probed delta is small enough to stay sub-second;
+#: - the CBM deep refresh re-publishes at most once per interval —
+#:   the pid-lock already prevents concurrent spawns, this prevents
+#:   back-to-back spawns while a session edits continuously.
+_FAST_TIER_MAX_PATHS = int(os.environ.get("SOT_FAST_TIER_MAX", "64"))
+_CBM_MIN_INTERVAL_S = float(os.environ.get("SOT_CBM_MIN_INTERVAL_S", "300"))
+
 
 def normalize_mode(value: Any, default: str = "auto") -> str:
     """Map tri-state input (True/False/"auto"/"force"/"off") to a mode."""
@@ -143,6 +153,10 @@ def staleness_probe(db_path: str, root: str) -> Dict[str, Any]:
         "modified": _cap(modified),
         "deleted": _cap(deleted),
         "unindexed": _cap(unindexed),
+        # Full (uncapped) path lists for the fast tier — the lists were
+        # already built; capping only applies to the envelope samples.
+        "paths": {"modified": modified, "deleted": deleted,
+                  "unindexed": unindexed},
         "checked": checked,
         "stale": bool(modified or deleted or unindexed),
         "probe_ms": int((time.perf_counter() - started) * 1000),
@@ -238,6 +252,57 @@ def spawn_background_reconcile(root: str) -> bool:
         return False
 
 
+def fast_tier_reconcile(
+    db_path: str,
+    root: str,
+    rel_paths: List[str],
+    *,
+    writer: Optional[Any] = None,
+) -> Dict[str, Any]:
+    """Builtin per-file reconcile for a probed delta — the fast tier.
+
+    Writes journal + graph rows into sot.db directly; under newest-wins
+    union views the refreshed paths immediately outrank the (older) CBM
+    snapshot, so the query that follows sees current content without
+    waiting for an engine re-index. Never raises — a failed path is
+    skipped per reconciler semantics; a failed open degrades to
+    ``status: failed`` for the caller to disclose.
+    """
+    from sot_graph.db import Database
+    from sot_graph.reconciler import Reconciler
+
+    started = time.perf_counter()
+    abs_paths = [
+        p if os.path.isabs(p) else os.path.join(root, p) for p in rel_paths
+    ]
+    own = writer is None or getattr(writer, "is_cbm", False)
+    db = Database(db_path) if own else writer
+    try:
+        published, deferred = Reconciler(db, root).reconcile_paths(abs_paths)
+    finally:
+        if own:
+            db.close()
+    return {
+        "status": "success",
+        "paths": len(abs_paths),
+        "published": published,
+        "deferred": len(deferred),
+        "duration_ms": int((time.perf_counter() - started) * 1000),
+    }
+
+
+def _cbm_refresh_due(root: str) -> bool:
+    """Slow-tier gate: a CBM refresh is due when nothing was ever
+    published, or the published snapshot is older than the interval."""
+    from sot_graph.cbm import published_db_path
+
+    try:
+        mtime = os.path.getmtime(published_db_path(root))
+    except OSError:
+        return True  # never published — first index is due
+    return (time.time() - mtime) >= _CBM_MIN_INTERVAL_S
+
+
 def ensure_fresh(
     db_path: str,
     root: str,
@@ -289,17 +354,49 @@ def ensure_fresh(
                 blocking = True
     envelope["jit"] = "blocking" if blocking else "async"
     if not blocking:
+        probe_paths = probe.get("paths") or {}
+        changed = [
+            *probe_paths.get("modified", []),
+            *probe_paths.get("deleted", []),
+            *probe_paths.get("unindexed", []),
+        ]
+        # Fast tier: builtin per-file reconcile inline — under newest-wins
+        # views the query below sees current content immediately, so the
+        # common small-edit case serves FRESH, not a stale snapshot.
+        fast: Optional[Dict[str, Any]] = None
+        if 0 < len(changed) <= _FAST_TIER_MAX_PATHS:
+            try:
+                fast = fast_tier_reconcile(
+                    db_path, root, changed, writer=writer)
+            except Exception:  # fast tier failed: disclose, still serve
+                fast = {"status": "failed"}
+        # Slow tier: CBM deep-graph refresh, debounced by publish age —
+        # the pid-lock stops concurrent spawns, the interval stops
+        # back-to-back ones during continuous editing. Deletions bypass
+        # the interval: the fast tier removes sot rows but cannot delete
+        # the engine's ghost nodes (no journal row for newest-wins to
+        # key on), so only a republish clears them.
         spawn = spawn_fn or spawn_background_reconcile
         spawned = False
-        try:
-            spawned = bool(spawn(root))
-        except Exception:  # spawn failure: disclose, still serve stale
-            spawned = False
+        has_deleted = bool(probe_paths.get("deleted"))
+        bg_status = "debounced"
+        if has_deleted or _cbm_refresh_due(root):
+            try:
+                spawned = bool(spawn(root))
+                bg_status = "spawned" if spawned else "already_running"
+            except Exception:  # spawn failure: disclose, still serve
+                bg_status = "spawn_failed"
+        fresh = (
+            fast is not None and fast.get("status") == "success"
+            and not has_deleted
+        )
         envelope["reconcile"] = {
             "performed": True,
-            "status": "background",
-            "spawned": spawned,
-            "serving": "stale",
+            "status": "refreshed" if fresh else "background",
+            "tier": "fast" if fresh else "background",
+            "fast": fast,
+            "background": bg_status,
+            "serving": "fresh" if fresh else "stale",
             "stale_total": sum(
                 probe[k]["count"]
                 for k in ("modified", "deleted", "unindexed")
