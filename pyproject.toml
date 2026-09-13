@@ -42,7 +42,7 @@ dev = [
     "pytest-cov>=4.0",
     "pytest-asyncio>=0.21",
     "hypothesis>=6.0.0",
-    "ruff>=0.14,<0.15",
+    "ruff>=0.14,<0.17",
     "pyright>=1.1.406,<1.2",
     "pyyaml>=6.0",
     "tree-sitter>=0.25,<0.30",
@@ -128,7 +128,7 @@ dev = [
     "pytest-cov>=4.0",
     "pytest-asyncio>=0.21",
     "hypothesis>=6.0.0",
-    "ruff>=0.14,<0.15",
+    "ruff>=0.14,<0.17",
     "pyright>=1.1.406,<1.2",
     "pyyaml>=6.0",
 ]
