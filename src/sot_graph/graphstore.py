@@ -110,6 +110,13 @@ class CbmStore(Database):
         self.db_path = os.path.abspath(sot_path)   # logical identity: the sot project
         self.cbm_path = os.path.abspath(cbm_path)
         self.root_dir = os.path.realpath(root)
+        # Path shaping: the sot journal keys absolute OS-native paths while
+        # the engine stores repo-relative "/"-canonical rel paths. Every
+        # strip/emission below must translate between the two spellings —
+        # on Windows the root carries backslashes and a bare ``root + '/'``
+        # never matches, breaking the coverage guards and the union views.
+        self._root_prefix = self.root_dir.replace(os.sep, "/") + "/"
+        self._win_paths = os.sep != "/"
         self.read_only = True
         self.timeout_ms = int(timeout_ms)
         self.schema_was_reset = False
@@ -142,6 +149,25 @@ class CbmStore(Database):
     # ------------------------------------------------------------------
     # schema bridge
     # ------------------------------------------------------------------
+    def _root_prefix_sql(self) -> str:
+        """Root prefix ('<root>/'), '/'-normalized, SQL-quote-safe."""
+        return self._root_prefix.replace("'", "''")
+
+    def _rel_expr(self, path_expr: str) -> str:
+        """SQL expr: absolute sot path -> engine-style repo-relative."""
+        expr = path_expr
+        if self._win_paths:
+            # '\' -> '/' (char(92) avoids backslash-escaping in SQL text)
+            expr = f"replace({expr}, char(92), '/')"
+        return f"replace({expr}, '{self._root_prefix_sql()}', '')"
+
+    def _abs_expr(self, rel_expr: str) -> str:
+        """SQL expr: engine rel path -> absolute OS-native path."""
+        expr = f"'{self._root_prefix_sql()}' || {rel_expr}"
+        if self._win_paths:
+            expr = f"replace({expr}, '/', char(92))"
+        return expr
+
     def _attach_sot(self) -> bool:
         """ATTACH .sot/sot.db (ledger + gap-file rows + notes)."""
         if not os.path.isfile(self.db_path):
@@ -197,14 +223,13 @@ class CbmStore(Database):
             return "'" + value.replace("'", "''") + "'"
 
         p = _q(proj)
-        rootp = _q(self.root_dir + "/")
         sot = self._sot_attached
         # Path-shape mismatch: sot rows key by ABSOLUTE path, CBM by
         # repo-relative. Normalize the sot side by stripping ``<root>/``
         # before the coverage guards — without this, stale sot rows leak
         # into every union (dup nodes, zombie journal rows flagging
         # 'modified' on files CBM indexed fresh seconds ago).
-        rel = f"replace(path, '{self.root_dir}/', '')"
+        rel = self._rel_expr("path")
         # Newest-wins ownership: a path belongs to whichever side journaled
         # it most recently. CBM coverage alone no longer shadows sot rows
         # forever — fast-tier reconcile stamps sot.file_journal with the
@@ -215,13 +240,14 @@ class CbmStore(Database):
         # predicate stays a cheap IN/NOT IN instead of a correlated probe.
         fresher = ""
         if sot:
+            rel_j = self._rel_expr("j.path")
             self.conn.execute(
                 f"""CREATE TEMP TABLE _sot_fresher AS
-SELECT replace(j.path, '{self.root_dir}/', '') AS rel
+SELECT {rel_j} AS rel
 FROM sot.file_journal j
 JOIN file_hashes fh
   ON fh.project = {p}
- AND fh.rel_path = replace(j.path, '{self.root_dir}/', '')
+ AND fh.rel_path = {rel_j}
 WHERE j.mtime_ms > fh.mtime_ns / 1000000""")
             self.conn.execute(
                 "CREATE INDEX _sot_fresher_idx ON _sot_fresher(rel)")
@@ -255,7 +281,7 @@ WHERE j.mtime_ms > fh.mtime_ns / 1000000""")
         # ``<root>/`` || rel_path so CBM rows are indistinguishable from
         # sot rows downstream — the relative spelling is engine-internal.
         nodes_base = f"""SELECT 'cbm:' || n.id AS id,
-       {rootp} || n.file_path AS path,
+       {self._abs_expr('n.file_path')} AS path,
        lower(n.label) AS kind,
        n.name AS symbol,
        n.qualified_name AS fqn,
@@ -277,7 +303,7 @@ SELECT id, path, kind, symbol, fqn, signature, label, body, keywords,
        line_start, line_end, col_start, col_end, updated_at
 FROM sot.graph_nodes WHERE {gap_guard}"""
 
-        edges_base = f"""SELECT {rootp} || s.file_path AS path,
+        edges_base = f"""SELECT {self._abs_expr('s.file_path')} AS path,
        'cbm:' || e.source_id AS src,
        'cbm:' || e.target_id AS dst,
        CASE e.type {relation_case} ELSE lower(e.type) END AS relation,
@@ -291,7 +317,7 @@ UNION ALL
 SELECT path, src, dst, relation, line
 FROM sot.graph_edges WHERE {gap_guard}"""
 
-        pending_base = f"""SELECT {rootp} || s.file_path AS path,
+        pending_base = f"""SELECT {self._abs_expr('s.file_path')} AS path,
        'cbm:' || e.source_id AS src,
        json_extract(e.properties, '$.callee') AS dst_symbol,
        'calls' AS relation,
@@ -313,7 +339,7 @@ SELECT path, src, dst_symbol, relation, line, language, call_kind,
        receiver, import_source, resolution_state
 FROM sot.pending_edges WHERE {gap_guard}"""
 
-        journal_base = f"""SELECT {rootp} || f.rel_path AS path,
+        journal_base = f"""SELECT {self._abs_expr('f.rel_path')} AS path,
        f.sha256 AS sha256,
        f.size AS size,
        CAST(f.mtime_ns / 1000000 AS INTEGER) AS mtime_ms,
@@ -357,13 +383,14 @@ FROM sot.file_journal WHERE {fh_guard}"""
         providers = [{"name": "codebase-memory", "kind": "COMPILER_LSP_INDEX"}]
         if self._sot_attached:
             try:
+                rel_p = self._rel_expr("path")
                 row = self.conn.execute(
                     "SELECT 1 FROM sot.graph_nodes "
-                    "WHERE replace(path, ?, '') NOT IN "
+                    f"WHERE {rel_p} NOT IN "
                     "(SELECT file_path FROM nodes WHERE project = ?) "
-                    "OR replace(path, ?, '') IN "
+                    f"OR {rel_p} IN "
                     "(SELECT rel FROM _sot_fresher) LIMIT 1",
-                    (self.root_dir + "/", self.project, self.root_dir + "/"),
+                    (self.project,),
                 ).fetchone()
             except sqlite3.Error:
                 row = None
@@ -384,8 +411,10 @@ FROM sot.file_journal WHERE {fh_guard}"""
         tokens, parts_l = fts_query_terms(query)
         if not tokens or limit <= 0:
             return []
+        abs_fp = ("replace(? || k.file_path, '/', char(92))"
+                  if self._win_paths else "? || k.file_path")
         sql = (
-            "SELECT 'cbm:' || k.id, ? || k.file_path, lower(k.label), k.name, "
+            "SELECT 'cbm:' || k.id, " + abs_fp + ", lower(k.label), k.name, "
             "k.qualified_name, k.label, "
             "COALESCE(json_extract(k.properties,'$.docstring'), ''), "
             "COALESCE(json_extract(k.properties,'$.bt'), ''), "
@@ -393,7 +422,7 @@ FROM sot.file_journal WHERE {fh_guard}"""
             "FROM nodes_fts f JOIN nodes k ON f.rowid = k.id "
             "WHERE nodes_fts MATCH ? AND k.project = ?"
         )
-        params: List[Any] = [self.root_dir + "/",
+        params: List[Any] = [self._root_prefix,
                              " OR ".join(sorted(tokens)), self.project]
         if self._sot_attached:
             # Newest-wins: hide engine rows for paths a fresher sot
@@ -411,7 +440,7 @@ FROM sot.file_journal WHERE {fh_guard}"""
             # Union the sot-owned FTS rows under the same newest-wins
             # predicate as the graph_nodes view — gap paths plus any
             # path the fast tier journaled fresher than the snapshot.
-            rel_k = f"replace(k.path, '{self.root_dir}/', '')"
+            rel_k = self._rel_expr("k.path")
             sot_sql = (
                 "SELECT k.id, k.path, lower(k.kind), k.symbol, k.fqn, k.label, "
                 "k.body, k.keywords, k.line_start, bm25(graph_fts) "

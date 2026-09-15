@@ -8,9 +8,20 @@ daemon-level failure mode.
 import json
 import os
 import socket
+import sys
 import threading
 import unittest
 from tempfile import TemporaryDirectory
+
+import pytest
+
+# The daemon bridge is a Unix-socket protocol; engine_daemon.py is a no-op
+# without socket.AF_UNIX (Windows falls back to the cold spawn), so these
+# stub-server tests cannot run there.
+pytestmark = pytest.mark.skipif(
+    not hasattr(socket, "AF_UNIX"),
+    reason="engine daemon bridge requires socket.AF_UNIX (POSIX-only)",
+)
 
 
 def _stub_server(sock_path: str, responder, ready: threading.Event):

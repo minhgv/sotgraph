@@ -413,10 +413,25 @@ def verify_credentials(user: str, token: str) -> bool:
         log("Reconciling and checking ledger recording...")
         run_cmd([sys.executable, "-m", "sot_graph.cli", "reconcile"], cwd=str(repo_dir))
         
+        # Under CBM-primary reconcile the engine OWNS the paths it covers:
+        # their rows are purged from the sot file_journal and recorded in
+        # the published engine store instead (newest-wins ownership
+        # transfer). Builtin fallback keeps them in the journal. Either
+        # ledger is a valid reconcile receipt.
         journal_count = cursor.execute("SELECT count(*) FROM file_journal").fetchone()[0]
-        if journal_count < 3:
-            fail(f"Expected at least 3 journal entries, got {journal_count}")
-        log(f"File journal records: {journal_count}")
+        engine_count = 0
+        published_db = repo_dir / ".sot" / "cbm" / "published.db"
+        if published_db.exists():
+            engine_conn = sqlite3.connect(str(published_db))
+            try:
+                engine_count = engine_conn.execute(
+                    "SELECT count(*) FROM file_hashes").fetchone()[0]
+            finally:
+                engine_conn.close()
+        if journal_count + engine_count < 3:
+            fail(f"Expected at least 3 recorded files across ledgers, "
+                 f"got journal={journal_count} engine={engine_count}")
+        log(f"File journal records: {journal_count} (engine store: {engine_count})")
 
         conn.close()
 
