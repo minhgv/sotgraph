@@ -106,7 +106,9 @@ def ledger_repo(tmp_path_factory):
     stub = repo / "cbm_stub.py"
     stub.write_text(STUB, encoding="utf-8")
     stub.chmod(0o755)
-    (repo / ".gitignore").write_text(".sot/sot.db*\n.sot/*.lock\n.sot/write.lock\n.sot/bundle/\n", encoding="utf-8")
+    (repo / ".gitignore").write_text(
+        ".sot/sot.db*\n.sot/*.lock\n.sot/write.lock\n.sot/bundle/\n.sot/cbm/\n",
+        encoding="utf-8")
     (repo / ".sot").mkdir()
     import json
     exe_arg = json.dumps(str(sys.executable))

@@ -534,7 +534,7 @@ def build_bundle(
         node, raw_bytes, total_size=total_size, read_cap=_MAX_SOURCE_READ_BYTES)
     resolution: Dict[str, Any] = {
         "status": "AMBIGUOUS_AUTO_RESOLVED" if amb_candidates else (
-            _RESOLUTION_STATUS.get(resolution_method, "EXACT")),
+            _RESOLUTION_STATUS.get(resolution_method or "", "EXACT")),
         "query": target,
         "selected_fqn": node["fqn"] or node["symbol"],
     }

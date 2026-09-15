@@ -24,6 +24,17 @@ from pathlib import Path
 
 import pytest
 
+# Early-bind modules that do ``from sot_graph.proc import run_command`` at
+# module scope. If one of these is FIRST imported while a test has
+# ``sot_graph.proc.run_command`` patched (e.g. test_cli_provider_wiring's
+# no_spawn guard), the module global captures the patched stub and keeps it
+# after the patch is undone — poisoning every later test in the process.
+# Importing them up front, before any patch window, pins the real bindings.
+import sot_graph.cbm  # noqa: F401
+import sot_graph.providers_registry  # noqa: F401
+import sot_graph.providers.codebase_memory  # noqa: F401
+import sot_graph.providers.managed  # noqa: F401
+
 
 @pytest.fixture(autouse=True)
 def _no_engine_auto_bootstrap(monkeypatch):

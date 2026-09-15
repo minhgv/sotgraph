@@ -52,6 +52,9 @@ def repo(tmp_path) -> Path:
         "import util\n\ndef run():\n    return util.help(1) + util.drop(2)\n",
         encoding="utf-8")
     _git(r, "init", "-q")
+    # CI runners ship no global git identity; commits fail with exit 128.
+    _git(r, "config", "user.email", "t@t")
+    _git(r, "config", "user.name", "t")
     _git(r, "add", "-A")
     _git(r, "commit", "-qm", "c1")
     _reconcile(r)

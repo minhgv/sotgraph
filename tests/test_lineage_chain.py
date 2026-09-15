@@ -39,6 +39,9 @@ def chain_repo(tmp_path) -> Path:
         "import calc\n\ndef run():\n    return calc.add(1, 2)\n",
         encoding="utf-8")
     _git(repo, "init", "-q")
+    # CI runners ship no global git identity; commits fail with exit 128.
+    _git(repo, "config", "user.email", "t@t")
+    _git(repo, "config", "user.name", "t")
     _git(repo, "add", "-A")
     _git(repo, "commit", "-qm", "c1")
     proc = _cli(repo, "reconcile")

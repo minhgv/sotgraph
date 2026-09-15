@@ -90,7 +90,10 @@ def test_verify():
 """,
         encoding="utf-8",
     )
-    (root / ".gitignore").write_text(".sot/sot.db*\n.sot/*.lock\n.sot/write.lock\n.sot/lock*\n.sot/bundle/\n.sot/cache/\n", encoding="utf-8")
+    (root / ".gitignore").write_text(
+        ".sot/sot.db*\n.sot/*.lock\n.sot/write.lock\n.sot/lock*\n.sot/bundle/"
+        "\n.sot/cache/\n.sot/cbm/\n",
+        encoding="utf-8")
     # Config for sot-graph (.sot/config.toml)
     (root / ".sot").mkdir(parents=True, exist_ok=True)
     (root / ".sot" / "config.toml").write_text(
@@ -380,6 +383,12 @@ def verify_credentials(user: str, token: str) -> bool:
                 fail(f"Expected untracked_helper.py in changed_files, got: {untracked_changed}")
 
             # 6.2 Test audit-receipt fail-closed on unjournaled file
+            # §6.1's diff-impact call auto-reconciles (JIT freshness gate)
+            # and journals untracked_helper.py, so the audit needs a file
+            # that is still unjournaled on disk.
+            log("Creating a fresh unjournaled file for the audit probe...")
+            unjournaled_file = repo_dir / "src" / "unjournaled_probe.py"
+            unjournaled_file.write_text("def unjournaled_probe(): pass\n", encoding="utf-8")
             log("Verifying audit_receipt fails closed when unjournaled files exist...")
             from sot_graph.assurance.receipts import audit_receipt
             from sot_graph.db import Database
@@ -391,8 +400,9 @@ def verify_credentials(user: str, token: str) -> bool:
                 fail("quarantined_files missing from audit_receipt payload!")
             log(f"Quarantined files flagged by audit_receipt: {audit_res['quarantined_files']}")
 
-            # Clean up untracked file before reconcile
+            # Clean up untracked files before reconcile
             untracked_file.unlink()
+            unjournaled_file.unlink()
 
             # Verify caller impact on user_handler
             caller_impacts = diff_json.get("caller_impacts", [])
