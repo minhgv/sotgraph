@@ -193,14 +193,40 @@ def reconcile_now(
 
 
 def _pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if sys.platform == "win32":
+        # os.kill(pid, 0) is NOT a liveness probe on Windows: 0 is the
+        # CTRL_C_EVENT numeric value, broadcasting a console Ctrl+C to the
+        # whole process group (killing the calling test/CLI with a rogue
+        # KeyboardInterrupt). Probe via the Win32 API instead — the same
+        # idiom as watcher.is_pid_alive.
+        import ctypes
+
+        process_query_limited_information = 0x1000
+        still_active = 259
+        try:
+            kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+            handle = kernel32.OpenProcess(
+                process_query_limited_information, False, pid)
+            if not handle:
+                return False
+            try:
+                exit_code = ctypes.c_ulong()
+                if kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    return exit_code.value == still_active
+                return False
+            finally:
+                kernel32.CloseHandle(handle)
+        except OSError:
+            return False
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
     except (PermissionError, OSError):
-        # PermissionError: exists but not ours. Other OSError (e.g.
-        # Windows, where sig=0 probing is unsupported): assume alive —
-        # the lock TTL bounds the debounce either way.
+        # PermissionError: exists but not ours. Other OSError: assume
+        # alive — the lock TTL bounds the debounce either way.
         return True
     return True
 

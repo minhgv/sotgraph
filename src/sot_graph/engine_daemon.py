@@ -115,6 +115,12 @@ def _daemon_alive(root: str) -> bool:
         with open(_paths(root)["pid"], "r", encoding="utf-8") as fh:
             pid = int(json.load(fh).get("pid") or 0)
         if pid > 0:
+            # POSIX only in practice (the client is a no-op without
+            # AF_UNIX), but keep the probe honest: os.kill(pid, 0) on
+            # Windows is the CTRL_C_EVENT broadcast, not a probe.
+            if sys.platform == "win32":
+                from sot_graph.freshness import _pid_alive
+                return _pid_alive(pid)
             os.kill(pid, 0)
             return True
     except (OSError, ValueError):
