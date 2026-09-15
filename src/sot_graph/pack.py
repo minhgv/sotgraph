@@ -188,12 +188,18 @@ def _path_scope_sql(path_scope: Optional[str]) -> Tuple[str, List[str]]:
 
     Stored paths may be absolute while agents paste repo-relative locators,
     so scope by exact match or suffix (an absolute scope needs no leading
-    ``/`` in the LIKE pattern).
+    ``/`` in the LIKE pattern). Locators are '/'-canonical (``_split_locator``
+    normalizes) while Windows stores carry '\\', so both sides are matched
+    through a '/'-normalized path expression.
     """
     if not path_scope:
         return "", []
     like = f"%{path_scope}" if path_scope.startswith("/") else f"%/{path_scope}"
-    return " AND (path = ? OR path LIKE ?)", [path_scope, like]
+    posix_path = "replace(path, char(92), '/')"
+    return (
+        f" AND ({posix_path} = ? OR {posix_path} LIKE ?)",
+        [path_scope, like],
+    )
 
 
 def _dedup_candidates(row: List[Any]) -> List[str]:
@@ -280,14 +286,18 @@ def _resolve_by_path_line(db, path: str, line: int) -> List[Any]:
         "WHERE kind != 'file' AND line_start IS NOT NULL AND line_end IS NOT NULL "
         "AND line_start <= ? AND line_end >= ?"
     )
+    # Locators are '/'-canonical while Windows stores carry '\': match
+    # through a '/'-normalized path expression on both sides.
+    posix_path = "replace(path, char(92), '/')"
     row = db.conn.execute(
-        base + " AND path = ? ORDER BY (line_end - line_start), symbol LIMIT 11",
+        base + f" AND {posix_path} = ? "
+        "ORDER BY (line_end - line_start), symbol LIMIT 11",
         (line, line, path),
     ).fetchall()
     if not row:
         like = f"%{path}" if path.startswith("/") else f"%/{path}"
         row = db.conn.execute(
-            base + " AND path LIKE ? "
+            base + f" AND {posix_path} LIKE ? "
             "ORDER BY length(path), (line_end - line_start), symbol LIMIT 11",
             (line, line, like),
         ).fetchall()

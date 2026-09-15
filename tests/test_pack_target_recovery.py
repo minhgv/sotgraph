@@ -232,8 +232,12 @@ class BuildBundleRecoveryTests(unittest.TestCase):
         self.root = os.path.join(self.test_dir, "repo")
         os.makedirs(os.path.join(self.root, "backend/cmd/server"))
         self.src_path = os.path.join(self.root, "backend/cmd/server/main.go")
-        with open(self.src_path, "w", encoding="utf-8") as handle:
-            handle.write(self.GO_SOURCE)
+        raw = self.GO_SOURCE.encode("utf-8")
+        # Binary write: the journal hashes raw bytes; a text-mode write
+        # would translate '\n' to os.linesep (CRLF on Windows) and fail
+        # the STALE_SNAPSHOT digest check.
+        with open(self.src_path, "wb") as handle:
+            handle.write(raw)
         raw = self.GO_SOURCE.encode("utf-8")
         self.db.conn.execute(
             "INSERT INTO graph_nodes (id, path, kind, symbol, fqn, "

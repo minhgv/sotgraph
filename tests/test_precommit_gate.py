@@ -17,6 +17,8 @@ from sot_graph.adapters.hooks import (
     GATE_HOOK_MARKER, GATE_HOOK_NAME, install_precommit_gate,
 )
 
+from conftest import require_shebang_exec
+
 
 def _git(repo: Path, *args: str, **kw) -> subprocess.CompletedProcess:
     return subprocess.run(
@@ -55,7 +57,8 @@ class TestHookInstall:
         assert "--gate-timeout" in text
         assert "timeout " not in text.split("--gate-timeout")[0].replace(
             GATE_HOOK_MARKER, "")  # no external timeout binary
-        assert hook.stat().st_mode & stat.S_IXUSR
+        if sys.platform != "win32":  # Windows mtime doesn't track exec bits
+            assert hook.stat().st_mode & stat.S_IXUSR
 
     def test_no_git_dir_returns_empty(self, tmp_path):
         assert install_precommit_gate(tmp_path / "nogit") == []
@@ -65,6 +68,7 @@ class TestHookBehavior:
     def _hook_ready(self, repo: Path) -> Path:
         """Install the hook, then repoint PYTHONPATH at the real src —
         the generated block assumes the dogfooded repo layout."""
+        require_shebang_exec()  # git spawns the hook via a #! script
         install_precommit_gate(repo)
         hook = repo / ".git" / "hooks" / GATE_HOOK_NAME
         real_src = Path(__file__).resolve().parents[1] / "src"

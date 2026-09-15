@@ -154,7 +154,10 @@ def _pending_paths_where(
     if not forms:
         return "", []
     marks = ",".join("?" * len(forms))
-    return f"path IN ({marks})", forms
+    # Candidates are '/'-canonical; Windows stores backslash-native paths,
+    # so normalize the stored column too or the IN clause never matches
+    # and the whole sweep reads as "no danglers".
+    return f"replace(path, char(92), '/') IN ({marks})", forms
 
 
 def _node_symbol_exists(db: Any, symbol: str) -> bool:
