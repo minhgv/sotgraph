@@ -4,7 +4,7 @@ All notable changes to sotgraph are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — 2026-09-19
+## [0.3.8] — 2026-09-19
 
 ### Added
 
