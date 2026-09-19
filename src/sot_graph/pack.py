@@ -156,6 +156,21 @@ def _parse_target(target: str) -> _ParsedTarget:
     line number is unambiguously a locator suffix.
     """
     text = target.strip().strip("`'\"").strip()
+    # Scoped task locator ``path::name`` (roster/task-id spelling): the
+    # path half narrows the name ladder exactly like a ``name — path``
+    # display string. ``::`` never appears inside a stored symbol, so the
+    # split is unambiguous.
+    if "::" in text:
+        scope_path, scope_name = text.split("::", 1)
+        scope_path = scope_path.strip()
+        scope_name = scope_name.strip()
+        if scope_path and scope_name and (
+            "/" in scope_path or re.search(r"\.\w+$", scope_path)
+        ):
+            return _ParsedTarget(
+                symbol=scope_name, path=scope_path, line=None,
+                rewritten=True,
+            )
     parts = _TARGET_SEPARATOR_RE.split(text)
     symbol_part = parts[0]
     path_part = parts[-1] if len(parts) > 1 else ""
@@ -201,6 +216,13 @@ def _path_scope_sql(path_scope: Optional[str]) -> Tuple[str, List[str]]:
         [path_scope, like],
     )
 
+def _path_in_scope(stored_path: str, path_scope: str) -> bool:
+    """True when a stored (possibly absolute) path matches ``path_scope``
+    under the same '/'-normalized exact-or-suffix rule as ``_path_scope_sql``."""
+    p = (stored_path or "").replace("\\", "/")
+    s = (path_scope or "").replace("\\", "/")
+    return bool(s) and (p == s or p.endswith("/" + s) or (s.startswith("/") and p.endswith(s)))
+
 
 def _dedup_candidates(row: List[Any]) -> List[str]:
     """Candidate display names (fqn, else symbol) for a PackError, deduped."""
@@ -242,6 +264,20 @@ def _resolve_by_name(
     amb_candidates: List[str] = []
     if len(row) > 1:
         dominant = _dominant_candidate(db, row)
+        if dominant is None and path_scope:
+            # Scoped query ambiguous but the global dominant may still live
+            # inside the scope — retry unscoped and keep the winner only
+            # when its path matches the requested scope.
+            global_row = db.conn.execute(
+                "SELECT id,path,kind,symbol,fqn,signature,label,body,"
+                "line_start,line_end,col_start,col_end FROM graph_nodes "
+                "WHERE (fqn LIKE ? OR fqn LIKE ?) AND kind != 'file' LIMIT 11",
+                (f"%.{name}", f"{name}.%"),
+            ).fetchall()
+            if len(global_row) > 1:
+                g_dom = _dominant_candidate(db, global_row)
+                if g_dom is not None and _path_in_scope(g_dom[1], path_scope):
+                    dominant = g_dom
         if dominant is None:
             raise PackError(
                 "AMBIGUOUS_TARGET",
@@ -260,6 +296,17 @@ def _resolve_by_name(
         ).fetchall()
         if len(row) > 1:
             dominant = _dominant_candidate(db, row)
+            if dominant is None and path_scope:
+                global_row = db.conn.execute(
+                    "SELECT id,path,kind,symbol,fqn,signature,label,body,"
+                    "line_start,line_end,col_start,col_end FROM graph_nodes "
+                    "WHERE symbol = ? AND kind != 'file' LIMIT 11",
+                    (name,),
+                ).fetchall()
+                if len(global_row) > 1:
+                    g_dom = _dominant_candidate(db, global_row)
+                    if g_dom is not None and _path_in_scope(g_dom[1], path_scope):
+                        dominant = g_dom
             if dominant is None:
                 raise PackError(
                     "AMBIGUOUS_TARGET",
@@ -398,17 +445,24 @@ def _node_row(db, node_id: str) -> Optional[Dict[str, Any]]:
     }
 
 
-def _neighbors(db, node_id: str) -> List[Tuple[str, str, Optional[int]]]:
-    """(direction, node_id, line) for call/extends edges around a node."""
+def _neighbors(db, node_id: str) -> List[Tuple[str, str, Optional[int], str]]:
+    """(direction, node_id, line, relation) for usage edges around a node.
+
+    ``calls``/``extends`` are the strong usage evidence; ``imports`` edges
+    are included inbound AND outbound because a module importing a symbol
+    is real usage evidence — test modules frequently reference a target
+    only through an import (enum members, dataclasses, monkeypatched
+    attributes), and dropping them made those tasks look unpackaged.
+    """
     rows = db.conn.execute(
-        "SELECT 'in', e.src, e.line FROM graph_edges e "
-        "WHERE e.dst = ? AND e.relation IN ('calls','extends') "
+        "SELECT 'in', e.src, e.line, e.relation FROM graph_edges e "
+        "WHERE e.dst = ? AND e.relation IN ('calls','extends','imports') "
         "UNION ALL "
-        "SELECT 'out', e.dst, e.line FROM graph_edges e "
-        "WHERE e.src = ? AND e.relation IN ('calls','extends') "
+        "SELECT 'out', e.dst, e.line, e.relation FROM graph_edges e "
+        "WHERE e.src = ? AND e.relation IN ('calls','extends','imports') "
         "ORDER BY 3, 2", (node_id, node_id)
     ).fetchall()
-    return [(r[0], r[1], r[2]) for r in rows]
+    return [(r[0], r[1], r[2], r[3]) for r in rows]
 
 
 def _slice_source_from_bytes(node: Dict[str, Any], raw_bytes: bytes,
@@ -622,15 +676,15 @@ def build_bundle(
 
     # Discover the full 1-hop neighborhood up front so accounting can report
     # honest discovered/omitted counts even when caps stop traversal early.
-    discovered_1hop: List[Tuple[str, str, Optional[int]]] = []
+    discovered_1hop: List[Tuple[str, str, Optional[int], str]] = []
     seen_1hop = set()
-    for direction, neighbor_id, line in _neighbors(db, node["id"]):
+    for direction, neighbor_id, line, relation in _neighbors(db, node["id"]):
         if neighbor_id in visited or neighbor_id in seen_1hop:
             continue
         seen_1hop.add(neighbor_id)
-        discovered_1hop.append((direction, neighbor_id, line))
-    discovered_in_ids = [nid for d, nid, _ in discovered_1hop if d == "in"]
-    discovered_out_ids = [nid for d, nid, _ in discovered_1hop if d == "out"]
+        discovered_1hop.append((direction, neighbor_id, line, relation))
+    discovered_in_ids = [nid for d, nid, _, _ in discovered_1hop if d == "in"]
+    discovered_out_ids = [nid for d, nid, _, _ in discovered_1hop if d == "out"]
 
     #: Per-category drop-phase flags: the last phase that dropped items in a
     #: category determines its omit_reason (token > byte > node cap).
@@ -663,21 +717,30 @@ def build_bundle(
         return base.startswith("test_") or base.endswith("_test.py")
 
     _rel_by_id: Dict[str, str] = {}
-    _test_line_by_id: Dict[str, int] = {}
-    for _direction, _nid, _line in discovered_1hop:
+    _test_line_by_id: Dict[str, Tuple[int, int]] = {}
+    _rel_kind_by_id: Dict[str, str] = {}
+    for _direction, _nid, _line, _relation in discovered_1hop:
         _row = _node_row(db, _nid)
         if _row is None:
             continue
         _p = _row["path"]
         _rel_by_id[_nid] = (os.path.relpath(_p, root) if os.path.isabs(_p) else _p).replace(os.sep, "/")
+        _rel_kind_by_id[_nid] = _relation
         if _direction == "in" and _is_test_module(_rel_by_id[_nid]):
-            _test_line_by_id[_nid] = _line or 0
+            # A direct call/extends edge outranks an import-only edge when
+            # both exist for the same test module: keep the earliest line
+            # of the STRONGER relation as the reserved usage example.
+            strength = 0 if _relation != "imports" else 1
+            prev = _test_line_by_id.get(_nid)
+            cand = (strength, _line or 0)
+            if prev is None or cand < prev:
+                _test_line_by_id[_nid] = cand
     _reserved_test_id = (
         min(_test_line_by_id, key=lambda nid: (_test_line_by_id[nid], nid))
         if _test_line_by_id else None)
 
-    def _neighbor_sort_key(item: Tuple[str, str, Optional[int]]):
-        direction, neighbor_id, line = item
+    def _neighbor_sort_key(item: Tuple[str, str, Optional[int], str]):
+        direction, neighbor_id, line, relation = item
         rel = _rel_by_id.get(neighbor_id)
         if rel is None:
             return (4, 9, line or 0)
@@ -686,6 +749,8 @@ def build_bundle(
                 return (0, 0, line or 0)      # reserved usage example
             if _is_test_module(rel):
                 return (3, 0, line or 0)      # surplus test callers
+            if relation == "imports":
+                return (3, 1, line or 0)      # import-only production callers
             return (2, 0, line or 0)          # surplus production callers
         if rel == rel_path:
             cls = 0                       # exact same file
@@ -695,7 +760,7 @@ def build_bundle(
             cls = 2                       # elsewhere
         return (1, cls, line or 0)            # direct contracts
 
-    for direction, neighbor_id, line in sorted(discovered_1hop, key=_neighbor_sort_key):
+    for direction, neighbor_id, line, relation in sorted(discovered_1hop, key=_neighbor_sort_key):
         if neighbor_id in visited:
             continue
         neighbor = _node_row(db, neighbor_id)
@@ -722,6 +787,7 @@ def build_bundle(
                 "trust_verdict": n_verdict,
                 "callsite_line": line,
                 "contract": neighbor["signature"] or neighbor["label"],
+                "relation": relation,
             })
         else:
             outbound.append({
@@ -730,8 +796,58 @@ def build_bundle(
                 "relative_path": n_rel_path,
                 "trust_verdict": n_verdict,
                 "signature": neighbor["signature"] or neighbor["label"],
+                "relation": relation,
             })
         level1_ids.append(neighbor_id)
+
+    # Module-level test receipt fallback: when no test module references the
+    # target directly (monkeypatched attributes, `with` protocol methods,
+    # symbols exercised only through their module), a test file importing the
+    # target's FILE node is still real usage evidence. These rows are marked
+    # ``relation: "imports_module"`` so consumers can distinguish them from
+    # direct symbol references.
+    if not any(_is_test_module(c.get("relative_path", "")) for c in inbound):
+        file_row = db.conn.execute(
+            "SELECT id FROM graph_nodes WHERE path = ? AND kind = 'file' LIMIT 1",
+            (node["path"],),
+        ).fetchone()
+        if file_row:
+            mod_edges = db.conn.execute(
+                "SELECT e.src, e.line FROM graph_edges e "
+                "WHERE e.dst = ? AND e.relation = 'imports' "
+                "ORDER BY e.line, e.src LIMIT 12",
+                (file_row[0],),
+            ).fetchall()
+            added = 0
+            for src_id, src_line in mod_edges:
+                if added >= 3 or len(inbound) + len(outbound) >= max_nodes:
+                    break
+                if src_id in visited:
+                    continue
+                neighbor = _node_row(db, src_id)
+                if neighbor is None:
+                    continue
+                n_rel = (os.path.relpath(neighbor["path"], root)
+                         if os.path.isabs(neighbor["path"])
+                         else neighbor["path"]).replace(os.sep, "/")
+                if not _is_test_module(n_rel):
+                    continue
+                visited.add(src_id)
+                discovered_in_ids.append(src_id)
+                n_verdict, n_warn = _verify_neighbor_freshness(db, neighbor["path"])
+                if n_warn:
+                    warnings.append(n_warn)
+                inbound.append({
+                    "node_id": neighbor["id"],
+                    "fqn": neighbor["fqn"] or neighbor["symbol"],
+                    "relative_path": n_rel,
+                    "trust_verdict": n_verdict,
+                    "callsite_line": src_line,
+                    "contract": neighbor["signature"] or neighbor["label"],
+                    "relation": "imports_module",
+                })
+                level1_ids.append(src_id)
+                added += 1
 
     stubs: List[Dict[str, Any]] = []
     discovered_stub_refs: List[str] = []
@@ -743,7 +859,7 @@ def build_bundle(
                 cap_dropped["transitive_stubs"] = True
                 warnings.append("node_cap_reached: 2-hop stubs truncated")
                 break
-            for _direction, neighbor_id, _line in _neighbors(db, level1_id):
+            for _direction, neighbor_id, _line, _relation in _neighbors(db, level1_id):
                 if neighbor_id in visited or neighbor_id in stub_seen:
                     continue
                 neighbor = _node_row(db, neighbor_id)

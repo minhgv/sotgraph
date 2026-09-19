@@ -155,7 +155,7 @@ class SG202PackCompletenessTests(unittest.TestCase):
         target_id = bundle["target"]["node_id"]
         db_inbound = self.db.conn.execute(
             "SELECT COUNT(DISTINCT src) FROM graph_edges "
-            "WHERE dst = ? AND relation IN ('calls','extends')", (target_id,)
+            "WHERE dst = ? AND relation IN ('calls','extends','imports')", (target_id,)
         ).fetchone()[0]
         self.assertGreaterEqual(db_inbound, 3)
 

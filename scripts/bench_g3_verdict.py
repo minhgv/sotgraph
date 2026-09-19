@@ -53,13 +53,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     from sot_graph.db import Database
     from sot_graph.outcome import (
         ADVERSE_OUTCOMES, collect_commit_records, commit_verdict,
-        label_outcomes,
+        label_outcomes, make_hunk_verifier,
     )
 
     db = Database(str(db_file), read_only=True)
     try:
         records = collect_commit_records(args.root, limit=args.limit, db=db)
-        outcomes = label_outcomes(records)
+        # Same verifier the calibrate path uses: file-level linkage alone
+        # cannot tell same-file-different-region churn from a real repair.
+        outcomes = label_outcomes(
+            records, verify_fixup=make_hunk_verifier(args.root))
     finally:
         db.close()
 

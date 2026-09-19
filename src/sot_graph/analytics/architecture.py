@@ -200,7 +200,7 @@ _CORE_PATTERNS = [
 def classify_node_layer(node_id: str, data: Dict[str, Any]) -> ArchitecturalLayer:
     """Classify a node into an architectural layer based on path, label, kind, and keywords."""
     path = (data.get("path") or "").lower()
-    label = data.get("label") or node_id
+    label = data.get("symbol") or data.get("fqn") or data.get("label") or node_id
     keywords = " ".join(data.get("keywords") or []).lower()
     text = f"{path} {label} {keywords}"
 

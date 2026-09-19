@@ -156,8 +156,10 @@ def _match_commit_for_receipt(
 
 def _verdict_for(repo_root: str, sha: str,
                  records: List[Any]) -> Dict[str, Any]:
-    from sot_graph.outcome import label_outcomes, commit_verdict
-    outcomes = label_outcomes(records)
+    from sot_graph.outcome import (
+        label_outcomes, commit_verdict, make_hunk_verifier)
+    outcomes = label_outcomes(
+        records, verify_fixup=make_hunk_verifier(repo_root))
     for o in outcomes:
         if o.sha == sha:
             v = dict(commit_verdict(o))

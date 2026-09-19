@@ -116,11 +116,10 @@ def _subgraph(
         if dst not in nodes:
             nodes[dst] = {
                 "id": dst,
-                "label": str(r.get("label") or dst),
+                "label": str(r.get("symbol") or r.get("fqn") or r.get("label") or dst),
                 "role": str(r.get("kind") or "symbol"),
                 "path": str(r.get("path") or ""),
                 "evidence": _evidence_text(str(r.get("path") or ""), r.get("line")),
-                "entry": False,
             }
     return nodes, list(raw.values())
 

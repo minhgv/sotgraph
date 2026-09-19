@@ -57,7 +57,7 @@ def generate_html_visualizer(
 
         d3_nodes.append({
             "id": node_id,
-            "label": data.get("label", node_id),
+            "label": data.get("symbol") or data.get("fqn") or data.get("label", node_id),
             "kind": data.get("kind", "symbol"),
             "path": data.get("path", ""),
             "line_start": data.get("line_start"),

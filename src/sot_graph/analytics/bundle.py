@@ -421,18 +421,20 @@ class ArchitectureBundler:
         lines.extend([
             "## 2. High Blast-Radius Entities (God Nodes)",
             "",
-            "| Entity / Symbol | In-Degree (Incoming Calls) | Out-Degree (Outgoing Calls) | Total Degree | Blast Radius Risk |",
-            "| :--- | :---: | :---: | :---: | :--- |",
+            "| Entity / Symbol | In-Degree (Incoming Calls) | Out-Degree (Outgoing Calls) | Total Degree | Blast Radius Risk | Location |",
+            "| :--- | :---: | :---: | :---: | :--- | :--- |",
         ])
         god_nodes = self.analysis.god_nodes
         if god_nodes:
             for gn in god_nodes[:15]:
                 risk = "**CRITICAL**" if gn.total_degree > 30 else ("**HIGH**" if gn.total_degree > 15 else "MEDIUM")
+                display = gn.label or gn.node_id
+                loc = f"`{gn.path}:{gn.line_start}`" if gn.path and gn.line_start else (f"`{gn.path}`" if gn.path else "")
                 lines.append(
-                    f"| `{gn.node_id}` | `{gn.in_degree}` | `{gn.out_degree}` | `{gn.total_degree}` | {risk} |"
+                    f"| `{display}` | `{gn.in_degree}` | `{gn.out_degree}` | `{gn.total_degree}` | {risk} | {loc} |"
                 )
         else:
-            lines.append("| *(No excessive God Nodes detected)* | - | - | - | - |")
+            lines.append("| *(No excessive God Nodes detected)* | - | - | - | - | - |")
         lines.append("")
 
         return "\n".join(lines)

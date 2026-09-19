@@ -1015,10 +1015,10 @@ class McpService:
             # queue: (node_id, current_depth, via_id, via_label, via_path)
             queue: List[Tuple[str, int, Optional[str], Optional[str], Optional[str]]] = [(row["id"], 0, None, None, None)]
             sql = (
-                "SELECT 'outward' AS dir, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+                "SELECT 'outward' AS dir, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
                 "FROM graph_edges e JOIN graph_nodes n ON e.dst=n.id WHERE e.src=? AND e.relation != 'defines' "
                 "UNION ALL "
-                "SELECT 'inward' AS dir, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+                "SELECT 'inward' AS dir, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
                 "FROM graph_edges e JOIN graph_nodes n ON e.src=n.id WHERE e.dst=? AND e.relation != 'defines' "
                 "ORDER BY dir DESC, n.id"
             )
@@ -1034,7 +1034,7 @@ class McpService:
                 current, current_depth, via_id, via_label, via_path = queue.pop(0)
                 if current_depth >= depth:
                     continue
-                for direction, rel, target, label, path, line, kind in conn.execute(sql, (current, current)).fetchall():
+                for direction, rel, target, symbol, fqn, label, path, line, kind in conn.execute(sql, (current, current)).fetchall():
                     if target == row["id"]:
                         continue
                     if len(relations) >= limit:
@@ -1044,6 +1044,8 @@ class McpService:
                         "direction": direction,
                         "relation": rel if direction == "outward" else f"used_by ({rel})",
                         "target_id": target,
+                        "symbol": symbol,
+                        "fqn": fqn,
                         "label": label,
                         "path": self._relative_path(path),
                         "line": line,
@@ -1406,6 +1408,8 @@ class McpService:
             gods_summary = [
                 {
                     "node_id": g.node_id,
+                    "symbol": g.symbol or g.fqn or g.label,
+                    "fqn": g.fqn or None,
                     "label": g.label,
                     "path": g.path,
                     "kind": g.kind,
@@ -1921,7 +1925,7 @@ class McpService:
         """
         from sot_graph.outcome import (
             collect_commit_records, commit_verdict as _verdict,
-            label_outcomes,
+            label_outcomes, make_hunk_verifier,
         )
 
         if not isinstance(sha, str) or not sha.strip():
@@ -1936,7 +1940,8 @@ class McpService:
             # deadline during the git history walk.
             records = collect_commit_records(
                 self.project_root, limit=limit, db=None)
-            outcomes = label_outcomes(records)
+            outcomes = label_outcomes(
+                records, verify_fixup=make_hunk_verifier(self.project_root))
             for o in outcomes:
                 if o.sha == sha or o.short_sha == sha \
                         or o.sha.startswith(sha):

@@ -84,7 +84,7 @@ def build_arch_view(
         data = graph.nodes[nid]
         node: Dict[str, Any] = {
             "id": nid,
-            "label": str(data.get("label") or nid),
+            "label": str(data.get("symbol") or data.get("fqn") or data.get("label") or nid),
             "tier": tier_assign(data),
             "role": str(data.get("kind") or "symbol"),
         }

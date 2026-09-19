@@ -232,7 +232,7 @@ class SG202PackPriorityTests(unittest.TestCase):
         # discovered counts agree with the indexed graph, not with success
         db_in = self.db.conn.execute(
             "SELECT COUNT(DISTINCT src) FROM graph_edges "
-            "WHERE dst = ? AND relation IN ('calls','extends')",
+            "WHERE dst = ? AND relation IN ('calls','extends','imports')",
             (target_id,)).fetchone()[0]
         self.assertEqual(
             bundle["accounting"]["inbound_callers"]["discovered"], db_in)

@@ -627,6 +627,14 @@ def scope_receipt(
         *(c["path"] for c in callers + callees),
         *(r["path"] for r in transitive if r.get("path")),
     } - {None})
+    # 1-hop evidence surface: target file + direct callers/callees only.
+    # The full ``affected_files`` stays the fail-closed blast radius; this
+    # narrower set is what a fixer actually opens first — reported
+    # separately so precision metrics can score both surfaces honestly.
+    direct_affected_files = sorted({
+        (row or {}).get("path"),
+        *(c["path"] for c in callers + callees),
+    } - {None})
     cited_paths = affected_files if affected_files else ([row["path"]] if row else [])
     snapshot_dict, stale_files = assured_query_context(
         db, repo_root, cited_paths,
@@ -763,6 +771,7 @@ def scope_receipt(
         ),
         "direct_callers": callers,
         "direct_callees": callees,
+        "direct_affected_files": direct_affected_files,
         "relations": relations,
         "transitive_impact": {
             "depth": depth,
@@ -913,6 +922,9 @@ def scope_receipt_multi(
     }
     affected_files = sorted({
         f for s in subs.values() for f in s["affected_files"]})
+    direct_affected_files = sorted({
+        f for s in subs.values()
+        for f in s.get("direct_affected_files", s["affected_files"])})
     candidate_tests = sorted({
         t for s in subs.values() for t in s["candidate_tests"]})
     stale_files = sorted({
@@ -1030,6 +1042,7 @@ def scope_receipt_multi(
                 "direct_callees": len(s["direct_callees"]),
                 "transitive": len(s["transitive_impact"]["nodes"]),
                 "affected_files": s["affected_files"],
+                "direct_affected_files": s.get("direct_affected_files", s["affected_files"]),
                 "candidate_tests": len(s["candidate_tests"]),
             }
             for t, s in subs.items()
@@ -1041,6 +1054,7 @@ def scope_receipt_multi(
             [s["source_anchors"] for s in subs.values()]),
         "direct_callers": callers,
         "direct_callees": callees,
+        "direct_affected_files": direct_affected_files,
         "relations": relations,
         "transitive_impact": {
             "depth": depth,

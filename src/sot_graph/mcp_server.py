@@ -629,7 +629,7 @@ def create_server(service: McpService) -> Any:
                         content.append(types.ResourceLink(
                             type="resource_link",
                             uri=types.AnyUrl(f"sot://node/{quote(str(rid), safe='')}"),
-                            name=str(hit.get("label") or rid),
+                            name=str(hit.get("symbol") or hit.get("fqn") or hit.get("label") or rid),
                             description="Fetch this node on demand",
                             mimeType="application/json",
                         ))

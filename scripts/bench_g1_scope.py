@@ -69,6 +69,8 @@ def _eval_commit(
 
     multi = scope_receipt_multi(db, root, targets)
     pred_union = {rel(f) for f in multi["affected_files"]}
+    pred_direct = {rel(f) for f in multi.get("direct_affected_files",
+                                           multi["affected_files"])}
     # per_target carries each sub-receipt's affected_files list — the
     # best-single baseline comes from the same multi call (no re-run).
     per_target = multi["per_target"]
@@ -87,6 +89,7 @@ def _eval_commit(
             best_single_inter = hit
 
     inter = len(pred_union & changed)
+    inter_direct = len(pred_direct & changed)
     return {
         "sha": rec.short_sha,
         "subject": rec.subject,
@@ -97,11 +100,15 @@ def _eval_commit(
             if per_target[t]["identity_status"] == "UNIQUE"),
         "changed_files": len(changed),
         "pred_union": len(pred_union),
+        "pred_direct": len(pred_direct),
         "pred_best_single": best_single_pred,
         "recall_union": round(inter / len(changed), 4),
+        "recall_direct": round(inter_direct / len(changed), 4),
         "recall_best_single": round(best_single_recall, 4),
         "precision_union": round(inter / len(pred_union), 4)
         if pred_union else 0.0,
+        "precision_direct": round(inter_direct / len(pred_direct), 4)
+        if pred_direct else 0.0,
         "precision_best_single": round(
             best_single_inter / best_single_pred, 4)
         if best_single_pred else None,
@@ -122,13 +129,17 @@ def aggregate(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "n": n,
         "mean_recall_union": mean("recall_union"),
+        "mean_recall_direct": mean("recall_direct"),
         "mean_recall_best_single": mean("recall_best_single"),
         "mean_precision_union": mean("precision_union"),
+        "mean_precision_direct": mean("precision_direct"),
         "mean_precision_best_single": mean("precision_best_single"),
         "union_ge_best_rate": round(
             sum(1 for r in rows if r["union_ge_best_single"]) / n, 4),
         "precision_drop": round(
             mean("precision_best_single") - mean("precision_union"), 4),
+        "precision_drop_direct": round(
+            mean("precision_best_single") - mean("precision_direct"), 4),
         "partial_resolution_rate": round(
             sum(1 for r in rows if r["partial_targets"]) / n, 4),
     }
@@ -183,6 +194,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             "detail": f"drop={agg.get('precision_drop')} "
                       f"(bar {PRECISION_DROP_BAR})",
         },
+        "precision_drop_direct_informational": {
+            "passed": bool(rows)
+            and agg["precision_drop_direct"] <= PRECISION_DROP_BAR + 1e-9,
+            "detail": f"drop_direct={agg.get('precision_drop_direct')} "
+                      f"(bar {PRECISION_DROP_BAR}; informational, not gated)",
+        },
         "sample_size": {"passed": len(rows) >= min(10, args.sample),
                         "detail": f"{len(rows)} commits evaluated"},
     }
@@ -210,7 +227,12 @@ def main(argv: Optional[List[str]] = None) -> int:
               f"({chk['detail']})")
     print(f"  report: {out}")
     if args.gate:
-        return 0 if all(c["passed"] for c in checks.values()) else 1
+        # Informational checks (``*_informational`` suffix) report but do
+        # not gate — the direct-surface drop is a parallel measurement,
+        # not a replacement for the blast-radius bar.
+        gated = {k: c for k, c in checks.items()
+                 if not k.endswith("_informational")}
+        return 0 if all(c["passed"] for c in gated.values()) else 1
     return 0
 
 

@@ -2434,11 +2434,11 @@ class Database:
         # per-node loop is preserved level-for-level.
         level: List[Tuple[str, int, Optional[str], Optional[str], Optional[str]]] = [(node_id, 0, None, None, None)]
         sql = (
-            "SELECT 'outward' AS dir, e.src AS anchor, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+            "SELECT 'outward' AS dir, e.src AS anchor, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
             "FROM graph_edges e JOIN graph_nodes n ON e.dst=n.id "
             "WHERE e.src IN ({ph}) AND e.relation != 'defines' "
             "UNION ALL "
-            "SELECT 'inward' AS dir, e.dst AS anchor, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+            "SELECT 'inward' AS dir, e.dst AS anchor, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
             "FROM graph_edges e JOIN graph_nodes n ON e.src=n.id "
             "WHERE e.dst IN ({ph}) AND e.relation != 'defines' "
         )
@@ -2484,7 +2484,7 @@ class Database:
                 # (stable sort keeps equal-key ties in scan order, matching
                 # the old unspecified tie behavior).
                 rows.sort(key=lambda r: (0 if r[0] == "outward" else 1, r[3]))
-                for direction, _anchor, rel, target, label, path, line, kind in rows:
+                for direction, _anchor, rel, target, symbol, fqn, label, path, line, kind in rows:
                     if target == node_id:  # avoid trivial direct loopback to root
                         continue
                     rel_label = rel if direction == "outward" else f"used_by ({rel})"
@@ -2493,6 +2493,8 @@ class Database:
                         "direction": direction,
                         "relation": rel_label,
                         "target_id": target,
+                        "symbol": symbol,
+                        "fqn": fqn,
                         "label": label,
                         "path": path,
                         "line": line,

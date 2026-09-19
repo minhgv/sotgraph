@@ -18,6 +18,8 @@ from sot_graph.analytics.graph import (
 @dataclasses.dataclass
 class GodNodeInfo:
     node_id: str
+    symbol: str
+    fqn: str
     label: str
     kind: str
     path: str
@@ -155,21 +157,21 @@ def find_god_nodes(
                 risk = "MEDIUM"
 
             score = (deg - mean_val) / (std_dev if std_dev > 0 else 1.0)
-            god_nodes.append(
-                GodNodeInfo(
-                    node_id=node_id,
-                    label=data.get("label", node_id),
-                    kind=data.get("kind", "symbol"),
-                    path=data.get("path", ""),
-                    line_start=data.get("line_start"),
-                    in_degree=in_deg,
-                    out_degree=out_deg,
-                    total_degree=deg,
-                    score=round(score, 2),
-                    risk_level=risk,
-                    blast_radius=blast,
-                )
-            )
+            god_nodes.append(GodNodeInfo(
+                node_id=node_id,
+                symbol=data.get("symbol", ""),
+                fqn=data.get("fqn", ""),
+                label=data.get("symbol") or data.get("fqn") or data.get("label") or node_id,
+                kind=data.get("kind", "symbol"),
+                path=data.get("path", ""),
+                line_start=data.get("line_start"),
+                in_degree=in_deg,
+                out_degree=out_deg,
+                total_degree=deg,
+                score=round(score, 2),
+                risk_level=risk,
+                blast_radius=blast,
+            ))
 
     god_nodes.sort(key=lambda g: (g.total_degree, g.blast_radius), reverse=True)
     return god_nodes
@@ -243,11 +245,11 @@ def find_surprising_connections(
             surprising.append(
                 SurprisingConnection(
                     src_id=e["src"],
-                    src_label=src_node.get("label", e["src"]),
+                    src_label=src_node.get("symbol") or src_node.get("fqn") or src_node.get("label", e["src"]),
                     src_community=c_src,
                     src_path=src_node.get("path", ""),
                     dst_id=e["dst"],
-                    dst_label=dst_node.get("label", e["dst"]),
+                    dst_label=dst_node.get("symbol") or dst_node.get("fqn") or dst_node.get("label", e["dst"]),
                     dst_community=c_dst,
                     dst_path=dst_node.get("path", ""),
                     relation=e.get("relation", "relates"),

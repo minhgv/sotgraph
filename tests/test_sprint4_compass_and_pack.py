@@ -43,11 +43,11 @@ def _reference_explore_node(db, node_id, depth=1, limit=None):
     result = []
     queue = [(node_id, 0, None, None, None)]
     sql = (
-        "SELECT 'outward' AS dir, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+        "SELECT 'outward' AS dir, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
         "FROM graph_edges e JOIN graph_nodes n ON e.dst=n.id "
         "WHERE e.src=? AND e.relation != 'defines' "
         "UNION ALL "
-        "SELECT 'inward' AS dir, e.relation, n.id, n.label, n.path, n.line_start, n.kind "
+        "SELECT 'inward' AS dir, e.relation, n.id, n.symbol, n.fqn, n.label, n.path, n.line_start, n.kind "
         "FROM graph_edges e JOIN graph_nodes n ON e.src=n.id "
         "WHERE e.dst=? AND e.relation != 'defines' "
         "ORDER BY dir DESC, n.id"
@@ -58,7 +58,7 @@ def _reference_explore_node(db, node_id, depth=1, limit=None):
             continue
         visited.add(current)
         rows = db.conn.execute(sql, (current, current)).fetchall()
-        for direction, rel, target, label, path, line, kind in rows:
+        for direction, rel, target, symbol, fqn, label, path, line, kind in rows:
             if target == node_id:
                 continue
             rel_label = rel if direction == "outward" else f"used_by ({rel})"
@@ -67,6 +67,8 @@ def _reference_explore_node(db, node_id, depth=1, limit=None):
                 "direction": direction,
                 "relation": rel_label,
                 "target_id": target,
+                "symbol": symbol,
+                "fqn": fqn,
                 "label": label,
                 "path": path,
                 "line": line,

@@ -43,6 +43,10 @@ def main() -> int:
     ap.add_argument("--output-dir", default=".",
                     help="directory for replay.json (default: cwd)")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--target-mode", choices=("scoped", "bare"), default="scoped",
+                    help="target string passed to pack: 'scoped' = the roster "
+                         "key 'path::name' (exact task identity); 'bare' = the "
+                         "legacy bare symbol name (pre-T-08 measurement)")
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
@@ -103,6 +107,7 @@ def main() -> int:
             "max_nodes": MAX_NODES, "max_bytes": MAX_BYTES,
             "max_hops": 2, "workers": args.workers,
             "gate_floor": GATE_FLOOR, "min_measurable": MIN_MEASURABLE,
+            "target_mode": args.target_mode,
         },
         "roster_source": "frozen baseline report task_roster (exact keys, "
                          "no re-sampling)",
@@ -159,12 +164,12 @@ def main() -> int:
             if unmeasured or not relevant_tests:
                 rec["outcome"] = "ORACLE_UNMEASURABLE"
                 rec["reasons"] = (["contracts_overflow"] if unmeasured else []) + \
-                                 ([] if relevant_tests
-                                  else ["no_relevant_test_in_corpus"])
+                                 ([] if relevant_tests else ["no_relevant_test_in_corpus"])
                 results.append(rec)
                 continue
             try:
-                bundle = build_bundle(db, str(root), tname, max_hops=2,
+                pack_target = key if args.target_mode == "scoped" else tname
+                bundle = build_bundle(db, str(root), pack_target, max_hops=2,
                                       max_nodes=MAX_NODES, max_bytes=MAX_BYTES,
                                       max_tokens=BUDGET)
             except PackError as exc:

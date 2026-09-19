@@ -189,7 +189,7 @@ _RANK_ORDER = {"STRONG": 0, "REBUILT": 0, "WEAK": 1, "NOPATH": 2, "STALE": 3, "R
 def _identity_grade(row: Dict[str, Any], query: str) -> Tuple[int, str]:
     """0 exact symbol, 1 exact label/fqn, 2 name-prefix, 3 body-only."""
     q = query.strip().strip('"\'' )
-    symbol = (row.get("label") or "").strip()
+    symbol = (row.get("symbol") or row.get("fqn") or row.get("label") or "").strip()
     if q and symbol == q:
         return 0, "exact symbol name match"
     fqn = (row.get("fqn") or "").strip()
@@ -2163,11 +2163,13 @@ def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
     if getattr(args, "outcomes", False):
         from sot_graph.outcome import (
             label_outcomes, records_from_summaries, commit_verdict,
+            make_hunk_verifier,
         )
         records = records_from_summaries(res.commits, repo_path=root)
         verdicts = {
             o.sha: commit_verdict(o)
-            for o in label_outcomes(records)
+            for o in label_outcomes(
+                records, verify_fixup=make_hunk_verifier(root))
         }
 
     if getattr(args, "json", False):
@@ -2254,6 +2256,7 @@ def cmd_commit_verdict(args: argparse.Namespace, db: Database, root: str) -> int
     """
     from sot_graph.outcome import (
         collect_commit_records, label_outcomes, commit_verdict,
+        make_hunk_verifier,
     )
     from sot_graph.assurance.impact_pipeline import ReceiptStore
     from sot_graph.assurance.receipts import receipt_digest
@@ -2265,7 +2268,8 @@ def cmd_commit_verdict(args: argparse.Namespace, db: Database, root: str) -> int
     limit = int(getattr(args, "limit", 400) or 400)
 
     records = collect_commit_records(root, limit=limit, db=db)
-    outcomes = label_outcomes(records)
+    outcomes = label_outcomes(
+        records, verify_fixup=make_hunk_verifier(root))
     target = None
     for o in outcomes:
         if o.sha == sha_arg or o.short_sha == sha_arg \

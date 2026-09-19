@@ -22,16 +22,18 @@ from sot_graph.cli import _identity_grade, _p4_sort_key  # noqa: E402
 
 class TestIdentityGrade:
     def test_exact_symbol_beats_qualified_beats_prefix(self):
-        exact = _identity_grade({"label": "run", "fqn": "src.run"}, "run")
-        qualified = _identity_grade({"label": "run", "fqn": "src.run"}, "src.run")
-        prefix = _identity_grade({"label": "run_server", "fqn": "x"}, "run")
-        body = _identity_grade({"label": "Order", "fqn": "x"}, "run")
+        # ``symbol`` is the canonical bare name; ``label`` is the display
+        # string ("def f — path:line") and ``fqn`` the qualified path.
+        exact = _identity_grade({"symbol": "run", "fqn": "src.run"}, "run")
+        qualified = _identity_grade({"symbol": "run", "fqn": "src.run"}, "src.run")
+        prefix = _identity_grade({"symbol": "run_server", "fqn": "x"}, "run")
+        body = _identity_grade({"symbol": "Order", "fqn": "x"}, "run")
         assert exact[0] < qualified[0] < prefix[0] < body[0]
         assert exact[1] == "exact symbol name match"
 
     def test_colon_qualified_query(self):
         grade, reason = _identity_grade(
-            {"label": "get", "fqn": "Cache.get"}, "Cache.get"
+            {"symbol": "get", "fqn": "Cache.get"}, "Cache.get"
         )
         assert grade == 1
         assert reason == "qualified-name match"

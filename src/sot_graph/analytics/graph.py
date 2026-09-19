@@ -122,13 +122,13 @@ class AnalyticsGraph:
         if scope:
             like_pattern = f"{scope}%"
             node_rows = conn.execute(
-                "SELECT id, label, kind, path, line_start, body, keywords "
+                "SELECT id, symbol, fqn, label, kind, path, line_start, body, keywords "
                 "FROM graph_nodes WHERE path LIKE ?",
                 (like_pattern,),
             ).fetchall()
         else:
             node_rows = conn.execute(
-                "SELECT id, label, kind, path, line_start, body, keywords FROM graph_nodes"
+                "SELECT id, symbol, fqn, label, kind, path, line_start, body, keywords FROM graph_nodes"
             ).fetchall()
 
         valid_node_ids: Set[str] = set()
@@ -137,12 +137,14 @@ class AnalyticsGraph:
             valid_node_ids.add(node_id)
             graph.add_node(
                 node_id=node_id,
-                label=r[1] or "",
-                kind=r[2] or "symbol",
-                path=r[3] or "",
-                line_start=r[4],
-                body=r[5] or "",
-                keywords=r[6] or "",
+                symbol=r[1] or "",
+                fqn=r[2] or "",
+                label=r[3] or "",
+                kind=r[4] or "symbol",
+                path=r[5] or "",
+                line_start=r[6],
+                body=r[7] or "",
+                keywords=r[8] or "",
             )
 
         # Query edges

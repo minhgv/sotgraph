@@ -116,7 +116,9 @@ def generate_jsonld_schema(
             god_nodes_data.append(
                 {
                     "@type": "CentralComponent",
-                    "symbol": g.label,
+                    "id": g.node_id,
+                    "symbol": g.symbol or g.fqn or g.label,
+                    "fqn": g.fqn or None,
                     "kind": g.kind,
                     "location": f"{g.path}:{g.line_start}" if g.path else "N/A",
                     "degree": g.total_degree,
@@ -573,7 +575,7 @@ def generate_markdown_report(
                 )
             )
             lines.append(
-                f"| `{g.label}` | `{g.kind}` | {loc} | `{g.total_degree}` (`{g.in_degree}` / `{g.out_degree}`) | `{g.blast_radius} nodes` | {risk_badge} | `{g.score:.2f}σ` |"
+                f"| `{g.symbol or g.fqn or g.label}` | `{g.kind}` | {loc} | `{g.total_degree}` (`{g.in_degree}` / `{g.out_degree}`) | `{g.blast_radius} nodes` | {risk_badge} | `{g.score:.2f}σ` |"
             )
     else:
         lines.append(
