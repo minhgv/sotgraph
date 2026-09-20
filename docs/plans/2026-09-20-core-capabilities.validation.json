@@ -1,0 +1,168 @@
+{
+  "timestamp": "2026-09-20T18:57:01Z",
+  "status": "PASSED",
+  "timestamp_final_verification": "2026-09-21T00:00:00Z",
+  "environment": {
+    "python_interpreter": "/Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python",
+    "sot_graph_source": "/Users/giapminh79/code/GitHub/sotgraph/src/sot_graph/__init__.py",
+    "repo_root": "/Users/giapminh79/code/GitHub/sotgraph",
+    "scratch_root": "/Users/giapminh79/.omp/tmp/corecap-final-val"
+  },
+  "static_checks": {
+    "adapter_docs_check": {
+      "command": "PYTHONPATH=/Users/giapminh79/code/GitHub/sotgraph/src /Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python scripts/adapter_docs_check.py",
+      "raw_exit_code": 0,
+      "delta_verdict": "PASS",
+      "output": "\u2705 Adapter docs consistent with build_parser() and MCP registry."
+    },
+    "ruff_changed_files": {
+      "command": "ruff check CHANGELOGS.md README.md docs/SOT_GRAPH_GUIDE.md scripts/adapter_docs_check.py src/sot_graph/_vendor/graphify/extract.py src/sot_graph/adapters/antigravity.py src/sot_graph/adapters/claude.py src/sot_graph/adapters/omp.py src/sot_graph/adapters/opencode.py src/sot_graph/adapters/zcode.py src/sot_graph/assurance/engine.py src/sot_graph/assurance/impact_pipeline.py src/sot_graph/assurance/receipts.py src/sot_graph/assurance/resolution.py src/sot_graph/cli.py src/sot_graph/extractor.py src/sot_graph/mcp_server.py src/sot_graph/mcp_service.py src/sot_graph/pack.py src/sot_graph/snapshot.py tests/test_adapter_docs_consistency.py tests/test_completion_surface_provider.py tests/test_gs_surface_catalog.py tests/test_impact_pipeline.py tests/test_mcp_receipt_tools.py tests/test_p7_receipts.py tests/test_resolution_ledger.py tests/test_safe_commit_gate.py tests/test_scope_receipt_multi.py tests/test_snapshot_content_binding.py",
+      "raw_exit_code": 0,
+      "delta_verdict": "PASS",
+      "introduced_diagnostics": 0,
+      "output": "All checks passed!"
+    },
+    "pyright_src": {
+      "command": "pyright src/",
+      "raw_exit_code": 1,
+      "delta_verdict": "PASS_WITH_PRE_EXISTING_BASELINE",
+      "introduced_errors": 0,
+      "pre_existing_baseline_errors": 5,
+      "pre_existing_baseline_warnings": 3,
+      "baseline_details": [
+        "src/sot_graph/freshness.py:307, 310 (2 errors)",
+        "src/sot_graph/graphstore.py:225, 379, 458 (3 errors)",
+        "src/sot_graph/claims.py:141, src/sot_graph/holdout/__init__.py:10 (3 warnings)"
+      ],
+      "log_artifact": ".sot/tmp/corecap/pyright_final.log"
+    }
+  },
+  "focused_repaired_suite": {
+    "command": "TMPDIR=/Users/giapminh79/.omp/tmp/corecap-final-val GIT_CEILING_DIRECTORIES=/Users/giapminh79/.omp/tmp/corecap-final-val PYTHONPATH=/Users/giapminh79/code/GitHub/sotgraph/src /Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python -m pytest tests/test_scoped_identity.py tests/test_mcp_profiles.py tests/test_mcp_receipt_tools.py tests/test_impact_pipeline.py tests/test_resolution_ledger.py tests/test_snapshot_content_binding.py tests/test_adapter_docs_consistency.py -q --basetemp=/Users/giapminh79/.omp/tmp/corecap-final-val/pytest_focused",
+    "raw_exit_code": 0,
+    "passed": 154,
+    "failed": 0,
+    "skipped": 0,
+    "duration_s": 53.81
+  },
+  "full_suite_final": {
+    "command": "TMPDIR=/Users/giapminh79/.omp/tmp/corecap-final-val GIT_CEILING_DIRECTORIES=/Users/giapminh79/.omp/tmp/corecap-final-val PYTHONPATH=/Users/giapminh79/code/GitHub/sotgraph/src /Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python -m pytest tests/ -q --basetemp=/Users/giapminh79/.omp/tmp/corecap-final-val/pytest_full_run2",
+    "raw_exit_code": 0,
+    "passed": 2608,
+    "failed": 0,
+    "skipped": 5,
+    "duration_s": 760.45,
+    "log_artifact": ".sot/tmp/corecap/pytest_full_run2.log"
+  },
+  "pre_repair_history": {
+    "timestamp": "2026-09-21T00:00:00Z",
+    "status": "partial_pre_repair",
+    "summary": {
+      "focused_suite": {
+        "command": "TMPDIR=$(pwd)/.sot/tmp/corecap .venv/bin/python -m pytest tests/test_scoped_identity.py tests/test_typed_references.py tests/test_sg202_pack_completeness.py tests/test_pack_target_recovery.py tests/test_python_resolver.py tests/test_python_semantic_resolver.py tests/test_python_scope_extended.py tests/test_import_resolution.py tests/test_adversarial_edge_cases.py tests/test_safe_commit_gate.py tests/test_resolution_ledger.py tests/test_p7_receipts.py tests/test_scope_receipt_multi.py tests/test_impact_pipeline.py tests/test_sg205_receipt_explorer.py tests/test_mcp_profiles.py tests/test_mcp.py tests/test_mcp_modern.py tests/test_mcp_prompts.py tests/test_mcp_receipt_tools.py tests/test_cli_smoke.py tests/test_jit_freshness.py tests/test_jit_reconcile.py tests/test_maintenance.py -q --basetemp=.sot/tmp/corecap/pytest_focused",
+        "exit_code": 1,
+        "passed": 357,
+        "failed": 3,
+        "skipped": 0,
+        "failures": [
+          {
+            "test": "tests/test_resolution_ledger.py::TestPreReceiptBindingAudit::test_foreign_repository_incompatible",
+            "anchor": "tests/test_resolution_ledger.py:529",
+            "error": "AssertionError: assert 'bound' == 'incompatible'"
+          },
+          {
+            "test": "tests/test_p7_receipts.py::TestScopeReceipt::test_scope_block_classifies_direct_transitive_unknown",
+            "anchor": "tests/test_p7_receipts.py:129",
+            "error": "AssertionError: assert [] == ()"
+          },
+          {
+            "test": "tests/test_scope_receipt_multi.py::TestMultiScopeReceipt::test_scope_block_preserves_classification_and_gaps",
+            "anchor": "tests/test_scope_receipt_multi.py:164",
+            "error": "AssertionError: assert [] == ()"
+          }
+        ]
+      },
+      "full_suite_minus_omp": {
+        "command": "TMPDIR=$(pwd)/.sot/tmp/corecap .venv/bin/python -m pytest tests/ -q --basetemp=.sot/tmp/corecap/pytest_full --ignore=tests/test_omp_integration.py --ignore=tests/test_p8_omp_integration.py",
+        "exit_code": 1,
+        "passed": 2557,
+        "failed": 13,
+        "skipped": 5,
+        "log_artifact": ".sot/tmp/corecap/full_pytest.log",
+        "failures": [
+          {
+            "test": "tests/test_adapter_docs_consistency.py::AdapterDocsConsistencyTests::test_docs_match_cli_parser_and_mcp_registry",
+            "anchor": "tests/test_adapter_docs_consistency.py:714",
+            "error": "AssertionError: Lists differ"
+          },
+          {
+            "test": "tests/test_cbm_snapshot_p2.py::TestUnknownFailClosed::test_non_git_dir_yields_unknown_never_supported",
+            "anchor": "tests/test_cbm_snapshot_p2.py:870",
+            "error": "AssertionError: assert 'STALE' == 'UNKNOWN'"
+          },
+          {
+            "test": "tests/test_cbm_store.py::test_file_journal_excludes_engine_internals",
+            "anchor": "tests/test_cbm_store.py:874",
+            "error": "assert not True"
+          },
+          {
+            "test": "tests/test_diff_impact.py::TestMcpServiceDiffImpact::test_mcp_diff_impact_sync_and_async",
+            "anchor": "tests/test_diff_impact.py:876",
+            "error": "sot_graph.mcp_service.McpServiceError: query_failed: graph query failed"
+          },
+          {
+            "test": "tests/test_p7_receipts.py::TestScopeReceipt::test_scope_block_classifies_direct_transitive_unknown",
+            "anchor": "tests/test_p7_receipts.py:877",
+            "error": "AssertionError: assert [] == ()"
+          },
+          {
+            "test": "tests/test_resolution_ledger.py::TestPreReceiptBindingAudit::test_foreign_repository_incompatible",
+            "anchor": "tests/test_resolution_ledger.py:882",
+            "error": "AssertionError: assert 'bound' == 'incompatible'"
+          },
+          {
+            "test": "tests/test_scope_receipt_multi.py::TestMultiScopeReceipt::test_scope_block_preserves_classification_and_gaps",
+            "anchor": "tests/test_scope_receipt_multi.py:886",
+            "error": "AssertionError: assert [] == ()"
+          },
+          {
+            "test": "tests/test_snapshot_binding.py::SnapshotBindingTest::test_non_git_dir_yields_none",
+            "anchor": "tests/test_snapshot_binding.py:891",
+            "error": "AssertionError: 'fcb60dd260518af44a09cbbe1486d0bbef1b8a22' is not None"
+          },
+          {
+            "test": "tests/test_surface_lifecycle_runner.py (5 tests)",
+            "anchor": "tests/test_surface_lifecycle_runner.py:892-902",
+            "error": "AssertionError / IndexError"
+          }
+        ]
+      },
+      "omp_integration_suite": {
+        "command": "TMPDIR=$(pwd)/.sot/tmp/corecap .venv/bin/python -m pytest tests/test_omp_integration.py tests/test_p8_omp_integration.py -q --basetemp=.sot/tmp/corecap/pytest_omp",
+        "exit_code": 0,
+        "passed": 17,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "notes": "Initial run before repair wave. Had 3 failed in focused suite, 13 in full suite (environmental temp isolation issues)."
+  },
+  "runtime_proof_artifact": "docs/plans/2026-09-20-core-capabilities.runtime.json",
+  "post_full_suite_description_check": {
+    "timestamp": "2026-09-20T19:05:15Z",
+    "reason": "DOCS_FROZEN: Verified sot_pack docstrings / MCP schema description updates for max_tokens strict renderer budget vs max_bytes best-effort floor semantics without logic changes.",
+    "tests": {
+      "command": "TMPDIR=/Users/giapminh79/.omp/tmp/corecap-final-val GIT_CEILING_DIRECTORIES=/Users/giapminh79/.omp/tmp/corecap-final-val PYTHONPATH=/Users/giapminh79/code/GitHub/sotgraph/src /Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python -m pytest tests/test_mcp_profiles.py tests/test_adapter_docs_consistency.py -q --basetemp=/Users/giapminh79/.omp/tmp/corecap-final-val/pytest_docs_check",
+      "raw_exit_code": 0,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "duration_s": 3.72
+    },
+    "adapter_docs_script": {
+      "command": "PYTHONPATH=/Users/giapminh79/code/GitHub/sotgraph/src /Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python scripts/adapter_docs_check.py",
+      "raw_exit_code": 0,
+      "output": "\u2705 Adapter docs consistent with build_parser() and MCP registry."
+    }
+  }
+}

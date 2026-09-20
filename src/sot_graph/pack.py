@@ -125,6 +125,7 @@ _TARGET_SEPARATOR_RE = re.compile(r"\s*[—–]\s*|\s+\|\s+|\s+-\s+")
 _RESOLUTION_STATUS = {
     "path_line_containment": "PATH_LINE_RESOLVED",
     "normalized_symbol": "NORMALIZED_TARGET",
+    "path_scoped": "PATH_SCOPED_TARGET",
 }
 
 
@@ -198,6 +199,18 @@ def _parse_target(target: str) -> _ParsedTarget:
     )
 
 
+def _like_escape(text: str) -> str:
+    r"""Escape SQL LIKE metacharacters for a pattern paired with ``ESCAPE '\'``.
+
+    Agent-authored targets and scopes are literals: an unescaped ``_`` in
+    ``http_utils.py`` would wildcard-match ``httpXutils.py`` and resolve —
+    or ambiguously reject — the wrong node. Backslash is escaped first so
+    the replacement sequences themselves stay literal (same discipline as
+    ``solution._like_literal``).
+    """
+    return text.replace("\\", "\\\\").replace("%", r"\%").replace("_", r"\_")
+
+
 def _path_scope_sql(path_scope: Optional[str]) -> Tuple[str, List[str]]:
     """SQL fragment narrowing a graph_nodes query to ``path_scope``.
 
@@ -205,14 +218,17 @@ def _path_scope_sql(path_scope: Optional[str]) -> Tuple[str, List[str]]:
     so scope by exact match or suffix (an absolute scope needs no leading
     ``/`` in the LIKE pattern). Locators are '/'-canonical (``_split_locator``
     normalizes) while Windows stores carry '\\', so both sides are matched
-    through a '/'-normalized path expression.
+    through a '/'-normalized path expression. The LIKE half is
+    metachar-escaped under ``ESCAPE '\'``: a scope like ``http_utils.py``
+    is a literal path, never a wildcard pattern.
     """
     if not path_scope:
         return "", []
-    like = f"%{path_scope}" if path_scope.startswith("/") else f"%/{path_scope}"
+    esc = _like_escape(path_scope)
+    like = f"%{esc}" if path_scope.startswith("/") else f"%/{esc}"
     posix_path = "replace(path, char(92), '/')"
     return (
-        f" AND ({posix_path} = ? OR {posix_path} LIKE ?)",
+        f" AND ({posix_path} = ? OR {posix_path} LIKE ? ESCAPE '\\')",
         [path_scope, like],
     )
 
@@ -234,13 +250,16 @@ def _resolve_by_name(
 ) -> Tuple[List[Any], bool, List[str]]:
     """Name-resolution ladder: exact FQN → FQN suffix → bare symbol.
 
-    Each step is optionally narrowed to ``path_scope``. Ambiguity
+    Each step is optionally narrowed to ``path_scope``; scoped FQN
+    matching is literal and case-sensitive (the exact steps' convention),
+    while unscoped retries keep LIKE. Ambiguity
     semantics are unchanged from the pre-recovery ladder: a dominant
     candidate (decisive inbound-edge margin) wins and is disclosed via the
     returned ``auto_resolved`` flag plus candidates; otherwise
     ``AMBIGUOUS_TARGET`` is raised with the candidates inline.
     """
     scope_sql, scope_params = _path_scope_sql(path_scope)
+    esc = _like_escape(name)
     row = db.conn.execute(
         "SELECT id,path,kind,symbol,fqn,signature,label,body,"
         "line_start,line_end,col_start,col_end FROM graph_nodes "
@@ -254,12 +273,31 @@ def _resolve_by_name(
             candidates=_dedup_candidates(row),
         )
     if not row:
-        row = db.conn.execute(
-            "SELECT id,path,kind,symbol,fqn,signature,label,body,"
-            "line_start,line_end,col_start,col_end FROM graph_nodes "
-            f"WHERE (fqn LIKE ? OR fqn LIKE ?) AND kind != 'file'{scope_sql} LIMIT 11",
-            (f"%.{name}", f"{name}.%", *scope_params),
-        ).fetchall()
+        if path_scope:
+            # Scoped FQN matching stays in the exact steps' case
+            # convention: literal ends-with/starts-with comparisons
+            # (substr), never a casefolding LIKE — 'Cls.run_tests' must
+            # not select 'run_Tests'. The unscoped ladder below keeps
+            # LIKE: global search policy is unchanged.
+            head = f"{name}."
+            tail = f".{name}"
+            row = db.conn.execute(
+                "SELECT id,path,kind,symbol,fqn,signature,label,body,"
+                "line_start,line_end,col_start,col_end FROM graph_nodes "
+                "WHERE ((length(fqn) > ? AND substr(fqn, ?) = ?) "
+                "OR (length(fqn) > ? AND substr(fqn, 1, ?) = ?)) "
+                f"AND kind != 'file'{scope_sql} LIMIT 11",
+                (len(tail), -len(tail), tail, len(head), len(head), head,
+                 *scope_params),
+            ).fetchall()
+        else:
+            row = db.conn.execute(
+                "SELECT id,path,kind,symbol,fqn,signature,label,body,"
+                "line_start,line_end,col_start,col_end FROM graph_nodes "
+                f"WHERE (fqn LIKE ? ESCAPE '\\' OR fqn LIKE ? ESCAPE '\\') "
+                f"AND kind != 'file'{scope_sql} LIMIT 11",
+                (f"%.{esc}", f"{esc}.%", *scope_params),
+            ).fetchall()
     auto_resolved = False
     amb_candidates: List[str] = []
     if len(row) > 1:
@@ -271,8 +309,9 @@ def _resolve_by_name(
             global_row = db.conn.execute(
                 "SELECT id,path,kind,symbol,fqn,signature,label,body,"
                 "line_start,line_end,col_start,col_end FROM graph_nodes "
-                "WHERE (fqn LIKE ? OR fqn LIKE ?) AND kind != 'file' LIMIT 11",
-                (f"%.{name}", f"{name}.%"),
+                "WHERE (fqn LIKE ? ESCAPE '\\' OR fqn LIKE ? ESCAPE '\\') "
+                "AND kind != 'file' LIMIT 11",
+                (f"%.{esc}", f"{esc}.%"),
             ).fetchall()
             if len(global_row) > 1:
                 g_dom = _dominant_candidate(db, global_row)
@@ -342,9 +381,10 @@ def _resolve_by_path_line(db, path: str, line: int) -> List[Any]:
         (line, line, path),
     ).fetchall()
     if not row:
-        like = f"%{path}" if path.startswith("/") else f"%/{path}"
+        esc_path = _like_escape(path)
+        like = f"%{esc_path}" if path.startswith("/") else f"%/{esc_path}"
         row = db.conn.execute(
-            base + f" AND {posix_path} LIKE ? "
+            base + f" AND {posix_path} LIKE ? ESCAPE '\\' "
             "ORDER BY length(path), (line_end - line_start), symbol LIMIT 11",
             (line, line, like),
         ).fetchall()
@@ -401,9 +441,32 @@ def _find_target(db, target: str) -> Tuple[Dict[str, Any], str]:
     :class:`PackError` (with candidates) when no candidate wins.
     """
     parsed = _parse_target(target)
-    row, auto_resolved, amb_candidates = _resolve_by_name(db, target)
+    scoped_query = (
+        "::" in target and parsed.rewritten
+        and bool(parsed.path) and bool(parsed.symbol)
+    )
     resolution_method: Optional[str] = None
-    if not row and parsed.rewritten and parsed.symbol:
+    row: List[Any] = []
+    auto_resolved = False
+    amb_candidates: List[str] = []
+    if scoped_query:
+        # Explicit ``path::name`` scoped targets constrain selection BEFORE
+        # any literal graph-name matching: the path half narrows the name
+        # ladder, and a node elsewhere whose stored name merely equals the
+        # locator text (a data key, a fixture variable) is never the
+        # requested target. Scoped queries do not fall back to whole-string
+        # name matching; nothing scoped means the target does not exist.
+        row, auto_resolved, amb_candidates = _resolve_by_name(
+            db, parsed.symbol, path_scope=parsed.path,
+        )
+        if row:
+            resolution_method = "path_scoped"
+    if not row and not scoped_query:
+        # Whole-string literal matching is for unscoped targets only: a
+        # scoped miss must stay a miss, so a node whose stored name equals
+        # the entire locator text is never resurrected here.
+        row, auto_resolved, amb_candidates = _resolve_by_name(db, target)
+    if not row and not scoped_query and parsed.rewritten and parsed.symbol:
         row, auto_resolved, amb_candidates = _resolve_by_name(
             db, parsed.symbol, path_scope=parsed.path,
         )
@@ -448,18 +511,21 @@ def _node_row(db, node_id: str) -> Optional[Dict[str, Any]]:
 def _neighbors(db, node_id: str) -> List[Tuple[str, str, Optional[int], str]]:
     """(direction, node_id, line, relation) for usage edges around a node.
 
-    ``calls``/``extends`` are the strong usage evidence; ``imports`` edges
-    are included inbound AND outbound because a module importing a symbol
-    is real usage evidence — test modules frequently reference a target
-    only through an import (enum members, dataclasses, monkeypatched
-    attributes), and dropping them made those tasks look unpackaged.
+    ``calls``/``extends``/``references`` are the strong usage evidence;
+    ``references`` covers typed attribute/method uses that are not call
+    sites (callbacks, monkeypatch targets, ``mod.symbol`` passed as a
+    value). ``imports`` edges are included inbound AND outbound because a
+    module importing a symbol is real usage evidence — test modules
+    frequently reference a target only through an import (enum members,
+    dataclasses, monkeypatched attributes), and dropping them made those
+    tasks look unpackaged.
     """
     rows = db.conn.execute(
         "SELECT 'in', e.src, e.line, e.relation FROM graph_edges e "
-        "WHERE e.dst = ? AND e.relation IN ('calls','extends','imports') "
+        "WHERE e.dst = ? AND e.relation IN ('calls','extends','references','imports') "
         "UNION ALL "
         "SELECT 'out', e.dst, e.line, e.relation FROM graph_edges e "
-        "WHERE e.src = ? AND e.relation IN ('calls','extends','imports') "
+        "WHERE e.src = ? AND e.relation IN ('calls','extends','references','imports') "
         "ORDER BY 3, 2", (node_id, node_id)
     ).fetchall()
     return [(r[0], r[1], r[2], r[3]) for r in rows]
@@ -616,6 +682,11 @@ def build_bundle(
         warnings.append(
             f"target_resolved_by_path_line: '{target}' → innermost node "
             f"{node['fqn'] or node['symbol']} at {node['path']}:{node['line_start']}"
+        )
+    elif resolution_method == "path_scoped":
+        warnings.append(
+            f"target_resolved_by_path_scope: '{target}' → "
+            f"{node['fqn'] or node['symbol']} within {node['path']}"
         )
     elif resolution_method == "normalized_symbol":
         warnings.append(

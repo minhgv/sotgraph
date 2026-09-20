@@ -645,6 +645,278 @@ _SAFE_COMMIT_BLOCK_STATUSES: Tuple[str, ...] = (
 )
 
 
+#: Caller-supplied test outcomes may only ever carry these keys. Anything
+#: else — command lines, snapshot hashes, runner banners — is caller
+#: METADATA and can never upgrade the block's provenance to verified
+#: execution, so it makes the whole report invalid instead.
+TEST_RESULTS_ALLOWED_KEYS: Tuple[str, ...] = ("ran", "failed", "failures")
+
+TEST_RESULTS_CALLER_REPORTED = "caller_reported"
+
+
+def validate_test_results(test_results: Any) -> Dict[str, Any]:
+    """Structurally validate caller-supplied test outcomes (pure).
+
+    Provenance is ALWAYS ``caller_reported``: this harness never executed
+    these tests, so nothing in the block can constitute verified
+    execution — a success count records a CLAIM, never a run, and
+    ``ran == 0`` (or an absent count) must never be read as a passed
+    run.
+
+    Returns an evidence block:
+
+    - ``validation == "valid"`` — counts (when present) are non-negative
+      plain ints, ``failed <= ran``, ``failures`` is a list. Claimed
+      failures block via ``effective_failed =
+      max(failed or 0, len(failures))``; when that floor exceeds the
+      claimed ``failed`` the block records ``healed_failed`` — healing
+      only ever moves TOWARD more failures, never toward reassurance.
+    - ``validation == "invalid"`` — bool/float/string counts, negative
+      counts, a caller-claimed ``failed`` exceeding ``ran`` (exempt when
+      the failed count equals ``len(failures)`` — label-explained counts
+      are the harness's own healing, not a contradictory claim), unknown
+      keys (command/hash strings), or a non-object report. NOTHING from
+      an invalid report is trusted in either direction; consumers must
+      warn and must never let it produce a ``pass``.
+
+    Idempotent: an already-validated block (``provenance`` +
+    ``validation`` present) passes through unchanged.
+    """
+    if isinstance(test_results, dict) and (
+        test_results.get("provenance") == TEST_RESULTS_CALLER_REPORTED
+        and test_results.get("validation") in ("valid", "invalid")
+    ):
+        return dict(test_results)
+
+    def _invalid(errors: List[str]) -> Dict[str, Any]:
+        return {
+            "provenance": TEST_RESULTS_CALLER_REPORTED,
+            "validation": "invalid",
+            "ran": None,
+            "failed": None,
+            "failures": [],
+            "effective_failed": None,
+            "healed_failed": False,
+            "errors": errors,
+        }
+
+    if not isinstance(test_results, dict):
+        return _invalid([
+            "test report must be a JSON object, got "
+            f"{type(test_results).__name__}",
+        ])
+    errors: List[str] = []
+    unknown = sorted(
+        {str(k) for k in test_results} - set(TEST_RESULTS_ALLOWED_KEYS))
+    if unknown:
+        errors.append(
+            "unknown key(s) " + ", ".join(repr(k) for k in unknown)
+            + ": caller-supplied metadata (command/hash strings) cannot "
+              "upgrade provenance")
+    counts: Dict[str, Any] = {}
+    for key in ("ran", "failed"):
+        if key not in test_results:
+            counts[key] = None
+            continue
+        value = test_results[key]
+        # bool is an int subclass in Python — reject it explicitly or
+        # ``{"failed": True}`` would masquerade as a real count.
+        if isinstance(value, bool) or not isinstance(value, int):
+            errors.append(
+                f"{key} must be an int, got {value!r} "
+                "(bool/float/str counts are rejected)")
+        elif value < 0:
+            errors.append(f"{key} must be >= 0, got {value}")
+        else:
+            counts[key] = value
+    failures = test_results.get("failures")
+    if failures is None:
+        failures = []
+    if not isinstance(failures, list):
+        errors.append(
+            f"failures must be a list, got {type(failures).__name__}")
+        failures = []
+    labels = [str(f) for f in failures]
+    # ``failed > ran`` is a contradictory claim only when the FAILED
+    # COUNT is the caller's own assertion. When the count equals the
+    # number of labels it is fully explained by those labels — including
+    # the canonicalized echo of a failures-only report (``{"ran": 0,
+    # "failed": N}``), which re-enters this validator downstream via
+    # ``safe_commit_verdict``. Exempting label-explained counts keeps
+    # valid failure claims BLOCKING after canonicalization; healing only
+    # ever moves toward more failures, never toward reassurance.
+    if (counts.get("ran") is not None and counts.get("failed") is not None
+            and counts["failed"] > counts["ran"]
+            and counts["failed"] != len(labels)):
+        errors.append(
+            f"failed ({counts['failed']}) exceeds ran ({counts['ran']}): "
+            "contradictory claim")
+    if errors:
+        return _invalid(errors)
+    failed_claimed = counts.get("failed") or 0
+    effective = max(failed_claimed, len(labels))
+    return {
+        "provenance": TEST_RESULTS_CALLER_REPORTED,
+        "validation": "valid",
+        "ran": counts.get("ran"),
+        "failed": counts.get("failed"),
+        "failures": labels,
+        "effective_failed": effective,
+        "healed_failed": effective > failed_claimed,
+    }
+
+
+def _json_safe(value: Any) -> Any:
+    """JSON-clean leaves only: NaN/Inf floats become strings.
+
+    Receipts are digested as canonical JSON; bare ``NaN``/``Infinity``
+    would be non-standard bytes. Structure and labels are preserved —
+    only the three non-JSON float leaves are stringified.
+    """
+    if isinstance(value, float) and (
+        value != value or value in (float("inf"), -float("inf"))
+    ):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    return value
+
+
+def canonical_test_results(
+    test_results: Any, evidence: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Request-shape echo of a caller test report (legacy-compatible).
+
+    valid → the established ``{'ran': int, 'failed': int,
+    'failures': [str]}`` where ``failed`` is ``effective_failed``
+    (failure claims heal UP only, and the healed count stays a
+    caller-reported claim — never verified execution). The valid echo is
+    revalidation-stable: fed back through
+    :func:`validate_test_results` — as every strict CLI/MCP consumer
+    does — it stays ``valid`` with the same ``effective_failed``, so a
+    failures-only or zero-count-with-labels report keeps BLOCKING after
+    canonicalization instead of degrading to warn. invalid → the
+    caller's original object, NaN/Inf-safe, so the receipt stays clean
+    JSON; the audit lives in the separate validation evidence block,
+    never nested inside this echo (no self-growth).
+    """
+    if evidence.get("validation") == "valid":
+        return {
+            "ran": evidence.get("ran") or 0,
+            "failed": evidence.get("effective_failed") or 0,
+            "failures": list(evidence.get("failures") or []),
+        }
+    if isinstance(test_results, dict):
+        return _json_safe(test_results)
+    return {"report": _json_safe(test_results)}
+
+
+def pre_receipt_binding(
+    pre_receipt: Any,
+    repo_root: str = "",
+    head_sha: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Compatibility/binding audit for an attached PRE-change receipt.
+
+    Pure. The POST receipt must never mistake an arbitrary dict for the
+    PRE-change prediction set it was minted against, and must never let
+    a stale, foreign, or tampered payload pass as clean evidence:
+
+    - ``missing`` — nothing attached (ordinary post-change receipt).
+    - ``bound`` — scope/pre_change payload whose content digest
+      recomputes against its own fields AND whose snapshot carries the
+      producer-minted repository identity; predictions may be used.
+    - ``unverified`` — compatible shape but no verifiable digest
+      (hand-assembled payload or missing digest), no kind/proof_scope
+      markers, or no snapshot repository identity (the foreign-repo
+      guard cannot run); predictions usable but disclosed as advisory.
+    - ``incompatible`` — wrong ``kind``/``proof_scope``, a different
+      repository, non-object payload, or digest mismatch. Callers MUST
+      NOT feed it to dispositions or the dangling pre-symbol nets: a
+      foreign payload's "predictions" would otherwise be invented
+      evidence (or, worse, its cleanliness would read as "no predicted
+      impact").
+
+    ``head_moved`` (when both HEADs are known) flags that the worktree
+    moved since minting; it degrades nothing by itself but is surfaced
+    so operators know the predictions predate this diff's base.
+    """
+    if pre_receipt is None:
+        return {"status": "missing", "reasons": [],
+                "head_moved": None, "digest_verified": None}
+    if not isinstance(pre_receipt, dict):
+        return {"status": "incompatible",
+                "reasons": ["PRE receipt is not a JSON object"],
+                "head_moved": None, "digest_verified": None}
+    reasons: List[str] = []
+    incompatible = False
+    kind = pre_receipt.get("kind")
+    proof_scope = pre_receipt.get("proof_scope")
+    structured = kind is not None or proof_scope is not None
+    if kind is not None and kind != "scope":
+        incompatible = True
+        reasons.append(
+            f"PRE receipt kind {kind!r} is not 'scope': not a PRE-change "
+            "scope prediction")
+    if proof_scope is not None and proof_scope != "pre_change_only":
+        incompatible = True
+        reasons.append(
+            f"PRE receipt proof_scope {proof_scope!r} is not "
+            "'pre_change_only': POST or audit proof must never feed "
+            "PRE dispositions")
+    pre_root = (pre_receipt.get("snapshot") or {}).get("repo_root")
+    if repo_root and pre_root:
+        if os.path.realpath(str(pre_root)) != os.path.realpath(repo_root):
+            incompatible = True
+            reasons.append(
+                "PRE receipt was minted against a different repository "
+                f"({pre_root!r})")
+    digest_verified: Optional[bool] = None
+    if "digest" in pre_receipt:
+        from sot_graph.assurance.receipts import receipt_digest
+        recomputed = receipt_digest(
+            {k: v for k, v in pre_receipt.items() if k != "digest"})
+        digest_verified = recomputed == pre_receipt.get("digest")
+        if not digest_verified:
+            incompatible = True
+            reasons.append(
+                "PRE receipt content digest mismatch: payload was "
+                "modified after minting or belongs to another receipt")
+    head_moved: Optional[bool] = None
+    pre_head = (pre_receipt.get("snapshot") or {}).get("commit_sha")
+    if head_sha and pre_head:
+        head_moved = str(pre_head) != str(head_sha)
+        if head_moved:
+            reasons.append(
+                "worktree HEAD moved since the PRE receipt was minted; "
+                "its predictions predate this diff's base revision")
+    if not structured:
+        reasons.append(
+            "PRE payload carries no kind/proof_scope markers: treated as "
+            "a caller-assembled prediction set (unverified)")
+    # Repository identity: a matching ``snapshot.repo_root`` (minted by
+    # :class:`sot_graph.snapshot.WorktreeSnapshot.as_dict`) is what makes
+    # the foreign-repo guard decidable. A receipt whose snapshot carries
+    # NO repository identity (legacy pre-binding receipts, or a payload
+    # stripped of the field) can never be confirmed same-repository, so
+    # it stays advisory (unverified) instead of silently bound — a
+    # caller-supplied payload omitting the field is not trust.
+    repo_identity_present = bool(pre_root)
+    if not repo_identity_present and not incompatible:
+        reasons.append(
+            "PRE snapshot carries no repository identity: foreign-repo "
+            "guard not run; provenance cannot be confirmed (unverified)")
+    status = ("incompatible" if incompatible
+              else "unverified" if (digest_verified is not True
+                                    or not structured
+                                    or not repo_identity_present)
+              else "bound")
+    return {"status": status, "reasons": reasons,
+            "head_moved": head_moved, "digest_verified": digest_verified}
+
+
 def safe_commit_verdict(
     *,
     assurance_status: str,
@@ -653,6 +925,7 @@ def safe_commit_verdict(
     dispositions: Dict[str, Any],
     test_results: Optional[Dict[str, Any]] = None,
     semantic_breaks: Optional[Dict[str, Any]] = None,
+    pre_receipt_binding: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Composite "is it safe to commit?" verdict for the post-change gate (W2).
 
@@ -664,19 +937,42 @@ def safe_commit_verdict(
         (the renamed/deleted symbol callers still cite);
       * assurance status in ``_SAFE_COMMIT_BLOCK_STATUSES`` — the gate
         itself lacks trustworthy evidence;
-      * caller-provided ``test_results`` report failures.
+      * caller-provided ``test_results`` claim failures — validated via
+        :func:`validate_test_results`; provenance stays
+        ``caller_reported`` (the harness never executed them), yet an
+        explicit failure claim is honored as blocking.
 
     WARN (advisory — the change may be fine, but evidence is advisory):
       * assurance status PARTIAL;
       * pre-receipt dispositions still untouched (predicted callers /
         tests the diff never reached — heuristic prediction, kept
         advisory by the same contract as ``disposition_matrix``);
-      * debt markers introduced on added lines.
+      * debt markers introduced on added lines;
+      * a STRUCTURALLY INVALID caller test report (bool/float/str or
+        negative counts, ``failed > ran``, unknown keys) — recorded,
+        trusted in neither direction, and never allowed to produce a
+        ``pass``;
+      * an attached PRE receipt whose binding audit came back
+        ``incompatible`` (its predictions were excluded downstream).
 
     ``dispositions`` is the ``resolution_ledger["dispositions"]``
     payload; when no pre-receipt was attached the untouched nets are
     absent and the verdict discloses ``pre_receipt_attached: False`` so
-    operators know the rename/delete leftover sweep did not run.
+    operators know the rename/delete leftover sweep did not run. An
+    attached-but-incompatible PRE receipt is disclosed via
+    ``pre_receipt_binding`` and never reads as a clean disposition.
+
+    ``pre_receipt_binding`` is the ``resolution_ledger
+    ["pre_receipt_binding"]`` audit block (:func:`pre_receipt_binding`).
+
+    The returned ``tests`` block states the test evidence truthfully:
+    ``provenance`` is ``caller_reported`` (or ``absent``),
+    ``validation`` records the structural audit, and
+    ``tests_verified_execution`` is always ``False`` — a passing caller
+    count never proves a runner executed or that this snapshot was
+    tested. Graph assurance (and legacy graph-only closure) stays
+    independent of caller test claims: a valid report with no claimed
+    failures neither blocks nor reassures.
     """
     block_reasons: List[str] = []
     warn_reasons: List[str] = []
@@ -694,12 +990,21 @@ def safe_commit_verdict(
         warn_reasons.append(
             "assurance PARTIAL: part of the evidence set is incomplete")
 
-    tests_failed = 0
-    if test_results is not None:
-        tests_failed = int(test_results.get("failed") or 0)
-        if tests_failed > 0:
+    # W2 trust boundary: caller test claims are validated, recorded with
+    # their provenance, and only ever trusted in the blocking direction.
+    # An invalid report can never reassure; claimed failures still block;
+    # a valid no-failure report (including ran=0) neither blocks nor
+    # upgrades the graph-only closure.
+    tests = (validate_test_results(test_results)
+             if test_results is not None else None)
+    if tests is not None:
+        if tests["validation"] == "invalid":
+            warn_reasons.append(
+                "caller test report invalid — recorded, trusted in "
+                "neither direction: " + "; ".join(tests["errors"]))
+        elif tests["effective_failed"]:
             block_reasons.append(
-                f"{tests_failed} provided test(s) failed")
+                f"{tests['effective_failed']} provided test(s) failed")
 
     attached = bool(dispositions.get("pre_receipt_attached"))
     untouched_callers = 0
@@ -750,21 +1055,43 @@ def safe_commit_verdict(
                 f"{removed_public} public symbol(s) removed — external "
                 "consumers are invisible to the graph")
 
+    binding_status = str((pre_receipt_binding or {}).get("status") or "missing")
+    if binding_status == "incompatible":
+        warn_reasons.append(
+            "attached PRE receipt is incompatible and was excluded from "
+            "dispositions and dangling sweeps: "
+            + "; ".join((pre_receipt_binding or {}).get("reasons") or []))
+
     verdict = ("block" if block_reasons
                else "warn" if warn_reasons else "pass")
+    tests_evidence = tests if tests is not None else {
+        "provenance": "absent",
+        "validation": "absent",
+        "note": "no caller-supplied test results attached; this verdict "
+                "never implies tests were executed",
+    }
     return {
         "verdict": verdict,
         "block_reasons": block_reasons,
         "warn_reasons": warn_reasons,
+        # Truthful test-evidence record: caller_reported vs absent,
+        # structural validation status, and the invariant that nothing
+        # here proves a runner executed against this snapshot.
+        "tests": tests_evidence,
         "inputs": {
             "assurance_status": status,
             "dangling_count": int(dangling_count),
             "debt_introduced": int(debt_introduced),
             "untouched_callers": untouched_callers,
             "untouched_tests": untouched_tests,
-            "tests_failed": tests_failed,
+            "tests_failed": (tests or {}).get("effective_failed") or 0,
+            "tests_ran": (tests or {}).get("ran"),
+            "tests_provenance": (tests or {}).get("provenance") or "absent",
+            "tests_validation": (tests or {}).get("validation") or "absent",
+            "tests_verified_execution": False,
             "test_results_attached": test_results is not None,
             "pre_receipt_attached": attached,
+            "pre_receipt_binding": binding_status,
             "breaking_signature_changes_with_callers": breaking_with_callers,
             "breaking_signature_changes_no_callers": breaking_no_callers,
             "public_symbols_removed": removed_public,

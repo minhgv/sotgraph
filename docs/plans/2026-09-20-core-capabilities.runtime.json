@@ -1,0 +1,677 @@
+{
+  "generated_at": "2026-09-20T19:06:00Z",
+  "environment": {
+    "python": "/Users/giapminh79/code/GitHub/sotgraph/.venv/bin/python",
+    "repo_root": "/Users/giapminh79/code/GitHub/sotgraph",
+    "scratch_fixture_root": "/Users/giapminh79/.omp/tmp/corecap_fixture_mcp_exact"
+  },
+  "mcp_rpc_verification": {
+    "rpc_log_path": ".sot/tmp/corecap/mcp_rpc_executions.json",
+    "sot_doctor_rpc": {
+      "method": "tools/call",
+      "tool": "sot_doctor",
+      "args": {},
+      "is_error": false,
+      "response_summary": {
+        "ok": true,
+        "is_healthy": true,
+        "journal_mode": "WAL",
+        "schema_version": 8,
+        "db_size_bytes": 258048,
+        "page_count": 63,
+        "page_size": 4096,
+        "stats": {
+          "nodes": 3,
+          "edges": 3,
+          "paths": 1,
+          "fts_count": 3
+        }
+      }
+    },
+    "sot_bundle_path_confinement_rpc": {
+      "method": "tools/call",
+      "tool": "sot_bundle",
+      "args": {
+        "output_dir": "../escaped_dir"
+      },
+      "is_error": true,
+      "response_content": {
+        "error": {
+          "code": "path_traversal",
+          "message": "Output path outside project root: ../escaped_dir"
+        }
+      },
+      "proof_interpretation": "MCP endpoint enforces root confinement and returns structured path_traversal refusal on escape attempt"
+    },
+    "sot_pack_rpc": {
+      "success_max_tokens_and_bytes": {
+        "method": "tools/call",
+        "tool": "sot_pack",
+        "args": {
+          "target": "main",
+          "max_tokens": 2000,
+          "max_bytes": 50000
+        },
+        "is_error": false,
+        "response_bytes": 2091,
+        "completeness": "COMPLETE_WITHIN_INDEX_CAPABILITY"
+      },
+      "token_overflow_refusal": {
+        "method": "tools/call",
+        "tool": "sot_pack",
+        "args": {
+          "target": "main",
+          "max_tokens": 32
+        },
+        "is_error": false,
+        "response_payload": {
+          "ok": false,
+          "code": "BUDGET_TOO_SMALL",
+          "error": "rendered bundle (476 tokens) exceeds budget (32 tokens)",
+          "status": "error"
+        }
+      },
+      "byte_cap_partial_truncation": {
+        "method": "tools/call",
+        "tool": "sot_pack",
+        "args": {
+          "target": "main",
+          "max_bytes": 1024
+        },
+        "is_error": false,
+        "actual_response_bytes": 2416,
+        "requested_max_bytes": 1024,
+        "completeness": "PARTIAL",
+        "status": "success",
+        "limits_truncated": true,
+        "warning": "byte_cap_unreachable",
+        "budget_enforcement_semantics": "SOFT_FLOOR (not a hard byte-cap cutoff): renderer drops candidate/reference neighbors and sets completeness=PARTIAL, but preserves the minimal identity/source floor, returning 2,416 bytes with warning byte_cap_unreachable rather than refusing or hard-truncating raw JSON syntax. Distinct from strict max_tokens overflow which fails with BUDGET_TOO_SMALL error."
+      }
+    },
+    "sot_cross_check_rpc_ac09": {
+      "method": "tools/call",
+      "tool": "sot_cross_check",
+      "args": {},
+      "is_error": false,
+      "response_payload": {
+        "agreements": [],
+        "conflicts": [],
+        "builtin_definitions": 2,
+        "builtin_only": 3,
+        "external_definitions": 0,
+        "external_only": 0,
+        "totals": {
+          "agreements": 0,
+          "conflicts": 0,
+          "builtin_only": 3,
+          "external_only": 0
+        }
+      },
+      "proof_interpretation": "When external providers are absent, cross-check accurately reports 0 external definitions/pairs and 0 agreements; all extracted entities are classified under builtin_only without inventing consensus or fake agreement"
+    },
+    "mcp_profiles": {
+      "core": {
+        "tool_count": 7,
+        "tools": [
+          "sot_search",
+          "sot_usages",
+          "sot_verify_drift",
+          "sot_pack",
+          "sot_map",
+          "sot_scope_receipt",
+          "sot_diff_impact_receipt"
+        ],
+        "direct_reconcile_call": "denied (tool_disabled error)"
+      },
+      "full": {
+        "tool_count": 24,
+        "direct_reconcile_call": "denied (tool_disabled error)"
+      },
+      "ops": {
+        "tool_count": 26,
+        "direct_reconcile_call": "allowed (sot_reconcile + sot_providers_sync enabled)"
+      },
+      "invalid_profile": {
+        "command": ".venv/bin/python -m sot_graph mcp --profile invalid_prof",
+        "result": "Rejected at startup with stderr: unknown MCP profile invalid_prof; expected one of: core, full, ops"
+      },
+      "precedence": {
+        "flag_over_env": "CLI flag --profile core overrides SOT_MCP_PROFILE=ops (yields exactly 7 tools)",
+        "env_fallback": "Unset CLI flag falls back to SOT_MCP_PROFILE=full (yields exactly 24 tools)"
+      }
+    },
+    "mcp_pre_post_persistence_workflow": {
+      "pre_minted_via_mcp": "04a0aea1e95e535977be3aca0d45541edb062314159b09da596588347b0663bb",
+      "persisted_to_disk": true,
+      "receipt_file_path": "/Users/giapminh79/.omp/tmp/corecap_fixture_mcp_exact/.sot/receipts/04a0aea1e95e535977be3aca0d45541edb062314159b09da596588347b0663bb.json",
+      "post_called_with_returned_digest": "168f13018052d78d19dd0b4b9e9f0043257acd3a7c09e2bb1d25f16d7ac23c12",
+      "integration_status": "PROVEN_WORKING (R-11 persistence bug resolved; MCP sot_scope_receipt writes to ReceiptStore and sot_diff_impact_receipt successfully loads digest)"
+    }
+  },
+  "cli_surfaces_and_diagnostics": {
+    "cli_bundle_escape_allowed": {
+      "command": ".venv/bin/python -m sot_graph bundle --root /Users/giapminh79/.omp/tmp/corecap_fixture_mcp_exact -o ../escaped_dir",
+      "raw_exit_code": 0,
+      "behavior": "CLI bundle allows user-specified output path by design and writes 5 fact files"
+    },
+    "cli_verify_ac08_read_only_purity": {
+      "command": ".venv/bin/python -m sot_graph verify --root /Users/giapminh79/.omp/tmp/corecap_fixture_mcp_exact",
+      "raw_exit_code": 0,
+      "behavior": "Read-only inspection; detected mtime/size drift on modified app.py without mutating or auto-reconciling the SQLite database across repeated runs; explicit reconcile resolved the drift, and subsequent verify reported ZERO DRIFT"
+    }
+  },
+  "assurance_and_reconciliation": {
+    "missing_symbol_with_json_decoy": {
+      "query": "app.py::missing_symbol",
+      "identity_status": "NOT_FOUND",
+      "selected": null,
+      "assurance_status": "ABSTAINED",
+      "decoy_protection": "PROVEN (literal JSON variables do not decoy code symbols)"
+    },
+    "foreign_repo_pre": {
+      "command": ".venv/bin/python -m sot_graph diff-impact --root /Users/giapminh79/.omp/tmp/corecap_repo_b --working-tree --pre-receipt /Users/giapminh79/.omp/tmp/corecap_repo_a/.sot/receipts/9dabdfd16c0b.json --json",
+      "status": "incompatible",
+      "reasons": [
+        "PRE receipt was minted against a different repository (/Users/giapminh79/.omp/tmp/corecap_repo_a)",
+        "worktree HEAD moved since the PRE receipt was minted; its predictions predate this diffs base revision"
+      ]
+    },
+    "legacy_missing_root_pre": {
+      "command": ".venv/bin/python -m sot_graph diff-impact --root /Users/giapminh79/.omp/tmp/corecap_repo_a --working-tree --pre-receipt /Users/giapminh79/.omp/tmp/corecap_repo_a/.sot/receipts/legacy_receipt.json --json",
+      "status": "unverified",
+      "reasons": [
+        "PRE snapshot carries no repository identity: foreign-repo guard not run; provenance cannot be confirmed (unverified)"
+      ]
+    },
+    "safe_commit_gate_strict": {
+      "command": ".venv/bin/python -m sot_graph diff-impact --working-tree --test-report test_report.json --gate-strict",
+      "raw_exit_code": 2,
+      "safe_commit_verdict": "block",
+      "block_reasons": [
+        "2 provided test(s) failed"
+      ]
+    }
+  },
+  "workspace_graph_and_post_stale_accounting": {
+    "final_reconcile_command": ".venv/bin/python -m sot_graph reconcile --root /Users/giapminh79/code/GitHub/sotgraph",
+    "final_verify_command": ".venv/bin/python -m sot_graph verify --root /Users/giapminh79/code/GitHub/sotgraph",
+    "verify_status": "ZERO DRIFT: All recorded nodes and files match disk state exactly",
+    "doctor_report": {
+      "command": ".venv/bin/python -m sot_graph doctor --root /Users/giapminh79/code/GitHub/sotgraph",
+      "raw_exit_code": 0,
+      "engine_store": "codebase-memory (36,317 nodes / 197,411 edges, read-through)",
+      "integrity_check": "OK (quick_check: ok)",
+      "journal_mode": "WAL (schema v8)",
+      "database_size_bytes": 44412928,
+      "tracked_files": 31,
+      "graph_nodes": 75,
+      "confirmed_edges": 43,
+      "pending_edges": 28
+    },
+    "commit_risk_log": {
+      "command": ".venv/bin/python -m sot_graph log -n 5",
+      "raw_exit_code": 0,
+      "commits_analyzed": 5,
+      "risk_breakdown": "1 High Risk, 2 Medium Risk, 2 Low Risk"
+    },
+    "stale_diagnosis": {
+      "observed_status": "STALE (truthful post-change assurance verdict; CLOSED is unreachable)",
+      "concrete_root_cause": "After reviewer archived 14 .review_tmp/*.diff files to .sot/tmp/corecap/review_scratch_diffs, the working-tree diff dropped to 36 uncommitted changed files (source edits in src/sot_graph/*.py, tests/test_*.py, CHANGELOGS.md, README.md, and docs/plans/*, plus unprovenanced tmpaqw276aw/). Under CBM read-through engine configuration, SQLite file_journal contains only 30 entries. When _post_change_stale_files checks changed_files, prior is None for source and test paths (e.g. CHANGELOGS.md, src/sot_graph/cli.py, tmpaqw276aw/repo/app.py), failing closed into stale_files count=36.",
+      "stale_files_sample": [
+        "CHANGELOGS.md",
+        "README.md",
+        "docs/SOT_GRAPH_GUIDE.md",
+        "docs/plans/2026-09-20-core-capabilities.md",
+        "scripts/adapter_docs_check.py",
+        "src/sot_graph/cli.py",
+        "src/sot_graph/mcp_service.py",
+        "tmpaqw276aw/repo/app.py"
+      ],
+      "inherent_limits": [
+        "stale_sources: 36 unindexed changed files in working tree",
+        "parser_failures: 35 AST parser errors across vendor/non-standard files",
+        "dynamic_dispatch_unresolved: dynamic heavy dispatch present across codebase"
+      ]
+    },
+    "global_post_receipt": {
+      "command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --json",
+      "digest": "105bb4f9561c5f44dd1a06bec51d6722ba8f5477653deee6097a94cae8f0e4b8",
+      "status": "STALE",
+      "decision": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "parser_failures",
+        "dynamic_dispatch_unresolved"
+      ],
+      "stale_files_count": 36,
+      "artifact_path": ".sot/tmp/corecap/post/global_post.json"
+    },
+    "bound_r11_post_receipt": {
+      "command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 3e7ff350ac6acba3bba4fae5d39877fb98d6ec37e1b8128278cab258e4a8ce3c --json",
+      "pre_digest": "3e7ff350ac6acba3bba4fae5d39877fb98d6ec37e1b8128278cab258e4a8ce3c",
+      "pre_binding_status": "bound",
+      "post_digest": "883459e0eb6ef78c30a9e29749b766945acef4e29893d0e788b9d931b5680aaa",
+      "status": "STALE",
+      "decision": "STALE",
+      "reason_codes": [
+        "stale_sources",
+        "parser_failures",
+        "dynamic_dispatch_unresolved"
+      ],
+      "stale_files_count": 36,
+      "artifact_path": ".sot/tmp/corecap/post/3e7ff350ac6a_post.json"
+    },
+    "all_pre_linked_post_summary": [
+      {
+        "pre_digest": "c89ca4051ea0de71a6ebef3ab6869481eaf836f3c8c27fd5bf8509d32088d2f9",
+        "description": "pack.py::build_bundle (orig)",
+        "post_digest": "43939dbee920e95bc5250eb3f20dc986c417371485ddea94c4e7bd0dba7854a0",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "unresolved_over_budget",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 36,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "docs/plans/2026-09-20-core-capabilities.md",
+          "scripts/adapter_docs_check.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt c89ca4051ea0de71a6ebef3ab6869481eaf836f3c8c27fd5bf8509d32088d2f9 --json",
+        "artifact_path": ".sot/tmp/corecap/post/c89ca4051ea0_post.json"
+      },
+      {
+        "pre_digest": "751c6345764ebbcd29bab6094a7dff090018be5ad083e9dc3d06ab0683c0411a",
+        "description": "receipts.py::diff_impact_receipt (orig)",
+        "post_digest": "837e4d8d41e80606fc1413d7377a43767354267e03e0ebb0644be9820f4ebc25",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "unresolved_over_budget",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 36,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "docs/plans/2026-09-20-core-capabilities.md",
+          "scripts/adapter_docs_check.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 751c6345764ebbcd29bab6094a7dff090018be5ad083e9dc3d06ab0683c0411a --json",
+        "artifact_path": ".sot/tmp/corecap/post/751c6345764e_post.json"
+      },
+      {
+        "pre_digest": "477d814bcd093df889969f40e9055e62020044ec0d1e13d16c073922df74c705",
+        "description": "mcp_service.py::pack_context_bundle (orig)",
+        "post_digest": "b0b83994d0f3e251a5cd0cfd9748bebb47a600bcadf68d79858e3d25a490d123",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "unresolved_over_budget",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 36,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "docs/plans/2026-09-20-core-capabilities.md",
+          "scripts/adapter_docs_check.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 477d814bcd093df889969f40e9055e62020044ec0d1e13d16c073922df74c705 --json",
+        "artifact_path": ".sot/tmp/corecap/post/477d814bcd09_post.json"
+      },
+      {
+        "pre_digest": "dd1ad22867795fff5b9c84f5b8fdf72fcc70a01c39af9c3ba2760a240b40a257",
+        "description": "engine.py (orig)",
+        "post_digest": "55fa5d33440994f633066dace81cb7284c6b95a12ece04c6d5f8c630f9ea98a7",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt dd1ad22867795fff5b9c84f5b8fdf72fcc70a01c39af9c3ba2760a240b40a257 --json",
+        "artifact_path": ".sot/tmp/corecap/post/dd1ad2286779_post.json"
+      },
+      {
+        "pre_digest": "99deb3b0959152d086621f0a39f615c2f3dc6770d7614bae5e40faad92f88df4",
+        "description": "pack _find_target (repair)",
+        "post_digest": "c796e8d54c7e95217814d57a58419d9e8bc2d826c0c85d60b94ebf1be5587da9",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "unresolved_over_budget",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 99deb3b0959152d086621f0a39f615c2f3dc6770d7614bae5e40faad92f88df4 --json",
+        "artifact_path": ".sot/tmp/corecap/post/99deb3b09591_post.json"
+      },
+      {
+        "pre_digest": "d4aefa64f222aed9319fa675d9f2120f1f2b8a6f2df50b24a4db21162978c071",
+        "description": "engine resolver (repair)",
+        "post_digest": "be8b0115b83e83a052e89461dc49c7c72665f9d1067939033f662abdc58dd133",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt d4aefa64f222aed9319fa675d9f2120f1f2b8a6f2df50b24a4db21162978c071 --json",
+        "artifact_path": ".sot/tmp/corecap/post/d4aefa64f222_post.json"
+      },
+      {
+        "pre_digest": "ea75864f0cfa8d4badfb36461082b7c2a2d67f21816ad141f6c80dfe751d9743",
+        "description": "safe_commit_verdict (repair)",
+        "post_digest": "163bfdce31cef29bfe5190359373c7ebf21555e2c09851b3bff238bd76768898",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt ea75864f0cfa8d4badfb36461082b7c2a2d67f21816ad141f6c80dfe751d9743 --json",
+        "artifact_path": ".sot/tmp/corecap/post/ea75864f0cfa_post.json"
+      },
+      {
+        "pre_digest": "e59ad56eaefa03f42c6350f07264e22aa69bc0ea4e6481a10e5ddb1d68aa051d",
+        "description": "pre_receipt_binding (repair)",
+        "post_digest": "fc0c207de26e332df7d88a39bb85fda14894a7c53a2800b4ebd82de2a5400682",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt e59ad56eaefa03f42c6350f07264e22aa69bc0ea4e6481a10e5ddb1d68aa051d --json",
+        "artifact_path": ".sot/tmp/corecap/post/e59ad56eaefa_post.json"
+      },
+      {
+        "pre_digest": "540582db86594826bc51c5b7f131703e2cc0547d4496da02dfbf946c908f22e8",
+        "description": "tool_inventory (repair)",
+        "post_digest": "81ee8f4061f6f75de0cc5eddd41c0554dabd73887a0691ef1a721cbefc0d852e",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 540582db86594826bc51c5b7f131703e2cc0547d4496da02dfbf946c908f22e8 --json",
+        "artifact_path": ".sot/tmp/corecap/post/540582db8659_post.json"
+      },
+      {
+        "pre_digest": "4e74def9548fecd9a767974e81782faa514d88684342be198d0a71a2dd13c0e4",
+        "description": "snapshot.py capture_worktree_snapshot (repair)",
+        "post_digest": "a3b91e73f91f0d0bd87e8107aa3e08bce86869dcfa5d60989f91329b077290a5",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 4e74def9548fecd9a767974e81782faa514d88684342be198d0a71a2dd13c0e4 --json",
+        "artifact_path": ".sot/tmp/corecap/post/4e74def9548f_post.json"
+      },
+      {
+        "pre_digest": "116a0cc8b89097a57d4f02ef75b4217ad206046499497fec0f9e29037f44d6be",
+        "description": "_scoped_identity_candidates (repair)",
+        "post_digest": "78e4fc8345bf278db680324517884f0ea8649ca67ed00ae1221f534ae0651875",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 116a0cc8b89097a57d4f02ef75b4217ad206046499497fec0f9e29037f44d6be --json",
+        "artifact_path": ".sot/tmp/corecap/post/116a0cc8b890_post.json"
+      },
+      {
+        "pre_digest": "d7a275aaf1b1a2f61008a91ee30535c3486c787128c427f093040afbbb9d8386",
+        "description": "scoped pack resolver union (repair)",
+        "post_digest": "1fc714a58be5f036dd60a07409be545ba8cb93144059a935cb5c8a60a397d78a",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt d7a275aaf1b1a2f61008a91ee30535c3486c787128c427f093040afbbb9d8386 --json",
+        "artifact_path": ".sot/tmp/corecap/post/d7a275aaf1b1_post.json"
+      },
+      {
+        "pre_digest": "3e7ff350ac6acba3bba4fae5d39877fb98d6ec37e1b8128278cab258e4a8ce3c",
+        "description": "mcp_service.py::McpService._handle_sot_scope_receipt (repair R-11)",
+        "post_digest": "435a95545614df8850e665b1e6f1674b54ac81ec74cb6acca7801495a210068e",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "bound",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 3e7ff350ac6acba3bba4fae5d39877fb98d6ec37e1b8128278cab258e4a8ce3c --json",
+        "artifact_path": ".sot/tmp/corecap/post/3e7ff350ac6a_post.json"
+      }
+    ],
+    "current_state_scopes_linked_post_summary": [
+      {
+        "pre_digest": "b1527a9603b872188682bdf5871f4139f25683489b8611fd32da71fff7b124f1",
+        "description": "current-state scope 1 (b1527a9603b8)",
+        "post_digest": "8d9ed49a287ba30dddc6837a3bd9f23f642f5385072e0bfd5f74d65ab988c141",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt b1527a9603b872188682bdf5871f4139f25683489b8611fd32da71fff7b124f1 --json",
+        "artifact_path": ".sot/tmp/corecap/post/b1527a9603b8_post.json"
+      },
+      {
+        "pre_digest": "cacdcc25b73806c52d31280d51cdb20ae0cabc627def6e58ab5566f2df74331d",
+        "description": "current-state scope 2 (cacdcc25b738)",
+        "post_digest": "b1ee73e6ed600455ffd241fc4a3ca0d47337cfa0d78eaeaaa9612dc23bd87932",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt cacdcc25b73806c52d31280d51cdb20ae0cabc627def6e58ab5566f2df74331d --json",
+        "artifact_path": ".sot/tmp/corecap/post/cacdcc25b738_post.json"
+      },
+      {
+        "pre_digest": "19d744f407fd852ab48d53b8135c3bac881f7e7f2ea1eafb5ee80fb56193852e",
+        "description": "current-state scope 3 (19d744f407fd)",
+        "post_digest": "764cbc3af1db86666111cb9616961e960a3c6dba42e246b7e66aeb204f123f71",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt 19d744f407fd852ab48d53b8135c3bac881f7e7f2ea1eafb5ee80fb56193852e --json",
+        "artifact_path": ".sot/tmp/corecap/post/19d744f407fd_post.json"
+      },
+      {
+        "pre_digest": "ee20b63726b388fdf69163a4d10b49c4039a5a764367b50f8b07d584e684b7b9",
+        "description": "current-state scope 4 (ee20b63726b3)",
+        "post_digest": "8cb48490e8184b5bf62122753627855a102592ae5ea0500ad867e8a92b153cf0",
+        "status": "STALE",
+        "closure_decision": "STALE",
+        "pre_binding_status": "unverified",
+        "reason_codes": [
+          "stale_sources",
+          "parser_failures",
+          "dynamic_dispatch_unresolved"
+        ],
+        "stale_files_count": 35,
+        "stale_files_sample": [
+          "CHANGELOGS.md",
+          "README.md",
+          "docs/SOT_GRAPH_GUIDE.md",
+          "scripts/adapter_docs_check.py",
+          "src/sot_graph/_vendor/graphify/extract.py"
+        ],
+        "exact_command": ".venv/bin/python -m sot_graph diff-impact --working-tree --no-auto-reconcile --pre-receipt ee20b63726b388fdf69163a4d10b49c4039a5a764367b50f8b07d584e684b7b9 --json",
+        "artifact_path": ".sot/tmp/corecap/post/ee20b63726b3_post.json"
+      }
+    ]
+  },
+  "sg202_replay": {
+    "command": ".venv/bin/python benchmarks/exit_gates/sg202_followup/replay_sg202.py --root /Users/giapminh79/code/GitHub/sotgraph --output-dir .sot/tmp/corecap",
+    "roster_total": 90,
+    "attempted": 90,
+    "measurable": 44,
+    "full_success": 40,
+    "remaining_failures": 4,
+    "sufficiency_measurable": 0.9091,
+    "sufficiency_all": 0.4444,
+    "gate_status": {},
+    "outcome_counts": {},
+    "notes": "Replay executed on frozen post-repair source with original oracle. Measurable sufficiency is 40/44 (90.91%), gate floor 95% is FAIL. Pre-repair measurement was 32/44 (72.73%). All 90 roster tasks accounted for without dropping cases."
+  }
+}

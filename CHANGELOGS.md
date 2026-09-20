@@ -4,6 +4,134 @@ All notable changes to sotgraph are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Focused MCP tool profiles (`core` / `full` / `ops`)** — the MCP stdio
+  server now starts with a profile-selected surface instead of exposing
+  every tool unconditionally. `sotgraph mcp [--profile core|full|ops]`:
+  `core` (default) exposes exactly `sot_search`, `sot_map`, `sot_usages`,
+  `sot_pack`, `sot_scope_receipt`, `sot_diff_impact_receipt`,
+  `sot_verify_drift`; `full` adds every non-operational tool (24 total,
+  including the new `sot_doctor` and the opt-in file writers); `ops`
+  additionally enables the explicit operational writes `sot_reconcile` and
+  `sot_providers_sync` (26 total). One immutable allowlist per profile
+  gates BOTH `list_tools` and `call_tool`: a hidden tool is not reachable
+  by direct RPC (dispatch answers `tool_disabled` with the active profile
+  and the enable path). Precedence: `--profile` flag > `SOT_MCP_PROFILE`
+  environment variable > `core`; unknown values are rejected at startup
+  (exit 2, `invalid_profile`) — never silently widened.
+  (`src/sot_graph/mcp_server.py`, `src/sot_graph/cli.py`)
+- **`sot_doctor` MCP tool (profiles `full` + `ops`, read-only)** — the
+  same substantive health logic as `sotgraph doctor` (SQLite `quick_check`,
+  foreign keys, schema version, FTS sync, pending-edge breakdown, stats)
+  plus codebase-memory engine read-through counts, returned as bounded
+  JSON. Shared helper `collect_doctor_diagnostics` now backs BOTH the MCP
+  tool and the CLI command; the CLI `--json` output additively gains
+  `engine_readthrough`. (`src/sot_graph/mcp_service.py`,
+  `src/sot_graph/cli.py`)
+- **`sot_reconcile` MCP tool (profile `ops` only, explicit write)** —
+  explicit index reconcile through the ONE project writer funnel
+  (`reconcile_dispatch`, CBM-primary / builtin fallback) under the project
+  write lock — the same path as `sotgraph reconcile`, not a subprocess
+  wrapper. Strictly project-bounded: the reconciled root is always the
+  server's project root and cannot be overridden by the request; `force`
+  mirrors `sotgraph reconcile --force`. `sot_providers_sync` is likewise
+  reachable only under `ops` from now on. (`src/sot_graph/mcp_service.py`,
+  `src/sot_graph/mcp_server.py`)
+- **Behavioral coverage for the profile contract** —
+  `tests/test_mcp_profiles.py` pins hidden-dispatch denial, operational
+  write separation (a real drift → reconcile → clean-drift cycle over the
+  MCP surface), path-escape rejection plus in-root confined writes for the
+  file writers, CLI/MCP pack token-budget parity, flag/env/default
+  resolution with invalid-value rejection, doctor parity with the CLI
+  health logic, and honest `ToolAnnotations`.
+- **Public MCP capability inventory (`sot_graph.mcp_server.tool_inventory`)** —
+  service-free mapping of every registered tool name to its profile
+  memberships (`core`/`full`/`ops`) and description; it imports no optional
+  MCP SDK, starts no server, and creates no database. The adapter docs
+  consistency checker (`scripts/adapter_docs_check.py`) now derives MCP
+  ground truth from this inventory — the registry holds tool definitions,
+  and the old inline `types.Tool(name=...)` text scan found nothing after
+  the registry migration — and its `--emit-table` output gains an
+  all-profiles MCP inventory section.
+  (`src/sot_graph/mcp_server.py`, `scripts/adapter_docs_check.py`)
+
+### Changed
+
+- **Honest MCP effect metadata** — every tool now carries MCP
+  `ToolAnnotations`: `readOnlyHint` is `true` only for tools with no write
+  path of any kind. Tools carrying the JIT freshness gate (`auto_reconcile`,
+  default `auto`) disclose in their schemas that reconciliation WRITES to
+  the graph index when it is stale (pass `auto_reconcile=false` for a
+  guaranteed read-only call); `sot_diff_impact_receipt` discloses that it
+  persists the receipt into `.sot/receipts`; the bundle/solution writers
+  disclose file effects and project-root confinement. Descriptions now
+  state the explore node-id heuristic fallback, the heuristic (not
+  complete) nature of implementations and trace evidence, and the
+  no-external-evidence honesty of `sot_cross_check`.
+  (`src/sot_graph/mcp_server.py`)
+- **MCP `sot_pack` max_tokens surface parity** — the MCP schema and
+  dispatch now thread `max_tokens` into the same core `build_bundle` API
+  as the CLI `pack --tokens/--max-tokens` flag (minimum 32, enforced by
+  measuring the rendered YAML; a strict budget — overflow is refused).
+  `max_bytes` is a best-effort cap on the target source span: the rendered
+  YAML keeps an identity/source floor, so the byte cap can be unreachable
+  (`limits.truncated=true` plus a `byte_cap_unreachable` warning). When
+  both are set, bytes prune first and tokens bound the final render; the
+  service response limit applies separately on top. Invalid values
+  (non-integer, < 1) are rejected cleanly with `invalid_argument` before
+  any work. (`src/sot_graph/mcp_server.py`, `src/sot_graph/mcp_service.py`)
+- **Setup adapters document the profile contract** — the harness
+  capability tables (OMP/Pi, OpenCode, Antigravity, Claude, ZCode) state
+  the profile flags instead of implying an always-on tool surface;
+  `sotgraph setup` still installs the server without a profile flag, so
+  harness integrations get the focused `core` surface by default.
+  (`src/sot_graph/adapters/*.py`)
+
+### Fixed
+
+- **MCP-attached PRE receipts now bind in the resolution ledger** —
+  `diff_impact_receipt` re-attaches the content address (`digest`) after
+  loading a `pre_receipt` from the store, matching the CLI loader; the
+  `pre_receipt_binding` audit now reads `bound` instead of `unverified` for
+  the MCP path. (`src/sot_graph/mcp_service.py`)
+- **Scoped locator fixes integrated** — pack target location
+  (`_find_target`) and assurance symbol-identity resolution
+  (`resolve_symbol_identity`) are aligned on scoped lookups: a
+  path:line locator resolves the innermost symbol inside the active
+  scope; bare-name behavior is unchanged. Covered by the scoped-identity
+  and typed-reference test suites.
+  (`src/sot_graph/pack.py`, `src/sot_graph/assurance/engine.py`)
+- **Builtin-only typed-reference and context-manager evidence** — the
+  vendored extractor records typed references and context-manager
+  evidence as builtin-only provider evidence, so assurance no longer
+  attributes them to external provider indexes.
+  (`src/sot_graph/_vendor/graphify/extract.py`)
+- **PRE/POST receipt provenance with serialized repository identity** —
+  assurance receipts carry PRE/POST provenance and serialize the bound
+  repository identity; legacy receipts lacking a serialized repository
+  identity remain `unverified` (advisory binding status, never treated as
+  bound; distinct from graph assurance classifications such as
+  UNVERIFIABLE) — including in safe-commit verdicts and pre-receipt
+  binding audits. Caller test reports are receipt evidence, not verified
+  execution. (`src/sot_graph/assurance/resolution.py`,
+  `src/sot_graph/assurance/receipts.py`)
+
+- **MCP `sot_scope_receipt` now persists the PRE receipt** — the receipt
+  returned over MCP is stored in `.sot/receipts` through the existing
+  content-addressed `ReceiptStore` (write-if-absent, digest-addressed), so
+  a later MCP `sot_diff_impact_receipt` with the returned digest binds it
+  in the resolution ledger instead of answering `not_found`. The write is
+  load-bearing, not best-effort: a storage failure raises the structured
+  `receipt_store_write_failed` error rather than returning a digest no
+  POST can load, and unknown digests are still rejected. Honest effect
+  metadata follows: `sot_scope_receipt` moved out of the read-only set
+  into the receipt-store writers (`readOnlyHint=false`) and its
+  description discloses the write.
+  (`src/sot_graph/mcp_service.py`, `src/sot_graph/mcp_server.py`)
+
 ## [0.3.8] — 2026-09-19
 
 ### Added

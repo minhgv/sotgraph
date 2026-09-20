@@ -468,45 +468,62 @@ sotgraph diff-impact HEAD~1 --format github
 
 ## Model Context Protocol (MCP) Server
 
-`sotgraph` exposes 23 structured MCP tools, 2 reusable prompts, and resources over standard I/O for AI coding agents:
+`sotgraph` exposes a focused, profile-selected MCP surface — 26 structured tools, 2 reusable prompts, and resources over standard I/O for AI coding agents. One immutable allowlist per profile gates BOTH tool discovery (`list_tools`) and invocation (`call_tool`): a tool outside the active profile is neither advertised nor reachable by direct RPC (dispatch answers `tool_disabled`).
 
 ```bash
-# Start MCP server over stdio
+# Start MCP server over stdio (default profile: core)
 sotgraph mcp
+
+# Explicit profile selection
+sotgraph mcp --profile core   # exactly the 7 query/receipt/audit tools
+sotgraph mcp --profile full   # + every non-operational tool (24 total)
+sotgraph mcp --profile ops    # + explicit operational writes (26 total)
 ```
 
+Precedence: `--profile` flag > `SOT_MCP_PROFILE` environment variable > `core`. Unknown values are rejected at startup (exit 2, `invalid_profile`) — never silently widened. `sotgraph setup` installs the server without a profile flag, so harness integrations get the focused `core` surface by default; operators opt into `full`/`ops` per deployment.
+
+| Profile | Tool count | Contents |
+| :--- | :--- | :--- |
+| `core` (default) | 7 | `sot_search`, `sot_map`, `sot_usages`, `sot_pack`, `sot_scope_receipt`, `sot_diff_impact_receipt`, `sot_verify_drift` |
+| `full` | 24 | every non-operational tool: the core seven + `sot_explore`, `sot_implementations`, `sot_doctor`, `sot_architecture_report`, `sot_communities`, `sot_notes`, `sot_trace`, `sot_ui_tree`, `sot_backend_flow`, `sot_solution_steps`, `sot_cross_check`, `sot_git_history`, `sot_commit_verdict`, `sot_diff_impact`, and the opt-in file writers `sot_bundle`, `sot_solution_inventory`, `sot_solution_bundle` |
+| `ops` | 26 | full + the explicit operational writes `sot_reconcile` and `sot_providers_sync` |
+
 ### Registered MCP Tools & Exact Schemas
+
+Tools marked ★ are in the default `core` profile; unmarked tools require `--profile full`; the operational writes additionally require `--profile ops`. Every tool carries honest MCP `ToolAnnotations`: `readOnlyHint` is `true` only for tools with no write path of any kind — tools carrying the JIT freshness gate (`auto_reconcile`, default `auto`) may WRITE to the graph index when it is stale, and the receipt/bundle writers persist under `.sot/`.
 
 #### Read-Only Inspection & Assurance Tools
 | MCP Tool | Description | Required Parameters | Optional Parameters |
 | :--- | :--- | :--- | :--- |
-| `sot_search` | Read-only verified graph search with resource links (`sot://node/{id}`) | `query` (str) | `limit` (int, default 6), `scope` (str), `threshold` (float 0-1), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
-| `sot_explore` | Bounded graph traversal (inbound and outbound) | `node_id` (str) | `depth` (int, default 1), `limit` (int, default 100) |
-| `sot_usages` | Find indexed references grouped by caller + bare-name shadowing risk | `target` (str) | `limit` (int, default 100), `scope` (str), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int) |
-| `sot_implementations`| Extends and implements type hierarchy relationships | `target` (str) | — |
-| `sot_verify_drift` | Non-destructive filesystem vs database drift check | — | `deep` (bool), `limit` (int) |
-| `sot_cross_check` | Classify builtin graph claims vs external provider evidence (agreements / builtin-only / external-only / conflicts) joined on canonical symbol identity | — | `provider` (str), `sample_limit` (int, 1-500, default 20) |
-| `sot_architecture_report` | Architectural analysis with god nodes and modularity metrics | — | `scope` (str), `min_size` (int), `sigma` (float) |
-| `sot_communities` | Louvain / Label Propagation community detection with cohesion scores | — | `scope` (str), `min_size` (int) |
-| `sot_pack` | ContextBundle (YAML/JSON) with 1-hop contracts and 2-hop signature stubs | `target` (str) | `max_hops` (int, 1-3), `max_nodes` (int), `max_bytes` (int), `max_tokens` (int) |
-| `sot_map` | Token-budgeted repository map ranked by personalized PageRank | — | `focus` (str), `max_tokens` (int, default 1024) |
+| ★ `sot_search` | Read-only verified graph search with resource links (`sot://node/{id}`); JIT gate may reconcile (write) when stale | `query` (str) | `limit` (int, default 6), `scope` (str), `threshold` (float 0-1), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int), `auto_reconcile` |
+| `sot_explore` | Bounded graph traversal (inbound and outbound); `node_id` is a graph node id — a bare name falls back to heuristic first-match | `node_id` (str) | `depth` (int, default 2), `limit` (int, default 100), `auto_reconcile` |
+| ★ `sot_usages` | Find indexed references grouped by caller + bare-name shadowing risk; JIT gate may reconcile when stale | `target` (str) | `limit` (int, default 100), `scope` (str), `assurance` (bool), `provider_policy` ('builtin_only'\|'prefer_external'\|'require_external'), `budget` (int), `auto_reconcile` |
+| `sot_implementations`| Extends and implements type hierarchy relationships (heuristic AST evidence — not complete dispatch coverage) | `target` (str) | `auto_reconcile` |
+| ★ `sot_verify_drift` | Non-destructive filesystem vs database drift check; audit purity — never refreshes the index | — | `deep` (bool), `limit` (int) |
+| `sot_doctor` | Health diagnostic: same substantive logic as `sotgraph doctor` (SQLite quick_check, foreign keys, schema version, FTS sync, pending-edge breakdown) + engine read-through counts; read-only, never repairs | — | — |
+| `sot_cross_check` | Classify builtin graph claims vs external provider evidence (agreements / builtin-only / external-only / conflicts) joined on canonical symbol identity; reports honestly when the ledger has no external rows | — | `provider` (str), `sample_limit` (int, 1-500, default 20) |
+| `sot_architecture_report` | Architectural analysis with god nodes and modularity metrics (in-memory; no files written) | — | `scope` (str), `min_size` (int), `sigma` (float) |
+| `sot_communities` | Louvain / Label Propagation community detection with cohesion scores (in-memory) | — | `scope` (str), `min_size` (int) |
+| ★ `sot_pack` | ContextBundle (YAML/JSON) with 1-hop contracts and 2-hop signature stubs; JIT gate may reconcile when stale | `target` (str) | `max_tokens` (int, min 32 — strict budget, same semantics as CLI `pack --tokens`, enforced by measuring the rendered YAML; overflow refused), `max_bytes` (int, min 1024 — best-effort cap on the target source span; the rendered YAML keeps an identity/source floor and may exceed it: `limits.truncated` + `byte_cap_unreachable` warning), `max_hops` (int, 1-3), `max_nodes` (int), `auto_reconcile` |
+| ★ `sot_map` | Token-budgeted repository map ranked by personalized PageRank; JIT gate may reconcile when stale | — | `focus` (str), `max_tokens` (int, default 1024), `include_categories` (str), `auto_reconcile` |
 | `sot_notes` | Persisted architectural knowledge notes query | — | `query` (str), `limit` (int, default 50) |
-| `sot_trace` | Execution path trace, UI decision branches, and Mermaid diagrams | `target` (str) | `depth` (int, 1-5, default 2) |
+| `sot_trace` | Heuristic execution path trace, UI decision branches, and Mermaid diagrams — exploration evidence, not complete execution proof | `target` (str) | `depth` (int, 1-5, default 2), `auto_reconcile` |
 | `sot_ui_tree` | Frontend UI decision tree, validation rules, button triggers, modals | `component` (str) | — |
 | `sot_backend_flow` | Backend service micro-steps, multi-datasources, exception branches | `service` (str) | — |
 | `sot_solution_steps` | Stage 2 Micro-step decomposition (4-column table) for manpower effort | `method` (str) | — |
-| `sot_diff_impact` | Analyze git diff blast radius, inward callers, API contract impacts, and affected tests | — | `target` (str, default 'HEAD~1'), `depth` (int, default 2), `staged` (bool), `working_tree` (bool), `auto_reconcile` (bool), `format` ('markdown'\|'json'\|'github') |
+| `sot_diff_impact` | Analyze git diff blast radius, inward callers, API contract impacts, and affected tests; JIT gate may reconcile when stale | — | `target` (str, default 'HEAD'), `depth` (int, default 2), `staged` (bool), `working_tree` (bool), `auto_reconcile`, `format` ('markdown'\|'json'\|'github') |
 | `sot_git_history` | Inspect git commit history with automated risk scoring and impacted symbol detection | — | `limit` (int, default 10), `author` (str), `since` (str), `with_impact` (bool, default true), `format` ('markdown'\|'json') |
-| `sot_scope_receipt` | PRE-change bounded impact scope receipt (P7.1) with snapshot binding and risk assessment | `target` (str) | `kind_of_change` ('local-body'\|'rename'\|'delete'\|'public-api'), `touches_auth` (bool), `dynamic_heavy` (bool), `depth` (int) |
-| `sot_diff_impact_receipt` | POST-change diff-impact receipt (P7.2) with post-change snapshot and closure verification | — | `target` (str), `depth` (int, 1-5), `staged` (bool), `working_tree` (bool) |
+| ★ `sot_scope_receipt` | PRE-change bounded impact scope receipt (P7.1) with snapshot binding and risk assessment; PERSISTS the PRE receipt into `.sot/receipts` (digest-addressed; storage failure is a structured error, never a silent skip) so a later POST can attach it via `pre_receipt` | `target` (str) | `targets` (list, max 8 — union receipt), `kind_of_change` ('local-body'\|'rename'\|'delete'\|'public-api'), `touches_auth` (bool), `dynamic_heavy` (bool), `depth` (int) |
+| ★ `sot_diff_impact_receipt` | POST-change diff-impact receipt (P7.2) with post-change snapshot and closure verification; PERSISTS the receipt into `.sot/receipts`; `test_results` stay caller-reported | — | `target` (str, default 'HEAD'), `depth` (int, 1-5), `staged` (bool), `working_tree` (bool), `pre_receipt` (64-hex digest), `test_results` (object) |
 
 #### Write-Guarded & Artifact Generator Tools
 | MCP Tool | Description | Required Parameters | Optional Parameters |
 | :--- | :--- | :--- | :--- |
-| `sot_providers_sync` | Explicit provider index sync (write path): records ledger run + evidence with snapshot | — | `provider_name` (str, default 'codebase-memory') |
-| `sot_bundle` | Generates 5 high-density architecture fact bundle markdown files | — | `output_dir` (str, default `.sot/bundle`) |
-| `sot_solution_inventory` | Stage 1 Feature Discovery by User Role for Solution docs | — | `module` (str), `output_file` (str) |
-| `sot_solution_bundle` | Full solution context bundle (UI forms, DataTable schemas, API specs) | — | `module` (str), `output_file` (str) |
+| `sot_providers_sync` (**ops only**) | Explicit provider index sync (write path): records ledger run + evidence with snapshot under the project write lock; project-bounded | — | `provider_name` (str, default 'codebase-memory') |
+| `sot_reconcile` (**ops only**) | Explicit index reconcile (write path): the single CBM-primary/builtin writer funnel under the project write lock; project-bounded (no path argument); purges index rows for deleted files, never touches source files | — | `force` (bool, mirrors `sotgraph reconcile --force`) |
+| `sot_bundle` | Generates 5 high-density architecture fact bundle markdown files; `output_dir` confined to the project root (default `.sot/bundle`); overwrites existing bundle files | — | `output_dir` (str) |
+| `sot_solution_inventory` | Stage 1 Feature Discovery by User Role for Solution docs; writes one file when `output_file` is given (confined to the project root) | — | `module` (str), `output_file` (str) |
+| `sot_solution_bundle` | Full solution context bundle (UI forms, DataTable schemas, API specs); writes `ContextBundle.md` (default `.sot/bundle/ContextBundle.md`, confined to the project root) | — | `module` (str), `output_file` (str) |
 
 ---
 

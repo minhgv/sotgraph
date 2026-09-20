@@ -7,6 +7,7 @@ leftovers), debt markers on added lines.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -17,12 +18,15 @@ import pytest
 from sot_graph.assurance.receipts import (
     RECEIPT_SCHEMA_VERSION,
     diff_impact_receipt,
+    receipt_digest,
     scope_receipt,
 )
 from sot_graph.assurance.resolution import (
-    debt_markers,
+    canonical_test_results,
     disposition_matrix,
+    pre_receipt_binding,
     scan_added_lines_for_markers,
+    validate_test_results,
 )
 
 
@@ -403,7 +407,6 @@ class TestCliRendering:
         _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
              "commit", "-qm", "docs")
         import argparse
-        import json as _json
 
         from sot_graph.assurance.impact_pipeline import ReceiptStore
         from sot_graph.cli import cmd_diff_impact
@@ -425,3 +428,294 @@ class TestCliRendering:
         out = capsys.readouterr().out
         assert rc == 0
         assert "predicted caller(s) addressed" in out
+
+
+# ---------------------------------------------------------------------------
+# 5. T-07/AC-05 — PRE-binding audit + test-result trust boundary
+# ---------------------------------------------------------------------------
+
+
+class TestValidateTestResults:
+    def test_valid_counts_honored_exactly(self):
+        ev = validate_test_results(
+            {"ran": 3, "failed": 1, "failures": ["t"]})
+        assert ev["provenance"] == "caller_reported"
+        assert ev["validation"] == "valid"
+        assert ev["ran"] == 3 and ev["failed"] == 1
+        assert ev["effective_failed"] == 1
+        assert ev["healed_failed"] is False
+
+    def test_success_claim_with_failures_heals_up_only(self):
+        ev = validate_test_results(
+            {"ran": 5, "failed": 0, "failures": ["x"]})
+        assert ev["validation"] == "valid"
+        assert ev["effective_failed"] == 1
+        assert ev["healed_failed"] is True
+
+    def test_zero_counts_with_labels_stay_valid_and_blocking(self):
+        """R-02: explicit zero counts beside a failure label are healed
+        from the labels, not judged a contradictory claim — the report
+        stays valid so the failure keeps blocking."""
+        ev = validate_test_results(
+            {"ran": 0, "failed": 0, "failures": ["x"]})
+        assert ev["validation"] == "valid"
+        assert ev["effective_failed"] == 1
+        assert ev["healed_failed"] is True
+
+    def test_label_explained_count_is_not_contradictory(self):
+        """R-02: when the failed count equals the label list length it
+        is label-explained healing — valid, still blocking."""
+        ev = validate_test_results(
+            {"ran": 1, "failed": 3, "failures": ["a", "b", "c"]})
+        assert ev["validation"] == "valid"
+        assert ev["effective_failed"] == 3
+
+    def test_failures_only_echo_revalidates_as_blocking(self):
+        """R-02: the canonical echo of a failures-only report must pass
+        revalidation (as every strict CLI/MCP consumer performs it) with
+        the same blocking count instead of degrading to invalid/warn."""
+        raw = {"failures": ["a", "b"]}
+        echo = canonical_test_results(raw, validate_test_results(raw))
+        assert echo == {"ran": 0, "failed": 2, "failures": ["a", "b"]}
+        ev2 = validate_test_results(echo)
+        assert ev2["validation"] == "valid"
+        assert ev2["effective_failed"] == 2
+        assert ev2["healed_failed"] is False
+
+    def test_idempotent_on_validated_blocks(self):
+        once = validate_test_results({"ran": 2, "failed": 0})
+        assert validate_test_results(once) == once
+        bad = validate_test_results({"ran": "x"})
+        assert validate_test_results(bad) == bad
+
+    @pytest.mark.parametrize("raw", [
+        True, "x", 42,
+        {"ran": True},            # bool-as-int
+        {"failed": 1.5},          # noninteger
+        {"ran": -2},              # negative
+        {"ran": "3"},             # string count
+        {"ran": 1, "failed": 2},  # failed > ran
+        {"ran": 3, "failed": 5, "failures": ["a"]},  # not label-explained
+        {"ran": 0, "failures": "oops"},
+        {"ran": 1, "command": "pytest -q", "snapshot_hash": "a" * 64},
+    ])
+    def test_invalid_shapes_trusted_in_neither_direction(self, raw):
+        ev = validate_test_results(raw)
+        assert ev["validation"] == "invalid"
+        assert ev["effective_failed"] is None
+        assert ev["errors"]
+        assert ev["provenance"] == "caller_reported"
+
+    def test_echo_stays_clean_json_without_nested_evidence(self):
+        import json
+        raw = {"ran": float("nan"), "failures": ["x"], "command": "pytest"}
+        ev = validate_test_results(raw)
+        echo = canonical_test_results(raw, ev)
+        json.dumps(echo, allow_nan=False)  # must be standard JSON
+        assert "provenance" not in echo  # no evidence nested in the echo
+
+    def test_canonical_valid_shape_is_established_legacy(self):
+        raw = {"ran": 5, "failed": 0, "failures": ["t_x"]}
+        echo = canonical_test_results(raw, validate_test_results(raw))
+        assert echo == {"ran": 5, "failed": 1, "failures": ["t_x"]}
+
+
+class TestPreReceiptBindingAudit:
+    def _pre(self, tmp_path):
+        repo = _make_repo(tmp_path)
+        db = _db_of(repo)
+        try:
+            return repo, scope_receipt(db, str(repo), "help")
+        finally:
+            db.close()
+
+    def test_real_scope_receipt_binds(self, tmp_path):
+        from sot_graph.assurance.receipts import _head_sha
+        repo, pre = self._pre(tmp_path)
+        # R-07 producer contract: real minted snapshots serialize the
+        # canonical repository identity the binding guard checks.
+        assert pre["snapshot"]["repo_root"] == os.path.realpath(str(repo))
+        b = pre_receipt_binding(
+            pre, repo_root=str(repo), head_sha=_head_sha(str(repo)))
+        assert b["status"] == "bound"
+        assert b["digest_verified"] is True
+        assert b["head_moved"] is False
+
+    def test_tampered_digest_incompatible(self, tmp_path):
+        repo, pre = self._pre(tmp_path)
+        pre["digest"] = "0" * 64
+        b = pre_receipt_binding(pre, repo_root=str(repo))
+        assert b["status"] == "incompatible"
+        assert any("digest mismatch" in r for r in b["reasons"])
+
+    def test_wrong_proof_scope_incompatible(self, tmp_path):
+        repo, pre = self._pre(tmp_path)
+        forged = dict(pre)
+        forged["proof_scope"] = "post_change"
+        b = pre_receipt_binding(forged, repo_root=str(repo))
+        assert b["status"] == "incompatible"
+        assert any("proof_scope" in r for r in b["reasons"])
+
+    def test_foreign_repository_incompatible(self, tmp_path):
+        repo, pre = self._pre(tmp_path)
+        other = _make_repo(tmp_path / "elsewhere")
+        b = pre_receipt_binding(pre, repo_root=str(other))
+        assert b["status"] == "incompatible"
+        assert any("different repository" in r for r in b["reasons"])
+
+    def test_head_moved_flagged_but_still_bound(self, tmp_path):
+        from sot_graph.assurance.receipts import _head_sha
+        repo, pre = self._pre(tmp_path)
+        (repo / "README.md").write_text("move on\n", encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "docs")
+        b = pre_receipt_binding(
+            pre, repo_root=str(repo), head_sha=_head_sha(str(repo)))
+        assert b["status"] == "bound"
+        assert b["head_moved"] is True
+        assert any("HEAD moved" in r for r in b["reasons"])
+
+    def test_missing_and_unstructured(self):
+        assert pre_receipt_binding(None)["status"] == "missing"
+        b = pre_receipt_binding({"direct_callers": []})
+        assert b["status"] == "unverified"
+        assert b["digest_verified"] is None
+
+    def test_unstructured_payload_with_valid_digest_stays_unverified(self):
+        """R-06: a recomputable content digest proves internal
+        consistency, not producer identity — a payload without
+        kind/proof_scope markers must read unverified, never bound."""
+        payload = {
+            "snapshot": {"repo_root": "/somewhere",
+                         "commit_sha": "c" * 40},
+            "direct_callers": [],
+        }
+        payload["digest"] = receipt_digest(
+            {k: v for k, v in payload.items() if k != "digest"})
+        b = pre_receipt_binding(payload)
+        assert b["status"] == "unverified"
+        assert b["digest_verified"] is True
+        assert any("kind/proof_scope" in r for r in b["reasons"])
+
+    def test_snapshot_without_repo_identity_never_binds(self, tmp_path):
+        """R-07: a receipt whose snapshot carries no repository identity
+        (legacy pre-binding receipt, or a payload stripped of the field)
+        stays advisory (unverified) even though its digest verifies —
+        a missing field is not trust, and the foreign-repo guard cannot
+        have run."""
+        repo, pre = self._pre(tmp_path)
+        legacy = dict(pre)
+        legacy["snapshot"] = {
+            k: v for k, v in pre["snapshot"].items()
+            if k != "repo_root"}
+        legacy["digest"] = receipt_digest(
+            {k: v for k, v in legacy.items() if k != "digest"})
+        b = pre_receipt_binding(legacy, repo_root=str(repo))
+        assert b["status"] == "unverified"
+        assert b["digest_verified"] is True
+        assert any("repository identity" in r for r in b["reasons"])
+
+
+class TestIncompatiblePreExcluded:
+    def test_minted_foreign_pre_excluded_through_pipeline(self, tmp_path):
+        """R-07 end to end: a PRE receipt MINTED by the real producer in
+        repoA must read incompatible when attached to a repoB POST — the
+        foreign-repo guard works on actual minted output, not only on
+        synthetic payloads."""
+        repo_a = _make_repo(tmp_path / "repo_a")
+        repo_b = _make_repo(tmp_path / "repo_b")
+        db_a = _db_of(repo_a)
+        try:
+            pre = scope_receipt(db_a, str(repo_a), "help")
+        finally:
+            db_a.close()
+        assert pre["snapshot"]["repo_root"] == os.path.realpath(str(repo_a))
+        (repo_b / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    return util.help() + 2\n",
+            encoding="utf-8")
+        _git(repo_b, "add", "-A")
+        _git(repo_b, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "caller")
+        db_b = _db_of(repo_b)
+        try:
+            payload = diff_impact_receipt(
+                db_b, str(repo_b), pre_receipt=pre)
+        finally:
+            db_b.close()
+        binding = payload["resolution_ledger"]["pre_receipt_binding"]
+        assert binding["status"] == "incompatible"
+        assert any("different repository" in r for r in binding["reasons"])
+        disp = payload["resolution_ledger"]["dispositions"]
+        assert disp["pre_receipt_attached"] is False
+        assert disp["direct_callers"]["total"] == 0
+        assert any("INCOMPATIBLE" in g for g in payload["remaining_gaps"])
+        assert payload["safe_commit"]["verdict"] != "pass"
+        assert (payload["safe_commit"]["inputs"]
+                ["pre_receipt_binding"] == "incompatible")
+
+    def test_tampered_pre_cannot_feed_dispositions_or_pass(self, tmp_path):
+        repo = _make_repo(tmp_path)
+        db = _db_of(repo)
+        try:
+            pre = scope_receipt(db, str(repo), "help")
+        finally:
+            db.close()
+        assert pre["direct_callers"]  # the fixture has real predictions
+        pre["digest"] = "0" * 64  # tampered / foreign bytes
+        (repo / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    return util.help() + 2\n",
+            encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "caller")
+        db = _db_of(repo)
+        try:
+            payload = diff_impact_receipt(db, str(repo), pre_receipt=pre)
+        finally:
+            db.close()
+        binding = payload["resolution_ledger"]["pre_receipt_binding"]
+        assert binding["status"] == "incompatible"
+        # Foreign predictions must not read as clean dispositions...
+        disp = payload["resolution_ledger"]["dispositions"]
+        assert disp["pre_receipt_attached"] is False
+        assert disp["direct_callers"]["total"] == 0
+        assert disp["candidate_tests"]["total"] == 0
+        assert any("INCOMPATIBLE" in g for g in payload["remaining_gaps"])
+        # ...and the gate must not pass on the strength of junk metadata.
+        assert payload["safe_commit"]["verdict"] != "pass"
+        assert (payload["safe_commit"]["inputs"]
+                ["pre_receipt_binding"] == "incompatible")
+
+    def test_ordinary_diff_contract_untouched(self, tmp_path):
+        """T-08/AC-06: no PRE, no tests — engine surfaces unchanged and
+        assurance metadata is honestly absent, not fabricated."""
+        repo = _make_repo(tmp_path)
+        (repo / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    return util.help() + 2\n",
+            encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "caller")
+        db = _db_of(repo)
+        try:
+            payload = diff_impact_receipt(db, str(repo))
+        finally:
+            db.close()
+        assert payload["diff_identity"]["target"] == "HEAD"
+        assert any("app.py" in str(f) for f in payload["changed_files"])
+        for engine_key in ("direct_nodes", "caller_impacts", "api_impacts",
+                           "test_impacts", "summary", "tests_to_run"):
+            assert engine_key in payload
+        assert payload["resolution_ledger"]["pre_receipt_binding"][
+            "status"] == "missing"
+        assert payload["safe_commit"]["tests"]["validation"] == "absent"
+        assert (payload["safe_commit"]["inputs"]
+                ["tests_verified_execution"] is False)
+        assert payload["closure_decision"] in ("closed", "open")

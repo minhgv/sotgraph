@@ -64,7 +64,9 @@ class McpReceiptToolsTests(unittest.TestCase):
         from sot_graph.mcp_server import create_server
 
         async def runner():
-            server = create_server(self.service)
+            # Receipt/impact surface spans core and full-only tools
+            # (sot_diff_impact is extended); run against `full`.
+            server = create_server(self.service, profile="full")
             server_read_send, server_read_recv = anyio.create_memory_object_stream(1)
             server_write_send, server_write_recv = anyio.create_memory_object_stream(1)
             async with anyio.create_task_group() as tg:

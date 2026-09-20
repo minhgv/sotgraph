@@ -239,11 +239,25 @@ class TestSafeCommitGateIntegration:
         req = ImpactClaimRequest(
             working_tree=True,
             test_results={"failures": ["a", "b"]}).normalize()
+        # Established echo shape: failures-only claims heal UP into the
+        # blocking count, and the count stays caller-reported.
+        assert req.test_results["ran"] == 0
         assert req.test_results["failed"] == 2
+        assert req.test_results["failures"] == ["a", "b"]
+        # Trust-boundary evidence lives in the separate field.
+        assert req.test_results_validation["provenance"] == "caller_reported"
+        assert req.test_results_validation["validation"] == "valid"
+        assert req.test_results_validation["healed_failed"] is True
+        # Non-object input is a type error; structurally malformed dicts
+        # are RECORDED invalid (trusted in neither direction), not raised.
         with pytest.raises(ValueError):
             ImpactClaimRequest(test_results="x").normalize()
-        with pytest.raises(ValueError):
-            ImpactClaimRequest(test_results={"ran": "x"}).normalize()
+        bad = ImpactClaimRequest(
+            working_tree=True, test_results={"ran": "x"}).normalize()
+        assert bad.test_results == {"ran": "x"}
+        assert bad.test_results_validation["validation"] == "invalid"
+        assert bad.test_results_validation["errors"]
+        assert bad.test_results_validation["effective_failed"] is None
 
 
 class TestGateStrictCli:
@@ -284,3 +298,111 @@ class TestGateStrictCli:
         proc = self._cli(gate_repo, "--test-report", str(report))
         assert proc.returncode == 2, proc.stderr[-400:]
         assert "1 provided test(s) failed" in proc.stderr
+
+
+# ---------------------------------------------------------------------------
+# T-07/AC-05 trust boundary — caller test claims are never proof
+# ---------------------------------------------------------------------------
+
+
+class TestTestResultsTrustBoundary:
+    """Caller-supplied counts are CLAIMS, never verified execution.
+
+    bool-as-int, negative/noninteger counts, ``failed > ran``, and
+    success counts with nonempty failures must not reassure; ``ran=0``
+    is not a verified pass; caller command/hash metadata cannot upgrade
+    provenance; the graph verdict stays independent of caller claims.
+    """
+
+    def _v(self, test_results, status="ASSURED_WITHIN_SCOPE"):
+        return safe_commit_verdict(
+            assurance_status=status, dangling_count=0,
+            debt_introduced=0, dispositions={"pre_receipt_attached": False},
+            test_results=test_results)
+
+    @pytest.mark.parametrize("report", [
+        {"ran": True, "failed": 0},            # bool-as-int ran
+        {"ran": 5, "failed": True},            # bool-as-int failed
+        {"ran": 5, "failed": -1},              # negative failed
+        {"ran": -5, "failed": 0},              # negative ran
+        {"ran": 2.0, "failed": 0},             # float count
+        {"ran": "5", "failed": 0},             # string count
+        {"ran": 1, "failed": 3},               # failed > ran
+        {"ran": 5, "failed": 0, "failures": [],
+         "command": "pytest -q"},              # command metadata
+        {"ran": 5, "failed": 0, "failures": [],
+         "snapshot_hash": "a" * 64},           # hash metadata
+        {"ran": float("nan"), "failed": 0},    # NaN is not a count
+    ])
+    def test_invalid_reports_cannot_reassure(self, report):
+        v = self._v(report)
+        assert v["verdict"] == "warn", report
+        assert v["inputs"]["tests_validation"] == "invalid"
+        # Nothing from an invalid report is honored in either direction.
+        assert v["inputs"]["tests_failed"] == 0
+        assert v["inputs"]["tests_verified_execution"] is False
+        assert v["tests"]["provenance"] == "caller_reported"
+        assert v["tests"]["errors"]
+
+    def test_success_count_with_failures_blocks(self):
+        v = self._v({"ran": 5, "failed": 0, "failures": ["t_x"]})
+        assert v["verdict"] == "block"
+        assert v["inputs"]["tests_failed"] == 1
+        assert v["tests"]["healed_failed"] is True
+
+    def test_failures_only_blocks(self):
+        v = self._v({"failures": ["a", "b"]})
+        assert v["verdict"] == "block"
+        assert v["inputs"]["tests_failed"] == 2
+
+    def test_claimed_failures_block_with_message(self):
+        v = self._v({"ran": 3, "failed": 1, "failures": ["test_run"]})
+        assert v["verdict"] == "block"
+        assert any("1 provided test(s) failed" in r
+                   for r in v["block_reasons"])
+
+    def test_ran_zero_is_not_a_verified_pass(self):
+        v = self._v({"ran": 0, "failed": 0, "failures": []})
+        # Legacy graph-only closure stays reachable (no runner exists in
+        # this product), but a vacuous report must never read as a run.
+        assert v["inputs"]["tests_ran"] == 0
+        assert v["inputs"]["tests_provenance"] == "caller_reported"
+        assert v["inputs"]["tests_verified_execution"] is False
+
+    def test_absent_tests_disclosed_honestly(self):
+        v = self._v(None)
+        assert v["tests"]["validation"] == "absent"
+        assert "never implies tests were executed" in v["tests"]["note"]
+        assert v["inputs"]["tests_provenance"] == "absent"
+        assert v["inputs"]["tests_verified_execution"] is False
+
+    def test_caller_success_cannot_lift_graph_status(self):
+        v = self._v({"ran": 10, "failed": 0}, status="PARTIAL")
+        assert v["verdict"] == "warn"
+        assert v["inputs"]["assurance_status"] == "PARTIAL"
+
+    def test_incompatible_pre_receipt_never_reads_clean(self):
+        v = safe_commit_verdict(
+            assurance_status="ASSURED_WITHIN_SCOPE", dangling_count=0,
+            debt_introduced=0, dispositions={"pre_receipt_attached": False},
+            pre_receipt_binding={"status": "incompatible",
+                                 "reasons": ["digest mismatch"]})
+        assert v["verdict"] == "warn"
+        assert v["inputs"]["pre_receipt_binding"] == "incompatible"
+        assert any("incompatible" in r for r in v["warn_reasons"])
+
+    def test_canonical_echo_keeps_established_shape(self):
+        from sot_graph.assurance.resolution import (
+            canonical_test_results, validate_test_results)
+        raw = {"ran": 5, "failed": 0, "failures": ["t_x"]}
+        ev = validate_test_results(raw)
+        assert canonical_test_results(raw, ev) == {
+            "ran": 5, "failed": 1, "failures": ["t_x"]}
+        bad = validate_test_results(
+            {"ran": float("nan"), "failed": 0, "command": "pytest"})
+        echo = canonical_test_results(
+            {"ran": float("nan"), "failed": 0, "command": "pytest"}, bad)
+        # JSON-clean echo, no evidence block nested inside.
+        import json as _json
+        _json.dumps(echo, allow_nan=False)
+        assert "provenance" not in echo

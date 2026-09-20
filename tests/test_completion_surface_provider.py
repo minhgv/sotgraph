@@ -225,7 +225,7 @@ def test_sur02_registered_mcp_catalog_and_invocation_keep_verification_gate(surf
     service = McpService(db_path, str(lab.repo))
 
     async def exercise():
-        server = create_server(service)
+        server = create_server(service, profile="full")
         send, receive = anyio.create_memory_object_stream(1)
         reply, responses = anyio.create_memory_object_stream(1)
         async with anyio.create_task_group() as group:

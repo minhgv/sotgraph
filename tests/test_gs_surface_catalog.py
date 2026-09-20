@@ -15,14 +15,22 @@ from sot_graph.adapters.installer import install_harnesses
 from sot_graph.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
+# The `full` profile: every NON-OPERATIONAL tool (no sot_reconcile /
+# sot_providers_sync — those need the explicit `ops` profile). The default
+# `core` profile is asserted separately below.
 TOOLS = {
     'search', 'explore', 'usages', 'implementations', 'verify_drift',
-    'architecture_report', 'communities', 'bundle', 'pack', 'map', 'notes',
-    'trace', 'ui_tree', 'backend_flow', 'solution_inventory', 'solution_steps',
-    'solution_bundle', 'diff_impact', 'providers_sync', 'cross_check',
+    'doctor', 'architecture_report', 'communities', 'bundle', 'pack', 'map',
+    'notes', 'trace', 'ui_tree', 'backend_flow', 'solution_inventory',
+    'solution_steps', 'solution_bundle', 'diff_impact', 'cross_check',
     'git_history', 'scope_receipt', 'diff_impact_receipt',
     'commit_verdict',
 }
+CORE_TOOLS = {
+    'search', 'map', 'usages', 'pack', 'scope_receipt',
+    'diff_impact_receipt', 'verify_drift',
+}
+OPERATIONAL = {'reconcile', 'providers_sync'}
 
 
 @pytest.fixture(autouse=True)
@@ -58,7 +66,7 @@ def test_sur02_catalog_and_native_invocation_refusal(tmp_path):
     service = McpService(db_path, str(tmp_path))
 
     async def exercise():
-        server = create_server(service)
+        server = create_server(service, profile='full')
         send, receive = anyio.create_memory_object_stream(1)
         reply, responses = anyio.create_memory_object_stream(1)
         async with anyio.create_task_group() as group:
@@ -87,6 +95,55 @@ def test_sur02_catalog_and_native_invocation_refusal(tmp_path):
                     result = await client.call_tool('sot_notes', {})
                     assert not result.isError
                     assert 'error' not in result.structuredContent
+                    # Operational writes stay hidden and unreachable in `full`.
+                    for name in ('sot_' + n for n in OPERATIONAL):
+                        listed = name in {t.name for t in (await client.list_tools()).tools}
+                        assert not listed, name
+                        denied = await client.call_tool(name, {})
+                        assert denied.isError, name
+                        assert denied.structuredContent['error']['code'] == 'tool_disabled', name
+            finally:
+                group.cancel_scope.cancel()
+
+    try:
+        anyio.run(exercise)
+    finally:
+        service.close()
+
+
+def test_default_profile_is_core_seven(tmp_path):
+    """The actual default surface is exactly the seven core tools; the
+    non-core tools are not reachable by direct RPC either."""
+    anyio = pytest.importorskip('anyio')
+    pytest.importorskip('mcp')
+    from mcp import ClientSession
+    from sot_graph.db import Database
+    from sot_graph.mcp_server import create_server
+    from sot_graph.mcp_service import McpService
+
+    db_path = str(tmp_path / '.sot' / 'scratch.db')
+    Database(db_path).close()
+    service = McpService(db_path, str(tmp_path))
+
+    async def exercise():
+        # No explicit profile: create_server must default to `core`.
+        server = create_server(service)
+        send, receive = anyio.create_memory_object_stream(1)
+        reply, responses = anyio.create_memory_object_stream(1)
+        async with anyio.create_task_group() as group:
+            group.start_soon(server.run, receive, reply, server._sot_initialization_options)
+            try:
+                async with ClientSession(responses, send) as client:
+                    await client.initialize()
+                    listed = {t.name for t in (await client.list_tools()).tools}
+                    assert listed == {'sot_' + name for name in CORE_TOOLS}
+                    hidden = {'sot_' + n for n in (TOOLS | OPERATIONAL) - CORE_TOOLS}
+                    for name in sorted(hidden):
+                        denied = await client.call_tool(name, {})
+                        assert denied.isError, name
+                        err = denied.structuredContent['error']
+                        assert err['code'] == 'tool_disabled', (name, err)
+                        assert err['profile'] == 'core'
             finally:
                 group.cancel_scope.cancel()
 
@@ -220,7 +277,9 @@ def test_sur02_exception_results_are_errors_without_private_diagnostics(
     monkeypatch.setattr(service, method, failing)
 
     async def exercise():
-        server = create_server(service)
+        # Error-shape contract covers the full registry (sot_notes is a
+        # full-profile tool), not just the core default.
+        server = create_server(service, profile='full')
         send, receive = anyio.create_memory_object_stream(1)
         reply, responses = anyio.create_memory_object_stream(1)
         async with anyio.create_task_group() as group:

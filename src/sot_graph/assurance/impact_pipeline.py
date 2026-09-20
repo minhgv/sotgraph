@@ -197,10 +197,18 @@ class ImpactClaimRequest:
     #: only; its proof_scope never becomes post-change proof.
     pre_receipt: Optional[Dict[str, Any]] = None
     #: W2: optional caller-provided test outcome
-    #: ``{"ran": int, "failed": int, "failures": [str]}`` — failures
-    #: feed the safe_commit verdict (block); normalized below so a
-    #: `failures` list without a `failed` count still counts.
+    #: ``{"ran": int, "failed": int, "failures": [str]}`` — the
+    #: ESTABLISHED shape, kept canonical by
+    #: :func:`sot_graph.assurance.resolution.canonical_test_results`
+    #: (failure claims heal UP into ``failed`` only; the count stays a
+    #: caller-reported claim, never verified execution).
     test_results: Optional[Dict[str, Any]] = None
+    #: W2 trust-boundary evidence for :attr:`test_results`, kept OUT of
+    #: the legacy echo: ``{provenance, validation, errors, ...}`` from
+    #: :func:`sot_graph.assurance.resolution.validate_test_results`.
+    #: Provenance is always ``caller_reported``; malformed reports are
+    #: recorded invalid and trusted in neither direction.
+    test_results_validation: Optional[Dict[str, Any]] = None
 
     def normalize(self) -> "ImpactClaimRequest":
         """Validate and canonicalize; pure (no I/O)."""
@@ -229,32 +237,29 @@ class ImpactClaimRequest:
                 f"{RECONCILE_PROVENANCE_VALUES}, got {self.reconcile_provenance!r}"
             )
         test_results = self.test_results
+        validation_evidence = self.test_results_validation
         if test_results is not None:
             if not isinstance(test_results, dict):
                 raise ValueError(
                     "ImpactClaimRequest.test_results must be a dict like "
                     "{'ran': int, 'failed': int, 'failures': [str]}"
                 )
-            failures = test_results.get("failures") or []
-            if not isinstance(failures, list):
-                raise ValueError(
-                    "ImpactClaimRequest.test_results.failures must be a list"
-                )
-            try:
-                ran = max(0, int(test_results.get("ran") or 0))
-                failed = max(0, int(test_results.get("failed") or 0))
-            except (TypeError, ValueError):
-                raise ValueError(
-                    "ImpactClaimRequest.test_results.ran/failed must be ints"
-                ) from None
-            failed = max(failed, len(failures))
-            test_results = {
-                "ran": ran, "failed": failed,
-                "failures": [str(f) for f in failures],
-            }
+            # W2 trust boundary: malformed claims are RECORDED as invalid
+            # evidence (separate field, provenance caller_reported) while
+            # ``test_results`` itself keeps the established shape —
+            # never coerced into reassuring counts, never silently
+            # dropped, and never nested inside the evidence block.
+            from sot_graph.assurance.resolution import (
+                canonical_test_results,
+                validate_test_results,
+            )
+            validation_evidence = validate_test_results(test_results)
+            test_results = canonical_test_results(
+                test_results, validation_evidence)
         return replace(
             self,
             test_results=test_results,
+            test_results_validation=validation_evidence,
             target=target,
             depth=depth,
             staged=staged,
@@ -353,8 +358,12 @@ def run_impact_claim(
         # (the surface reconciled on the writer path before this call).
         "reconcile_provenance": request.reconcile_provenance,
         # W2: the verdict depends on caller-provided test results —
-        # disclose them so the digest covers the actual input set.
+        # disclose them so the digest covers the actual input set. The
+        # legacy echo stays in ``test_results``; the trust-boundary
+        # audit (provenance caller_reported, validation status, errors)
+        # is the sibling ``test_results_validation`` field.
         "test_results": request.test_results,
+        "test_results_validation": request.test_results_validation,
     }
     receipt["projection"] = build_projection(receipt)
     if reconcile_warnings:

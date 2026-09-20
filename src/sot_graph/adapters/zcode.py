@@ -73,7 +73,7 @@ replacement for verifying against disk.
 | **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
 | **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | `CLI only` |
-| **MCP Server** | `sotgraph mcp` | `CLI only` |
+| **MCP Server** | `sotgraph mcp --profile core|full|ops` (default `core`: the 7 query/receipt/audit tools; `full` = every non-operational tool; `ops` = full + explicit sot_reconcile / sot_providers_sync writes) | `CLI only` |
 | **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `sot_providers_sync`, `sot_cross_check` |
 | **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
 | **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |

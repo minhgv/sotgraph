@@ -139,6 +139,29 @@ class TestMultiScopeReceipt:
         assert "targets_partially_resolved" in m["assurance"]["reason_codes"]
         assert m["assurance_facts"]["partial_targets"] == 1
 
+    def test_scope_block_preserves_classification_and_gaps(self, multi_repo):
+        """T-06/AC-04 multi-target: deduped union counts match the
+        merged evidence families, and unresolved targets surface in
+        ``scope.unknown.partial_targets`` — their scope is unknown,
+        never zero."""
+        db = _db_of(multi_repo)
+        try:
+            m = scope_receipt_multi(
+                db, str(multi_repo), ["run", "ghost_fn_xyz"])
+        finally:
+            db.close()
+        scope = m["scope"]
+        # Union counts are the DEDUPED unions (no per-target inflation).
+        assert scope["direct"]["callers"] == len(m["direct_callers"])
+        assert scope["direct"]["callees"] == len(m["direct_callees"])
+        assert scope["direct"]["affected_files"] == m[
+            "direct_affected_files"]
+        assert scope["transitive"]["nodes"] == len(
+            m["transitive_impact"]["nodes"])
+        # The dead target's entire scope is unknown, disclosed as such.
+        assert scope["unknown"]["partial_targets"] == 1
+        assert "not zero" in scope["unknown"]["note"]
+
     def test_all_unresolved_abstains(self, multi_repo):
         db = _db_of(multi_repo)
         try:

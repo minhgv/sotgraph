@@ -168,6 +168,55 @@ def _iter_owned_calls(func: ast.AST):
                 yield from walk(child, bound)
 
     yield from walk(func, frozenset())
+def _iter_owned_references(func: ast.AST):
+    """Yield ``(attr, inline_bound)`` for every attribute LOAD owned by
+    this scope that is not itself a call target (``obj.m()`` belongs to
+    :func:`_iter_owned_calls`; ``obj.m`` as a value — a callback, a
+    monkeypatch target, a qualified symbol passed around — belongs here).
+
+    Ownership mirrors :func:`_iter_owned_calls`: lambda/comprehension
+    internals are attributed to the enclosing symbol scope, nested
+    ``def``/``class`` own their references.
+    """
+
+    def walk(node: ast.AST, bound: frozenset):
+        if (isinstance(node, ast.Attribute)
+                and isinstance(getattr(node, "ctx", None), ast.Load)):
+            yield node, bound
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                continue  # owns its references; never attribute them here
+            if isinstance(child, ast.Lambda):
+                for d in child.args.defaults:
+                    yield from walk(d, bound)
+                for d in child.args.kw_defaults:
+                    if d is not None:
+                        yield from walk(d, bound)
+                yield from walk(child.body, bound | _param_names(child.args))
+            elif isinstance(child, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+                gens = child.generators
+                if not gens:  # defensive; cannot happen in valid Python
+                    yield from walk(child.elt, bound)
+                    continue
+                yield from walk(gens[0].iter, bound)  # evaluated in enclosing scope
+                acc = bound
+                for i, gen in enumerate(gens):
+                    if i:
+                        yield from walk(gen.iter, acc)  # sees previous targets
+                    acc = acc | _target_names(gen.target)
+                    for cond in gen.ifs:
+                        yield from walk(cond, acc)
+                if isinstance(child, ast.DictComp):
+                    yield from walk(child.key, acc)
+                    yield from walk(child.value, acc)
+                else:
+                    yield from walk(child.elt, acc)
+            else:
+                yield from walk(child, bound)
+
+    yield from walk(func, frozenset())
+
+
 def _dotted_expr(node: ast.AST) -> Optional[str]:
     """Render a Name/Attribute chain ('self.db'), or None for complex exprs."""
     parts: List[str] = []
@@ -178,6 +227,69 @@ def _dotted_expr(node: ast.AST) -> Optional[str]:
         return None
     parts.append(node.id)
     return ".".join(reversed(parts))
+
+
+def _context_manager_class(expr: ast.AST, local_types: Dict[str, str]) -> Optional[str]:
+    """Statically known class name entering a with-statement, else None.
+
+    Justified shapes only: a direct class-name call (``Session()``) or a
+    plain variable whose declared/constructed type is known (``lock`` bound
+    by ``lock: Lock`` or ``lock = Lock()``). Attribute receivers
+    (``self.lock:``), subscripts and arbitrary expressions stay unknown —
+    guessing a same-name class would fabricate protocol edges.
+    """
+    if isinstance(expr, ast.Call) and isinstance(expr.func, ast.Name):
+        return expr.func.id
+    if isinstance(expr, ast.Name):
+        return local_types.get(expr.id)
+    return None
+
+
+def _classify_attribute_access(
+    node: ast.Attribute,
+    bound: set,
+    import_map: Dict[str, str],
+    alias_symbol_map: Optional[Dict[str, str]] = None,
+    local_types: Optional[Dict[str, str]] = None,
+    enclosing_class: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """Classify one attribute access site (call target or bare reference).
+
+    Shared by :func:`_classify_call` and the reference extractor so calls
+    and references carry identical binding semantics: a receiver with a
+    statically known type carries it (``METHOD_CALL`` + receiver type),
+    an imported module root is ``QUALIFIED``, and everything else stays
+    the honest ``ATTRIBUTE``/``DYNAMIC`` — never a same-name guess.
+    """
+    receiver = _dotted_expr(node.value)
+    import_source = None
+    receiver_type = None
+    kind = "DYNAMIC"
+    if receiver:
+        root = receiver.split(".")[0]
+        import_source = import_map.get(root)
+        if import_source:
+            kind = "QUALIFIED"
+        elif root in ("self", "cls") and enclosing_class:
+            receiver_type = enclosing_class
+            kind = "METHOD_CALL"
+        elif local_types and receiver in local_types:
+            receiver_type = local_types[receiver]
+            import_source = import_map.get(receiver_type)
+            kind = "METHOD_CALL"
+        elif local_types and root in local_types:
+            receiver_type = local_types[root]
+            import_source = import_map.get(receiver_type)
+            kind = "METHOD_CALL"
+        else:
+            kind = "ATTRIBUTE"
+    return {
+        "call_kind": kind,
+        "receiver": receiver_type or receiver,
+        "import_source": import_source,
+        "builtin": False,
+        "is_local_var": False,
+    }
 
 
 def _classify_call(
@@ -213,35 +325,10 @@ def _classify_call(
             "is_local_var": is_shadowed and name not in BUILTIN_NAMES,
         }
     if isinstance(func, ast.Attribute):
-        receiver = _dotted_expr(func.value)
-        import_source = None
-        receiver_type = None
-        kind = "DYNAMIC"
-        if receiver:
-            root = receiver.split(".")[0]
-            import_source = import_map.get(root)
-            if import_source:
-                kind = "QUALIFIED"
-            elif root in ("self", "cls") and enclosing_class:
-                receiver_type = enclosing_class
-                kind = "METHOD_CALL"
-            elif local_types and receiver in local_types:
-                receiver_type = local_types[receiver]
-                import_source = import_map.get(receiver_type)
-                kind = "METHOD_CALL"
-            elif local_types and root in local_types:
-                receiver_type = local_types[root]
-                import_source = import_map.get(receiver_type)
-                kind = "METHOD_CALL"
-            else:
-                kind = "ATTRIBUTE"
-        return {
-            "call_kind": kind,
-            "receiver": receiver_type or receiver,
-            "import_source": import_source,
-            "builtin": False,
-            "is_local_var": False,
-        }
+        return _classify_attribute_access(
+            func, bound, import_map, alias_symbol_map, local_types,
+            enclosing_class,
+        )
     return None
 
 
@@ -315,6 +402,10 @@ def extract_python(path: Path) -> Dict[str, Any]:
             # declarations there are indexed (tagged ``type_checking``) but
             # never emit runtime imports/calls edges.
             self.tc_depth = 0
+            # Symbol ids defined by this file ('Cls', 'Cls.method', 'func'):
+            # lets with-statement protocol edges bind directly when the
+            # context-manager class is defined in the same file.
+            self.defined_ids: set = set()
 
         def visit_If(self, node: ast.If):
             """Descend guards with correct type-only scoping.
@@ -371,6 +462,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                     })
             self.scope_stack.append(class_id)
             self.bound_stack.append(set())
+            self.defined_ids.add(class_id)
             self.generic_visit(node)
             self.bound_stack.pop()
             self.scope_stack.pop()
@@ -406,6 +498,11 @@ def extract_python(path: Path) -> Dict[str, Any]:
 
             # Collect local parameter and variable type annotations within this scope
             local_types: Dict[str, str] = {}
+            # Context-manager protocol sites in this scope: (class_name,
+            # with_lineno, is_async). Filled from statically known shapes
+            # only — a direct class-name call ('Session()') or a variable
+            # whose declared/constructed type is known.
+            cm_sites: List[Tuple[str, int, bool]] = []
             if hasattr(node, "args") and node.args:
                 all_args = getattr(node.args, "posonlyargs", []) + node.args.args + getattr(node.args, "kwonlyargs", [])
                 for arg in all_args:
@@ -444,6 +541,20 @@ def extract_python(path: Path) -> Dict[str, Any]:
                         if (isinstance(var, ast.Name) and isinstance(item.context_expr, ast.Call)
                                 and isinstance(item.context_expr.func, ast.Name)):
                             local_types[var.id] = item.context_expr.func.id
+                    # The with statement statically invokes the context
+                    # manager protocol: `with X:` runs type(X).__enter__ /
+                    # __exit__ (async with: __aenter__ / __aexit__). Record
+                    # the site when the class is statically known; edges
+                    # are emitted in the runtime block below.
+                    is_async_cm = isinstance(child, ast.AsyncWith)
+                    for item in child.items:
+                        cm_cls = _context_manager_class(
+                            item.context_expr, local_types)
+                        if cm_cls:
+                            cm_sites.append(
+                                (cm_cls,
+                                 getattr(child, "lineno", node.lineno),
+                                 is_async_cm))
 
             # Detect local imports inside this function scope
             local_import_map = dict(import_map)
@@ -513,8 +624,83 @@ def extract_python(path: Path) -> Dict[str, Any]:
                         "source_location": f"L{getattr(child, 'lineno', node.lineno)}",
                         **context,
                     })
+
+                # Typed attribute references that are not call sites:
+                # callbacks, monkeypatch targets, ``mod.symbol`` passed as
+                # a value. Only statically justified receivers are claimed
+                # (a typed receiver or an imported module root); unknown
+                # receivers are left unclaimed rather than bound to a
+                # same-named symbol. A chained access (`a.b.c`) emits once,
+                # for the deepest Name-anchored link (`a.b`): `a` is the
+                # only statically classifiable receiver in the chain — the
+                # receiver of `.c` is the runtime value of `a.b`, which no
+                # static evidence names, so no outer-link row is claimed.
+                call_func_ids = {
+                    id(c.func) for c, _ in _iter_owned_calls(node)
+                }
+                for attr_node, _inline_bound in _iter_owned_references(node):
+                    if id(attr_node) in call_func_ids:
+                        continue
+                    # Outer chain link (`a.b.c`): its receiver `a.b` is
+                    # itself an unresolved attribute, so only the deeper
+                    # Name-anchored link remains a distinct classifiable
+                    # use of a known receiver.
+                    if (isinstance(attr_node.value, ast.Attribute)
+                            and isinstance(attr_node.value.ctx, ast.Load)):
+                        continue
+                    context = _classify_attribute_access(
+                        attr_node, bound, local_import_map, local_alias_map,
+                        local_types, enclosing_class,
+                    ) or {}
+                    recv = context.get("receiver")
+                    if (context.get("call_kind") not in ("METHOD_CALL", "QUALIFIED")
+                            and recv not in self.defined_ids):
+                        continue  # untyped receiver: honestly unclaimed
+                    edges.append({
+                        "source": func_id,
+                        "target": attr_node.attr,
+                        "relation": "references",
+                        "source_location": f"L{getattr(attr_node, 'lineno', node.lineno)}",
+                        **context,
+                    })
+
+                # Context-manager protocol edges for statically known
+                # classes: `with X:` invokes X.__enter__/__exit__ (async
+                # with: __aenter__/__aexit__) by language semantics. Same-
+                # file classes with the dunder defined bind directly;
+                # everything else goes to the pending resolver typed as a
+                # METHOD_CALL on the known class, so a class that never
+                # defined the protocol stays unresolved instead of being
+                # bound to some same-named method elsewhere.
+                for cm_cls, cm_line, cm_async in cm_sites:
+                    if cm_cls in BUILTIN_NAMES and cm_cls not in local_import_map:
+                        continue  # `with open(...)` — no project evidence
+                    if cm_async:
+                        dunders = ("__aenter__", "__aexit__")
+                    else:
+                        dunders = ("__enter__", "__exit__")
+                    for dunder in dunders:
+                        qualified = f"{cm_cls}.{dunder}"
+                        if qualified in self.defined_ids:
+                            edges.append({
+                                "source": func_id,
+                                "target": qualified,
+                                "relation": "calls",
+                                "source_location": f"L{cm_line}",
+                            })
+                            continue
+                        edges.append({
+                            "source": func_id,
+                            "target": dunder,
+                            "relation": "calls",
+                            "source_location": f"L{cm_line}",
+                            "call_kind": "METHOD_CALL",
+                            "receiver": cm_cls,
+                            "import_source": local_import_map.get(cm_cls),
+                        })
             self.scope_stack.append(func_id)
             self.bound_stack.append(bound)
+            self.defined_ids.add(func_id)
             self.generic_visit(node)
             self.bound_stack.pop()
             self.scope_stack.pop()

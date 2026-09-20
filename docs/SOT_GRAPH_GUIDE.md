@@ -8,13 +8,14 @@
 ## MỤC LỤC
 1. [Tổng Quan về sotgraph](#1-tổng-quan-về-sotgraph)
 2. [Mô Hình Bằng Chứng & Hệ Nhãn Niềm Tin (Trust Model)](#2-mô-hình-bằng-chứng--hệ-nhãn-niềm-tin-trust-model)
-3. [Chi Tiết 21+ MCP Tools (Dành Cho AI Coding Agents)](#3-chi-tiết-21-mcp-tools-dành-cho-ai-coding-agents)
+3. [Chi Tiết 26 MCP Tools (Dành Cho AI Coding Agents)](#3-chi-tiết-26-mcp-tools-dành-cho-ai-coding-agents)
    - [Nhóm 1: Định vị & Tìm Kiếm Tri Thức](#nhóm-1-định-vị--tìm-kiếm-tri-thức)
    - [Nhóm 2: Khảo Sát AST & Mối Quan Hệ Mã Nguồn](#nhóm-2-khảo-sát-ast--mối-quan-hệ-mã-nguồn)
    - [Nhóm 3: Phân Tích Kiến Trúc, Cụm Module & Fact Bundler](#nhóm-3-phân-tích-kiến-trúc-cụm-module--fact-bundler)
    - [Nhóm 4: Reverse Engineering & Động Cơ Solution (ITPRO / Manpower)](#nhóm-4-reverse-engineering--động-cơ-solution-itpro--manpower)
    - [Nhóm 5: Git Diff Impact, Assurance Receipts & Lịch Sử Commit](#nhóm-5-git-diff-impact-assurance-receipts--lịch-sử-commit)
    - [Nhóm 6: Đồng Bộ External Provider](#nhóm-6-đồng-bộ-external-provider)
+   - [Nhóm 7: Chẩn Đoán & Đồng Bộ Hệ Thống (Operational)](#nhóm-7-chẩn-đoán--đồng-bộ-hệ-thống-operational)
    - [Tài Nguyên MCP (Resources, Templates & Subscriptions)](#tài-nguyên-mcp-resources-templates--subscriptions)
 4. [Chi Tiết Hệ Thống Câu Lệnh CLI](#4-chi-tiết-hệ-thống-câu-lệnh-cli)
    - [Nhóm Lệnh Vòng Đời & Đồng Bộ CSDL](#nhóm-lệnh-vòng-đời--đồng-bộ-csdl)
@@ -65,9 +66,22 @@ sotgraph tích hợp cơ chế bằng chứng đa nguồn:
 
 ---
 
-## 3. Chi Tiết 21+ MCP Tools (Dành Cho AI Coding Agents)
+## 3. Chi Tiết 26 MCP Tools (Dành Cho AI Coding Agents)
 
 Giao diện Model Context Protocol (MCP) của sotgraph tuân thủ chuẩn **MCP 2025-06-18**, hỗ trợ `outputSchema` có cấu trúc và `ResourceLink` (`sot://node/{id}`) cho phép lazy-fetching dữ liệu chi tiết của từng Node mà không làm tràn context.
+
+#### Hồ sơ công cụ (Tool Profiles) — `sotgraph mcp --profile core|full|ops`
+
+Toàn bộ 26 công cụ KHÔNG được exposes đồng thời. Mỗi profile là một allowlist bất biến, áp dụng cho CẢ việc khám phá công cụ (`list_tools`) LẪN lời gọi trực tiếp (`call_tool`): công cụ nằm ngoài profile active sẽ không được quảng bá và RPC gọi thẳng sẽ bị từ chối với lỗi `tool_disabled`.
+
+| Profile | Số tool | Nội dung |
+| :--- | :--- | :--- |
+| `core` (mặc định) | 7 | `sot_search`, `sot_map`, `sot_usages`, `sot_pack`, `sot_scope_receipt`, `sot_diff_impact_receipt`, `sot_verify_drift` |
+| `full` | 24 | Toàn bộ tool KHÔNG ghi (non-operational): 7 tool core + `sot_explore`, `sot_implementations`, `sot_doctor`, `sot_architecture_report`, `sot_communities`, `sot_notes`, `sot_trace`, `sot_ui_tree`, `sot_backend_flow`, `sot_solution_steps`, `sot_cross_check`, `sot_git_history`, `sot_commit_verdict`, `sot_diff_impact` + các file-writer opt-in `sot_bundle`, `sot_solution_inventory`, `sot_solution_bundle` |
+| `ops` | 26 | `full` + 2 thao tác ghi tường minh: `sot_reconcile`, `sot_providers_sync` |
+
+* **Thứ tự ưu tiên cấu hình:** cờ `--profile` > biến môi trường `SOT_MCP_PROFILE` > mặc định `core`. Giá trị không hợp lệ bị TỪ CHỐI ngay khi khởi động (exit 2, `invalid_profile`) — không bao giờ tự động nâng quyền lên `full`/`ops`.
+* **Tính trung thực về hiệu ứng (honest effects):** các tool mang cổng tươi mới JIT (`auto_reconcile`, mặc định `auto`) CÓ THỂ GHI vào chỉ mục khi đồ thị bị stale; `sot_diff_impact_receipt` lưu biên lai vào `.sot/receipts`; các file-writer chỉ ghi trong phạm vi project root. MCP `ToolAnnotations` chỉ gắn `readOnlyHint=true` cho tool không có bất kỳ đường ghi nào.
 
 ---
 
@@ -132,7 +146,8 @@ Giao diện Model Context Protocol (MCP) của sotgraph tuân thủ chuẩn **MC
   * `target` *(string, bắt buộc)*: Symbol hoặc FQN mục tiêu.
   * `max_hops` *(integer, 1-3, mặc định: 2)*: Số bước nhảy quan hệ.
   * `max_nodes` *(integer, mặc định: 50)*: Số node tối đa đóng gói.
-  * `max_bytes` *(integer, mặc định: 65536 = 64KB)*: Giới hạn dung lượng byte.
+  * `max_bytes` *(integer, mặc định: 65536 = 64KB)*: Giới hạn dung lượng byte cứng của span nguồn mục tiêu.
+  * `max_tokens` *(integer, tối thiểu 32, tùy chọn)*: Ngân sách token cho bundle đã render — cùng ngữ nghĩa với cờ CLI `sotgraph pack --tokens` (đo trực tiếp YAML render, không phải ước lượng thô). Khi đặt cả `max_tokens` và `max_bytes` thì CẢ hai giới hạn đều áp dụng: byte cắt trước, token chặn đầu ra cuối cùng. Giá trị không hợp lệ (nhỏ hơn 1, sai kiểu) bị từ chối sạch với lỗi `invalid_argument`; ngân sách quá nhỏ để chứa metadata tối thiểu trả về lỗi có cấu trúc `BUDGET_TOO_SMALL`.
 * **Kịch bản sử dụng:** Cung cấp context chính xác, siêu gọn cho subagent khi giao việc lập trình chức năng liên quan đến symbol đó.
 
 ---
@@ -263,13 +278,24 @@ Giao diện Model Context Protocol (MCP) của sotgraph tuân thủ chuẩn **MC
 
 ### Nhóm 6: Đồng Bộ External Provider
 
-#### 22. `sotgraph_sot_providers_sync`
-* **Mô tả:** Kích hoạt đồng bộ hóa tường minh (write path) chỉ mục từ một evidence provider bên ngoài (VD: `codebase-memory`), được bảo vệ an toàn bởi project write lock và lưu lại ledger run receipt kèm snapshot.
+#### 22. `sotgraph_sot_providers_sync` *(chỉ profile `ops`)*
+* **Mô tả:** Kích hoạt đồng bộ hóa tường minh (write path) chỉ mục từ một evidence provider bên ngoài (VD: `codebase-memory`), được bảo vệ an toàn bởi project write lock và lưu lại ledger run receipt kèm snapshot. Đây là tool GHI: chỉ khả dụng khi khởi động server bằng `--profile ops`; bị từ chối (`tool_disabled`) ở profile `core` lẫn `full`.
 * **Tham số (Parameters):**
   * `provider_name` *(string, mặc định: `codebase-memory`)*: Tên provider cần đồng bộ.
 * **Kịch bản sử dụng:** Khi dự án có sử dụng song song engine SCIP hoặc codebase-memory và cần cập nhật chỉ mục đồng nhất vào sotgraph.
 
 ---
+
+### Nhóm 7: Chẩn Đoán & Đồng Bộ Hệ Thống (Operational)
+
+#### 23. `sotgraph_sot_doctor` *(profile `full` và `ops`)*
+* **Mô tả:** Chẩn đoán sức khỏe chỉ mục (chỉ ĐỌC): cùng logic health với lệnh CLI `sotgraph doctor` — SQLite `quick_check`, kiểm tra khóa ngoại (foreign keys), phiên bản schema, độ đồng bộ FTS5, phân rã pending-edge và thống kê tổng — cộng thêm số node/edge read-through từ engine store codebase-memory khi engine được gắn (tránh đọc nhầm số lượng nhỏ của phần sot-owned là toàn bộ đồ thị). Trả về JSON có giới hạn (bounded); tool này KHÔNG bao giờ tự sửa dữ liệu.
+* **Tham số (Parameters):** không có.
+
+#### 24. `sotgraph_sot_reconcile` *(chỉ profile `ops` — thao tác GHI)*
+* **Mô tả:** Đồng bộ tường minh chỉ mục với hệ thống tệp qua ĐÚNG một phễu ghi của dự án (`reconcile_dispatch`: CBM-primary, builtin fallback), bảo vệ bởi project write lock — cùng đường đi với lệnh CLI `sotgraph reconcile`, không phải wrapper subprocess hay bản sao song song. Bị chặn chặt theo project root: gốc được đồng bộ luôn là project root của server, request KHÔNG THỂ chỉ định đường dẫn khác (schema từ chối tham số lạ). Xóa các dòng chỉ mục của file đã bị xóa (có thể dựng lại bằng reconcile; không bao giờ đụng vào file mã nguồn).
+* **Tham số (Parameters):**
+  * `force` *(boolean, mặc định: false)*: Quét và index lại ngay cả khi journal có vẻ sạch (tương ứng `sotgraph reconcile --force`).
 
 ### Tài Nguyên MCP (Resources, Templates & Subscriptions)
 sotgraph MCP Server cung cấp các MCP Resources trực tiếp:
@@ -588,8 +614,19 @@ sotgraph setup --hooks    # Cài đặt hook git tự động sync đồ thị s
 #### `sotgraph mcp`
 Khởi chạy MCP stdio server để kết nối với Claude Desktop, Cursor, OpenCode hoặc Antigravity qua giao thức MCP.
 ```bash
+# Mặc định: profile `core` — đúng 7 tool tra cứu/biên lai/kiểm toán
 sotgraph mcp
+
+# Chọn profile tường minh
+sotgraph mcp --profile core   # 7 tool: sot_search, sot_map, sot_usages, sot_pack,
+                              # sot_scope_receipt, sot_diff_impact_receipt, sot_verify_drift
+sotgraph mcp --profile full   # + mọi tool không ghi (24 tool tổng cộng)
+sotgraph mcp --profile ops    # + sot_reconcile, sot_providers_sync (26 tool — có thao tác GHI)
+
+# Fallback biến môi trường khi không truyền cờ; giá trị sai bị từ chối (exit 2)
+SOT_MCP_PROFILE=full sotgraph mcp
 ```
+Thứ tự ưu tiên: cờ `--profile` > `SOT_MCP_PROFILE` > `core`. Tool nằm ngoài profile không được quảng bá và RPC gọi thẳng bị từ chối với lỗi `tool_disabled`. Cài đặt qua `sotgraph setup` không truyền cờ profile, nên các harness nhận mặc định `core` an toàn.
 
 ---
 

@@ -37,6 +37,7 @@ from sot_graph.assurance.impact_pipeline import (
     run_impact_claim,
 )
 from sot_graph.assurance.receipts import RECEIPT_SCHEMA_VERSION, receipt_digest, scope_receipt
+from sot_graph.assurance.resolution import validate_test_results
 
 
 def _git(repo: Path, *args: str) -> None:
@@ -164,6 +165,7 @@ class TestRunImpactClaim:
             # W2: disclosed even when absent — the digest covers the
             # declared input set.
             "test_results": None,
+            "test_results_validation": None,
         }
         projection = receipt["projection"]
         assert projection["next_cursor"] is None
@@ -182,6 +184,83 @@ class TestRunImpactClaim:
         assert receipt["digest"] == receipt_digest(
             {k: v for k, v in receipt.items() if k != "digest"}
         )
+
+    def test_invalid_test_report_recorded_never_reassures(self, impact_repo):
+        """A structurally malformed report mints an auditable receipt:
+        raw echo + separate validation evidence, and the gate refuses
+        to pass on its strength."""
+        db = _db_of(impact_repo)
+        try:
+            receipt = run_impact_claim(
+                ImpactClaimRequest(
+                    working_tree=True,
+                    test_results={"ran": "x", "failed": -1}),
+                db, str(impact_repo))
+        finally:
+            db.close()
+        # Established echo shape preserved; evidence in the sibling field.
+        assert receipt["request"]["test_results"] == {"ran": "x", "failed": -1}
+        ev = receipt["request"]["test_results_validation"]
+        assert ev["provenance"] == "caller_reported"
+        assert ev["validation"] == "invalid"
+        assert ev["effective_failed"] is None
+        # The gate saw the same verdict input and cannot pass on it.
+        assert receipt["safe_commit"]["inputs"]["tests_validation"] == (
+            "invalid")
+        assert receipt["safe_commit"]["verdict"] != "pass"
+        assert any("invalid" in w for w in
+                   receipt["safe_commit"]["warn_reasons"])
+        # The digest covers the actual input set, evidence included.
+        assert receipt["digest"] == receipt_digest(
+            {k: v for k, v in receipt.items() if k != "digest"}
+        )
+
+    def test_failures_only_report_blocks_through_pipeline(self, impact_repo):
+        """R-02: a failures-only caller report canonicalizes to
+        ``{"ran": 0, "failed": N}``. Strict consumers re-validate that
+        echo, so the round trip must keep it valid and BLOCKING — never
+        flag the healed count as a contradictory claim and downgrade the
+        block to warn."""
+        db = _db_of(impact_repo)
+        try:
+            receipt = run_impact_claim(
+                ImpactClaimRequest(
+                    working_tree=True,
+                    test_results={"failures": ["t_a", "t_b"]}),
+                db, str(impact_repo))
+        finally:
+            db.close()
+        echo = receipt["request"]["test_results"]
+        assert echo == {"ran": 0, "failed": 2, "failures": ["t_a", "t_b"]}
+        ev = validate_test_results(echo)
+        assert ev["validation"] == "valid"
+        assert ev["effective_failed"] == 2
+        assert receipt["safe_commit"]["inputs"]["tests_validation"] == "valid"
+        assert receipt["safe_commit"]["verdict"] == "block"
+        assert any("2 provided test(s) failed" in r
+                   for r in receipt["safe_commit"]["block_reasons"])
+
+    def test_zero_counts_with_failure_labels_block(self, impact_repo):
+        """R-02: explicit zero counts next to a failure label heal UP to
+        the label count and keep blocking through the canonical echo —
+        an explicit failure claim can never become reassuring."""
+        db = _db_of(impact_repo)
+        try:
+            receipt = run_impact_claim(
+                ImpactClaimRequest(
+                    working_tree=True,
+                    test_results={"ran": 0, "failed": 0,
+                                  "failures": ["t_x"]}),
+                db, str(impact_repo))
+        finally:
+            db.close()
+        assert receipt["request"]["test_results"] == {
+            "ran": 0, "failed": 1, "failures": ["t_x"]}
+        assert receipt["request"]["test_results_validation"][
+            "healed_failed"] is True
+        assert receipt["safe_commit"]["inputs"]["tests_validation"] == "valid"
+        assert receipt["safe_commit"]["verdict"] == "block"
+        assert receipt["safe_commit"]["inputs"]["tests_failed"] == 1
 
     def test_digest_deterministic_on_unchanged_repo(self, impact_repo):
         db = _db_of(impact_repo)

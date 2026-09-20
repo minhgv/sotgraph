@@ -16,6 +16,7 @@ import hashlib
 import os
 import sqlite3
 import time
+from typing import Optional
 
 import pytest
 
@@ -102,6 +103,25 @@ class TestScopeDigestContentBinding:
         # git state must produce distinct descriptor digests.
         assert v1.descriptor_digest != v2.descriptor_digest
         assert v2.as_dict()["scope_digest"] == v2.scope_digest
+
+    def test_as_dict_serializes_canonical_repo_identity(self, tmp_path):
+        """R-07 producer contract: every minted snapshot serializes the
+        realpath'd repository root so PRE receipts can be bound to (or
+        rejected as foreign against) one canonical identity. Additive
+        key: descriptor_digest semantics are unchanged."""
+        root = str(tmp_path / "repo")
+        nested = os.path.join(root, "linkdepth")
+        os.makedirs(nested)
+        _write(root, "a.py", "x = 1\n")
+        snap = capture_worktree_snapshot(nested)
+        d = snap.as_dict()
+        # A non-canonical caller spelling serializes as the realpath.
+        assert d["repo_root"] == os.path.realpath(nested)
+        assert d["repo_root"] == snap.repo_root
+        # Descriptor identity still derives from the evidenced git
+        # state, not the serialized identity field.
+        twin = capture_worktree_snapshot(os.path.realpath(nested))
+        assert twin.descriptor_digest == snap.descriptor_digest
 
 
 # --------------------------------------------- Contract 4: fail-closed ledger union

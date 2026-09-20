@@ -1258,7 +1258,10 @@ def cmd_verify(args: argparse.Namespace, reconciler: Reconciler) -> int:
 
 
 def cmd_doctor(args: argparse.Namespace, db: Database, root: Optional[str] = None) -> int:
-    diag = db.integrity_check()
+    # Shared substantive health logic with the MCP sot_doctor tool:
+    # Database.integrity_check plus codebase-memory engine read-through.
+    from sot_graph.mcp_service import collect_doctor_diagnostics
+    diag = collect_doctor_diagnostics(db, root)
     if getattr(args, "receipt", False):
         from sot_graph.assurance.receipts import audit_receipt
         repo_root = root or os.path.dirname(os.path.dirname(os.path.abspath(db.db_path)))
@@ -1276,27 +1279,10 @@ def cmd_doctor(args: argparse.Namespace, db: Database, root: Optional[str] = Non
     # When a codebase-memory store is bound, the rows above only cover the
     # sot-owned slice (gap files + notes + ledger); disclose the engine's
     # share so the small counts are not misread as the whole graph.
-    if root:
-        try:
-            from sot_graph.cbm import find_cbm_db, locate_project, _open_ro
-            cbm_path = find_cbm_db(root)
-            if cbm_path:
-                cconn = _open_ro(cbm_path)
-                try:
-                    proj = locate_project(cconn, root)
-                    if proj:
-                        cn = cconn.execute(
-                            "SELECT COUNT(*) FROM nodes WHERE project=?",
-                            (proj,)).fetchone()[0]
-                        ce = cconn.execute(
-                            "SELECT COUNT(*) FROM edges WHERE project=?",
-                            (proj,)).fetchone()[0]
-                        print(f"  • Engine Store      : codebase-memory "
-                              f"({cn:,} nodes / {ce:,} edges, read-through)")
-                finally:
-                    cconn.close()
-        except Exception:
-            pass
+    engine = diag.get("engine_readthrough")
+    if engine:
+        print(f"  • Engine Store      : codebase-memory "
+              f"({engine['nodes']:,} nodes / {engine['edges']:,} edges, read-through)")
     print(f"  • Integrity Check   : {status_icon} (quick_check: {diag['quick_check']})")
     print(f"  • Journal Mode      : {diag['journal_mode']} (schema v{diag['schema_version']})")
     print(f"  • DB Storage Size   : {diag['db_size_bytes']:,} bytes ({diag['page_count']} pages @ {diag['page_size']}B)")
@@ -2922,7 +2908,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_vac.add_argument("--json", action="store_true", help="Output JSON format")
 
     # mcp (optional dependency is imported only when this command is selected)
-    subparsers.add_parser("mcp", help="Run the optional MCP stdio server")
+    p_mcp = subparsers.add_parser("mcp", help="Run the optional MCP stdio server")
+    p_mcp.add_argument("--profile", default=None,
+                       help="Tool surface profile (default: core = the 7 query/receipt/audit "
+                            "tools sot_search, sot_map, sot_usages, sot_pack, sot_scope_receipt, "
+                            "sot_diff_impact_receipt, sot_verify_drift). 'full' = every "
+                            "non-operational tool; 'ops' = full + explicit operational writes "
+                            "(sot_reconcile, sot_providers_sync). Unset falls back to "
+                            "SOT_MCP_PROFILE; unknown values are rejected.")
     # report
     p_rep = subparsers.add_parser("report", help="Generate comprehensive architectural markdown report")
     p_rep.add_argument("-o", "--output", default="GRAPH_REPORT.md", help="Output file path (default: GRAPH_REPORT.md)")
@@ -3231,7 +3224,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.command == "mcp":
         # Keep the optional SDK out of normal CLI startup/import paths.
         from sot_graph.mcp_server import main as mcp_main
-        return mcp_main(["--root", root, "--db", db_path])
+        mcp_argv = ["--root", root, "--db", db_path]
+        if args.profile:
+            mcp_argv += ["--profile", args.profile]
+        return mcp_main(mcp_argv)
     if args.command == "claims":
         # Docs/artifact validation: no database required, so it stays
         # runnable on docs-only PRs where no .sot index exists.

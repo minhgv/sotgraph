@@ -393,9 +393,10 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         # Method-call qualification: a call on `self`/`cls`/`this` (or the
         # enclosing class name) targets the class-scoped symbol
         # 'Class.method', while the raw call target is only the bare
-        # attribute name. A receiver-less BARE call inside a method
-        # (Java/Kotlin sibling call) qualifies too.
-        if rel == "calls" and "." in src_raw:
+        # attribute name. Typed references (`self.method` as a callback or
+        # monkeypatch target) qualify identically. A receiver-less BARE
+        # call inside a method (Java/Kotlin sibling call) qualifies too.
+        if rel in ("calls", "references") and "." in src_raw:
             parent = src_raw.rsplit(".", 1)[0]
             if receiver in ("self", "cls", "this", parent, None):
                 qualified_id = symbol_to_node_id.get(f"{parent}.{dst_raw}")
@@ -409,8 +410,12 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
                     continue
 
 
-        # Cross-file pending edge (target symbol lives in another file)
-        if rel == "calls":
+        # Cross-file pending edge (target symbol lives in another file).
+        # Typed references ride the same binding pipeline as calls: the
+        # resolver binds METHOD_CALL receivers against class method tables
+        # (with MRO) and QUALIFIED module roots against import provenance,
+        # and never binds an untyped ATTRIBUTE name by coincidence.
+        if rel in ("calls", "references"):
             call_kind = re_edge.get("call_kind") or "UNKNOWN"
             # Local variable calls and unshadowed bare builtins must not create pending external edges
             if re_edge.get("is_local_var") or (call_kind == "BARE" and re_edge.get("builtin")):

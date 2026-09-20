@@ -69,7 +69,7 @@ __all__ = [
     "RECEIPT_SCHEMA_VERSION",
     "RECEIPT_CITED_FILE_CAP",
 ]
-RECEIPT_SCHEMA_VERSION = "1.12"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1); 1.11 added the safe_commit block to the diff receipt — composite pass|warn|block verdict over dangling references, assurance status, dispositions, debt markers, and caller-provided test results (W2); 1.12 added resolution_ledger.semantic_breaks — ast signature-diff classification (breaking|compatible) with callers_at_risk feeding safe_commit (breaking+callers→block, breaking-without-callers and public-symbol-removal→warn) (W6)
+RECEIPT_SCHEMA_VERSION = "1.12"  # minor bump: 1.1 added canonical status vocabulary (P0); 1.2 added changed_files_total/changed_files_truncated (R5); 1.3 added request/projection blocks + machine-readable collection-error warnings (SG-105); 1.4 added per-collector collection_stats cap accounting + facts.truncation_sources reason codes (SG-107); 1.5 added scope_universe block + enumeration/parser-capability exhaustion facts (SG-108); 1.6 made the evidence join generation-correct (project-bound, live-only) + real open_conflicts from the union + invalidated_evidence_dead_count visibility (SG-109); 1.7 added cross_check_receipt (SG-203: builtin-vs-external identity reconciliation, snapshot-bound, ABSTAINED on empty evidence ledger); 1.8 added identity.recovery disclosure — scope-receipt resolves agent display-string/path:line targets with the pack grammar while keeping exact-match decision semantics; 1.9 added the P7.3 resolution_ledger block to the diff receipt — pre/post disposition matrix, dangling-reference sweep (pending_edges UNRESOLVED/AMBIGUOUS scoped to the diff), debt markers on added lines; dangling count feeds unresolved_count; 1.10 added scope_receipt_multi — task-level union of per-target receipts: request.targets list, per_target breakdown block, merged identity/gate/risk, facts.partial_targets caps mixed-resolution at PARTIAL (W1); 1.11 added the safe_commit block to the diff receipt — composite pass|warn|block verdict over dangling references, assurance status, dispositions, debt markers, and caller-provided test results (W2); 1.12 added resolution_ledger.semantic_breaks — ast signature-diff classification (breaking|compatible) with callers_at_risk feeding safe_commit (breaking+callers→block, breaking-without-callers and public-symbol-removal→warn) (W6); 1.12 additive fields (no bump — purely additive, backward-compatible): scope_receipt gained the receipt-level ``scope`` block (direct/transitive/unknown classification, no numeric coverage for unmeasured impact) and diff receipts gained ``resolution_ledger.pre_receipt_binding`` (missing|bound|unverified|incompatible + digest/head/repo audit) and the ``safe_commit.tests`` evidence block (provenance caller_reported|absent, validation valid|invalid|absent, tests_verified_execution always False; invalid caller reports warn and can never pass)
 
 #: SG-107 bounded-collection caps. The caps themselves are unchanged
 #: bounded-work budgets; what changed is that each capped collector now
@@ -101,6 +101,16 @@ _RELATION_FAMILIES = {
 }
 
 _TEST_PATH_MARKERS = ("test", "spec")
+
+#: T-06/AC-04 honesty note carried by every receipt-level ``scope``
+#: block: unmeasured impact is UNKNOWN — it is never folded into the
+#: direct or transitive counts, and never presented as numeric
+#: coverage. Counts in ``scope`` are measured; everything else is
+#: disclosed as unknown.
+SCOPE_UNKNOWN_NOTE = (
+    "unmeasured impact is unknown, not zero: unknowns are never counted "
+    "in direct or transitive totals and never appear as numeric coverage"
+)
 
 
 #: Payload keys that change between captures/runs of the SAME evidenced
@@ -778,6 +788,37 @@ def scope_receipt(
             "nodes": transitive,
             "truncated": transitive_truncated,
         },
+        # T-06/AC-04: direct vs transitive vs unknown, in one structured
+        # block over the SAME evidence collected above — no new queries,
+        # no numeric coverage: bounded/failed collections surface as
+        # unknown inputs (truncation sources, parser failures, dynamic
+        # dispatch), never as smaller reassuring counts.
+        "scope": {
+            "direct": {
+                "callers": len(callers),
+                "callees": len(callees),
+                "affected_files": direct_affected_files,
+                "truncated": any(
+                    s["truncated"] for s in direct_edge_stats),
+            },
+            "transitive": {
+                "depth": depth,
+                "nodes": len(transitive),
+                "cap": _TRANSITIVE_CAP,
+                "truncated": transitive_truncated,
+                "affected_files": sorted(
+                    {r["path"] for r in transitive if r.get("path")}),
+            },
+            "unknown": {
+                "note": SCOPE_UNKNOWN_NOTE,
+                "dynamic_dispatch_unresolved": dynamic_unresolved,
+                "parser_failures": effective_parser_failures,
+                "enumeration_complete": universe.enumeration_complete,
+                "parser_capability_complete":
+                    universe.parser_capability_complete,
+                "truncation_sources": list(truncation_sources),
+            },
+        },
         "collection_stats": collection_stats,
         "affected_files": affected_files,
         "candidate_tests": candidate_tests,
@@ -1061,6 +1102,47 @@ def scope_receipt_multi(
             "nodes": transitive,
             "truncated": transitive_truncated,
         },
+        # T-06/AC-04 multi-target classification: union counts are
+        # DEDUPED (no per-target inflation), per-target classification
+        # stays in ``per_target`` (each carries its own single-receipt
+        # scope block via its digest), and unresolved targets surface as
+        # ``unknown.partial_targets`` — their entire scope is unknown,
+        # never zero.
+        "scope": {
+            "direct": {
+                "callers": len(callers),
+                "callees": len(callees),
+                "affected_files": direct_affected_files,
+                "truncated": any(
+                    s["scope"]["direct"]["truncated"]
+                    for s in subs.values()),
+            },
+            "transitive": {
+                "depth": depth,
+                "nodes": len(transitive),
+                "cap": _TRANSITIVE_CAP,
+                "truncated": transitive_truncated,
+                "affected_files": sorted({
+                    r["path"] for s in subs.values()
+                    for r in s["transitive_impact"]["nodes"]
+                    if r.get("path")}),
+            },
+            "unknown": {
+                "note": SCOPE_UNKNOWN_NOTE,
+                "dynamic_dispatch_unresolved": any(
+                    s["assurance_facts"]["dynamic_dispatch_unresolved"]
+                    for s in subs.values()),
+                "parser_failures": max(
+                    s["assurance_facts"]["parser_failures"]
+                    for s in subs.values()),
+                "enumeration_complete":
+                    cov_facts["enumeration_complete"],
+                "parser_capability_complete":
+                    cov_facts["parser_capability_complete"],
+                "partial_targets": partial_targets,
+                "truncation_sources": truncation_sources,
+            },
+        },
         "collection_stats": {
             "merged_targets": len(norm),
             "any_truncated": bool(truncation_sources),
@@ -1175,11 +1257,20 @@ def diff_impact_receipt(
     files as cited paths so ``scope_digest`` pins the POST-change file
     content (P0 Contract 2). ``pre_snapshot`` (captured BEFORE
     auto-reconcile) is embedded volatile-stripped for digest cross-ref.
+    Attachment is also AUDITED (:func:`...resolution.pre_receipt_binding`
+    → ``resolution_ledger["pre_receipt_binding"]``): wrong kind /
+    proof_scope, a foreign repository, or a tampered digest marks the
+    payload ``incompatible`` and its predictions are excluded from the
+    disposition matrix and the dangling pre-symbol nets — an arbitrary
+    dict can never read as "no predicted impact".
 
     ``test_results`` (W2): optional caller-provided outcome
-    ``{"ran": int, "failed": int, "failures": [str]}`` — failures feed
-    the ``safe_commit`` block verdict (block), never the assurance
-    status (tests are external evidence, not graph evidence).
+    ``{"ran": int, "failed": int, "failures": [str]}`` — structurally
+    validated and recorded with ``provenance: "caller_reported"``; an
+    invalid report is trusted in neither direction (warn, never pass),
+    claimed failures feed the ``safe_commit`` block verdict, and success
+    counts never upgrade to verified execution. Tests stay external
+    evidence: the graph assurance status is independent of them.
     """
     from sot_graph.diff_impact import analyze_diff_impact
     from sot_graph.snapshot import capture_worktree_snapshot
@@ -1292,13 +1383,25 @@ def diff_impact_receipt(
         debt_markers as _debt_markers,
         dangling_references as _dangling_references,
         disposition_matrix as _disposition_matrix,
+        pre_receipt_binding as _pre_receipt_binding,
         semantic_breaks as _semantic_breaks,
     )
+    # W2/P7.3 binding audit: an attached PRE receipt is only evidence if
+    # it IS one. Wrong kind/proof_scope, a foreign repository, or a
+    # tampered digest marks it incompatible; its predictions are then
+    # excluded from the disposition matrix AND the dangling pre-symbol
+    # nets — a foreign payload must never read as "no predicted impact",
+    # nor invent danglers from symbols this repository never had.
+    binding = _pre_receipt_binding(
+        pre_receipt, repo_root=repo_root, head_sha=_head_sha(repo_root))
+    pre_usable = (
+        pre_receipt if binding["status"] in ("bound", "unverified") else None)
     resolution_ledger: Dict[str, Any] = {
-        "dispositions": _disposition_matrix(pre_receipt, changed_files),
+        "pre_receipt_binding": binding,
+        "dispositions": _disposition_matrix(pre_usable, changed_files),
         "dangling_references": _dangling_references(
             db, cited_files, caller_files,
-            pre_receipt=pre_receipt, repo_root=repo_root,
+            pre_receipt=pre_usable, repo_root=repo_root,
             errors_out=resolution_errors,
         ),
         "debt_markers": _debt_markers(
@@ -1383,9 +1486,9 @@ def diff_impact_receipt(
         dynamic_dispatch_unresolved=dynamic_unresolved,
     )
     decision = decide(facts)
-    if pre_receipt is not None:
+    if pre_usable is not None:
         open_omp = list(
-            pre_receipt.get("assurance", {}).get("omp_confirmations", [])
+            pre_usable.get("assurance", {}).get("omp_confirmations", [])
         )
     remaining_gaps: List[str] = []
     if invalidated:
@@ -1408,6 +1511,19 @@ def diff_impact_receipt(
             remaining_gaps.append(
                 f"{len(untouched_tests)} candidate test file(s) untouched "
                 "by the diff")
+    if binding["status"] == "incompatible":
+        remaining_gaps.append(
+            "attached PRE receipt is INCOMPATIBLE and was excluded from "
+            "dispositions and dangling sweeps: "
+            + "; ".join(binding["reasons"]))
+    elif binding["status"] == "unverified":
+        remaining_gaps.append(
+            "attached PRE receipt binding is unverified; its predictions "
+            "are advisory: " + "; ".join(binding["reasons"]))
+    elif binding.get("head_moved"):
+        remaining_gaps.append(
+            "worktree HEAD moved since the PRE receipt was minted; its "
+            "dispositions predate this diff's base revision")
     if dangling_count:
         remaining_gaps.append(
             f"{dangling_count} dangling reference(s) left by the change "
@@ -1429,6 +1545,7 @@ def diff_impact_receipt(
         dispositions=disp,
         test_results=test_results,
         semantic_breaks=resolution_ledger["semantic_breaks"],
+        pre_receipt_binding=binding,
     )
     warnings: List[str] = []
     if changed_files_truncated:

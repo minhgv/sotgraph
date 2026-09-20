@@ -140,7 +140,17 @@ class WorktreeSnapshot:
 
 
     def as_dict(self) -> dict[str, object]:
+        # ``repo_root`` is part of the serialized descriptor so PRE-change
+        # receipts can be bound to (or rejected as foreign against) the
+        # canonical repository identity in
+        # :func:`sot_graph.assurance.resolution.pre_receipt_binding`. It is
+        # the producer-realpath'd root, minted here — never caller-supplied
+        # at bind time. Additive key: ``descriptor_digest`` semantics and
+        # stored historical receipts are unchanged; receipt digests of NEW
+        # receipts cover the key (``_strip_volatile`` drops only volatile
+        # keys).
         d: dict[str, object] = {
+            "repo_root": self.repo_root,
             "snapshot_id": self.snapshot_id,
             "descriptor_digest": self.descriptor_digest,
             "role": self.role,

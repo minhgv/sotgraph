@@ -23,6 +23,21 @@ _spec.loader.exec_module(adapter_docs_check)
 
 
 class AdapterDocsConsistencyTests(unittest.TestCase):
+    def test_mcp_ground_truth_tracks_live_registry(self):
+        # Consumer contract: the checker's MCP truth is the live registry —
+        # the flagship tool is a member, and a sentinel name that exists in
+        # no registry is rejected by the same membership gate check() applies.
+        tools = adapter_docs_check.registered_mcp_tools()
+        self.assertIn("sot_search", tools)
+        self.assertNotIn("sot_nonexistent_sentinel_tool",
+                         adapter_docs_check.allowed_tools("mcp"))
+        # Profile classification: default-surface membership vs the
+        # ops-only operational writes.
+        inventory = adapter_docs_check.registered_mcp_inventory()
+        self.assertEqual(inventory["sot_search"]["profiles"],
+                         ["core", "full", "ops"])
+        self.assertEqual(inventory["sot_reconcile"]["profiles"], ["ops"])
+
     def test_docs_match_cli_parser_and_mcp_registry(self):
         violations = adapter_docs_check.check()
         self.assertEqual(

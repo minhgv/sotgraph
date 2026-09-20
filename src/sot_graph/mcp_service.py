@@ -102,6 +102,69 @@ def resolve_and_validate_output_path(
     return resolved_target
 
 
+class _ReadOnlyDoctorView(Database):
+    """Properly typed read-only view over an already-open connection.
+
+    Subclassing keeps the doctor path on real inherited ``Database``
+    methods (``integrity_check``/``stats``) instead of borrowing unbound
+    methods with a mismatched ``self``. ``__init__`` is bypassed because
+    the connection is already open (mode=ro); those methods and the
+    ``conn`` property touch only the attributes set here.
+    """
+
+    def __init__(self, conn: sqlite3.Connection) -> None:
+        self._conn = conn
+        self._owner_thread = threading.get_ident()
+        self.db_path = "<read-only view>"
+        self.read_only = True
+        self.timeout_ms = 5_000
+        self.schema_was_reset = False
+
+
+def _integrity_check_unbound(view: Any) -> Dict[str, Any]:
+    """Run ``Database.integrity_check`` against a bare read-only connection."""
+    conn = getattr(view, "conn", view)
+    return _ReadOnlyDoctorView(conn).integrity_check()
+
+
+def collect_doctor_diagnostics(db: Any, project_root: Optional[str]) -> Dict[str, Any]:
+    """Substantive health logic shared by `sotgraph doctor` and MCP ``sot_doctor``.
+
+    Wraps ``Database.integrity_check`` (quick_check, foreign keys, schema
+    version, FTS sync, pending-edge breakdown) and adds the codebase-memory
+    engine read-through counts so a bound engine store is not misread as a
+    near-empty graph. ``db`` may be a Database or a read-only connection
+    view: only query methods are invoked; this helper never writes.
+    """
+    diag = db.integrity_check() if hasattr(db, "integrity_check") else _integrity_check_unbound(db)
+    diag["engine_readthrough"] = None
+    if project_root:
+        try:
+            from sot_graph.cbm import find_cbm_db, locate_project, _open_ro
+            cbm_path = find_cbm_db(project_root)
+            if cbm_path:
+                cconn = _open_ro(cbm_path)
+                try:
+                    proj = locate_project(cconn, project_root)
+                    if proj:
+                        cn = int(cconn.execute(
+                            "SELECT COUNT(*) FROM nodes WHERE project=?",
+                            (proj,)).fetchone()[0])
+                        ce = int(cconn.execute(
+                            "SELECT COUNT(*) FROM edges WHERE project=?",
+                            (proj,)).fetchone()[0])
+                        diag["engine_readthrough"] = {
+                            "store": str(cbm_path),
+                            "nodes": cn,
+                            "edges": ce,
+                        }
+                finally:
+                    cconn.close()
+        except Exception:  # noqa: BLE001 - doctor reports, never raises
+            pass
+    return diag
+
+
 def _require_satisfiable_policy(provider_policy: str) -> None:
     """Fail closed when ``require_external`` cannot be honored.
 
@@ -1365,6 +1428,66 @@ class McpService:
             res["providers"] = self._providers(conn)
             return res
         return self._run(op)
+
+    def doctor(self) -> Dict[str, Any]:
+        """Health diagnostic (read-only): the SAME substantive logic as
+        ``sotgraph doctor`` — integrity_check plus engine read-through —
+        returned as bounded JSON instead of terminal rendering."""
+        def op(conn: sqlite3.Connection) -> Dict[str, Any]:
+            view = cast(Database, _ConnView(conn))
+            diag = collect_doctor_diagnostics(view, self.project_root)
+            return self._fits_response(diag)
+        return self._run(op)
+
+    def reconcile(self, *, force: bool = False) -> Dict[str, Any]:
+        """Explicit index reconcile (operational WRITE path, ops profile only).
+
+        Reuses the ONE writer funnel (``reconcile_dispatch``: CBM-primary,
+        builtin fallback) under the project write lock — the same path as
+        ``sotgraph reconcile``. Strictly project-bounded: the reconciled
+        root is always this service's ``project_root``; requests cannot
+        name another path.
+        """
+        if not isinstance(force, bool):
+            raise McpServiceError("invalid_argument", "force must be a boolean")
+        from sot_graph.cbm import reconcile_dispatch
+        from sot_graph.config import load_config
+        from sot_graph.db import Database
+        from sot_graph.locking import LockBusy, WriteLock
+        from sot_graph.reconciler import Reconciler
+
+        lock_path = os.path.join(self.project_root, ".sot", "write.lock")
+        try:
+            with WriteLock(lock_path, timeout_ms=60_000):
+                writer = Database(self.db_path)
+                try:
+                    cfg = load_config(self.project_root)
+                    payload = reconcile_dispatch(
+                        writer, Reconciler(writer, self.project_root),
+                        self.project_root,
+                        extractor=cfg.extractor, cbm_mode=cfg.cbm_mode,
+                        force=force,
+                    )
+                finally:
+                    writer.close()
+        except LockBusy as exc:
+            raise McpServiceError(
+                "ledger_locked",
+                "another sotgraph writer holds the project lock; retry reconcile later",
+            ) from exc
+        if payload.get("failed", 0):
+            status = "failed"
+        elif payload.get("conflicts", 0):
+            status = "conflicts"
+        else:
+            status = "success"
+        return {
+            **payload,
+            "status": status,
+            "project_root": self.project_root,
+            "forced": bool(force),
+        }
+
     def get_architecture_report(
         self,
         *,
@@ -1525,6 +1648,19 @@ class McpService:
         auto_reconcile: Any = "auto",
     ) -> Dict[str, Any]:
         """Build a k-hop ContextBundle (read-only) for agent prompt registers."""
+        # Clean rejection of invalid budgets BEFORE the freshness gate.
+        # max_tokens is the primary render budget with the SAME semantics
+        # as the CLI `--max-tokens` flag (the core pack API enforces the
+        # 32-token floor); max_bytes stays a hard byte cap on the target
+        # source span. When both are set, both caps apply — bytes prune
+        # first, tokens bound the final rendered YAML.
+        for label, value in (("max_tokens", max_tokens), ("max_bytes", max_bytes)):
+            if value is None:
+                continue
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise McpServiceError(
+                    "invalid_argument",
+                    f"{label} must be a positive integer (got {value!r})")
         fresh = self._freshness(auto_reconcile)
         from sot_graph.pack import PackError, build_bundle, render_yaml
 
@@ -1798,6 +1934,7 @@ class McpService:
         task-level union receipt (``scope_receipt_multi``). Overrides
         ``target`` when non-empty; capped at 8 to bound evidence cost.
         """
+        from sot_graph.assurance.impact_pipeline import ReceiptStore
         from sot_graph.assurance.receipts import (
             scope_receipt as _scope_receipt,
             scope_receipt_multi as _scope_receipt_multi,
@@ -1840,6 +1977,27 @@ class McpService:
                     kind_of_change=kind_of_change, touches_auth=touches_auth,
                     dynamic_heavy=dynamic_heavy, depth=depth,
                 )
+            # P7.3 load-bearing persistence: the returned digest is the
+            # POST handle (pre_receipt), so a store failure must surface
+            # as a structured service error — never as a success digest
+            # that a later POST cannot load. Unlike the POST receipt's
+            # best-effort write, this one is required.
+            store_dir = os.path.join(self.project_root, ".sot", "receipts")
+            try:
+                stored = ReceiptStore(store_dir).put(payload)
+            except McpServiceError:
+                raise
+            except Exception as exc:
+                raise McpServiceError(
+                    "receipt_store_write_failed",
+                    f"failed to persist PRE receipt in {store_dir}: {exc}",
+                ) from exc
+            if payload.get("digest") != stored:
+                raise McpServiceError(
+                    "receipt_store_write_failed",
+                    f"stored PRE receipt digest {stored} does not match "
+                    f"returned digest {payload.get('digest')}",
+                )
             return self._fits_response(payload)
 
         return self._run(op)
@@ -1881,6 +2039,13 @@ class McpService:
                     "pre_receipt must be a 64-hex receipt digest")
             try:
                 parsed_pre = ReceiptStore(store_dir).get(str(pre_receipt))
+                # Parity with the CLI loader (cli.py _resolve_receipt_input):
+                # ReceiptStore.get returns the receipt WITHOUT its "digest"
+                # key (the address lives in the filename); re-attach it so
+                # the resolution ledger's pre_receipt_binding audit reads
+                # "bound" for MCP-attached PRE receipts, exactly like the
+                # CLI path.
+                parsed_pre["digest"] = str(pre_receipt)
             except KeyError:
                 raise McpServiceError(
                     "not_found",
@@ -2092,8 +2257,17 @@ class McpService:
     async def anode(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.node, *args, **kwargs)
 
-    async def astats(self) -> Dict[str, Any]:
+    async def astats(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.stats)
+
+    async def adoctor(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        return await self._async(self.doctor, *args, **kwargs)
+
+    async def areconcile(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        # Reconcile is engine/subprocess bound, not sqlite-bound: allow a
+        # larger budget than the shared 2s graph-op deadline.
+        return await self._async(
+            self.reconcile, *args, timeout_ms=120_000, **kwargs)
 
     async def aget_architecture_report(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         return await self._async(self.get_architecture_report, *args, **kwargs)

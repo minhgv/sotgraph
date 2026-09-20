@@ -66,7 +66,7 @@ When to use:
 | **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
 | **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
 | **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | `CLI only` |
-| **MCP Server** | `sotgraph mcp` | `CLI only` |
+| **MCP Server** | `sotgraph mcp --profile core|full|ops` (default `core`: the 7 query/receipt/audit tools; `full` = every non-operational tool; `ops` = full + explicit sot_reconcile / sot_providers_sync writes) | `CLI only` |
 | **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `CLI only` |
 | **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `CLI only` |
 | **Diff Receipt (P7.2)** | — | `CLI only` |

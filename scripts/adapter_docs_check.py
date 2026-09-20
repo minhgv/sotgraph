@@ -10,7 +10,10 @@ unregistered `sot_rename`...). Hand-maintained tables WILL drift again.
 
 Ground truth is derived from the code that defines reality:
   - CLI commands/flags  <- cli.build_parser()
-  - MCP tool names      <- `types.Tool(name="sot_...")` in mcp_server.py
+  - MCP tool names      <- sot_graph.mcp_server.tool_inventory() (the
+                          _TOOL_REGISTRY + profile allowlists; the checker
+                          starts no server and the optional MCP SDK is
+                          imported by mcp_server only when one is created)
 
 Every backticked `sotgraph <cmd> [--flag ...]` usage and every `sot_*` tool
 mention in the doc corpus is validated against that truth.
@@ -39,7 +42,6 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 ADAPTER_MODULES = ["zcode", "claude", "omp", "opencode", "antigravity"]
 ADAPTERS_DIR = REPO_ROOT / "src" / "sot_graph" / "adapters"
-MCP_SERVER_PY = ADAPTERS_DIR.parent / "mcp_server.py"
 
 # Adapters that register NATIVE harness tools of their own (OMP extension,
 # OpenCode plugin). Docs from these adapters may reference their native
@@ -212,9 +214,22 @@ def check_cli_claim(
 # Ground truth: MCP tool registry
 # ---------------------------------------------------------------------------
 
+def registered_mcp_inventory() -> Dict[str, Dict[str, Any]]:
+    """Authoritative MCP capability inventory: registry + profile membership.
+
+    Consumes the public, service-free inventory on ``sot_graph.mcp_server``
+    (which imports the optional MCP SDK only when a server is actually
+    created), so this checker keeps working without the ``mcp`` extra
+    installed and can never drift from the registry the server dispatches
+    through.
+    """
+    from sot_graph.mcp_server import tool_inventory
+
+    return tool_inventory()
+
+
 def registered_mcp_tools() -> set:
-    text = MCP_SERVER_PY.read_text(encoding="utf-8")
-    return set(re.findall(r'types\.Tool\(name="(sot_[a-z_]+)"', text))
+    return set(registered_mcp_inventory())
 
 
 def native_tools(harness: str) -> set:
@@ -303,6 +318,21 @@ def emit_table() -> str:
                 )
             continue
         rows.append(f"| {command} | {', '.join(flags) or '—'} | {mcp_for([name])} |")
+
+    inventory = registered_mcp_inventory()
+    rows += [
+        "",
+        "### MCP Tool Inventory (all profiles)",
+        "",
+        "Every registered MCP tool with its profile membership: `core` is "
+        "the default surface, `full` adds every non-operational tool, and "
+        "`ops` additionally enables the explicit operational writes.",
+        "",
+        "| MCP Tool | Profiles |",
+        "| :--- | :--- |",
+    ]
+    for name, info in inventory.items():
+        rows.append(f"| `{name}` | {' / '.join(info['profiles'])} |")
     return "\n".join(rows)
 
 

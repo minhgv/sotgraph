@@ -98,6 +98,56 @@ class TestScopeReceipt:
         assert payload["assurance"]["omp_confirmations"]
         assert len(payload["digest"]) == 64
 
+    def test_scope_block_classifies_direct_transitive_unknown(self, receipt_repo):
+        """T-06/AC-04: direct vs transitive vs unknown in one structured
+        block over the SAME evidence; unmeasured impact is disclosed as
+        unknown, never folded into counts or numeric coverage."""
+        db = _db_of(receipt_repo)
+        try:
+            payload = scope_receipt(db, str(receipt_repo), "run")
+        finally:
+            db.close()
+        scope = payload["scope"]
+        # Direct surface matches the 1-hop evidence exactly.
+        assert scope["direct"]["callers"] == len(payload["direct_callers"])
+        assert scope["direct"]["callees"] == len(payload["direct_callees"])
+        assert scope["direct"]["affected_files"] == payload[
+            "direct_affected_files"]
+        # Transitive mirrors the bounded BFS walk, cap disclosed.
+        assert scope["transitive"]["nodes"] == len(
+            payload["transitive_impact"]["nodes"])
+        assert scope["transitive"]["depth"] == payload[
+            "transitive_impact"]["depth"]
+        assert isinstance(scope["transitive"]["cap"], int)
+        # Unknown is explicit metadata, not a fake coverage number.
+        unknown = scope["unknown"]
+        assert "not zero" in unknown["note"]
+        assert unknown["dynamic_dispatch_unresolved"] == payload[
+            "assurance_facts"]["dynamic_dispatch_unresolved"]
+        assert unknown["enumeration_complete"] == payload[
+            "scope_universe"]["enumeration_complete"]
+
+    def test_transitive_truncation_surfaces_in_scope_block(
+            self, receipt_repo, monkeypatch):
+        """A capped BFS walk must read as INCOMPLETE in the scope block
+        (truncated + named source), never as a small complete graph."""
+        import sot_graph.assurance.receipts as receipts_mod
+
+        db = _db_of(receipt_repo)
+        try:
+            monkeypatch.setattr(
+                receipts_mod, "_TRANSITIVE_CAP", 0, raising=True)
+            payload = scope_receipt(db, str(receipt_repo), "run")
+        finally:
+            db.close()
+        assert payload["transitive_impact"]["truncated"] is True
+        assert payload["scope"]["transitive"]["truncated"] is True
+        assert payload["scope"]["transitive"]["nodes"] == 0
+        assert receipts_mod.TRANSITIVE_SOURCE in (
+            payload["scope"]["unknown"]["truncation_sources"])
+        # The assurance decision still degrades on the same fact.
+        assert payload["assurance"]["status"] != "ASSURED_WITHIN_SCOPE"
+
     def test_digest_deterministic_and_sensitive(self, receipt_repo):
         db = _db_of(receipt_repo)
         try:
