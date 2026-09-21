@@ -1402,6 +1402,7 @@ def diff_impact_receipt(
         "dangling_references": _dangling_references(
             db, cited_files, caller_files,
             pre_receipt=pre_usable, repo_root=repo_root,
+            target=target, staged=staged, working_tree=working_tree,
             errors_out=resolution_errors,
         ),
         "debt_markers": _debt_markers(
@@ -1525,10 +1526,13 @@ def diff_impact_receipt(
             "worktree HEAD moved since the PRE receipt was minted; its "
             "dispositions predate this diff's base revision")
     if dangling_count:
+        scoped_note = (
+            "on lines added by the diff"
+            if resolution_ledger["dangling_references"].get("line_scoped")
+            else "within the diff's file scope (diff text unavailable)")
         remaining_gaps.append(
             f"{dangling_count} dangling reference(s) left by the change "
-            "(pending_edges UNRESOLVED/AMBIGUOUS within the diff's "
-            "scope)")
+            f"(pending_edges UNRESOLVED/AMBIGUOUS {scoped_note})")
     debt_total = int(resolution_ledger["debt_markers"]["total"])
     if debt_total:
         remaining_gaps.append(

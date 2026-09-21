@@ -281,6 +281,78 @@ class TestDanglingReferences:
         assert payload["resolution_ledger"][
             "dangling_references"]["count"] == 0
 
+    def test_preexisting_pending_row_on_untouched_line_not_counted(
+            self, tmp_path):
+        """A pending row that predates the diff must not read as a dangler.
+
+        Regression: the changed-file sweep used to count EVERY unresolved
+        pending row in a touched file, so any edit to a file containing
+        receiver-bearing calls the extractor cannot resolve (e.g. str
+        methods) blocked safe_commit forever.
+        """
+        repo = _make_repo(tmp_path)
+        (repo / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    label = 'x'.strip()\n"  # pre-existing unresolved call
+            "    return util.help() + 1\n",
+            encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "c2")
+        _reconcile(repo)
+        db = _db_of(repo)
+        try:
+            parked = db.conn.execute(
+                "SELECT COUNT(*) FROM pending_edges "
+                "WHERE dst_symbol = 'strip'").fetchone()[0]
+        finally:
+            db.close()
+        assert parked >= 1, "fixture must park a pre-existing unresolved row"
+        # Edit an unrelated line; the strip line stays untouched context.
+        (repo / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    label = 'x'.strip()\n"
+            "    return util.help() + 2\n",
+            encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "c3")
+        _reconcile(repo)
+        db = _db_of(repo)
+        try:
+            payload = diff_impact_receipt(db, str(repo))
+        finally:
+            db.close()
+        dang = payload["resolution_ledger"]["dangling_references"]
+        assert dang["count"] == 0, dang
+        assert dang["line_scoped"] is True
+        assert dang["preexisting_unresolved"] >= 1
+
+    def test_new_pending_row_on_added_line_counts(self, tmp_path):
+        """A pending row introduced BY the diff still counts."""
+        repo = _make_repo(tmp_path)
+        (repo / "app.py").write_text(
+            "import util\n\n"
+            "def run():\n"
+            "    label = 'x'.strip()\n"  # NEW unresolved call on added line
+            "    return util.help() + 1\n",
+            encoding="utf-8")
+        _git(repo, "add", "-A")
+        _git(repo, "-c", "user.email=t@t", "-c", "user.name=t",
+             "commit", "-qm", "c2")
+        _reconcile(repo)
+        db = _db_of(repo)
+        try:
+            payload = diff_impact_receipt(db, str(repo))
+        finally:
+            db.close()
+        dang = payload["resolution_ledger"]["dangling_references"]
+        assert dang["count"] >= 1
+        assert any(e["dst_symbol"] == "strip"
+                   for e in dang["changed_or_caller_files"])
+
 
 class TestDispositionWiring:
     def test_pre_receipt_join_untouched_caller(self, tmp_path):

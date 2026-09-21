@@ -12,7 +12,9 @@ read-only collectors extend it toward "what is left unresolved":
   the assurance decision.
 - :func:`dangling_references` — ``pending_edges`` rows left
   UNRESOLVED/AMBIGUOUS after the extractor's resolution pass, scoped to
-  the change: rows FROM the changed files and their callers, plus rows
+  the change: rows FROM the changed files and their callers ON lines the
+  diff added (pre-existing unresolved rows on untouched lines are
+  reported as ``preexisting_unresolved``, never as danglers), plus rows
   pointing at PRE-change symbols that no longer exist as nodes (the
   rename/delete leftover signal). Decision-grade: the count feeds
   ``AssuranceFacts.unresolved_count`` and blocks closure.
@@ -23,8 +25,11 @@ read-only collectors extend it toward "what is left unresolved":
 Blind spots (disclosed, never hidden): debt markers are scanned from
 the unified-diff text only — untracked files (which git diff does not
 emit) are not scanned; dangling references outside the changed/caller
-files and outside the pre-receipt symbol set are not collected — the
-receipt's claim profile stays ``scoped``, never repo-wide absence.
+files and outside the pre-receipt symbol set are not collected, and a
+pending row on an unchanged line is treated as pre-existing even when
+the change secretly broke it (the pre-receipt nets cover the vanished-
+symbol case) — the receipt's claim profile stays ``scoped``, never
+repo-wide absence.
 
 Accounting (SG-107): the two SQL queries here are LIMIT-free — each is
 a decision input, not a truncating collection (same precedent as
@@ -179,6 +184,9 @@ def dangling_references(
     caller_files: Sequence[str] = (),
     pre_receipt: Optional[Dict[str, Any]] = None,
     repo_root: str = "",
+    target: str = "HEAD",
+    staged: bool = False,
+    working_tree: bool = False,
     errors_out: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """Collect references the change left unresolved, scoped to the diff.
@@ -187,8 +195,17 @@ def dangling_references(
 
     - ``changed_or_caller_files`` — ``pending_edges`` rows left
       UNRESOLVED/AMBIGUOUS whose source file is one of the diff's cited
-      files or the callers of changed nodes: NEW unresolved references
-      the change itself introduced.
+      files or the callers of changed nodes AND that the diff itself
+      implicated: the row's ``line`` sits on a line the diff ADDED (new
+      unresolvable reference) or its ``dst_symbol`` names an identifier
+      the diff DELETED (rename/delete leftover on an untouched line).
+      Rows on untouched lines pointing at surviving names are
+      pre-existing noise (the extractor parks every receiver-bearing
+      call it cannot type-resolve) and are counted under
+      ``preexisting_unresolved``, never as danglers. When the diff text
+      cannot be extracted the filter is skipped (``line_scoped:
+      false``) and the whole file scope counts — fail-closed, never
+      silently empty.
     - ``removed_pre_change_symbols`` — only with a pre-receipt, two nets:
 
       * pending rows whose ``dst_symbol`` was a known PRE-change
@@ -209,11 +226,35 @@ def dangling_references(
         "changed_or_caller_files": [],
         "removed_pre_change_symbols": [],
         "count": 0,
+        "line_scoped": False,
+        "preexisting_unresolved": 0,
     }
     merged: Dict[Tuple[str, str, str, str], Dict[str, Any]] = {}
     repo_root_abs = os.path.realpath(repo_root) if repo_root else ""
     repo_root_raw = _norm_path(repo_root) if repo_root else ""
     changed_norm = frozenset(_norm_path(p) for p in changed_files if p)
+
+    # Added-line + removed-name indexes for the first net: a pending row
+    # counts as "left by the change" when it sits on a line the diff
+    # added (new unresolvable reference) OR names an identifier the diff
+    # deleted (rename/delete leftover on an untouched line). Extraction
+    # failure keeps the historical file scope (fail-closed) and flags it.
+    added: Optional[Dict[str, set]] = None
+    removed_names: set = set()
+    try:
+        from sot_graph.diff_impact import GitDeltaExtractor
+
+        extractor = GitDeltaExtractor(repo_root)
+        extractor.extract_diff(
+            target, staged=staged, working_tree=working_tree)
+        diff_text = extractor.last_diff_text or ""
+        added = added_line_index(diff_text)
+        removed_names = removed_name_index(diff_text)
+        out["line_scoped"] = True
+    except Exception as exc:  # noqa: BLE001 - degrade, never crash
+        if errors_out is not None:
+            errors_out.append(
+                f"collection_error:dangling_diff_text:{exc}")
 
     def _absorb(
         path: Any, src: Any, dst: Any, relation: Any, line: Any,
@@ -250,6 +291,13 @@ def dangling_references(
                 params,
             ).fetchall()
             for path, src, dst, relation, line, state in rows:
+                if added is not None and not (
+                        _on_added_line(
+                            path, line, added, repo_root_raw,
+                            repo_root_abs)
+                        or str(dst) in removed_names):
+                    out["preexisting_unresolved"] += 1
+                    continue
                 _absorb(path, src, dst, relation, line, state,
                         "changed_or_caller_file")
     except Exception as exc:  # noqa: BLE001 - degrade, never crash
@@ -322,6 +370,89 @@ def dangling_references(
         e for e in entries if "removed_pre_change_symbol" in e["scopes"]]
     out["count"] = len(entries)
     return out
+
+
+def added_line_index(diff_text: str) -> Dict[str, set]:
+    """Map ``path -> {new-file line numbers}`` for ADDED lines only.
+
+    Same hunk walk as :func:`scan_added_lines_for_markers`: hunk headers
+    reset the new-file counter, ``+`` rows are added, ``-`` rows do not
+    advance it, context rows advance it. Diff paths are repo-relative
+    (``+++ b/<path>``); callers normalize stored paths against the repo
+    root before lookup.
+    """
+    index: Dict[str, set] = {}
+    current_file = ""
+    new_line = 0
+    for raw in diff_text.splitlines():
+        if raw.startswith("+++ "):
+            match = _NEW_FILE_RE.match(raw)
+            current_file = match.group(1) if match else raw[4:]
+            continue
+        if raw.startswith("--- "):
+            continue
+        if raw.startswith("@@"):
+            match = _HUNK_HEADER_RE.match(raw)
+            new_line = int(match.group(1)) if match else new_line
+            continue
+        if not current_file:
+            continue
+        if raw.startswith("+"):
+            index.setdefault(current_file, set()).add(new_line)
+            new_line += 1
+        elif raw.startswith("-"):
+            continue
+        else:
+            new_line += 1
+    return index
+
+
+def _on_added_line(
+    path: Any, line: Any, added: Dict[str, set],
+    repo_root_raw: str, repo_root_abs: str,
+) -> bool:
+    """True when a pending row ``(path, line)`` sits on a diff-added line.
+
+    ``pending_edges.path`` may be stored absolute; the diff index is
+    repo-relative, so both the normalized path and its root-stripped
+    forms are tried (raw + realpath roots, mirroring
+    :func:`_pending_paths_where`). Rows with no line number cannot be
+    proven new and are excluded.
+    """
+    if line is None:
+        return False
+    np = _norm_path(path)
+    candidates = [np]
+    for r in (repo_root_raw, repo_root_abs):
+        nr = _norm_path(r)
+        if nr and np.startswith(nr + "/"):
+            candidates.append(np[len(nr) + 1:])
+    try:
+        ln = int(line)
+    except (TypeError, ValueError):
+        return False
+    return any(ln in added.get(c, ()) for c in candidates)
+
+
+_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+
+
+def removed_name_index(diff_text: str) -> set:
+    """Identifier set appearing on DELETED (``-``) lines of the diff.
+
+    Text-level, language-agnostic: a pending row whose ``dst_symbol``
+    names an identifier the diff removed is a plausible leftover
+    reference (rename/delete), even when the referencing line itself was
+    not touched. ``---`` header lines are excluded. Over-matching is
+    fail-closed: a name removed anywhere in the diff marks matching
+    pending rows in the changed/caller scope.
+    """
+    names: set = set()
+    for raw in diff_text.splitlines():
+        if not raw.startswith("-") or raw.startswith("--- "):
+            continue
+        names.update(_IDENT_RE.findall(raw[1:]))
+    return names
 
 
 def scan_added_lines_for_markers(diff_text: str) -> List[Dict[str, Any]]:
