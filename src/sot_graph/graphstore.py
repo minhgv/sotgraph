@@ -130,11 +130,12 @@ class CbmStore(Database):
         # sot.db must stay writable for ledger/evidence writes. The CBM
         # main schema is protected by mode=ro on the open URI.
 
-        self.project = locate_project(self.conn, self.root_dir)
-        if self.project is None:
+        project = locate_project(self.conn, self.root_dir)
+        if project is None:
             self.conn.close()
             raise CbmContractError(
                 f"no CBM project bound to root {self.root_dir} in {cbm_path}")
+        self.project: str = project
         missing = schema_probe(self.conn)
         if missing:
             self.conn.close()
@@ -429,6 +430,7 @@ FROM sot.file_journal WHERE {fh_guard}"""
             # journal now owns (they reappear after the next publish).
             sql += (" AND k.file_path NOT IN "
                     "(SELECT rel FROM _sot_fresher)")
+        esc = ""
         if scope:
             esc = scope.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             sql += " AND (k.file_path LIKE ? ESCAPE '\\')"

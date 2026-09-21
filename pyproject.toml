@@ -166,3 +166,5 @@ addopts = "-v --strict-markers"
 
 [tool.pyright]
 exclude = ["src/sot_graph/_vendor"]
+venvPath = "."
+venv = ".venv"

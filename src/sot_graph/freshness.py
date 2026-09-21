@@ -302,7 +302,7 @@ def fast_tier_reconcile(
         p if os.path.isabs(p) else os.path.join(root, p) for p in rel_paths
     ]
     own = writer is None or getattr(writer, "is_cbm", False)
-    db = Database(db_path) if own else writer
+    db: Any = Database(db_path) if own else writer
     try:
         published, deferred = Reconciler(db, root).reconcile_paths(abs_paths)
     finally:

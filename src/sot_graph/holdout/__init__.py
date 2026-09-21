@@ -7,4 +7,6 @@ sot_graph WITHOUT dragging extractor internals into the oracle module.
 (roles, disjointness, freeze integrity, tuning exclusion).
 """
 
+from . import evaluator, splits  # noqa: F401
+
 __all__ = ["evaluator", "splits"]
