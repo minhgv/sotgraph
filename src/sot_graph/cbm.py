@@ -2,11 +2,17 @@
 
 Owns the pieces that let CBM act as sotgraph's DEFAULT extraction layer:
 
-- ``cbm_env`` — isolated coordination domain (``CBM_RUNTIME_DIR`` /
-  ``CBM_CACHE_DIR`` under ``.sot/cbm/``) so a sotgraph-spawned engine never
-  collides with an interactive CBM daemon the user already runs (version
-  cohort refuses mixed generations — observed: an interactive daemon from
-  another build blocks ``cli`` startup entirely).
+- ``cbm_env`` — isolated coordination domain so a sotgraph-spawned engine
+  never collides with an interactive CBM daemon the user already runs
+  (version cohort refuses mixed generations — observed: an interactive
+  daemon from another build blocks ``cli`` startup entirely).
+  ``CBM_CACHE_DIR`` stays repo-local under ``.sot/cbm/`` (the store DB
+  lives there); ``CBM_RUNTIME_DIR`` is a bounded tmp namespace —
+  ``cbm_runtime_dir()`` — because the engine binds
+  ``$CBM_RUNTIME_DIR/cbm-daemon-<uid>/cbm-<16hex>.sock`` and Unix
+  ``sun_path`` is capped at 104 bytes, so repo-local runtimes under long
+  worktree roots silently kill the engine ("secure daemon endpoint could
+  not be created" → ``cbm_index_failed:error``).
 - ``find_cbm_db`` / ``locate_project`` — discover the engine's own SQLite
   store and the project row bound to this repo root.
 - ``schema_probe`` — pin the contract this build was verified against
@@ -20,6 +26,7 @@ Read-side access to the store lives in ``graphstore.CbmStore``.
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import sqlite3
 import tempfile
@@ -65,11 +72,53 @@ def cbm_env(root: str) -> Dict[str, str]:
     daemon another tool (editor MCP, manual cli) already runs.
     """
     base = cbm_dir(root)
-    runtime = os.path.join(base, "runtime")
     cache = os.path.join(base, "cache")
-    for path in (runtime, cache):
-        os.makedirs(path, mode=0o700, exist_ok=True)
-    return {"CBM_RUNTIME_DIR": runtime, "CBM_CACHE_DIR": cache}
+    os.makedirs(cache, mode=0o700, exist_ok=True)
+    return {"CBM_RUNTIME_DIR": cbm_runtime_dir(root),
+            "CBM_CACHE_DIR": cache}
+
+
+#: Bytes the engine appends to CBM_RUNTIME_DIR for its native IPC socket:
+#: "/cbm-daemon-<uid>/cbm-<16hex>.sock" (same constants the managed
+#: runtime preflights against).
+_SOCK_SUFFIX_FMT = "/cbm-daemon-%d/cbm-%016x.sock"
+_SUN_PATH_LIMIT = 104  # bound path must be strictly shorter
+
+
+def cbm_runtime_dir(root: str) -> str:
+    """Bounded ``CBM_RUNTIME_DIR`` for a sotgraph-spawned engine.
+
+    Primary: ``<tmp-parent>/sotgraph-engine-<uid>/sot-cbm-<sha256(repo
+    realpath)[:16]>`` — a per-repo namespace under the same short,
+    user-owned tmp parent the managed engine uses
+    (:func:`providers.bootstrap._engine_runtime_parent`), keeping the
+    native ``sun_path`` under its 104-byte cap regardless of repo path
+    length. Repo-local ``.sot/cbm/runtime`` is ONLY the fallback when the
+    tmp namespace is unavailable or would still overflow (giant uid).
+    """
+    fallback = os.path.join(cbm_dir(root), "runtime")
+    real = os.path.realpath(root)
+    getuid = getattr(os, "getuid", None)
+    if getuid is not None:
+        try:
+            from sot_graph.providers.bootstrap import _engine_runtime_parent
+            uid = getuid()
+            parent = _engine_runtime_parent() / f"sotgraph-engine-{uid}"
+            digest = hashlib.sha256(real.encode("utf-8")).hexdigest()[:16]
+            runtime = os.fspath(parent / f"sot-cbm-{digest}")
+            sock_len = len(runtime.encode("utf-8")) + len(
+                (_SOCK_SUFFIX_FMT % (uid, 0)).encode("utf-8"))
+            if sock_len >= _SUN_PATH_LIMIT:
+                raise OSError(
+                    f"runtime socket path would be {sock_len} bytes")
+            os.makedirs(runtime, mode=0o700, exist_ok=True)
+            os.chmod(parent, 0o700)
+            os.chmod(runtime, 0o700)
+            return runtime
+        except (OSError, ImportError):
+            pass
+    os.makedirs(fallback, mode=0o700, exist_ok=True)
+    return fallback
 
 
 def cbm_cache_dir(root: str) -> str:

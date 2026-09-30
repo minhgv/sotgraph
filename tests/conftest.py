@@ -40,6 +40,16 @@ import sot_graph.providers.managed  # noqa: F401
 def _no_engine_auto_bootstrap(monkeypatch):
     monkeypatch.setenv("SOT_ENGINE_BOOTSTRAP", "off")
 
+# Session-level extractor pin: engine extraction must never be a hidden
+# test dependency — whether `codebase-memory-mcp` works depends on machine
+# state (binary present, sun_path budget, daemon cohort). Fixture repos
+# assert on the builtin graph store, so reconcile inside tests defaults
+# to builtin. Module/session-scoped fixtures run BEFORE function-scoped
+# monkeypatch fixtures, so this must be a real os.environ pin. Tests may
+# still override per-test via monkeypatch; CBM dispatch stays covered by
+# fake-binary/fake-result tests (test_cbm_store, test_cbm_adapter, …).
+os.environ["SOT_EXTRACTOR"] = "builtin"
+
 
 @functools.lru_cache(maxsize=1)
 def shebang_exec_available() -> bool:

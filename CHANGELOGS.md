@@ -131,6 +131,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   into the receipt-store writers (`readOnlyHint=false`) and its
   description discloses the write.
   (`src/sot_graph/mcp_service.py`, `src/sot_graph/mcp_server.py`)
+- **CBM engine `cbm_index_failed:error` on long repo roots (watcher
+  worktrees)** — `cbm_env` pinned `CBM_RUNTIME_DIR` to
+  `<root>/.sot/cbm/runtime`; the engine appends
+  `cbm-daemon-<uid>/cbm-<16hex>.sock`, so roots ≳56 chars pushed the Unix
+  `sun_path` past the engine's 104-byte budget and the daemon refused to
+  start ("secure daemon endpoint could not be created"). The runtime dir
+  now lives in a bounded tmp namespace
+  (`<tmp>/sotgraph-engine-<uid>/sot-cbm-<sha256(realpath)[:16]>`, mode
+  0700, same parent the managed engine uses), keeping the socket path
+  under the limit regardless of repo path depth; `CBM_CACHE_DIR` stays
+  repo-local. Non-POSIX/unavailable-tmp falls back to the repo-local dir.
+  Regression tests pin the byte budget and the OSError fallback; the
+  test suite now pins `SOT_EXTRACTOR=builtin` session-wide so fixture
+  repos never depend on a real engine being installed/healthy.
+  (`src/sot_graph/cbm.py`, `tests/conftest.py`)
 
 ## [0.3.8] — 2026-09-19
 

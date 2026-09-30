@@ -412,6 +412,44 @@ def test_dispatch_cbm_index_failure_falls_back(repo, monkeypatch):
         db.close()
 
 
+def test_cbm_env_runtime_dir_bounded(repo):
+    """CBM_RUNTIME_DIR must keep the engine's native sun_path under 104
+    bytes even under long repo roots — watcher worktrees regressed to
+    `cbm_index_failed:error` ("secure daemon endpoint could not be
+    created") because the repo-local `.sot/cbm/runtime` overflowed it."""
+    from sot_graph import cbm as cbm_mod
+
+    env = cbm_mod.cbm_env(repo["root"])
+    runtime, cache = env["CBM_RUNTIME_DIR"], env["CBM_CACHE_DIR"]
+    if getattr(os, "getuid", None) is None:
+        pytest.skip("bounded runtime namespace requires POSIX getuid")
+    uid = os.getuid()
+    sock = runtime + f"/cbm-daemon-{uid}/cbm-{0:016x}.sock"
+    assert len(sock.encode("utf-8")) < 104
+    assert "sot-cbm-" in runtime
+    assert not runtime.startswith(repo["root"] + os.sep)
+    assert cache == os.path.join(repo["root"], ".sot", "cbm", "cache")
+    assert (os.stat(runtime).st_mode & 0o777) == 0o700
+
+
+def test_cbm_runtime_dir_falls_back(repo, monkeypatch):
+    """OSError on the tmp namespace → repo-local `.sot/cbm/runtime`."""
+    from sot_graph import cbm as cbm_mod
+
+    if getattr(os, "getuid", None) is None:
+        pytest.skip("bounded runtime namespace requires POSIX getuid")
+    real_makedirs = os.makedirs
+
+    def _deny(path, *args, **kwargs):
+        if "sot-cbm-" in os.fspath(path):
+            raise OSError("denied")
+        return real_makedirs(path, *args, **kwargs)
+
+    monkeypatch.setattr(cbm_mod.os, "makedirs", _deny)
+    runtime = cbm_mod.cbm_runtime_dir(repo["root"])
+    assert runtime == os.path.join(repo["root"], ".sot", "cbm", "runtime")
+
+
 def test_publish_store_and_find_prefers_published(repo):
     from sot_graph.cbm import publish_store, published_db_path
 
