@@ -3494,11 +3494,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return _run_cli(arguments, json_errors=json_output)
     except _CliUsageError as exc:
         return _cli_error(error_args, "invalid_argument", str(exc), 2)
-    except (OSError, sqlite3.Error, ValueError, RuntimeError) as exc:
+    except (OSError, sqlite3.Error, ValueError, OverflowError, RuntimeError) as exc:
         code = ("database_error" if isinstance(exc, sqlite3.Error) else
                 "io_error" if isinstance(exc, OSError) else
                 "invalid_config" if "config.toml" in str(exc) else
-                "invalid_argument" if isinstance(exc, ValueError) else "command_failed")
+                "invalid_argument" if isinstance(exc, (ValueError, OverflowError)) else "command_failed")
         return _cli_error(error_args, code, str(exc))
 
 

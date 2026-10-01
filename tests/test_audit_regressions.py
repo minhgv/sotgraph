@@ -144,6 +144,23 @@ def test_cli_rejects_invalid_numbers_before_opening_database(tmp_path, capsys, a
     assert not (tmp_path / ".sot" / "sot.db").exists()
 
 
+@pytest.mark.parametrize("limit", [2**63, 10**100])
+def test_sqlite_integer_overflow_keeps_cli_json_contract(
+    indexed_project, tmp_path, capsys, monkeypatch, limit,
+):
+    db = indexed_project({"app.py": "def alpha():\n    return 1\n"})
+    db.close()
+    monkeypatch.setenv("SOT_EXTRACTOR", "builtin")
+    monkeypatch.setenv("SOT_ENGINE_BOOTSTRAP", "off")
+    assert main(["--root", str(tmp_path), "search", "alpha", "--limit", str(limit),
+                 "--json", "--reconcile", "off"]) == 1
+    streams = capsys.readouterr()
+    reply = json.loads(streams.out)
+    assert reply["ok"] is False
+    assert reply["code"] == "invalid_argument"
+    assert "Traceback" not in streams.err
+
+
 @pytest.mark.parametrize("config", ['extractor = [\n', 'allow_external = "banana"\n'])
 def test_invalid_config_is_a_json_error(tmp_path, capsys, config):
     (tmp_path / ".sot").mkdir()

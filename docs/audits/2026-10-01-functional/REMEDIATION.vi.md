@@ -7,8 +7,9 @@ OS, Python, grammar, provider và runtime đều không thể có bug.
 
 Khảo sát bắt đầu 01/10/2026; nghiệm thu local 02/10/2026, Asia/Ho_Chi_Minh.
 Base commit `9be1d24a61f2cd3fc895d9ab64c222f05c05a5e0`, version 0.3.8.
-Bản sửa production nằm trong commit `ab21cb9c850eb38e1067de8f6fc99f0390757fe7` trên nhánh
+Phần chính của bản sửa nằm trong commit `ab21cb9c850eb38e1067de8f6fc99f0390757fe7` trên nhánh
 `codex/functional-audit-remediation`; oracle claims được bind vào commit này.
+Lỗi overflow của CLI được sửa bổ sung trên cùng nhánh sau kiểm tra Python matrix.
 CSV review dùng LF; archive khảo sát gốc được giữ nguyên.
 Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguyên.
 
@@ -20,11 +21,11 @@ Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguy
 | A02 | Closure TypeScript/JS giữ identity của hàm/method bao ngoài. | Hai method cùng tên closure gọi hai callee khác nhau. |
 | A03 | Python receiver/class/base được phân giải theo module, path và import; known virtual override abstain; import/re-export giải đến fixed point. | Receiver trùng tên khác module, re-export, inheritance và polymorphism tests. |
 | A04 | Rust alias và call trong macro đánh giá argument; Java static import; sửa oracle TS để đo direct call. | Static oracle 236 file, 1.013 TP, 0 FN, 0 FP. |
-| A05 | JSON error envelope có code; parser errors, provider/pack failures, secondary errors và schema-reset diagnostics giữ stdout parse được. | 87 CLI probes; error-boundary regressions; human receipt error giữ stderr. |
+| A05 | JSON error envelope có code; parser errors, provider/pack failures, secondary errors, SQLite integer overflow và schema-reset diagnostics giữ stdout parse được. | 87 CLI probes; error-boundary regressions trên Python 3.10–3.14; human receipt error giữ stderr. |
 | A06 | Config validation chuyển thành diagnostic ở CLI boundary. | TOML malformed và wrong-type probes. |
 | A07 | SQLite initialization/corruption lỗi có diagnostic; không ghi đè file DB lỗi. | Corrupt DB regression và doctor probe. |
 | A08 | Receipt không tồn tại/malformed trả error có cấu trúc. | Missing PRE receipt và receipt explorer tests. |
-| A09 | Dùng validators chung; từ chối bool/float cho integer, số âm/zero không hợp lệ, NaN/Infinity và threshold ngoài miền. | CLI/MCP/direct-core domain tests. |
+| A09 | Dùng validators chung; từ chối bool/float cho integer, số âm/zero không hợp lệ, NaN/Infinity và threshold ngoài miền; integer vượt miền SQLite trả invalid_argument. | CLI/MCP/direct-core domain tests; limit 2**63 và 10**100 được chạy qua SQLite thực. |
 | A10 | Lỗi thu thập Git được giữ trong result/receipt; risk UNKNOWN, assurance UNVERIFIABLE, safe_commit block, exit khác 0. | Invalid ref và non-Git tests; strict gate giữ exit 2. |
 | A11 | Pack canonicalize root và node paths trước khi tính relative path. | macOS `/var`–`/private/var` và symlink-alias regression. |
 | A12 | OMP tests dùng fixture, interpreter hiện tại, timeout và temp outputs. | 11 integration tests; runtime khoảng 7 giây trong focused run. |
@@ -49,9 +50,13 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 
 | Kiểm tra | Kết quả | Phạm vi/giới hạn |
 |---|---|---|
-| Suite pytest tests/ và evaluation/tests/ | 2.686 pass, 4 skip, 176 subtest pass; 393,28 giây | Mã nguồn production ổn định; fixture import module-eval được kiểm tra focused/pytest entrypoint sau đó. |
+| Suite pytest tests/ và evaluation/tests/, Python 3.12 | 2.688 pass, 4 skip, 176 subtest pass; 439,21 giây | Bản nguồn cuối, gồm hai regression SQLite integer overflow. |
+| Full suite Python 3.10.20 / 3.11.15 | Mỗi runtime 2.685 pass, 5 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; thêm skip do ast.parse chưa hỗ trợ PEP 695. |
+| Full suite Python 3.13.13 / 3.14.4 | Mỗi runtime 2.686 pass, 4 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; venv riêng, locked all-extras/dev. |
+| CLI regression trên 5 runtime Python 3.10–3.14 | Mỗi runtime 78 pass, 0 skip | Bản nguồn cuối; chạy audit, CLI smoke/provider wiring và engine admin. |
 | Native verifier focused | 38 pass | Gồm gate gitlink–manifest–release pins mới; không cần private source trong CI Python. |
 | Linux aarch64, Python 3.12.14, root, case-sensitive FS | 211 pass, 2 skip | Container dùng init để reap orphan; hai skip dành riêng cho filesystem không phân biệt case. |
+| Linux Python 3.12.14, package tối thiểu | 2 regression overflow pass | Core dependencies từ uv sync --locked --no-dev, không optional extra; pytest 9.0.2 cài riêng làm test tool. |
 | CLI fixture probes | 87 case; 85 PASS, 2 kết quả phân loại chấp nhận | STOPPED watcher và empty map chủ ý exit 1; mọi lỗi contract cũ đã đóng. |
 | MCP stdio | core 7, full 24, ops 26 tool PASS | Profiles và dispatch thực; không cộng số tool như testcase pytest. |
 | Static oracle | 1.013 TP, 0 FN, 0 FP; 124 TN | Synthetic 236 file, 5 ngôn ngữ; không suy ra repo-wide recall. |
@@ -66,11 +71,21 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 | Native experimental source/build | PASS | Current pin e477a32d; build trong scratch, không installer/UI hooks; chưa chạy toàn bộ C test suite hoặc certify các platform. |
 | Reconcile / doctor / diff-impact / history | Đã chạy | Reconcile 0 failure; doctor healthy; impact vẫn phải đọc scope/gaps. |
 
-Coverage statement toàn package **83,85%**, branch **75,63%**, combined **81,56%**.
-Core statement **87,90%**, receipt statement **94,68%**, vượt floor 85%/90%.
-Engine-daemon statement từ 25,38% lên 57,23%; watcher từ 53,41% lên 57,12%.
+Coverage statement toàn package **83,88%**, branch **75,65%**, combined **81,59%**.
+Receipt statement **94,68%**, vượt floor 90%.
+Engine-daemon statement từ 25,38% lên 57,23%; watcher từ 53,41% lên 57,50%.
 Lifecycle/event tests còn chạy child process nên coverage pytest process không
 đại diện đầy đủ cho các nhánh thực thi trong child.
+
+Các full suite Python 3.10/3.11/3.13/3.14 được chạy khi mã nguồn giữ ổn định;
+thời gian lần lượt 428,53 / 424,18 / 428,24 / 430,57 giây. Sau đó, probe
+`search --limit 10**100 --json` phát hiện OverflowError từ SQLite làm stdout
+rỗng và lộ traceback. Hai regression tái hiện thất bại trước sửa. Boundary CLI
+giờ trả JSON invalid_argument, exit 1, không traceback. Bản cuối được chạy full
+suite Python 3.12 và 78 CLI regression trên cả năm runtime, cùng hai regression
+trên Linux package tối thiểu. Không coi bốn full suite trước sửa là full suite
+đã chạy lại trên bản cuối. Bốn skip macOS là root ownership, case-sensitive FS
+và hai Windows Job Object; PEP 695 là skip bổ sung trên Python 3.10/3.11.
 
 Holdout đo presence trên 6.725/6.725 task và false absence trên 5.707 definition;
 0 false absence, 8 syntax files nằm ngoài scope. Impact recall macro **99,45%**
@@ -80,17 +95,27 @@ jsonschema không có test reference thuộc mô hình, 10 attribute-only refere
 nằm ngoài scope. Retrieval Hit@1 **87,57%**, Hit@5 **96,36%**, MRR **0,9136**.
 Không biến các mẫu đo này thành độ đầy đủ toàn repo.
 
-Impact working tree đo 60 file (gồm hai skill thay đổi từ trước), 282 node trực tiếp,
-960 caller và 1.715 test liên quan; risk HIGH, runtime 193,67 giây. Receipt là
-STALE do anchor drift trong lúc cập nhật tài liệu/test fixture, unresolved budget
-và dynamic dispatch. Không sử dụng receipt này làm chứng nhận safe_commit;
-safe_commit cũng block vì 302 reference chưa phân giải và không đính kèm test
-receipt có provenance. Đây là đánh giá graph trong run đó, không phải chứng nhận
-đã chạy test. Bản sửa được kiểm tra bằng suite/oracle/E2E và vẫn cần review/CI.
+Impact working tree ban đầu đo 60 file (gồm hai skill thay đổi từ trước), 282 node
+trực tiếp, 960 caller và 1.715 test liên quan; risk HIGH, runtime 193,67 giây.
+Receipt STALE khi cập nhật tài liệu/test fixture; gate block với 302 reference
+UNRESOLVED/AMBIGUOUS. Sau commit b4171c4 và explicit reconcile, impact main...HEAD
+đo 55 file, 276 node, 935 caller, 1.689 test; risk HIGH, runtime 192,08 giây.
+Run này vẫn STALE do `.gitignore` và ba CSV không được journal index, cộng
+unresolved budget/dynamic dispatch; safe_commit block với 334 reference.
+Đây là chính sách fail closed của receipt với file chưa index, không phải bằng
+chứng các CSV có nội dung lỗi hoặc 334 runtime bug.
+
+Impact staged riêng cho sửa overflow đo hai file, bốn node, mười caller và
+22 test; không stale file, nhưng assurance PARTIAL và gate block với sáu
+reference chưa phân giải. Không sửa hoặc bỏ qua gate để tự nhận safe_commit.
+Các receipt không có test-result provenance; graph gate không chứng nhận đã
+chạy test. Kết quả suite/oracle/E2E ở trên là bằng chứng thực thi riêng và vẫn
+cần review/CI.
 
 Một run giữa lúc sửa annotation CLI đọc file chưa đủ import; run ổn định sau đó
-đạt 2.686 test. Linux từng bị checksum download và fixture sys.path; các lỗi setup
-đã được đóng. Container không init giữ grandchild đã chết ở trạng thái zombie Z;
+đạt 2.686 test, rồi bản cuối đạt 2.688 test. Linux từng bị checksum download và
+fixture sys.path; các lỗi setup đã được đóng. Container không init giữ grandchild
+đã chết ở trạng thái zombie Z;
 run có init đạt kiểm tra group kill. Các log trung gian được giữ trong archive.
 
 ## Nghiệm thu 15 tính năng
@@ -99,7 +124,7 @@ run có init đạt kiểm tra group kill. Các log trung gian được giữ tr
 |---|---|
 | F01 Config/install/harness | Distribution smoke, malformed config, hermetic OMP, safe setup/maintenance tests. |
 | F02 Multi-language extraction/index | Static/dynamic oracle, lexical scopes, Rust/Java regressions, incremental reconcile tests. |
-| F03 Search/trust axes | CLI/MCP probes, search oracle và holdout; axes vẫn là bounded heuristic. |
+| F03 Search/trust axes | CLI/MCP probes, search oracle, holdout và SQLite overflow regression; axes vẫn là bounded heuristic. |
 | F04 JIT/self-healing | Full freshness/concurrency regression; explicit final reconcile. |
 | F05 Usages/hierarchy | Scoped classes, import/re-export fixed point, polymorphic abstention và resolver tests. |
 | F06 Pack/budgets | Omission → PARTIAL, strict token tests, cap/alias regressions. |
@@ -119,6 +144,9 @@ Hai test Windows Job Object chưa chạy trực tiếp trên Windows ở local. 
 CI đã có Ubuntu/macOS/Windows × Python 3.10–3.14; gate fresh SCIP được bổ sung
 vào dependency của release. Chưa push/dispatch CI cho bản sửa này. GitHub Actions
 được quan sát enabled qua API ngày 02/10/2026, không sửa remote settings/secrets.
+Python matrix macOS đã chạy local như bảng trên; không thay thế chứng nhận
+Windows. Push/draft PR/CI đang chờ xác nhận theo quy định review và approval
+trong `docs/DEVELOPMENT_READINESS.md`.
 
 Native manifest cũ được giữ nguyên. Git diff 46ae198f → e477a32d chỉ thêm
 `.github/workflows/engine-release.yml` và `docs/RELEASING-ENGINE.md`; không đổi C
