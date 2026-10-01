@@ -7,6 +7,9 @@ OS, Python, grammar, provider và runtime đều không thể có bug.
 
 Khảo sát bắt đầu 01/10/2026; nghiệm thu local 02/10/2026, Asia/Ho_Chi_Minh.
 Base commit `9be1d24a61f2cd3fc895d9ab64c222f05c05a5e0`, version 0.3.8.
+Bản sửa production nằm trong commit `ab21cb9c850eb38e1067de8f6fc99f0390757fe7` trên nhánh
+`codex/functional-audit-remediation`; oracle claims được bind vào commit này.
+CSV review dùng LF; archive khảo sát gốc được giữ nguyên.
 Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguyên.
 
 ## Finding và bản sửa
