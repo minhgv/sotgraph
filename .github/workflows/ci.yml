@@ -26,6 +26,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.12"
+
 jobs:
   lint:
     name: Lint & Code Quality
@@ -61,6 +64,7 @@ jobs:
     env:
       PYTHONUTF8: "1"
       PYTHONIOENCODING: "utf-8"
+      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -77,8 +81,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked --all-extras --dev
 
+      - name: Verify Python matrix interpreter
+        run: uv run --no-sync python -c "import os, sys; assert '.'.join(map(str, sys.version_info[:2])) == os.environ['UV_PYTHON']; print(sys.version)"
+
       - name: Run test suite (pytest)
-        run: uv run pytest tests/ -v --strict-markers
+        run: uv run pytest tests/ evaluation/tests/ -v --strict-markers
 
   accuracy-oracle:
     name: Accuracy Oracle (P0 exact 6-tuple)

@@ -9,7 +9,7 @@ from sot_graph.reconciler import Reconciler
 
 def test_lambda_parameter_shadowing_defect():
     """Verify lambda parameter shadow does not prevent unshadowed outer calls from resolving."""
-    with tempfile.TemporaryDirectory() as td:
+    with tempfile.TemporaryDirectory() as td, Database(str(Path(td) / "sot.db")) as db:
         ws = Path(td)
         math_file = ws / "my_math.py"
         math_file.write_text("""
@@ -28,7 +28,6 @@ def outer_wrapper(val: int) -> int:
     return int(my_sqrt(val))
 """, encoding="utf-8")
 
-        db = Database(str(ws / "sot.db"))
         rec = Reconciler(db, str(ws))
         rec.reconcile(workers=1)
 

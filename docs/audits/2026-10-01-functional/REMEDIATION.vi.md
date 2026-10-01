@@ -1,6 +1,6 @@
 # Khắc phục và nghiệm thu chức năng sotgraph
 
-Đã sửa 12 finding A01–A12 của khảo sát ban đầu và 8 nhóm vấn đề phát hiện thêm
+Đã sửa 12 finding A01–A12 của khảo sát ban đầu và 9 nhóm vấn đề phát hiện thêm
 trong quá trình kiểm thử. Các lỗi ban đầu không còn tái hiện trong probe/regression
 đã chạy. Kết luận này giới hạn ở bằng chứng bên dưới; chưa chứng nhận mọi tổ hợp
 OS, Python, grammar, provider và runtime đều không thể có bug.
@@ -10,6 +10,7 @@ Base commit `9be1d24a61f2cd3fc895d9ab64c222f05c05a5e0`, version 0.3.8.
 Phần chính của bản sửa nằm trong commit `ab21cb9c850eb38e1067de8f6fc99f0390757fe7` trên nhánh
 `codex/functional-audit-remediation`; oracle claims được bind vào commit này.
 Lỗi overflow của CLI được sửa bổ sung trên cùng nhánh sau kiểm tra Python matrix.
+Workflow CI cũng được bind interpreter để kết quả matrix đúng phiên bản được ghi.
 CSV review dùng LF; archive khảo sát gốc được giữ nguyên.
 Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguyên.
 
@@ -28,7 +29,7 @@ Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguy
 | A09 | Dùng validators chung; từ chối bool/float cho integer, số âm/zero không hợp lệ, NaN/Infinity và threshold ngoài miền; integer vượt miền SQLite trả invalid_argument. | CLI/MCP/direct-core domain tests; limit 2**63 và 10**100 được chạy qua SQLite thực. |
 | A10 | Lỗi thu thập Git được giữ trong result/receipt; risk UNKNOWN, assurance UNVERIFIABLE, safe_commit block, exit khác 0. | Invalid ref và non-Git tests; strict gate giữ exit 2. |
 | A11 | Pack canonicalize root và node paths trước khi tính relative path. | macOS `/var`–`/private/var` và symlink-alias regression. |
-| A12 | OMP tests dùng fixture, interpreter hiện tại, timeout và temp outputs. | 11 integration tests; runtime khoảng 7 giây trong focused run. |
+| A12 | OMP tests dùng fixture, interpreter hiện tại, timeout và temp outputs; evaluation fixture đóng Database trước cleanup thư mục tạm. | 11 integration tests; bốn DB handle mở sau evaluation test trước sửa, đóng sau sửa; năm evaluation test đạt trên mỗi Python 3.10–3.14. |
 | A13 | SCIP protobuf đọc/ghi đúng documentation, relationship, kind, display name, signature và packed occurrence ranges; sửa escaping/URI/position encoding. | Index compiler thật, optional-field fixture từ SDK độc lập, fresh compiler E2E và independent export decode. |
 | A14 | Daemon serialize startup giữa client bằng khóa ổn định; gửi initialize đúng RPC; frame stdout theo deadline; xử lý malformed JSON/PID; restart/retry; reap child, SIGTERM/idle cleanup; Windows dùng cold fallback. | Concurrent startup tái hiện 2 daemon trước sửa, sau sửa chỉ 1; strict MCP child, deadline/framing, crash/recovery và cleanup tests. |
 | A15 | Receiver type không rò giữa function/block; untyped shadow không thừa hưởng kiểu của local scope khác. | TypeScript same-name variables, block shadow và unknown receiver test. |
@@ -37,6 +38,7 @@ Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguy
 | A18 | Lockfile cập nhật PyJWT 2.13.0 → 2.15.1, urllib3 2.7.0 → 2.8.0. | pip-audit từ 16 advisory về 0 advisory đã biết. |
 | A19 | Source verifier và manifest mới khớp gitlink/release pin e477a32d; giữ nguyên manifest lịch sử 46ae198f. | Hash/mode/blob verify 2.052 entries; live pin-parity test; native scratch build đạt. |
 | A20 | Module-eval quy diagnostic Ruff absolute/relative path về đúng scope; dọn một unused import và sửa parser type contracts. | Planted diagnostic bắt buộc gate fail; Ruff toàn src và Pyright 99 file đạt, 0 diagnostic. |
+| A21 | CI bind UV_PYTHON mặc định 3.12 và override theo matrix; assert interpreter trước pytest, gồm cả evaluation/tests/. | uv 0.12.10 thực: install 3.10 nhưng sync chọn 3.14 trước sửa; sau sửa dry-sync và live guard đúng cả năm runtime; guard từ chối interpreter sai. |
 
 A13 được đối chiếu với [schema SCIP chính thức](https://raw.githubusercontent.com/sourcegraph/scip/main/scip.proto).
 SCIP reference không bị suy thành call. Compiler E2E mới là gate release riêng;
@@ -50,10 +52,12 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 
 | Kiểm tra | Kết quả | Phạm vi/giới hạn |
 |---|---|---|
-| Suite pytest tests/ và evaluation/tests/, Python 3.12 | 2.688 pass, 4 skip, 176 subtest pass; 439,21 giây | Bản nguồn cuối, gồm hai regression SQLite integer overflow. |
+| Suite pytest tests/ và evaluation/tests/, Python 3.12 | 2.688 pass, 4 skip, 176 subtest pass; 439,21 giây | Mã production hiện tại, gồm hai regression overflow; trước điều chỉnh lifecycle fixture evaluation. |
 | Full suite Python 3.10.20 / 3.11.15 | Mỗi runtime 2.685 pass, 5 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; thêm skip do ast.parse chưa hỗ trợ PEP 695. |
 | Full suite Python 3.13.13 / 3.14.4 | Mỗi runtime 2.686 pass, 4 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; venv riêng, locked all-extras/dev. |
 | CLI regression trên 5 runtime Python 3.10–3.14 | Mỗi runtime 78 pass, 0 skip | Bản nguồn cuối; chạy audit, CLI smoke/provider wiring và engine admin. |
+| Evaluation fixture sau sửa lifecycle trên Python 3.10–3.14 | Mỗi runtime 5 pass, 0 skip | Dùng Database context manager để đóng handle trước cleanup; không thay đổi mã production. |
+| CI interpreter selection, uv 0.12.10 | Năm dry-sync và năm live interpreter guard đạt; negative guard đạt | Local macOS, YAML parse đạt; chưa chạy remote matrix Ubuntu/macOS/Windows. |
 | Native verifier focused | 38 pass | Gồm gate gitlink–manifest–release pins mới; không cần private source trong CI Python. |
 | Linux aarch64, Python 3.12.14, root, case-sensitive FS | 211 pass, 2 skip | Container dùng init để reap orphan; hai skip dành riêng cho filesystem không phân biệt case. |
 | Linux Python 3.12.14, package tối thiểu | 2 regression overflow pass | Core dependencies từ uv sync --locked --no-dev, không optional extra; pytest 9.0.2 cài riêng làm test tool. |
@@ -72,7 +76,8 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 | Reconcile / doctor / diff-impact / history | Đã chạy | Reconcile 0 failure; doctor healthy; impact vẫn phải đọc scope/gaps. |
 
 Coverage statement toàn package **83,88%**, branch **75,65%**, combined **81,59%**.
-Receipt statement **94,68%**, vượt floor 90%.
+Core statement **87,95%** trên 38 module theo COVERAGE_INCLUDES trong
+scripts/quality_gates.sh; receipt statement **94,68%**, vượt floor 85%/90%.
 Engine-daemon statement từ 25,38% lên 57,23%; watcher từ 53,41% lên 57,50%.
 Lifecycle/event tests còn chạy child process nên coverage pytest process không
 đại diện đầy đủ cho các nhánh thực thi trong child.
@@ -122,7 +127,7 @@ run có init đạt kiểm tra group kill. Các log trung gian được giữ tr
 
 | Nhóm | Bằng chứng nghiệm thu |
 |---|---|
-| F01 Config/install/harness | Distribution smoke, malformed config, hermetic OMP, safe setup/maintenance tests. |
+| F01 Config/install/harness | Distribution smoke, malformed config, hermetic OMP, safe setup/maintenance và CI interpreter guard. |
 | F02 Multi-language extraction/index | Static/dynamic oracle, lexical scopes, Rust/Java regressions, incremental reconcile tests. |
 | F03 Search/trust axes | CLI/MCP probes, search oracle, holdout và SQLite overflow regression; axes vẫn là bounded heuristic. |
 | F04 JIT/self-healing | Full freshness/concurrency regression; explicit final reconcile. |
@@ -147,6 +152,21 @@ vào dependency của release. Chưa push/dispatch CI cho bản sửa này. GitH
 Python matrix macOS đã chạy local như bảng trên; không thay thế chứng nhận
 Windows. Push/draft PR/CI đang chờ xác nhận theo quy định review và approval
 trong `docs/DEVELOPMENT_READINESS.md`.
+
+Workflow trước đó chỉ chạy `uv python install <matrix-version>` rồi sync mà
+không chọn interpreter. Với uv 0.12.10 và nhiều interpreter đã cài, probe thực
+install 3.10 nhưng sync chọn 3.14.4. Bản sửa bind UV_PYTHON ở workflow/job và
+assert minor version trước pytest; matrix cũng chạy evaluation/tests/ thay vì
+chỉ tests/. Năm dry-sync local chọn đúng phiên bản, năm live guard đạt, guard
+với actual 3.14/expected 3.10 fail đúng. Đây là kiểm chứng selection/guard ở
+local, chưa phải remote CI pass.
+
+Khi đưa evaluation/tests/ vào matrix, kiểm tra lifetime thấy bốn Database chưa
+đóng sau test. Các fixture dùng context manager hiện có để đóng DB trước khi
+TemporaryDirectory cleanup, kể cả assertion thất bại. Probe lifetime chuyển
+từ bốn handle mở sang bốn handle đóng; cả năm evaluation test được chạy lại
+trên năm Python runtime. Full suite 2.688 case chạy trước thay đổi fixture này;
+mã production giữ nguyên. Hành vi xóa file trên Windows vẫn cần CI thực.
 
 Native manifest cũ được giữ nguyên. Git diff 46ae198f → e477a32d chỉ thêm
 `.github/workflows/engine-release.yml` và `docs/RELEASING-ENGINE.md`; không đổi C

@@ -15,7 +15,7 @@ from sot_graph.verifier import RelevanceType, TrustVerifier
 
 def test_evaluator_catches_shadowing_defect():
     """Verify that if shadowing occurs without check, evaluator catches it."""
-    with tempfile.TemporaryDirectory() as td:
+    with tempfile.TemporaryDirectory() as td, Database(str(Path(td) / "sot.db")) as db:
         ws = Path(td)
         py_file = ws / "test_shadow.py"
         py_file.write_text("""
@@ -25,7 +25,6 @@ def test_func(x: int, sqrt: int) -> int:
     return sqrt + x
 """, encoding="utf-8")
 
-        db = Database(str(ws / "sot.db"))
         rec = Reconciler(db, str(ws))
         rec.reconcile(workers=1)
 

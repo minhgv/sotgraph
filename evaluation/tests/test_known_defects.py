@@ -15,8 +15,7 @@ def test_python_local_import_should_resolve_edge():
     # We want process_with_local_import -> discount to be resolved
     with pytest.MonkeyPatch.context() as mp:
         import tempfile
-        with tempfile.TemporaryDirectory() as td:
-            db = Database(str(Path(td) / "sot.db"))
+        with tempfile.TemporaryDirectory() as td, Database(str(Path(td) / "sot.db")) as db:
             rec = Reconciler(db, str(ws / "python"))
             rec.reconcile(workers=1)
 
@@ -34,8 +33,7 @@ def test_python_comprehension_target_does_not_leak_to_outer_call():
     """Verify comprehension binding does not leak to outer scope call."""
     ws = Path(__file__).resolve().parent.parent / "fixtures"
     import tempfile
-    with tempfile.TemporaryDirectory() as td:
-        db = Database(str(Path(td) / "sot.db"))
+    with tempfile.TemporaryDirectory() as td, Database(str(Path(td) / "sot.db")) as db:
         rec = Reconciler(db, str(ws / "python"))
         rec.reconcile(workers=1)
 
