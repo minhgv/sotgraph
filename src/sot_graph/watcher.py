@@ -111,7 +111,8 @@ def _run_watchfiles(
     assert _WATCHFILES is not None
     pending: Set[str] = set()  # LockBusy carry-over into the next batch
     for changes in _WATCHFILES.watch(
-        root, debounce=int(debounce_ms), recursive=True, step=50
+        root, debounce=int(debounce_ms), recursive=True, step=50,
+        stop_event=stop_event, yield_on_timeout=True, rust_timeout=250,
     ):
         if stop_event and stop_event.is_set():
             break

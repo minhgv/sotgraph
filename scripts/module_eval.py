@@ -609,6 +609,7 @@ def run_static_gates(selected: List[str], skip: set) -> Dict[str, ScopeResult]:
             by_scope: Dict[str, List[Dict[str, Any]]] = {}
             for d in diags:
                 f = d.get("path", d.get("filename", ""))
+                f = f.removeprefix(str(REPO_ROOT) + os.sep).replace(os.sep, "/")
                 for scope, cfg in SCOPES.items():
                     if any(f == pat.rstrip("/") or f.startswith(pat.rstrip("/"))
                            for pat in cfg["files"] if pat.endswith("/")) or \

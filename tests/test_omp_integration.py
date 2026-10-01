@@ -26,7 +26,6 @@ from pathlib import Path
 from conftest import require_shebang_exec
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-BIN_SOT = REPO_ROOT / "bin" / "sotgraph"
 
 
 class TestOMPIntegrationScenarios(unittest.TestCase):
@@ -34,27 +33,43 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
     def setUpClass(cls):
         cls.env = os.environ.copy()
         cls.env["PYTHONPATH"] = str(REPO_ROOT / "src")
+        cls.env["SOT_EXTRACTOR"] = "builtin"
+        cls.env["SOT_ENGINE_BOOTSTRAP"] = "off"
+        cls.env["SOT_PROVIDERS_ALLOW_EXTERNAL"] = "0"
         cls.tmp_dir = tempfile.TemporaryDirectory()
-        cls.db_path = Path(cls.tmp_dir.name) / "sot.db"
+
+    def setUp(self):
+        self.fixture_root = Path(tempfile.mkdtemp(dir=self.tmp_dir.name))
+        self.db_path = self.fixture_root / ".sot/sot.db"
+        (self.fixture_root / "storage.py").write_text(
+            'class Database:\n    """Database for storing and retrieving records."""\n'
+            '    def get(self, key):\n        return key\n', encoding="utf-8")
+        (self.fixture_root / "service.py").write_text(
+            'from storage import Database\n\ndef read_record(key):\n'
+            '    db = Database()\n    return db.get(key)\n', encoding="utf-8")
+        tests = self.fixture_root / "tests"
+        tests.mkdir()
+        (tests / "test_service.py").write_text(
+            'from service import read_record\n\ndef test_read():\n'
+            '    assert read_record("record") == "record"\n', encoding="utf-8")
+        self.run_sot(["reconcile"])
 
     @classmethod
     def tearDownClass(cls):
         cls.tmp_dir.cleanup()
 
     def run_sot(self, args: list[str], check: bool = True) -> subprocess.CompletedProcess:
-        require_shebang_exec()
         has_db = any(a == "--db" or a.startswith("--db=") for a in args)
         extra_args = [] if has_db else ["--db", str(self.db_path)]
-        if sys.platform == "win32":
-            # bin/sotgraph is a bash launcher; on Windows drive the CLI module
-            # directly with the same PYTHONPATH the launcher exports.
-            cmd = [sys.executable, "-m", "sot_graph.cli"] + extra_args + args
-        else:
-            cmd = [str(BIN_SOT)] + extra_args + args
+        has_root = any(a == "--root" or a.startswith("--root=") for a in args)
+        if not has_root:
+            extra_args += ["--root", str(self.fixture_root)]
+        cmd = [sys.executable, "-m", "sot_graph.cli"] + extra_args + args
         proc = subprocess.run(
             cmd,
-            cwd=str(REPO_ROOT),
+            cwd=str(self.fixture_root),
             env=self.env,
+            timeout=60,
             capture_output=True,
             encoding="utf-8",  # the CLI reconfigures its streams to UTF-8
             errors="replace",  # on every platform; never locale-decode them
@@ -120,7 +135,7 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
 
     def test_scenario_05_self_healing_and_dead_path_autopurge(self):
         """Scenario 5: Self-Healing & Auto-Purging on File Deletion."""
-        dummy_file = REPO_ROOT / "src" / "sot_graph" / "_dummy_omp_test.py"
+        dummy_file = self.fixture_root / "_dummy_omp_test.py"
         try:
             # Step A: Create temporary source file
             dummy_file.write_text("class DummyOMPTest:\n    def execute(self):\n        return True\n")
@@ -165,7 +180,8 @@ class TestOMPIntegrationScenarios(unittest.TestCase):
 
         # Search note
         res_search = self.run_sot(["search", "OMP Native Tool Integration Guide"])
-        self.assertIn("[STRONG", res_search.stdout)
+        # Notes without a source path have no disk anchor to verify.
+        self.assertIn("[NOPATH", res_search.stdout)
         self.assertIn("OMP Native Tool Integration Guide", res_search.stdout)
 
     def test_scenario_07_community_detection_and_modularity(self):

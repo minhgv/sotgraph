@@ -169,10 +169,11 @@ def test_cli_explicit_legacy_provider_conflicts(repo, monkeypatch, capsys, kind,
     if kind == "search":
         # Search has no legacy --provider option; it must not abbreviate
         # --provider-policy or start the shared dispatcher.
-        with pytest.raises(SystemExit) as exc:
-            run_cli(repo, kind, capsys, "--provider-policy", "prefer_external",
-                    "--provider", provider)
-        assert exc.value.code == 2
+        rc, result = run_cli(repo, kind, capsys, "--provider-policy", "prefer_external",
+                             "--provider", provider)
+        assert rc == 2
+        assert result["code"] == "invalid_argument"
+        assert "unrecognized arguments" in result["error"]
     else:
         rc, result = run_cli(repo, kind, capsys, "--provider-policy", "prefer_external",
                              "--provider", provider)

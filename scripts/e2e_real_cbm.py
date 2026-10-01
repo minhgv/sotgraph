@@ -33,6 +33,10 @@ def fail(msg: str) -> None:
 
 def run_cmd(args: list[str], cwd: str) -> str:
     env = dict(os.environ)
+    # This script tests provider interchange, not persistent-session lifetime.
+    # Keep all engine work owned by the command so the temp repo leaves no
+    # detached engine behind; daemon restart/termination has its own tests.
+    env["SOT_ENGINE_DAEMON"] = "off"
     src_path = str(Path(__file__).resolve().parent.parent / "src")
     existing_pp = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}{os.pathsep}{existing_pp}" if existing_pp else src_path
@@ -42,6 +46,7 @@ def run_cmd(args: list[str], cwd: str) -> str:
         capture_output=True,
         text=True,
         env=env,
+        timeout=300,
     )
     if res.returncode != 0:
         fail(f"Command failed ({res.returncode}): {' '.join(args)}\nSTDOUT:\n{res.stdout}\nSTDERR:\n{res.stderr}")
@@ -90,6 +95,14 @@ def test_verify():
 """,
         encoding="utf-8",
     )
+    (root / "src" / "token.ts").write_text(
+        "export function normalizeToken(s: string) { return s.trim(); }\n"
+        "export function handleToken(s: string) { return normalizeToken(s); }\n",
+        encoding="utf-8")
+    (root / "src" / "token.go").write_text(
+        "package token\nfunc NormalizeToken(s string) string { return s }\n"
+        "func HandleToken(s string) string { return NormalizeToken(s) }\n",
+        encoding="utf-8")
     (root / ".gitignore").write_text(
         ".sot/sot.db*\n.sot/*.lock\n.sot/write.lock\n.sot/lock*\n.sot/bundle/"
         "\n.sot/cache/\n.sot/cbm/\n",
@@ -140,6 +153,24 @@ def test_e2e() -> None:
         if missing_tables:
             fail(f"Missing required SQLite tables: {missing_tables}")
         log(f"SQLite verified: found tables {sorted(tables)}")
+        conn.close()
+        # The engine snapshot is a separate store. Query the same union
+        # view as CLI reads; raw sot.db tables alone can be empty after an
+        # engine-only reconcile and cannot prove provider graph behavior.
+        from sot_graph.graphstore import open_store
+        graph = open_store(str(repo_dir), str(db_path))
+        try:
+            for filename, caller, target in (("token.ts", "handleToken", "normalizeToken"),
+                                             ("token.go", "HandleToken", "NormalizeToken")):
+                rows = graph.conn.execute(
+                    "SELECT s.symbol,t.symbol FROM graph_edges e "
+                    "JOIN graph_nodes s ON s.id=e.src JOIN graph_nodes t ON t.id=e.dst "
+                    "WHERE e.relation='calls' AND (s.path=? OR s.path LIKE ?)",
+                    (filename, f"%/{filename}")).fetchall()
+                if not any(s.endswith(caller) and t.endswith(target) for s, t in rows):
+                    fail(f"Missing real-provider {filename} call: {caller} -> {target}; rows={rows}")
+        finally:
+            graph.close()
         # 4. Check Provider Detection
         log("Running sotgraph providers detect...")
         out_detect = run_cmd([sys.executable, "-m", "sot_graph.cli", "providers", "detect", "--format", "json"], cwd=str(repo_dir))
@@ -172,6 +203,7 @@ def test_e2e() -> None:
             log(f"Pre-sync dirty state: {dirty_state(str(repo_dir))}")
             log("Running sotgraph providers sync codebase-memory...")
             env = dict(os.environ)
+            env["SOT_ENGINE_DAEMON"] = "off"
             src_path = str(Path(__file__).resolve().parent.parent / "src")
             existing_pp = env.get("PYTHONPATH", "")
             env["PYTHONPATH"] = f"{src_path}{os.pathsep}{existing_pp}" if existing_pp else src_path
@@ -181,6 +213,7 @@ def test_e2e() -> None:
                 capture_output=True,
                 text=True,
                 env=env,
+                timeout=300,
             )
             if res_sync.returncode != 0:
                 fail(f"CBM provider sync failed: {res_sync.stderr}\n{res_sync.stdout}")
@@ -254,8 +287,9 @@ def test_e2e() -> None:
                 expected_head = get_head_sha(str(repo_dir))
                 if bind_row[2] != expected_head:
                     fail(f"Binding head_sha mismatch: expected {expected_head}, got {bind_row[2]}")
-        # 4.3 Test SCIP real artifact indexing & require:scip
-        log("Generating and testing real SCIP provider artifact...")
+        # 4.3 Handcrafted SCIP JSON tests federation policy only. Actual
+        # compiler/protobuf interoperability is gated by e2e_real_scip.py.
+        log("Generating and testing handcrafted SCIP federation fixture...")
         scip_doc = {
             "metadata": {"version": "0.4.0"},
             "documents": [
@@ -303,7 +337,7 @@ def test_e2e() -> None:
             provs = scip_json.get("providers", [])
             if not any(p.get("name") == "scip" for p in provs):
                 fail("scip not declared in response envelope providers!")
-            log("SCIP real provider query verified with semantic assertions!")
+            log("SCIP handcrafted federation query verified with semantic assertions!")
         except json.JSONDecodeError:
             fail(f"Failed to parse require:scip output: {out_scip}")
 
@@ -418,7 +452,8 @@ def verify_credentials(user: str, token: str) -> bool:
         # the published engine store instead (newest-wins ownership
         # transfer). Builtin fallback keeps them in the journal. Either
         # ledger is a valid reconcile receipt.
-        journal_count = cursor.execute("SELECT count(*) FROM file_journal").fetchone()[0]
+        with sqlite3.connect(str(db_path)) as journal_db:
+            journal_count = journal_db.execute("SELECT count(*) FROM file_journal").fetchone()[0]
         engine_count = 0
         published_db = repo_dir / ".sot" / "cbm" / "published.db"
         if published_db.exists():

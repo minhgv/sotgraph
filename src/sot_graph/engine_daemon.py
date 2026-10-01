@@ -15,6 +15,7 @@ dependency: every caller falls back to the cold spawn path on any
 failure, and the daemon exits after an idle TTL so nothing lingers.
 
 Lifecycle safety:
+- serialize startup across clients before probing or publishing a pid,
 - bind the socket before spawning the engine (clients see readiness
   early; first request absorbs the ~4s init),
 - serialize all calls — the engine session is not reentrant,
@@ -29,9 +30,11 @@ from __future__ import annotations
 import json
 import os
 import select
+import signal
 import socket
 import subprocess
 import sys
+import threading
 import time
 from typing import Any, Dict, List, Optional
 
@@ -79,7 +82,7 @@ def daemon_tool_call(
     single-active-version guard. An already-running daemon keeps its
     own session regardless.
     """
-    if not hasattr(socket, "AF_UNIX"):
+    if sys.platform == "win32" or not hasattr(socket, "AF_UNIX"):
         return None
     if os.environ.get("SOT_ENGINE_DAEMON", "").strip().lower() in (
             "off", "0", "false", "no"):
@@ -100,6 +103,8 @@ def daemon_tool_call(
                         return None
                     buf += chunk
                 resp = json.loads(buf.split(b"\n", 1)[0])
+                if not isinstance(resp, dict):
+                    resp = None
         except (OSError, ValueError):
             resp = None
         if resp is not None:
@@ -123,7 +128,7 @@ def _daemon_alive(root: str) -> bool:
                 return _pid_alive(pid)
             os.kill(pid, 0)
             return True
-    except (OSError, ValueError):
+    except (OSError, ValueError, AttributeError):
         return False
     return False
 
@@ -133,6 +138,24 @@ def _ensure_daemon(
     engine_argv: Optional[List[str]] = None,
 ) -> bool:
     """Auto-start the daemon; wait briefly for the socket to appear."""
+    from sot_graph.locking import LockBusy, WriteLock
+
+    # Keep this inode stable. Unlinking a gate would let another client
+    # lock a different inode and launch a second daemon on the same socket.
+    gate = WriteLock(_paths(root)["pid"] + ".lock",
+                     timeout_ms=int(_CONNECT_WAIT_S * 1000))
+    try:
+        with gate:
+            return _ensure_daemon_locked(root, engine_argv)
+    except (OSError, LockBusy):
+        return False  # startup contention is a cold-fallback condition
+
+
+def _ensure_daemon_locked(
+    root: str,
+    engine_argv: Optional[List[str]] = None,
+) -> bool:
+    """Probe and publish while the caller holds the startup gate."""
     paths = _paths(root)
     try:
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as probe:
@@ -195,6 +218,7 @@ class _EngineSession:
         self._log = log
         self._proc: Optional[subprocess.Popen] = None
         self._next_id = 0
+        self._stdout_buffer = b""
         self.start()
 
     def start(self) -> None:
@@ -204,16 +228,26 @@ class _EngineSession:
         self._proc = subprocess.Popen(
             self._argv, cwd=self._root,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=self._log, text=True, bufsize=1, env=env,
+            stderr=self._log, bufsize=0, env=env,
         )
         self._next_id = 0
-        self.call("initialize", {
-            "protocolVersion": "2024-11-05",
-            "capabilities": {},
-            "clientInfo": {"name": "sotgraph-daemon", "version": "0"},
-        }, timeout_s=120.0)
-        self._send({"jsonrpc": "2.0",
-                    "method": "notifications/initialized"})
+        self._stdout_buffer = b""
+        try:
+            # initialize is a JSON-RPC method, not an MCP tool. A strict
+            # server rejects tools/call(name=initialize) and stays cold.
+            self._next_id += 1
+            self._send({"jsonrpc": "2.0", "id": self._next_id,
+                        "method": "initialize", "params": {
+                            "protocolVersion": "2024-11-05", "capabilities": {},
+                            "clientInfo": {"name": "sotgraph-daemon", "version": "0"},
+                        }})
+            response = self._read_response(self._next_id, time.monotonic() + 120.0)
+            if "error" in response:
+                raise RuntimeError(str(response["error"])[:300])
+            self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        except BaseException:
+            self.stop()
+            raise
 
     def alive(self) -> bool:
         return self._proc is not None and self._proc.poll() is None
@@ -224,20 +258,36 @@ class _EngineSession:
 
     def stop(self) -> None:
         if self._proc is not None:
+            proc = self._proc
             try:
-                self._proc.kill()
+                if proc.poll() is None:
+                    proc.kill()
+                proc.wait(timeout=5)
             except OSError:
                 pass
-            self._proc = None
+            finally:
+                for stream in (proc.stdin, proc.stdout):
+                    if stream is not None:
+                        stream.close()
+                self._proc = None
 
     def _send(self, msg: Dict[str, Any]) -> None:
         assert self._proc is not None and self._proc.stdin is not None
-        self._proc.stdin.write(json.dumps(msg) + "\n")
+        self._proc.stdin.write((json.dumps(msg) + "\n").encode("utf-8"))
         self._proc.stdin.flush()
 
     def _read_response(self, want_id: int, deadline: float) -> Dict[str, Any]:
         assert self._proc is not None and self._proc.stdout is not None
         while time.monotonic() < deadline:
+            if b"\n" in self._stdout_buffer:
+                line, self._stdout_buffer = self._stdout_buffer.split(b"\n", 1)
+                try:
+                    msg = json.loads(line)
+                except ValueError:
+                    continue  # non-JSON noise on stdout
+                if isinstance(msg, dict) and msg.get("id") == want_id:
+                    return msg
+                continue
             if self._proc.poll() is not None:
                 raise RuntimeError("engine process exited")
             remaining = max(0.05, deadline - time.monotonic())
@@ -245,15 +295,15 @@ class _EngineSession:
                 [self._proc.stdout], [], [], min(1.0, remaining))
             if not ready:
                 continue
-            line = self._proc.stdout.readline()
-            if not line:
+            # readline() may block after select() when the engine emits a
+            # partial line, and TextIO read-ahead can hide later responses
+            # from select(). Frame raw chunks ourselves under the deadline.
+            chunk = os.read(self._proc.stdout.fileno(), 65536)
+            if not chunk:
                 raise RuntimeError("engine closed stdout")
-            try:
-                msg = json.loads(line)
-            except ValueError:
-                continue  # non-JSON noise on stdout
-            if msg.get("id") == want_id:
-                return msg
+            self._stdout_buffer += chunk
+            if len(self._stdout_buffer) > 4_000_000:
+                raise RuntimeError("engine response exceeds 4 MB frame limit")
         raise TimeoutError("engine call timed out")
 
     def call(self, tool: str, args: Dict[str, Any],
@@ -300,6 +350,15 @@ def run_daemon(
         and os.path.getsize(paths["log"]) <= _LOG_MAX_BYTES
     ) else "wb"
     log = open(paths["log"], log_mode, buffering=0)
+    server: Optional[socket.socket] = None
+    previous_term = None
+    if threading.current_thread() is threading.main_thread():
+        previous_term = signal.getsignal(signal.SIGTERM)
+
+        def terminate(signum: int, frame: Any) -> None:
+            raise SystemExit(0)
+
+        signal.signal(signal.SIGTERM, terminate)
     try:
         argv = list(engine_argv or []) or _resolve_engine_argv(root)
         if not argv:
@@ -333,12 +392,16 @@ def run_daemon(
         finally:
             engine.stop()
     finally:
+        if server is not None:
+            server.close()
         for key in ("sock", "pid"):
             try:
                 os.unlink(paths[key])
             except OSError:
                 pass
         log.close()
+        if previous_term is not None:
+            signal.signal(signal.SIGTERM, previous_term)
     return 0
 
 
@@ -352,7 +415,13 @@ def _handle(conn: socket.socket, engine: _EngineSession, log: Any) -> None:
                 break
             buf += chunk
         req = json.loads(buf.split(b"\n", 1)[0])
-        tool, args = req.get("tool"), req.get("args") or {}
+        if not isinstance(req, dict):
+            raise ValueError("request must be an object")
+        tool, args = req.get("tool"), req.get("args")
+        if args is None:
+            args = {}
+        if not isinstance(tool, str) or not isinstance(args, dict):
+            raise ValueError("tool must be a string and args must be an object")
     except (OSError, ValueError) as exc:
         _respond(conn, {"ok": False, "error": f"bad request: {exc}"})
         return
@@ -382,6 +451,9 @@ def _handle(conn: socket.socket, engine: _EngineSession, log: Any) -> None:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    if sys.platform == "win32" or not hasattr(socket, "AF_UNIX"):
+        print("engine daemon requires POSIX; use the cold engine fallback", file=sys.stderr)
+        return 2
     args = argv if argv is not None else sys.argv[1:]
     if not args:
         print("usage: python -m sot_graph.engine_daemon <root> "

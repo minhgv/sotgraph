@@ -580,8 +580,26 @@ def reconcile_dispatch(
     # query during the NEXT index run reads the previous generation
     # instead of hitting SQLITE_BUSY.
     live_db = _live_cbm_db(root)
+    if live_db is None:
+        return _builtin("cbm_store_unavailable")
+    # An index tool succeeding does not prove the resulting store meets
+    # our read contract. Do not transfer ownership away from builtin rows
+    # when CbmStore would reject that store and readers would see nothing.
+    try:
+        conn = _open_ro(live_db)
+        try:
+            missing = schema_probe(conn)
+            project = locate_project(conn, root)
+        finally:
+            conn.close()
+    except (sqlite3.Error, OSError):
+        return _builtin("cbm_store_unreadable")
+    if missing:
+        return _builtin("cbm_store_contract_mismatch:" + ",".join(missing))
+    if project is None:
+        return _builtin("cbm_store_unbound")
     published_ok = (
-        publish_store(root, live_db) is not None if live_db else False
+        publish_store(root, live_db) is not None
     )
     cbm_db_path = find_cbm_db(root)
 

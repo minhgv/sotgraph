@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 import sys
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,19 @@ SPEC = importlib.util.spec_from_file_location(
 )
 verifier = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(verifier)
+
+
+def test_live_source_manifest_matches_parent_gitlink_and_release_pins():
+    # Requires no private source checkout; prevents a green verifier-unit
+    # suite while the manifest still binds an obsolete submodule commit.
+    root = Path(__file__).resolve().parents[1]
+    gitlink = subprocess.check_output(
+        ["git", "ls-files", "--stage", "engines/codebase-memory-mcp"],
+        cwd=root, text=True).split()[1]
+    manifest = json.loads(verifier.MANIFEST.read_text())
+    assert manifest["pin"] == verifier.EXPECTED_PIN == gitlink
+    pins = json.loads((root / "src/sot_graph/providers/engine_pins.json").read_text())
+    assert all(p["engine_commit"] == gitlink for p in pins["pins"])
 
 
 @pytest.fixture

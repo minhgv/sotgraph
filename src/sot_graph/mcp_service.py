@@ -36,6 +36,7 @@ from sot_graph.evidence import (
 )
 from sot_graph.verifier import TrustVerifier, tokenize
 from sot_graph.assurance import assured_query_context
+from sot_graph.numeric import finite_number, integer
 
 def sanitize_transport_value(value: Any) -> Any:
     """Recursively sanitize strings containing lone surrogates so they are transport-safe.
@@ -465,11 +466,9 @@ class McpService:
 
     def _bounded(self, value: Any, maximum: int, default: int = 1) -> int:
         try:
-            number = int(value)
-        except (TypeError, ValueError) as exc:
-            raise McpServiceError("invalid_argument", "numeric argument is invalid") from exc
-        if number < 1:
-            raise McpServiceError("invalid_argument", "numeric argument must be positive")
+            number = integer(value, "numeric argument")
+        except ValueError as exc:
+            raise McpServiceError("invalid_argument", str(exc)) from exc
         return min(number, maximum)
 
     def _relative_path(self, value: Optional[str]) -> Optional[str]:
@@ -903,11 +902,9 @@ class McpService:
         if budget is not None:
             limit = self._bounded(budget, limit)
         try:
-            threshold = float(threshold)
-        except (TypeError, ValueError) as exc:
-            raise McpServiceError("invalid_argument", "threshold must be between 0 and 1") from exc
-        if not 0 <= threshold <= 1:
-            raise McpServiceError("invalid_argument", "threshold must be between 0 and 1")
+            threshold = finite_number(threshold, "threshold", maximum=1)
+        except ValueError as exc:
+            raise McpServiceError("invalid_argument", str(exc)) from exc
         fresh = self._freshness(auto_reconcile)
         managed_fields = _managed_read_fields(
             self.project_root, "search", query, provider_policy, limit, scope,
@@ -1654,13 +1651,14 @@ class McpService:
         # 32-token floor); max_bytes stays a hard byte cap on the target
         # source span. When both are set, both caps apply — bytes prune
         # first, tokens bound the final rendered YAML.
-        for label, value in (("max_tokens", max_tokens), ("max_bytes", max_bytes)):
+        for label, value in (("max_tokens", max_tokens), ("max_bytes", max_bytes),
+                             ("max_hops", max_hops), ("max_nodes", max_nodes)):
             if value is None:
                 continue
-            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
-                raise McpServiceError(
-                    "invalid_argument",
-                    f"{label} must be a positive integer (got {value!r})")
+            try:
+                integer(value, label)
+            except ValueError as exc:
+                raise McpServiceError("invalid_argument", str(exc)) from exc
         fresh = self._freshness(auto_reconcile)
         from sot_graph.pack import PackError, build_bundle, render_yaml
 

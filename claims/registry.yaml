@@ -107,12 +107,12 @@ claims:
 
   # --- builtin oracle (benchmarks/oracle/builtin-baseline.json) ---
   - id: builtin-oracle-f1
-    claim: "builtin AST oracle: aggregate F1 ≈ 99.7% (TP 1007 / FN 5 / FP 2)"
+    claim: "builtin AST oracle: aggregate F1 = 100% (TP 1013 / FN 0 / FP 0)"
     files: [docs/CAPABILITY_MATRIX.md]
-    pattern: "aggregate F1 ≈ 99.7% (TP 1007 / FN 5 / FP 2)"
+    pattern: "aggregate F1 = 100% (TP 1013 / FN 0 / FP 0)"
     artifact: benchmarks/oracle/builtin-baseline.json
     artifact_field: builtin.counts.f1
-    artifact_value: 0.9965
+    artifact_value: 1.0
     commit: b09548d29510087d7693fd4a598c1b3d07fab9fc
     capability: relation-extraction
     language: "go/java/python/rust/typescript"
@@ -123,7 +123,7 @@ claims:
   - id: builtin-oracle-go-f1
     claim: "Go relation extraction: 100% F1 on oracle corpus"
     files: [docs/CAPABILITY_MATRIX.md]
-    pattern: "**Go** | SOT Builtin AST | Verified | Verified (100% F1)"
+    pattern: "**Go** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus)"
     artifact: benchmarks/oracle/builtin-baseline.json
     artifact_field: builtin.per_language.go.overall.f1
     artifact_value: 1.0

@@ -336,6 +336,7 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         _loc_match = re.search(r"L(\d+)", loc)
         line_no = int(_loc_match.group(1)) if _loc_match else None
         receiver = re_edge.get("receiver")
+        declared_receiver = re_edge.get("call_kind") == "DECLARED_RECEIVER"
 
         # P3.3b receiver-typed qualification runs BEFORE the bare-name
         # match: when the extractor resolved the receiver variable's
@@ -343,7 +344,7 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         # params `r *T`, Go/Rust `r := &T{}` / `let r = T{}`), `v.m()`
         # targets the class-scoped 'C.m' of THAT type. A same-named
         # module-level function must never win over the typed method.
-        if rel == "calls" and re_edge.get("receiver_type"):
+        if rel == "calls" and re_edge.get("receiver_type") and not declared_receiver:
             receiver_type = re_edge.get("receiver_type")
             typed_id = symbol_to_node_id.get(f"{receiver_type}.{dst_raw}")
             if typed_id:
@@ -359,7 +360,8 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         # target the class-scoped method even when the receiver's type could
         # not be inferred; a same-named module-level symbol must never win
         # the bare-name match first.
-        if rel == "calls" and "." in src_raw and receiver in ("self", "cls", "this"):
+        if (rel == "calls" and "." in src_raw and receiver in ("self", "cls", "this")
+                and not declared_receiver):
             parent = src_raw.rsplit(".", 1)[0]
             qualified_id = symbol_to_node_id.get(f"{parent}.{dst_raw}")
             if qualified_id:
@@ -379,7 +381,7 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         # class-qualified targets; anything left with a receiver is a method
         # on another object and goes to pending resolution.
         if (dst_raw in symbol_to_node_id and not re_edge.get("is_shadowed")
-                and not receiver):
+                and not receiver and not declared_receiver):
             # Resolved intra-file edge
             edges.append({
                 "src": src_id,
@@ -396,7 +398,7 @@ def parse_file_graph(path: str, root_dir: str) -> Dict[str, Any]:
         # attribute name. Typed references (`self.method` as a callback or
         # monkeypatch target) qualify identically. A receiver-less BARE
         # call inside a method (Java/Kotlin sibling call) qualifies too.
-        if rel in ("calls", "references") and "." in src_raw:
+        if rel in ("calls", "references") and "." in src_raw and not declared_receiver:
             parent = src_raw.rsplit(".", 1)[0]
             if receiver in ("self", "cls", "this", parent, None):
                 qualified_id = symbol_to_node_id.get(f"{parent}.{dst_raw}")

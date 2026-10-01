@@ -1,6 +1,6 @@
 # sotgraph Capability Matrix & Trust Ceilings
 
-This document defines the verified technical capabilities, language support tiers, provider integration boundaries, trust ceilings, and known architectural gaps for **sotgraph v0.3.0**.
+This document defines the verified technical capabilities, language support tiers, provider integration boundaries, trust ceilings, and known architectural gaps for **sotgraph v0.3.8**.
 
 ---
 
@@ -45,43 +45,45 @@ sotgraph operates as a **Verified Code Evidence and Impact-Assurance Layer**. It
 
 | Language | Provider | `SYMBOL_SEARCH` | `DIRECT_CALL` | `HIERARCHY` | `DIFF_IMPACT` | `PATH_COVERAGE` | Trust Ceiling |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Python** | SOT Builtin AST | Verified | Verified (99.7% F1) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
-| | SCIP Import | Verified | Verified | Verified | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
+| **Python** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
+| | SCIP Import | Verified | References only; no call inference | Relationship evidence | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
 | | Codebase Memory CLI | Candidate | Candidate (bare name) | Candidate | Candidate | Path Scoped | `HEURISTIC` (unless verified) |
-| **TypeScript** | SOT Builtin AST | Verified | Verified (99.5% F1) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
-| | SCIP Import | Verified | Verified | Verified | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
+| **TypeScript** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
+| | SCIP Import | Verified | References only; no call inference | Relationship evidence | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
 | | Codebase Memory CLI | Candidate | Candidate (bare name) | Candidate | Candidate | Path Scoped | `HEURISTIC` (unless verified) |
-| **Go** | SOT Builtin AST | Verified | Verified (100% F1) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
-| | SCIP Import | Verified | Verified | Verified | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
+| **Go** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
+| | SCIP Import | Verified | References only; no call inference | Relationship evidence | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
 | | Codebase Memory CLI | Candidate | Candidate (bare name) | Candidate | Candidate | Path Scoped | `HEURISTIC` (unless verified) |
-| **Rust** | SOT Builtin AST | Verified | Verified (98.5% F1) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
-| | SCIP Import | Verified | Verified | Verified | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
+| **Rust** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
+| | SCIP Import | Verified | References only; no call inference | Relationship evidence | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
 | | Codebase Memory CLI | Candidate | Candidate (bare name) | Candidate | Candidate | Path Scoped | `HEURISTIC` (unless verified) |
-| **Java** | SOT Builtin AST | Verified | Verified (99.2% F1) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
-| | SCIP Import | Verified | Verified | Verified | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
+| **Java** | SOT Builtin AST | Verified | Verified (100% F1, bounded synthetic corpus) | Verified | Verified | Full Line-Level | `VERIFIED_PRESENCE` |
+| | SCIP Import | Verified | References only; no call inference | Relationship evidence | Verified | Snapshot Bounded | `VERIFIED_PRESENCE` |
 | | Codebase Memory CLI | Candidate | Candidate (bare name) | Candidate | Candidate | Path Scoped | `HEURISTIC` (unless verified) |
 | **C / C++** | SOT Builtin AST | Verified | Partial (Static) | Partial | Verified | File Level | `HEURISTIC` |
 | **Dart / PHP** | SOT Builtin AST | Verified | Partial (Static) | Partial | Verified | File Level | `HEURISTIC` |
 
-> **Note on Trust Ceilings (advisory)**: `VERIFIED_PRESENCE` means anchors are physically span-verified on disk for the measured scope — it is not an exhaustiveness or correctness guarantee. On the synthetic exact corpus (234-file `oracle-corpus-v1`, §4) the engine measures aggregate F1 ≈ 99.7% (TP 1007 / FN 5 / FP 2). Ceilings are advisory; any absence claim ("no callers", "no references") still requires scope exhaustion per the fail-closed coverage rules.
+> **Note on Trust Ceilings (advisory)**: `VERIFIED_PRESENCE` means anchors are physically span-verified on disk for the measured scope — it is not an exhaustiveness or correctness guarantee. On the synthetic exact corpus (236-file `oracle-corpus-v1`, §4) the engine measures aggregate F1 = 100% (TP 1013 / FN 0 / FP 0). Ceilings are advisory; any absence claim ("no callers", "no references") still requires scope exhaustion per the fail-closed coverage rules.
 
 ---
 
 ## 4. Exact Oracle Evaluation Baseline (v2.0.0)
 
-Evaluated against the frozen 234-file multi-language test corpus (`oracle-corpus-v1`, digest: `ce6feeb...`) using exact 6-tuple matching `(repo, path, source_identity, relation, target_identity, span)`:
+Evaluated against the frozen 236-file multi-language test corpus (`oracle-corpus-v1`, digest: `23c0e29c...`) using exact 6-tuple matching `(repo, path, source_identity, relation, target_identity, span)`:
 
 | Language | Static+ Edges | Static- Edges | True Positives | False Positives | False Negatives | Precision | Recall | F1 Score |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Go** | 22 | 0 | 22 | 0 | 0 | 100.0% | 100.0% | 100.0% |
-| **Java** | 134 | 22 | 132 | 0 | 2 | 100.0% | 98.5% | 99.2% |
-| **Python** | 378 | 44 | 377 | 1 | 1 | 99.7% | 99.7% | 99.7% |
-| **Rust** | 134 | 11 | 130 | 0 | 4 | 100.0% | 97.0% | 98.5% |
-| **TypeScript** | 212 | 33 | 211 | 1 | 1 | 99.5% | 99.5% | 99.5% |
-| **Total / Overall** | **1,012** | **110** | **1,004** | **2** | **8** | **99.8%** | **99.2%** | **99.5%** |
+| **Go** | 159 | 11 | 159 | 0 | 0 | 100.0% | 100.0% | 100.0% |
+| **Java** | 131 | 18 | 131 | 0 | 0 | 100.0% | 100.0% | 100.0% |
+| **Python** | 378 | 45 | 378 | 0 | 0 | 100.0% | 100.0% | 100.0% |
+| **Rust** | 132 | 17 | 132 | 0 | 0 | 100.0% | 100.0% | 100.0% |
+| **TypeScript** | 213 | 33 | 213 | 0 | 0 | 100.0% | 100.0% | 100.0% |
+| **Total / Overall** | **1,013** | **124** | **1,013** | **0** | **0** | **100.0%** | **100.0%** | **100.0%** |
 
-- **True Negatives**: 109 / 110 (99.1% rejection of forbidden/adversarial cross-scope edges).
-- **Search Top-K Precision (48-probe corpus, advisory)**: Hit@1: 100%, Hit@5: 100%, Hit@10: 100% (measured; artifact `benchmarks/search-quality.json`).
+- **True Negatives**: 124 / 124 forbidden/adversarial edges rejected in this corpus.
+- **Dynamic diagnostics**: 26 fixtures; 5 exact observed claims, 0 wrong-target claims, 21 abstentions. Dynamic results are excluded from static P/R/F1.
+- **Search Top-K (48-probe corpus, advisory)**: Hit@1: 100%, Hit@5: 100%, Hit@10: 100% (`benchmarks/search-quality.json`). The separate 20-query polyglot oracle has Hit@1 65%, Hit@5/10 100%.
+- **Release gates**: any static false positive or dynamic wrong-target claim fails regardless of metric tolerance. TS nested-scope truth records direct closure calls. Scores describe these synthetic fixtures only.
 
 ---
 

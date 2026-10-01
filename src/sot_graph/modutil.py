@@ -23,6 +23,12 @@ __all__ = [
 _STRIP_ROOT_DIRS = {"src", "lib", "source"}
 
 _STEM_STRIP_SUFFIXES = (".pyi", ".py")
+_PROJECT_MODULE_SUFFIXES = (
+    ".d.ts", ".pyi", ".py", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".cjs",
+    ".rs", ".go", ".java", ".kt", ".kts", ".swift", ".php", ".cs",
+    ".cpp", ".cc", ".cxx", ".c", ".hpp", ".h", ".scala", ".dart",
+    ".ex", ".exs", ".lua", ".jl", ".zig",
+)
 
 # Bound on how many trailing path segments fold into a dotted module name.
 _MAX_SUFFIX_DEPTH = 8
@@ -127,7 +133,7 @@ def project_module_names(paths: Iterable[str]) -> Set[str]:
             parts = parts[:-1]
         else:
             last = parts[-1]
-            for suffix in _STEM_STRIP_SUFFIXES:
+            for suffix in _PROJECT_MODULE_SUFFIXES:
                 if last.endswith(suffix):
                     parts = parts[:-1] + [last[: -len(suffix)]]
                     break

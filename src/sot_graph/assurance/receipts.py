@@ -1296,7 +1296,7 @@ def diff_impact_receipt(
     # silently vanished: already-dead rows on the same paths stay
     # counted in invalidated_evidence_dead_count).
     invalidated: List[Dict[str, Any]] = []
-    collection_errors: List[str] = []
+    collection_errors: List[str] = list(getattr(result, "collection_errors", None) or [])
     evidence_stats: List[Dict[str, Any]] = []
     dead_evidence_count = 0
     canonical_root = os.path.realpath(repo_root) if repo_root else ""

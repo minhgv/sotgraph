@@ -412,6 +412,29 @@ def test_dispatch_cbm_index_failure_falls_back(repo, monkeypatch):
         db.close()
 
 
+def test_successful_index_with_incompatible_store_keeps_builtin_graph(repo, monkeypatch):
+    from sot_graph import cbm as cbm_mod
+    with open(os.path.join(repo["root"], "src/covered.py"), "w") as source:
+        source.write("def live_symbol():\n    return 1\n")
+    with sqlite3.connect(repo["cbm"]) as conn:
+        conn.execute("DROP TABLE store_meta")
+    result = cbm_mod.CbmIndexResult("indexed", PROJECT, 2, 4, [], [], 0, "", 5)
+    monkeypatch.setattr(cbm_mod, "run_index", lambda *a, **k: result)
+    db = Database(repo["sot"])
+    try:
+        rec = Reconciler(db, repo["root"])
+        out = reconcile_dispatch(db, rec, repo["root"], extractor="auto",
+                                 cbm_command=["fake-cbm-binary"])
+        assert out["extractor"] == "tree-sitter-ast"
+        assert "table:store_meta" in out["extractor_fallback"]
+        covered = os.path.join(repo["root"], "src/covered.py")
+        assert db.conn.execute("SELECT 1 FROM graph_nodes WHERE path=? AND kind='function'",
+                               (covered,)).fetchone()
+        assert not os.path.exists(cbm_mod.published_db_path(repo["root"]))
+    finally:
+        db.close()
+
+
 def test_cbm_env_runtime_dir_bounded(repo):
     """CBM_RUNTIME_DIR must keep the engine's native sun_path under 104
     bytes even under long repo roots — watcher worktrees regressed to

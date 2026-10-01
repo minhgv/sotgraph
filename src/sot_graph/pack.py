@@ -613,6 +613,15 @@ def build_bundle(
     max_tokens: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Build the ContextBundle structure; raises :class:`PackError` closed."""
+    from sot_graph.numeric import integer
+    for name, value in (("max_hops", max_hops), ("max_nodes", max_nodes),
+                        ("max_bytes", max_bytes), ("max_tokens", max_tokens)):
+        if value is not None:
+            try:
+                integer(value, name)
+            except ValueError as exc:
+                raise PackError("invalid_argument", str(exc)) from exc
+    root = os.path.realpath(root)
     node, matched = _find_target(db, target)
     amb_candidates: List[str] = node.pop("_ambiguous_candidates", [])
     resolution_method: Optional[str] = node.pop("_resolution_method", None)
@@ -720,7 +729,7 @@ def build_bundle(
             "raise --max-bytes or split the symbol for the full span"
         )
 
-    rel_path = (os.path.relpath(node["path"], root) if os.path.isabs(node["path"]) else node["path"]).replace(os.sep, "/")
+    rel_path = (os.path.relpath(os.path.realpath(node["path"]), root) if os.path.isabs(node["path"]) else node["path"]).replace(os.sep, "/")
 
     target_block = {
         "node_id": node["id"],
@@ -795,7 +804,7 @@ def build_bundle(
         if _row is None:
             continue
         _p = _row["path"]
-        _rel_by_id[_nid] = (os.path.relpath(_p, root) if os.path.isabs(_p) else _p).replace(os.sep, "/")
+        _rel_by_id[_nid] = (os.path.relpath(os.path.realpath(_p), root) if os.path.isabs(_p) else _p).replace(os.sep, "/")
         _rel_kind_by_id[_nid] = _relation
         if _direction == "in" and _is_test_module(_rel_by_id[_nid]):
             # A direct call/extends edge outranks an import-only edge when
@@ -848,7 +857,7 @@ def build_bundle(
         if n_warn:
             warnings.append(n_warn)
 
-        n_rel_path = (os.path.relpath(neighbor["path"], root) if os.path.isabs(neighbor["path"]) else neighbor["path"]).replace(os.sep, "/")
+        n_rel_path = (os.path.relpath(os.path.realpath(neighbor["path"]), root) if os.path.isabs(neighbor["path"]) else neighbor["path"]).replace(os.sep, "/")
 
         if direction == "in":
             inbound.append({
@@ -898,7 +907,7 @@ def build_bundle(
                 neighbor = _node_row(db, src_id)
                 if neighbor is None:
                     continue
-                n_rel = (os.path.relpath(neighbor["path"], root)
+                n_rel = (os.path.relpath(os.path.realpath(neighbor["path"]), root)
                          if os.path.isabs(neighbor["path"])
                          else neighbor["path"]).replace(os.sep, "/")
                 if not _is_test_module(n_rel):
@@ -947,6 +956,10 @@ def build_bundle(
                     "fqn": neighbor["fqn"] or neighbor["symbol"],
                     "signature": neighbor["signature"] or neighbor["label"],
                 })
+
+    # Node caps are projection truncation just like byte/token caps. A
+    # stopped traversal may also leave undiscovered transitive neighbors.
+    truncated = truncated or any(cap_dropped.values())
 
     # Hard byte cap: keep target + inbound contracts; drop from the tail.
     # Load trusted instructions first so the cap accounts for them too.

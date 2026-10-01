@@ -42,6 +42,7 @@ graphify-out/
 !benchmarks/exit_gates/external/*.json
 !benchmarks/exit_gates/external/per_repo/*.json
 !benchmarks/three_gates/*.json
+!docs/audits/2026-10-01-functional/evidence-summary.json
 !evaluation/exit_gates/fixtures/*.json
 sot_knowledge_graph.html
 sot_architecture_report.md
@@ -66,6 +67,7 @@ sot_obsidian_vault/
 # Exact upstream source and durable phase receipts (not generated runtime state).
 !engines/codebase-memory-mcp/**
 !plan/python-c-monorepo/evidence/source-import-manifest.json
+!plan/python-c-monorepo/evidence/source-import-manifest-e477a32d.json
 !plan/python-c-monorepo/evidence/source-budget-license-inventory.json
 !plan/python-c-monorepo/evidence/native-build-receipt.json
 !plan/python-c-monorepo/evidence/python-package-*.json

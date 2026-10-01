@@ -1833,48 +1833,114 @@ class Database:
 
         # 1. Symbol Index
         symbol_index: Dict[str, List[Tuple[str, str]]] = {}
-        class_methods: Dict[str, Dict[str, Tuple[str, str]]] = {}
+        # Class names alone are not identities: two files may legitimately
+        # define the same class. Preserve every owner instead of letting the
+        # last indexed method overwrite the first one.
+        class_methods: Dict[Tuple[str, str], Dict[str, Tuple[str, str]]] = {}
+        class_index: Dict[str, List[Tuple[str, str]]] = {}
+        classes_by_id: Dict[str, Tuple[str, str]] = {}
+        file_node_ids: Set[str] = set()
         for node_id, node_path, symbol, kind, fqn in self.conn.execute(
             "SELECT id, path, symbol, kind, fqn FROM graph_nodes WHERE symbol IS NOT NULL"
         ):
             symbol_index.setdefault(symbol, []).append((node_id, node_path))
+            if kind == "file":
+                file_node_ids.add(node_id)
             if fqn and fqn != symbol:
                 symbol_index.setdefault(fqn, []).append((node_id, node_path))
+            if kind in ("class", "interface", "trait") and symbol:
+                owner = (symbol, node_path)
+                classes_by_id[node_id] = owner
+                for alias in {symbol, fqn or symbol}:
+                    class_index.setdefault(alias, []).append(owner)
             if kind == "method" and symbol:
                 if "." in symbol:
                     cls_name, m_name = symbol.rsplit(".", 1)
-                    class_methods.setdefault(cls_name, {})[m_name] = (node_id, node_path)
+                    class_methods.setdefault((cls_name, node_path), {})[m_name] = (node_id, node_path)
 
         # 2. Class Hierarchy (Inheritance & MRO)
-        class_bases: Dict[str, List[str]] = {}
+        class_bases: Dict[Tuple[str, str], List[Tuple[str, str]]] = {}
         for src_rel, dst_rel in self.conn.execute(
             "SELECT src, dst FROM graph_edges WHERE relation IN ('extends', 'inherits', 'implements')"
         ):
-            src_sym = src_rel.split(":")[-1] if ":" in src_rel else src_rel
-            dst_sym = dst_rel.split(":")[-1] if ":" in dst_rel else dst_rel
-            class_bases.setdefault(src_sym, []).append(dst_sym)
-        for p_src, p_dst in self.conn.execute(
-            "SELECT src, dst_symbol FROM pending_edges WHERE relation IN ('extends', 'inherits', 'implements')"
-        ):
-            src_sym = p_src.split(":")[-1] if ":" in p_src else p_src
-            dst_sym = p_dst.split(":")[-1] if ":" in p_dst else p_dst
-            if dst_sym not in class_bases.get(src_sym, []):
-                class_bases.setdefault(src_sym, []).append(dst_sym)
+            src_owner = classes_by_id.get(src_rel)
+            dst_owner = classes_by_id.get(dst_rel)
+            if src_owner is not None and dst_owner is not None:
+                class_bases.setdefault(src_owner, []).append(dst_owner)
+        pending_bases = list(self.conn.execute(
+            "SELECT path, src, dst_symbol, import_source FROM pending_edges "
+            "WHERE relation IN ('extends', 'inherits', 'implements')"))
+        hierarchy_resolved = False
 
-        def lookup_class_method(cls_name: str, method_name: str) -> Optional[Tuple[str, str]]:
-            if not cls_name:
+        def select_class(cls_name: str, caller_path: str,
+                         module: str = "") -> Optional[Tuple[str, str]]:
+            owners = list(dict.fromkeys(class_index.get(cls_name, [])))
+            if not owners:
+                owners = [owner for owner in class_methods if owner[0] == cls_name]
+            if module:
+                exported = reexport_map.get((module, cls_name))
+                exported_owner = classes_by_id.get(exported[0]) if exported else None
+                owners = ([exported_owner] if exported_owner is not None else
+                          [owner for owner in owners if module in path_module_names(owner[1])])
+            else:
+                local = [owner for owner in owners if owner[1] == caller_path]
+                if local:
+                    owners = local
+                elif len(owners) > 1:
+                    imported = caller_imported_modules(caller_path)
+                    owners = [owner for owner in owners
+                              if imported & path_module_names(owner[1])]
+            return owners[0] if len(owners) == 1 else None
+
+        def lookup_class_method(cls_name: str, method_name: str,
+                                caller_path: str, module: str = "",
+                                *, inherited_only: bool = False,
+                                polymorphic: bool = False) -> Optional[Tuple[str, str]]:
+            nonlocal hierarchy_resolved
+            owner = select_class(cls_name, caller_path, module)
+            if owner is None:
                 return None
-            if cls_name in class_methods and method_name in class_methods[cls_name]:
-                return class_methods[cls_name][method_name]
-            visited = {cls_name}
-            queue = list(class_bases.get(cls_name, []))
+            # Pending inheritance has not necessarily been promoted yet.
+            # Resolve each parent with the declaring file's own bindings.
+            for base_path, base_src, base_name, base_import in (() if hierarchy_resolved else pending_bases):
+                base_owner = classes_by_id.get(base_src)
+                if base_owner is None:
+                    continue
+                base_module = normalize_import(base_import)
+                if base_import and base_import.startswith("."):
+                    base_module = resolve_relative(
+                        base_import, dotted_module(base_path),
+                        is_package=base_path.endswith("__init__.py")) or base_module
+                parent = select_class(base_name, base_path, base_module)
+                if parent is not None and parent not in class_bases.get(base_owner, []):
+                    class_bases.setdefault(base_owner, []).append(parent)
+            hierarchy_resolved = True
+            if polymorphic:
+                for child_owner, methods in class_methods.items():
+                    if child_owner == owner or method_name not in methods:
+                        continue
+                    ancestors = list(class_bases.get(child_owner, []))
+                    seen = set()
+                    while ancestors:
+                        ancestor = ancestors.pop()
+                        if ancestor == owner:
+                            return None
+                        if ancestor not in seen:
+                            seen.add(ancestor)
+                            ancestors.extend(class_bases.get(ancestor, []))
+            if not inherited_only and method_name in class_methods.get(owner, {}):
+                return class_methods[owner][method_name]
+            visited = {owner}
+            queue = list(class_bases.get(owner, []))
             while queue:
                 base = queue.pop(0)
-                if base in class_methods and method_name in class_methods[base]:
+                if base in visited:
+                    continue
+                visited.add(base)
+                if method_name in class_methods.get(base, {}):
                     return class_methods[base][method_name]
                 for next_base in class_bases.get(base, []):
                     if next_base not in visited:
-                        visited.add(next_base)
                         queue.append(next_base)
             return None
 
@@ -1987,6 +2053,8 @@ class Database:
                     continue
 
             candidates = symbol_index.get(dst_symbol, [])
+            if relation == "calls":
+                candidates = [candidate for candidate in candidates if candidate[0] not in file_node_ids]
             chosen: Optional[Tuple[str, str]] = None
 
             # Priority 0: Enclosing-scope (nested-definition) match. A bare
@@ -2010,10 +2078,16 @@ class Database:
             # Priority 1: Receiver Type & MRO Resolution
             if chosen is None and receiver:
                 recv_cls = receiver.split(":")[-1]
-                chosen = lookup_class_method(recv_cls, dst_symbol)
-                if chosen is None and "." in src:
+                chosen = lookup_class_method(recv_cls, dst_symbol, path, imp,
+                                             polymorphic=call_kind == "DECLARED_RECEIVER")
+                if chosen is None and recv_cls in ("self", "this", "super") and "." in src:
                     caller_cls = src.split(":")[-1].rsplit(".", 1)[0]
-                    chosen = lookup_class_method(caller_cls, dst_symbol)
+                    chosen = lookup_class_method(
+                        caller_cls, dst_symbol, path,
+                        inherited_only=recv_cls == "super")
+                if chosen is None and call_kind == "DECLARED_RECEIVER":
+                    unresolved += 1
+                    continue
 
             # Priority 2: Re-export Resolution
             if chosen is None and imp:
@@ -2135,7 +2209,16 @@ class Database:
         ).fetchone()
         if has_pending is None:
             return 0
-        return self._resolve_pending_edges_pass()["promoted"]
+        # A pass can establish imports needed by receiver/re-export binding
+        # in the next pass. Resolve to a fixed point so file ordering cannot
+        # decide whether those calls appear. Every progressing pass deletes
+        # promoted rows, so this terminates even with cyclic re-exports.
+        total = 0
+        while True:
+            promoted = self._resolve_pending_edges_pass()["promoted"]
+            total += promoted
+            if not promoted:
+                return total
 
     def resolve_pending_edges(self, new_symbols: List[str], current_file_path: Optional[str] = None) -> int:
         """Legacy v1 API: resolve only rows matching the new symbols or path."""
