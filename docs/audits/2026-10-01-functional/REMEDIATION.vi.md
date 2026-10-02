@@ -5,7 +5,7 @@ trong quá trình kiểm thử. Các lỗi ban đầu không còn tái hiện tr
 đã chạy. Kết luận này giới hạn ở bằng chứng bên dưới; chưa chứng nhận mọi tổ hợp
 OS, Python, grammar, provider và runtime đều không thể có bug.
 
-Khảo sát bắt đầu 01/10/2026; nghiệm thu local 02/10/2026, Asia/Ho_Chi_Minh.
+Khảo sát bắt đầu 01/10/2026; nghiệm thu local và CI 02/10/2026, Asia/Ho_Chi_Minh.
 Base commit `9be1d24a61f2cd3fc895d9ab64c222f05c05a5e0`, version 0.3.8.
 Phần chính của bản sửa nằm trong commit `ab21cb9c850eb38e1067de8f6fc99f0390757fe7` trên nhánh
 `codex/functional-audit-remediation`; oracle claims được bind vào commit này.
@@ -29,7 +29,7 @@ Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguy
 | A09 | Dùng validators chung; từ chối bool/float cho integer, số âm/zero không hợp lệ, NaN/Infinity và threshold ngoài miền; integer vượt miền SQLite trả invalid_argument. | CLI/MCP/direct-core domain tests; limit 2**63 và 10**100 được chạy qua SQLite thực. |
 | A10 | Lỗi thu thập Git được giữ trong result/receipt; risk UNKNOWN, assurance UNVERIFIABLE, safe_commit block, exit khác 0. | Invalid ref và non-Git tests; strict gate giữ exit 2. |
 | A11 | Pack canonicalize root và node paths trước khi tính relative path. | macOS `/var`–`/private/var` và symlink-alias regression. |
-| A12 | OMP dùng fixture, interpreter hiện tại, timeout và temp outputs; evaluation đóng DB trước cleanup; scoped/reference fixture không phụ thuộc `.sot/tmp`; pack test dùng source đủ lớn và đo YAML thay vì giả định metadata vừa 600 token. | 11 OMP test; bốn DB handle đóng; năm evaluation test/runtime; 32 scoped/reference test và pack test (native/fallback tokenizer) đạt trên Python 3.10–3.14. |
+| A12 | OMP dùng fixture, interpreter hiện tại, timeout và temp outputs; evaluation đóng DB trước cleanup; scoped/reference fixture không phụ thuộc `.sot/tmp`; pack test dùng source đủ lớn và đo YAML thay vì giả định metadata vừa 600 token. | 11 OMP test; bốn DB handle đóng; năm evaluation test/runtime; 32 scoped/reference test và pack test (tokenizer mặc định/fallback) đạt trên Python 3.10–3.14. |
 | A13 | SCIP protobuf đọc/ghi đúng documentation, relationship, kind, display name, signature và packed occurrence ranges; sửa escaping/URI/position encoding. | Index compiler thật, optional-field fixture từ SDK độc lập, fresh compiler E2E và independent export decode. |
 | A14 | Daemon serialize startup giữa client bằng khóa ổn định; gửi initialize đúng RPC; frame stdout theo deadline; xử lý malformed JSON/PID; restart/retry; reap child, SIGTERM/idle cleanup; Windows dùng cold fallback. | Concurrent startup tái hiện 2 daemon trước sửa, sau sửa chỉ 1; strict MCP child, deadline/framing, crash/recovery và cleanup tests. |
 | A15 | Receiver type không rò giữa function/block; untyped shadow không thừa hưởng kiểu của local scope khác. | TypeScript same-name variables, block shadow và unknown receiver test. |
@@ -52,6 +52,8 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 
 | Kiểm tra | Kết quả | Phạm vi/giới hạn |
 |---|---|---|
+| CI cuối tại source c3c2252 | 24/24 job chính đạt; 15/15 OS × Python đạt, 0 failed | Ubuntu/macOS/Windows × Python 3.10–3.14; mỗi suite có 178 subtest pass. Counts và skip cụ thể ở bảng CI bên dưới. Hai job publish được skip vì đây là PR. |
+| Claims lint / diff-impact CI tại c3c2252 | PASS / PASS | Không suy CI workflow PASS thành graph safe_commit PASS; receipt vẫn công bố các gap riêng. |
 | Suite pytest tests/ và evaluation/tests/, Python 3.12 | 2.688 pass, 4 skip, 176 subtest pass; 439,21 giây | Mã production hiện tại, gồm hai regression overflow; trước điều chỉnh lifecycle fixture evaluation. |
 | Full suite Python 3.10.20 / 3.11.15 | Mỗi runtime 2.685 pass, 5 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; thêm skip do ast.parse chưa hỗ trợ PEP 695. |
 | Full suite Python 3.13.13 / 3.14.4 | Mỗi runtime 2.686 pass, 4 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; venv riêng, locked all-extras/dev. |
@@ -140,10 +142,10 @@ run có init đạt kiểm tra group kill. Các log trung gian được giữ tr
 | F11 Diff/history | Collection error giữ nguyên và fail closed; holdout impact/test selection gate đạt. |
 | F12 MCP/parity | 3 stdio profiles; strict numeric/error boundary tests; provider policies. |
 | F13 SQLite/notes | Doctor healthy; corruption diagnostics; migration/maintenance/concurrent-writer suites. |
-| F14 Watcher/process | Real events cho 2 backend, daemon restart/framing/cleanup, Linux ownership tests. Windows Job Object còn cần runner Windows. |
+| F14 Watcher/process | Real events cho 2 backend, daemon restart/framing/cleanup, Linux ownership tests; hai Job Object test đạt trên cả năm Windows runtime CI. |
 | F15 Trace/bundle/export | Full regression và CLI probes; SCIP export được decode độc lập; native source/build checked. |
 
-## Phần còn cần CI và cách review
+## Kết quả CI và cách review
 
 Nhánh được push sau xác nhận và [draft PR #24](https://github.com/minhgv/sotgraph/pull/24)
 được mở ngày 02/10/2026. [CI run đầu](https://github.com/minhgv/sotgraph/actions/runs/36943194155)
@@ -162,8 +164,29 @@ sửa để in traceback/test summary khi pytest fail; không giảm coverage fl
 Cả năm Windows job đã chạy và đạt hai test Job Object, gồm kill grandchild khi
 timeout. Suite Windows run đầu có 490–494 skip theo các điều kiện POSIX,
 shebang exec và runtime/dependency trong test; các skip không được tính là PASS.
-Run đầu đã kết thúc thất bại; cần run CI mới tại commit sửa fixture để nghiệm thu
-matrix. Không coi probe local là kết quả matrix đã đạt.
+Run đầu đã kết thúc thất bại. [Run nghiệm thu 36953994774](https://github.com/minhgv/sotgraph/actions/runs/36953994774)
+tại source commit `c3c2252f93bf394fa5c8c14f1b065200f24a11bd` đã hoàn tất
+**success**, 24/24 job chính đạt. Cả 15 suite có **0 failed** và **178 subtest
+pass** mỗi suite; không cộng các lần chạy lặp thành số test độc lập.
+
+| OS | Python | Pass | Skip |
+|---|---|---:|---:|
+| Ubuntu | 3.10 / 3.11 | 2.684 mỗi runtime | 8 mỗi runtime |
+| Ubuntu | 3.12 / 3.13 / 3.14 | 2.685 mỗi runtime | 7 mỗi runtime |
+| macOS | 3.10 / 3.11 | 2.685 mỗi runtime | 7 mỗi runtime |
+| macOS | 3.12 / 3.13 / 3.14 | 2.686 mỗi runtime | 6 mỗi runtime |
+| Windows | 3.10 | 2.198 | 494 |
+| Windows | 3.11 | 2.201 | 491 |
+| Windows | 3.12 / 3.13 / 3.14 | 2.202 mỗi runtime | 490 mỗi runtime |
+
+Hai Job Object test đạt trên cả năm Windows runtime trong run nghiệm thu.
+Quality Gates đạt coverage core **88%**, receipts **94%** theo report CI làm
+tròn, vượt floor 85%/90%; scan không có advisory đã biết. Oracle, compiler SCIP,
+CBM E2E, module checks, packaging ba OS, claims lint và diff-impact đều đạt.
+Hai job release/publish được skip theo trigger PR; không merge hoặc release.
+Commit lưu hồ sơ sau c3c2252 chỉ sửa tài liệu/archive, giữ nguyên product,
+tests và workflow đã được kiểm thử. Archive chứa đủ 24 job log, status,
+15-row matrix và hash của nguồn được nghiệm thu.
 
 Native CI dừng ở bước yêu cầu NATIVE_SOURCE_READ_TOKEN, trước checkout/build.
 Người dùng chọn nghiệm thu native bằng bằng chứng local; không cấu hình token,
@@ -183,7 +206,8 @@ Khi đưa evaluation/tests/ vào matrix, kiểm tra lifetime thấy bốn Databa
 TemporaryDirectory cleanup, kể cả assertion thất bại. Probe lifetime chuyển
 từ bốn handle mở sang bốn handle đóng; cả năm evaluation test được chạy lại
 trên năm Python runtime. Full suite 2.688 case chạy trước thay đổi fixture này;
-mã production giữ nguyên. Hành vi xóa file trên Windows vẫn cần CI thực.
+mã production giữ nguyên. Năm evaluation test cũng đã đạt trên cả năm Windows
+runtime trong run nghiệm thu c3c2252, gồm lifecycle cleanup fixture thực.
 
 Native manifest cũ được giữ nguyên. Git diff 46ae198f → e477a32d chỉ thêm
 `.github/workflows/engine-release.yml` và `docs/RELEASING-ENGINE.md`; không đổi C

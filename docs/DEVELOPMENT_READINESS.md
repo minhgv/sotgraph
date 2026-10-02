@@ -83,6 +83,11 @@ GitHub Actions were observed enabled through the repository API on 2026-10-02.
 The functional remediation branch was pushed with approval and draft
 [PR #24](https://github.com/minhgv/sotgraph/pull/24) opened on 2026-10-02.
 PR CI runs automatically; no remote settings or secrets were changed.
+The Python remediation was accepted at source commit `c3c2252`: all 24
+non-release jobs in [CI run 36953994774](https://github.com/minhgv/sotgraph/actions/runs/36953994774)
+passed, including Ubuntu/macOS/Windows × Python 3.10–3.14. Claims lint and
+diff-impact also passed. The subsequent evidence/report update changes only
+documentation and archives; it does not change the tested product or fixtures.
 Native CI stopped at its credential preflight because its token is absent;
 the user chose local native source/build evidence for this remediation.
 Before running native CI, configure
