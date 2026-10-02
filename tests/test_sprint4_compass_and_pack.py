@@ -18,7 +18,7 @@ from pathlib import Path
 from sot_graph.cli import cmd_explore
 from sot_graph.db import Database, _EXPLORE_CHUNK
 from sot_graph.mcp_service import McpService
-from sot_graph.pack import PackError, build_bundle
+from sot_graph.pack import PackError, build_bundle, render_yaml
 from sot_graph.reconciler import Reconciler
 from sot_graph.repo_map import build_repo_map
 from sot_graph.tokenizer import (
@@ -351,16 +351,32 @@ class Sprint4CompassAndPackTests(unittest.TestCase):
         self.assertTrue(any("neighbor_missing" in w for w in bundle_missing["limits"]["warnings"]))
 
     def test_pack_hard_token_budget_pruning(self):
-        """Verify build_bundle strictly enforces max_tokens by dropping stubs/callees and truncating."""
-        # SG-202: honesty metadata (completeness/accounting/resolution) raised
-        # the non-droppable metadata floor (~576 here), so the tight budget
-        # sits at 600 — below the natural size (655) but above the floor.
-        tight_budget = 600
-        bundle_tight = build_bundle(self.db, self.test_dir, "MainService.process", max_tokens=tight_budget)
-        tight_tokens = bundle_tight["limits"]["tokens_estimate"]
-        self.assertTrue(bundle_tight["limits"]["truncated"])
-        # Should be within tight budget + small YAML framing tolerance <= 25 tokens
-        self.assertLessEqual(tight_tokens, tight_budget + 25)
+        """Enforce the measured YAML cap with native and fallback tokenizers."""
+        from unittest.mock import patch
+
+        # Make source, rather than variable path/hash metadata, dominate the
+        # bundle. A fixed 600-token cap can be below the metadata floor on
+        # Windows, or need no pruning at all with the fallback tokenizer.
+        body = "".join(f"        value_{i} = {i}\n" for i in range(160))
+        source = self.project_files["pkg/main_service.py"].replace(
+            "        return helper_func()\n", body + "        return helper_func()\n")
+        (Path(self.test_dir) / "pkg/main_service.py").write_text(source, encoding="utf-8")
+        self.reconciler.reconcile(workers=1)
+
+        for fallback in (False, True):
+            with self.subTest(fallback=fallback):
+                encoder = (patch("sot_graph.tokenizer._get_tiktoken_encoder", return_value=None)
+                           if fallback else contextlib.nullcontext())
+                with encoder:
+                    full = build_bundle(self.db, self.test_dir, "MainService.process")
+                    tight_budget = estimate_tokens(render_yaml(full)) * 2 // 3
+                    tight = build_bundle(self.db, self.test_dir, "MainService.process",
+                                         max_tokens=tight_budget)
+                    self.assertTrue(tight["limits"]["truncated"])
+                    self.assertEqual(tight["completeness"], "PARTIAL")
+                    measured = estimate_tokens(render_yaml(tight))
+                    self.assertEqual(tight["limits"]["tokens_estimate"], measured)
+                    self.assertLessEqual(measured, tight_budget)
 
     def test_pack_budget_too_small_raises_pack_error(self):
         """Verify build_bundle raises PackError with code BUDGET_TOO_SMALL when max_tokens < 32."""

@@ -414,7 +414,7 @@ def test_dispatch_cbm_index_failure_falls_back(repo, monkeypatch):
 
 def test_successful_index_with_incompatible_store_keeps_builtin_graph(repo, monkeypatch):
     from sot_graph import cbm as cbm_mod
-    with open(os.path.join(repo["root"], "src/covered.py"), "w") as source:
+    with open(os.path.join(repo["root"], "src", "covered.py"), "w") as source:
         source.write("def live_symbol():\n    return 1\n")
     with sqlite3.connect(repo["cbm"]) as conn:
         conn.execute("DROP TABLE store_meta")
@@ -427,7 +427,7 @@ def test_successful_index_with_incompatible_store_keeps_builtin_graph(repo, monk
                                  cbm_command=["fake-cbm-binary"])
         assert out["extractor"] == "tree-sitter-ast"
         assert "table:store_meta" in out["extractor_fallback"]
-        covered = os.path.join(repo["root"], "src/covered.py")
+        covered = os.path.join(repo["root"], "src", "covered.py")
         assert db.conn.execute("SELECT 1 FROM graph_nodes WHERE path=? AND kind='function'",
                                (covered,)).fetchone()
         assert not os.path.exists(cbm_mod.published_db_path(repo["root"]))

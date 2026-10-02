@@ -29,15 +29,15 @@ Hai thay đổi skill có sẵn trong `.omp` và `.opencode` được giữ nguy
 | A09 | Dùng validators chung; từ chối bool/float cho integer, số âm/zero không hợp lệ, NaN/Infinity và threshold ngoài miền; integer vượt miền SQLite trả invalid_argument. | CLI/MCP/direct-core domain tests; limit 2**63 và 10**100 được chạy qua SQLite thực. |
 | A10 | Lỗi thu thập Git được giữ trong result/receipt; risk UNKNOWN, assurance UNVERIFIABLE, safe_commit block, exit khác 0. | Invalid ref và non-Git tests; strict gate giữ exit 2. |
 | A11 | Pack canonicalize root và node paths trước khi tính relative path. | macOS `/var`–`/private/var` và symlink-alias regression. |
-| A12 | OMP tests dùng fixture, interpreter hiện tại, timeout và temp outputs; evaluation fixture đóng Database trước cleanup thư mục tạm. | 11 integration tests; bốn DB handle mở sau evaluation test trước sửa, đóng sau sửa; năm evaluation test đạt trên mỗi Python 3.10–3.14. |
+| A12 | OMP dùng fixture, interpreter hiện tại, timeout và temp outputs; evaluation đóng DB trước cleanup; scoped/reference fixture không phụ thuộc `.sot/tmp`; pack test dùng source đủ lớn và đo YAML thay vì giả định metadata vừa 600 token. | 11 OMP test; bốn DB handle đóng; năm evaluation test/runtime; 32 scoped/reference test và pack test (native/fallback tokenizer) đạt trên Python 3.10–3.14. |
 | A13 | SCIP protobuf đọc/ghi đúng documentation, relationship, kind, display name, signature và packed occurrence ranges; sửa escaping/URI/position encoding. | Index compiler thật, optional-field fixture từ SDK độc lập, fresh compiler E2E và independent export decode. |
 | A14 | Daemon serialize startup giữa client bằng khóa ổn định; gửi initialize đúng RPC; frame stdout theo deadline; xử lý malformed JSON/PID; restart/retry; reap child, SIGTERM/idle cleanup; Windows dùng cold fallback. | Concurrent startup tái hiện 2 daemon trước sửa, sau sửa chỉ 1; strict MCP child, deadline/framing, crash/recovery và cleanup tests. |
 | A15 | Receiver type không rò giữa function/block; untyped shadow không thừa hưởng kiểu của local scope khác. | TypeScript same-name variables, block shadow và unknown receiver test. |
 | A16 | Watchfiles nhận stop_event và timeout tick; retry LockBusy dù không có edit mới. | Hai backend chạy create/modify/rename/delete thực, ignore và idle stop; retry regression. |
-| A17 | Thành công của tool index chưa đủ để chuyển ownership: store phải đọc được, bound root và đạt schema contract trước khi bỏ builtin rows. | Real CBM 0.10.8 thiếu store_meta tái hiện lỗi; contract fallback test và polyglot E2E đạt. |
+| A17 | Thành công của tool index chưa đủ để chuyển ownership: store phải đọc được, bound root và đạt schema contract trước khi bỏ builtin rows; regression assertion dùng đường dẫn native của OS. | Real CBM 0.10.8 thiếu store_meta tái hiện lỗi; contract fallback test và polyglot E2E đạt; 26 CBM store test đạt local sau sửa Windows path assertion. |
 | A18 | Lockfile cập nhật PyJWT 2.13.0 → 2.15.1, urllib3 2.7.0 → 2.8.0. | pip-audit từ 16 advisory về 0 advisory đã biết. |
 | A19 | Source verifier và manifest mới khớp gitlink/release pin e477a32d; giữ nguyên manifest lịch sử 46ae198f. | Hash/mode/blob verify 2.052 entries; live pin-parity test; native scratch build đạt. |
-| A20 | Module-eval quy diagnostic Ruff absolute/relative path về đúng scope; dọn một unused import và sửa parser type contracts. | Planted diagnostic bắt buộc gate fail; Ruff toàn src và Pyright 99 file đạt, 0 diagnostic. |
+| A20 | Module-eval quy diagnostic Ruff absolute/relative path về đúng scope; quality gate giữ log pytest khi thất bại; dọn unused import và sửa parser type contracts. | Planted diagnostic bắt buộc gate fail; pytest failure marker trước sửa bị nuốt, sau sửa được in với stage; Ruff/Pyright toàn src đạt. |
 | A21 | CI bind UV_PYTHON mặc định 3.12 và override theo matrix; assert interpreter trước pytest, gồm cả evaluation/tests/. | uv 0.12.10 thực: install 3.10 nhưng sync chọn 3.14 trước sửa; sau sửa dry-sync và live guard đúng cả năm runtime; guard từ chối interpreter sai. |
 
 A13 được đối chiếu với [schema SCIP chính thức](https://raw.githubusercontent.com/sourcegraph/scip/main/scip.proto).
@@ -57,7 +57,7 @@ là trạng thái advisory tại thời điểm chạy, không phải bảo đ�
 | Full suite Python 3.13.13 / 3.14.4 | Mỗi runtime 2.686 pass, 4 skip, 176 subtest pass | Bản nguồn trước sửa boundary overflow; venv riêng, locked all-extras/dev. |
 | CLI regression trên 5 runtime Python 3.10–3.14 | Mỗi runtime 78 pass, 0 skip | Bản nguồn cuối; chạy audit, CLI smoke/provider wiring và engine admin. |
 | Evaluation fixture sau sửa lifecycle trên Python 3.10–3.14 | Mỗi runtime 5 pass, 0 skip | Dùng Database context manager để đóng handle trước cleanup; không thay đổi mã production. |
-| CI interpreter selection, uv 0.12.10 | Năm dry-sync và năm live interpreter guard đạt; negative guard đạt | Local macOS, YAML parse đạt; chưa chạy remote matrix Ubuntu/macOS/Windows. |
+| CI interpreter selection, uv 0.12.10 | Năm dry-sync và năm live guard local đạt; negative guard đạt; 15 guard CI thực đạt | CI run đầu chọn đúng Python trên ba OS; suite còn lỗi fixture được nêu riêng bên dưới. |
 | Native verifier focused | 38 pass | Gồm gate gitlink–manifest–release pins mới; không cần private source trong CI Python. |
 | Linux aarch64, Python 3.12.14, root, case-sensitive FS | 211 pass, 2 skip | Container dùng init để reap orphan; hai skip dành riêng cho filesystem không phân biệt case. |
 | Linux Python 3.12.14, package tối thiểu | 2 regression overflow pass | Core dependencies từ uv sync --locked --no-dev, không optional extra; pytest 9.0.2 cài riêng làm test tool. |
@@ -145,13 +145,30 @@ run có init đạt kiểm tra group kill. Các log trung gian được giữ tr
 
 ## Phần còn cần CI và cách review
 
-Hai test Windows Job Object chưa chạy trực tiếp trên Windows ở local. Matrix
-CI đã có Ubuntu/macOS/Windows × Python 3.10–3.14; gate fresh SCIP được bổ sung
-vào dependency của release. Chưa push/dispatch CI cho bản sửa này. GitHub Actions
-được quan sát enabled qua API ngày 02/10/2026, không sửa remote settings/secrets.
-Python matrix macOS đã chạy local như bảng trên; không thay thế chứng nhận
-Windows. Push/draft PR/CI đang chờ xác nhận theo quy định review và approval
-trong `docs/DEVELOPMENT_READINESS.md`.
+Nhánh được push sau xác nhận và [draft PR #24](https://github.com/minhgv/sotgraph/pull/24)
+được mở ngày 02/10/2026. [CI run đầu](https://github.com/minhgv/sotgraph/actions/runs/36943194155)
+chạy Ubuntu/macOS/Windows × Python 3.10–3.14 tại head 1510c77. Claims lint,
+diff-impact, oracle, SCIP, CBM E2E, module checks và packaging đã đạt. Suite
+Ubuntu/macOS phát hiện sáu fixture case phụ thuộc `.sot/tmp` có sẵn trong
+checkout local; fresh cwd tái hiện sáu lỗi rồi đạt 32/32 sau sửa trên năm Python.
+Windows có thêm assertion CBM dùng đường dẫn pha trộn dấu phân cách; riêng
+Python 3.11 có pack fixture giả định 600 token luôn đủ metadata. Pack từ chối
+đúng khi metadata cần 622 token. Probe local với fallback tokenizer cũng cho
+thấy giả định ngược: 11/12 lần bundle không cần truncate. Test mới dùng source
+lớn, chạy native/fallback tokenizer và assert trực tiếp YAML <= cap, bỏ tolerance
+25 token. Suite focused sau sửa đạt 72 test và 71 subtest. Quality gate được
+sửa để in traceback/test summary khi pytest fail; không giảm coverage floor.
+
+Cả năm Windows job đã chạy và đạt hai test Job Object, gồm kill grandchild khi
+timeout. Suite Windows run đầu có 490–494 skip theo các điều kiện POSIX,
+shebang exec và runtime/dependency trong test; các skip không được tính là PASS.
+Run đầu đã kết thúc thất bại; cần run CI mới tại commit sửa fixture để nghiệm thu
+matrix. Không coi probe local là kết quả matrix đã đạt.
+
+Native CI dừng ở bước yêu cầu NATIVE_SOURCE_READ_TOKEN, trước checkout/build.
+Người dùng chọn nghiệm thu native bằng bằng chứng local; không cấu hình token,
+đổi settings hoặc biến preflight thất bại thành PASS. Source/build local ở pin
+e477a32d vẫn là bằng chứng native được nghiệm thu trong phạm vi này.
 
 Workflow trước đó chỉ chạy `uv python install <matrix-version>` rồi sync mà
 không chọn interpreter. Với uv 0.12.10 và nhiều interpreter đã cài, probe thực

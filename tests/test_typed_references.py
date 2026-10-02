@@ -225,7 +225,7 @@ class ReferenceResolutionTests(unittest.TestCase):
     """End-to-end: extraction → reconcile → binding → pack evidence."""
 
     def setUp(self):
-        self.repo = tempfile.mkdtemp(prefix="sot-ref-e2e-", dir=".sot/tmp")
+        self.repo = tempfile.mkdtemp(prefix="sot-ref-e2e-")
         self.addCleanup(shutil.rmtree, self.repo, ignore_errors=True)
         os.makedirs(os.path.join(self.repo, "pkg"))
         os.makedirs(os.path.join(self.repo, "tests"))

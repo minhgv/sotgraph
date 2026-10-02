@@ -27,9 +27,14 @@ uv run --locked pyright src/sot_graph/assurance/ src/sot_graph/providers/ \
 echo "== coverage floor (core >= 85%, receipts >= 90%)"
 COVERAGE_INCLUDES="src/sot_graph/assurance/*,src/sot_graph/providers/*,src/sot_graph/diff_impact.py,src/sot_graph/db.py,src/sot_graph/snapshot.py,src/sot_graph/providers_registry.py,src/sot_graph/mcp_service.py,src/sot_graph/mcp_server.py"
 
-uv run --locked coverage run --source=src/sot_graph \
+COVERAGE_TEST_LOG=$(mktemp)
+trap 'rm -f "$COVERAGE_TEST_LOG"' EXIT
+if ! uv run --locked coverage run --source=src/sot_graph \
     --include="$COVERAGE_INCLUDES" \
-    -m pytest tests/ -q >/dev/null 2>&1
+    -m pytest tests/ -q >"$COVERAGE_TEST_LOG" 2>&1; then
+    cat "$COVERAGE_TEST_LOG" >&2
+    fail "coverage pytest"
+fi
 
 REPORT=$(uv run --locked coverage report --include="$COVERAGE_INCLUDES")
 echo "$REPORT"

@@ -2,7 +2,8 @@
 
 ## Repository boundary
 
-Development now lives in private `minhgv/sotgraph`. Native source lives in
+Development lives in `minhgv/sotgraph` (public, verified through the repository
+API on 2026-10-02). Native source lives in
 private `minhgv/sotgraph-cbm`, mounted at `engines/codebase-memory-mcp`.
 The prior checkout is not a dependency and must not be modified by migration work.
 The executable is now **`sotgraph`**, with no legacy alias installed. This is an
@@ -79,10 +80,14 @@ verifier with the already committed gitlink; it does not change that gitlink.
 ## Operator prerequisites, not configured by this change
 
 GitHub Actions were observed enabled through the repository API on 2026-10-02.
-This remediation has not dispatched workflows, changed remote settings or
-secrets, or pushed changes. Before running native CI, configure
+The functional remediation branch was pushed with approval and draft
+[PR #24](https://github.com/minhgv/sotgraph/pull/24) opened on 2026-10-02.
+PR CI runs automatically; no remote settings or secrets were changed.
+Native CI stopped at its credential preflight because its token is absent;
+the user chose local native source/build evidence for this remediation.
+Before running native CI, configure
 `NATIVE_SOURCE_READ_TOKEN` as a short-lived/fine-grained credential with only
-Contents: read for these two private repositories (or use a GitHub App
+Contents: read for both repositories (or use a GitHub App
 installation token with equivalent repository-limited permissions). The native
 workflow fails with an explicit message when this secret is absent, including
 fork PRs that cannot receive secrets. Checkout does not persist credentials.
@@ -93,7 +98,7 @@ on the former repository or certification of the controlled native mirror.
 
 Publishing/package ownership, release environments, branch protections and
 external service credentials must be reviewed by the operator before release.
-Private repository source installs are the onboarding default; a public PyPI
+Repository source installs are the onboarding default; a public PyPI
 package with the same compatibility name need not contain this branch's changes.
 Static workflow validation does not certify remote execution or release readiness.
 
