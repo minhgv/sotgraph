@@ -1,0 +1,1051 @@
+{
+  "audit_date": "2026-10-01",
+  "repo": "/Users/giapminh79/code/GitHub/sotgraph",
+  "commit": "9be1d24a61f2cd3fc895d9ab64c222f05c05a5e0",
+  "version": "0.3.8",
+  "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "tests": {
+    "collected_base": 2617,
+    "passed_base": 2612,
+    "skipped_base": 5,
+    "passed_subtests": 176,
+    "xml_testcase_rows": 2617,
+    "seconds": 621.27,
+    "packaging_retry_passed": 1,
+    "unresolved_skips": 4,
+    "evaluation_passed": 5
+  },
+  "coverage": {
+    "total_statement": 83.11,
+    "total_branch": 74.88,
+    "combined": 80.82,
+    "core_statement": 87.81,
+    "receipts_statement": 94.68
+  },
+  "core_features": 15,
+  "catalogued_edge_cases": 180,
+  "findings": [
+    {
+      "id": "A01",
+      "priority": "P1",
+      "title": "Pack bỏ caller nhưng vẫn báo complete",
+      "repro": "pack normalize --max-nodes 1 --json",
+      "actual": "discovered=5, returned=2, omitted callers=3 nhưng truncated=false và COMPLETE_WITHIN_INDEX_CAPABILITY. MCP core/full/ops tái hiện cùng kết quả.",
+      "source": "pack.py:841, pack.py:1200",
+      "recommendation": "Đồng bộ mọi node_cap với truncated và completeness; thêm assertion omission kéo theo partial trên CLI và MCP.",
+      "evidence": [
+        "pack-nodecap-probes.json",
+        "mcp-stdio.json"
+      ]
+    },
+    {
+      "id": "A02",
+      "priority": "P1",
+      "title": "TypeScript gộp closure khác lexical scope",
+      "repro": "Hai method Stage.first và Stage.second đều có const inner",
+      "actual": "Chỉ có một node Stage.inner; node này có calls tới cả normalizeA và normalizeB. Hai method bị gộp graph qua closure chung.",
+      "source": "ts_extract.py:647",
+      "recommendation": "Identity closure phải chứa cả method scope; kiểm tra hai closure trùng tên và giữ span riêng.",
+      "evidence": [
+        "ts-closure-collision.json",
+        "oracle-inspection.json"
+      ]
+    },
+    {
+      "id": "A03",
+      "priority": "P1",
+      "title": "Python receiver nối sang class ở file khác",
+      "repro": "notify_dynamic(base: Notifier) trong py_pkg/dyn/dispatch.py",
+      "actual": "Cạnh confirmed trỏ Notifier.send ở py_pkg/dyn/inheritance.py dù file dispatch có Notifier riêng. Đây là sai identity, ngoài giới hạn dynamic dispatch vốn cần công bố.",
+      "source": "db.py:1864, db.py:2013",
+      "recommendation": "Phân giải type theo module và lexical scope trước bare class name; giữ unresolved nếu runtime dispatch không chứng minh được.",
+      "evidence": [
+        "oracle-inspection.json",
+        "oracle.json"
+      ]
+    },
+    {
+      "id": "A04",
+      "priority": "P2",
+      "title": "Bỏ sót cạnh Rust và Java trong oracle",
+      "repro": "Rust import alias, Rust trait self.area, Java static import",
+      "actual": "Rust digest -> hash_data, Circle.describe -> Circle.area và Java UseStatic.check -> Validator.isValid bị bỏ sót. Oracle static còn 4 FN tổng gồm TS closure.",
+      "source": "scripts/sot_evaluator.py:1304, scripts/sot_evaluator.py:1614",
+      "recommendation": "Thêm resolver cho các trường hợp static đã chứng minh; không ép heuristic thành compiler exact.",
+      "evidence": [
+        "oracle.json"
+      ]
+    },
+    {
+      "id": "A05",
+      "priority": "P2",
+      "title": "Các nhánh lỗi JSON trả văn bản",
+      "repro": "pack --tokens 1 --json; pack stale --json; usages --provider require:scip --json",
+      "actual": "Exit khác 0 là đúng nhưng stdout không phải JSON; client automation phải đổi parser theo nhánh lỗi.",
+      "source": "cli.py:1117, cli.py:667",
+      "recommendation": "Chuẩn hóa error envelope gồm code message candidates freshness trên mọi nhánh --json.",
+      "evidence": [
+        "functional-probes.json"
+      ]
+    },
+    {
+      "id": "A06",
+      "priority": "P2",
+      "title": "Config lỗi gây traceback qua CLI",
+      "repro": "reconcile --json với TOML lỗi hoặc allow_external=\"banana\"",
+      "actual": "ValueError từ load_config không được cmd_reconcile chuyển thành error có cấu trúc. Unit loader đúng nhưng CLI contract chưa đủ.",
+      "source": "cli.py:906, config.py:240",
+      "recommendation": "Catch validation error ở command boundary và giữ diagnostic path key.",
+      "evidence": [
+        "functional-probes.json"
+      ]
+    },
+    {
+      "id": "A07",
+      "priority": "P2",
+      "title": "Doctor crash khi file DB không SQLite",
+      "repro": "doctor --json với sot.db chứa bytes không phải SQLite",
+      "actual": "sqlite3.DatabaseError tại PRAGMA journal_mode=WAL thoát ngoài initialization handler.",
+      "source": "db.py:503, cli.py:3281",
+      "recommendation": "Catch sqlite3.DatabaseError và trả corruption diagnostic; không tự ghi đè DB hoặc notes.",
+      "evidence": [
+        "functional-probes.json"
+      ]
+    },
+    {
+      "id": "A08",
+      "priority": "P2",
+      "title": "Receipt không tồn tại gây traceback",
+      "repro": "diff-impact --pre-receipt no-such-file.json --json",
+      "actual": "FileNotFoundError từ _resolve_receipt_input không được cmd_diff_impact xử lý.",
+      "source": "cli.py:1781, cli.py:1849",
+      "recommendation": "Bắt lỗi receipt reference JSON schema và digest trước pipeline; error envelope rõ.",
+      "evidence": [
+        "extra-probes.json"
+      ]
+    },
+    {
+      "id": "A09",
+      "priority": "P2",
+      "title": "Validate numeric không nhất quán",
+      "repro": "Limit và depth âm, threshold NaN/Infinity, pack nodes/hops/bytes âm",
+      "actual": "Nhiều lệnh CLI trả exit 0; search limit âm trả rỗng, map budget âm trả zero symbols, pack có metadata budget âm. MCP search và byte/token budget có validation tốt hơn. Không có bằng chứng limit âm mở unbounded SQL.",
+      "source": "cli.py:2772, cli.py:2980, mcp_service.py:466",
+      "recommendation": "Chia sẻ validators giữa parser service core API; phân biệt zero hợp lệ với số âm và nonfinite.",
+      "evidence": [
+        "functional-probes.json"
+      ]
+    },
+    {
+      "id": "A10",
+      "priority": "P2",
+      "title": "Git collection error bị biến thành diff rỗng",
+      "repro": "diff-impact definitely-not-a-valid-ref --json hoặc repo không Git",
+      "actual": "Exit 0, changed_files=[], LOW risk, warnings=[]; nested assurance vẫn UNVERIFIABLE và safe_commit=block. Strict gate trả 2. Không phải bypass safe commit, nhưng diagnostic thất bại bị mất.",
+      "source": "diff_impact.py:289",
+      "recommendation": "Truyền git stderr và collection_error qua pipeline; phân biệt empty successful diff với unavailable diff.",
+      "evidence": [
+        "extra-probes.json",
+        "functional-probes.json"
+      ]
+    },
+    {
+      "id": "A11",
+      "priority": "P2",
+      "title": "Relative path pack lệch canonical root",
+      "repro": "Root qua alias /var và /private/var trên macOS hoặc symlink root",
+      "actual": "Target relative_path chứa ../../../../../../../private/var/... thay vì util.py; missing span hint dùng cùng đường dẫn traversal. Đây là lỗi biểu diễn path, chưa có bằng chứng đọc file ngoài canonical repo.",
+      "source": "pack.py:723, pack.py:851",
+      "recommendation": "Canonicalize root trước relpath và kiểm tra commonpath; kiểm chứng alias root trên CLI và MCP.",
+      "evidence": [
+        "path-alias-probes.json",
+        "extra-probes.json"
+      ]
+    },
+    {
+      "id": "A12",
+      "priority": "P2",
+      "title": "Integration suite phụ thuộc checkout và interpreter thực",
+      "repro": "TestOMPIntegrationScenarios.run_sot truyền --db nhưng cwd=REPO_ROOT và thiếu --root",
+      "actual": "Launcher bin dùng python3 hệ thống 3.14 thay vì venv 3.12; qdb có thể đọc CBM store hiện hữu của repo. Suite ghi GRAPH_REPORT.md ignored trong checkout. Hai scenario mất 33.818s và 81.250s ở máy này.",
+      "source": "tests/test_omp_integration.py:47, bin/sotgraph:9",
+      "recommendation": "Fixture repo root riêng, interpreter sys.executable, timeout subprocess và output_dir temp; tách real-repo smoke khỏi unit regression.",
+      "evidence": [
+        "pytest.xml",
+        "source-inventory.json"
+      ]
+    }
+  ],
+  "probes": {
+    "primary": 87,
+    "raw_passed": 65,
+    "raw_failed": 22,
+    "expected_behavior_reclassified": [
+      "watch-stopped-status",
+      "empty-map"
+    ],
+    "adjudicated_acceptable": 67,
+    "requires_improvement": 20,
+    "extra_cli": 6,
+    "nodecap_cli": 5,
+    "path_alias_cli": 2,
+    "mcp_profiles": 3,
+    "independent_ts_collision": 1
+  },
+  "oracle": {
+    "oracle_version": "2.0.0",
+    "corpus": {
+      "repo": "oracle-corpus-v1",
+      "digest": "23c0e29c2ace0b5ac2bca9dcb3073802d4be714e07dc40c37427fda71cfaed5b",
+      "files": 236,
+      "edges": 1162,
+      "languages": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "counts": {
+        "static_positive": 1012,
+        "static_negative": 124,
+        "dynamic_positive": 26
+      },
+      "relations_measured": [
+        "calls",
+        "extends",
+        "implements"
+      ]
+    },
+    "builtin": {
+      "counts": {
+        "static_positive": 1012,
+        "static_negative": 124,
+        "dynamic_positive": 26,
+        "true_positives": 1008,
+        "false_negatives": 4,
+        "false_positives": 1,
+        "false_positive_negative_matches": 0,
+        "false_positive_unexpected_edges": 1,
+        "true_negatives": 124,
+        "precision": 0.999,
+        "recall": 0.996,
+        "f1": 0.9975
+      },
+      "per_language": {
+        "python": {
+          "calls": {
+            "tp": 377,
+            "fp": 0,
+            "fn": 0,
+            "tn": 45,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "extends": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "overall": {
+            "tp": 378,
+            "fp": 0,
+            "fn": 0,
+            "tn": 45,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          }
+        },
+        "typescript": {
+          "calls": {
+            "tp": 210,
+            "fp": 1,
+            "fn": 1,
+            "tn": 33,
+            "precision": 0.9953,
+            "recall": 0.9953,
+            "f1": 0.9953
+          },
+          "implements": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "overall": {
+            "tp": 211,
+            "fp": 1,
+            "fn": 1,
+            "tn": 33,
+            "precision": 0.9953,
+            "recall": 0.9953,
+            "f1": 0.9953
+          }
+        },
+        "go": {
+          "calls": {
+            "tp": 159,
+            "fp": 0,
+            "fn": 0,
+            "tn": 11,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "overall": {
+            "tp": 159,
+            "fp": 0,
+            "fn": 0,
+            "tn": 11,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          }
+        },
+        "rust": {
+          "calls": {
+            "tp": 129,
+            "fp": 0,
+            "fn": 2,
+            "tn": 11,
+            "precision": 1.0,
+            "recall": 0.9847,
+            "f1": 0.9923
+          },
+          "extends": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "implements": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 5,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "overall": {
+            "tp": 130,
+            "fp": 0,
+            "fn": 2,
+            "tn": 17,
+            "precision": 1.0,
+            "recall": 0.9848,
+            "f1": 0.9924
+          }
+        },
+        "java": {
+          "calls": {
+            "tp": 129,
+            "fp": 0,
+            "fn": 1,
+            "tn": 10,
+            "precision": 1.0,
+            "recall": 0.9923,
+            "f1": 0.9961
+          },
+          "extends": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "implements": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 5,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "overall": {
+            "tp": 130,
+            "fp": 0,
+            "fn": 1,
+            "tn": 18,
+            "precision": 1.0,
+            "recall": 0.9924,
+            "f1": 0.9962
+          }
+        }
+      },
+      "confusion": [
+        "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> normalize (calls) [edge_absent] nested_scope:",
+        "rust_pkg/src/alias.rs:5 digest -> hash_data (calls) [edge_absent] alias_import:",
+        "rust_pkg/src/shape.rs:13 Circle.describe -> Circle.area (calls) [edge_absent] call:",
+        "java_pkg/alias/UseStatic.java:8 UseStatic.check -> Validator.isValid (calls) [pending_unresolved] alias_import: pending dst_symbol='isValid'",
+        "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> Stage.inner (calls) [unexpected_edge]",
+        "py_pkg/dyn/dispatch.py:11 notify_dynamic -> LoudNotifier.send (calls) [dynamic_misresolution] virtual_dispatch: claimed Notifier.send @ py_pkg/dyn/inheritance.py instead of LoudNotifier.send @ py_pkg/dyn/dispatch.py"
+      ],
+      "false_positive_details": [
+        {
+          "anchor": "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> Stage.inner (calls)",
+          "category": "unexpected_edge",
+          "db_line": 17,
+          "description": "resolved calls edge from a GT-covered source, absent from ground truth"
+        }
+      ],
+      "dynamic": {
+        "total": 26,
+        "claimed_exact": 4,
+        "claimed_same_bare_other": 1,
+        "unclaimed": 21
+      },
+      "diagnostics": {
+        "identity_only_recall": 0.996,
+        "legacy_loose_recall_diagnostic": 0.996
+      }
+    },
+    "search_topk": {
+      "queries": 20,
+      "unique_queries": 11,
+      "ambiguous_queries": 9,
+      "hit_at_1": 0.65,
+      "hit_at_5": 1.0,
+      "hit_at_10": 1.0,
+      "unique_hit_at_1": 0.9091,
+      "unique_hit_at_5": 1.0,
+      "unique_hit_at_10": 1.0,
+      "ambiguous_hit_at_1": 0.3333,
+      "ambiguous_hit_at_5": 1.0,
+      "ambiguous_hit_at_10": 1.0,
+      "details": [
+        {
+          "query": "compute_tax",
+          "language": "python",
+          "ambiguous": false,
+          "gold": [
+            "py_pkg.core.math_ops.compute_tax"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.core.math_ops.compute_tax",
+              "path": "py_pkg/core/math_ops.py",
+              "symbol": "compute_tax"
+            },
+            {
+              "fqn": "py_pkg.generated.gen_models",
+              "path": "py_pkg/generated/gen_models.py",
+              "symbol": "gen_models.py"
+            },
+            {
+              "fqn": "scripts.run_all",
+              "path": "scripts/run_all.py",
+              "symbol": "run_all.py"
+            }
+          ]
+        },
+        {
+          "query": "verify_token",
+          "language": "python",
+          "ambiguous": false,
+          "gold": [
+            "py_pkg.core.security.verify_token"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.core.security.verify_token",
+              "path": "py_pkg/core/security.py",
+              "symbol": "verify_token"
+            },
+            {
+              "fqn": "py_pkg.core.security",
+              "path": "py_pkg/core/security.py",
+              "symbol": "security.py"
+            },
+            {
+              "fqn": "py_pkg.services.service_1",
+              "path": "py_pkg/services/service_1.py",
+              "symbol": "service_1.py"
+            }
+          ]
+        },
+        {
+          "query": "process",
+          "language": "python",
+          "ambiguous": true,
+          "gold": [
+            "py_pkg.scopes.scopes.Pipeline.process",
+            "py_pkg.scopes.scopes.process"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "Pipeline.process"
+            },
+            {
+              "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+              "path": "java_pkg/scopes/Scopes.java",
+              "symbol": "Scopes.process"
+            },
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.Process"
+            }
+          ]
+        },
+        {
+          "query": "normalize",
+          "language": "python",
+          "ambiguous": true,
+          "gold": [
+            "py_pkg.scopes.scopes.Pipeline.normalize_stage",
+            "py_pkg.scopes.scopes.normalize"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.scopes.scopes.go.normalize",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "normalize"
+            },
+            {
+              "fqn": "py_pkg.scopes.scopes.normalize",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "normalize"
+            },
+            {
+              "fqn": "rust_pkg.src.scopes.rs.normalize",
+              "path": "rust_pkg/src/scopes.rs",
+              "symbol": "normalize"
+            }
+          ]
+        },
+        {
+          "query": "formatOrder",
+          "language": "typescript",
+          "ambiguous": false,
+          "gold": [
+            "ts_pkg.models.order.ts.formatOrder"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "ts_pkg.models.order.ts.formatOrder",
+              "path": "ts_pkg/models/order.ts",
+              "symbol": "formatOrder"
+            },
+            {
+              "fqn": "ts_pkg.services.order_svc_1.ts",
+              "path": "ts_pkg/services/order_svc_1.ts",
+              "symbol": "order_svc_1.ts"
+            },
+            {
+              "fqn": "ts_pkg.services.order_svc_2.ts",
+              "path": "ts_pkg/services/order_svc_2.ts",
+              "symbol": "order_svc_2.ts"
+            }
+          ]
+        },
+        {
+          "query": "validateOrder",
+          "language": "typescript",
+          "ambiguous": false,
+          "gold": [
+            "ts_pkg.models.order.ts.validateOrder"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "ts_pkg.models.order.ts.validateOrder",
+              "path": "ts_pkg/models/order.ts",
+              "symbol": "validateOrder"
+            },
+            {
+              "fqn": "ts_pkg.models.order.ts",
+              "path": "ts_pkg/models/order.ts",
+              "symbol": "order.ts"
+            },
+            {
+              "fqn": "ts_pkg.services.order_svc_1.ts",
+              "path": "ts_pkg/services/order_svc_1.ts",
+              "symbol": "order_svc_1.ts"
+            }
+          ]
+        },
+        {
+          "query": "process",
+          "language": "typescript",
+          "ambiguous": true,
+          "gold": [
+            "ts_pkg.scopes.scopes.ts.Stage.process",
+            "ts_pkg.scopes.scopes.ts.process"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "Pipeline.process"
+            },
+            {
+              "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+              "path": "java_pkg/scopes/Scopes.java",
+              "symbol": "Scopes.process"
+            },
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.Process"
+            }
+          ]
+        },
+        {
+          "query": "normalizeStage",
+          "language": "typescript",
+          "ambiguous": false,
+          "gold": [
+            "ts_pkg.scopes.scopes.ts.Stage.normalizeStage"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.normalizeStage",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.normalizeStage"
+            },
+            {
+              "fqn": "ts_pkg.scopes.scopes.ts.Stage.normalizeStage",
+              "path": "ts_pkg/scopes/scopes.ts",
+              "symbol": "Stage.normalizeStage"
+            },
+            {
+              "fqn": "rust_pkg.src.scopes.rs.Stage.normalize_stage",
+              "path": "rust_pkg/src/scopes.rs",
+              "symbol": "Stage.normalize_stage"
+            }
+          ]
+        },
+        {
+          "query": "ValidateKey",
+          "language": "go",
+          "ambiguous": false,
+          "gold": [
+            "go_pkg.storage.db.go.ValidateKey"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.storage.db.go.ValidateKey",
+              "path": "go_pkg/storage/db.go",
+              "symbol": "ValidateKey"
+            },
+            {
+              "fqn": "go_pkg.storage.db.go",
+              "path": "go_pkg/storage/db.go",
+              "symbol": "db.go"
+            },
+            {
+              "fqn": "go_pkg.workers.worker_1.go",
+              "path": "go_pkg/workers/worker_1.go",
+              "symbol": "worker_1.go"
+            }
+          ]
+        },
+        {
+          "query": "FormatRecord",
+          "language": "go",
+          "ambiguous": false,
+          "gold": [
+            "go_pkg.storage.db.go.FormatRecord"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.storage.db.go.FormatRecord",
+              "path": "go_pkg/storage/db.go",
+              "symbol": "FormatRecord"
+            },
+            {
+              "fqn": "go_pkg.storage.db.go",
+              "path": "go_pkg/storage/db.go",
+              "symbol": "db.go"
+            },
+            {
+              "fqn": "go_pkg.workers.worker_1.go",
+              "path": "go_pkg/workers/worker_1.go",
+              "symbol": "worker_1.go"
+            }
+          ]
+        },
+        {
+          "query": "Process",
+          "language": "go",
+          "ambiguous": true,
+          "gold": [
+            "go_pkg.scopes.scopes.go.Stage.Process"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "Pipeline.process"
+            },
+            {
+              "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+              "path": "java_pkg/scopes/Scopes.java",
+              "symbol": "Scopes.process"
+            },
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.Process"
+            }
+          ]
+        },
+        {
+          "query": "Save",
+          "language": "go",
+          "ambiguous": true,
+          "gold": [
+            "go_pkg.samename.samename.go.Blob.Save",
+            "go_pkg.samename.samename.go.Doc.Save"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.samename.samename.go.Doc.Save",
+              "path": "go_pkg/samename/samename.go",
+              "symbol": "Doc.Save"
+            },
+            {
+              "fqn": "go_pkg.samename.samename.go.Blob.Save",
+              "path": "go_pkg/samename/samename.go",
+              "symbol": "Blob.Save"
+            },
+            {
+              "fqn": "rust_pkg.src.samename.rs.Doc.save",
+              "path": "rust_pkg/src/samename.rs",
+              "symbol": "Doc.save"
+            }
+          ]
+        },
+        {
+          "query": "hash_data",
+          "language": "rust",
+          "ambiguous": false,
+          "gold": [
+            "rust_pkg.src.crypto.rs.hash_data"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "rust_pkg.src.crypto.rs.hash_data",
+              "path": "rust_pkg/src/crypto.rs",
+              "symbol": "hash_data"
+            },
+            {
+              "fqn": "rust_pkg.src.crypto.rs",
+              "path": "rust_pkg/src/crypto.rs",
+              "symbol": "crypto.rs"
+            },
+            {
+              "fqn": "rust_pkg.src.generated.rs",
+              "path": "rust_pkg/src/generated.rs",
+              "symbol": "generated.rs"
+            }
+          ]
+        },
+        {
+          "query": "verify_data",
+          "language": "rust",
+          "ambiguous": false,
+          "gold": [
+            "rust_pkg.src.crypto.rs.verify_data"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "rust_pkg.src.crypto.rs.verify_data",
+              "path": "rust_pkg/src/crypto.rs",
+              "symbol": "verify_data"
+            },
+            {
+              "fqn": "rust_pkg.src.mod_1.rs",
+              "path": "rust_pkg/src/mod_1.rs",
+              "symbol": "mod_1.rs"
+            },
+            {
+              "fqn": "rust_pkg.src.mod_2.rs",
+              "path": "rust_pkg/src/mod_2.rs",
+              "symbol": "mod_2.rs"
+            }
+          ]
+        },
+        {
+          "query": "process",
+          "language": "rust",
+          "ambiguous": true,
+          "gold": [
+            "rust_pkg.src.scopes.rs.Stage.process",
+            "rust_pkg.src.scopes.rs.process"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "Pipeline.process"
+            },
+            {
+              "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+              "path": "java_pkg/scopes/Scopes.java",
+              "symbol": "Scopes.process"
+            },
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.Process"
+            }
+          ]
+        },
+        {
+          "query": "save",
+          "language": "rust",
+          "ambiguous": true,
+          "gold": [
+            "rust_pkg.src.samename.rs.Blob.save",
+            "rust_pkg.src.samename.rs.Doc.save"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "go_pkg.samename.samename.go.Doc.Save",
+              "path": "go_pkg/samename/samename.go",
+              "symbol": "Doc.Save"
+            },
+            {
+              "fqn": "go_pkg.samename.samename.go.Blob.Save",
+              "path": "go_pkg/samename/samename.go",
+              "symbol": "Blob.Save"
+            },
+            {
+              "fqn": "rust_pkg.src.samename.rs.Doc.save",
+              "path": "rust_pkg/src/samename.rs",
+              "symbol": "Doc.save"
+            }
+          ]
+        },
+        {
+          "query": "sanitize",
+          "language": "java",
+          "ambiguous": false,
+          "gold": [
+            "java_pkg.core.Validator.java.Validator.sanitize"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "java_pkg.core.Validator.java.Validator.sanitize",
+              "path": "java_pkg/core/Validator.java",
+              "symbol": "Validator.sanitize"
+            },
+            {
+              "fqn": "java_pkg.Main.java",
+              "path": "java_pkg/Main.java",
+              "symbol": "Main.java"
+            },
+            {
+              "fqn": "java_pkg.core.Validator.java",
+              "path": "java_pkg/core/Validator.java",
+              "symbol": "Validator.java"
+            }
+          ]
+        },
+        {
+          "query": "isValid",
+          "language": "java",
+          "ambiguous": true,
+          "gold": [
+            "java_pkg.core.Validator.java.Validator.isValid"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "java_pkg.core.Validator.java.Validator.isValid",
+              "path": "java_pkg/core/Validator.java",
+              "symbol": "Validator.isValid"
+            },
+            {
+              "fqn": "java_pkg.overload.Overload.java.Overload.isValid",
+              "path": "java_pkg/overload/Overload.java",
+              "symbol": "Overload.isValid"
+            },
+            {
+              "fqn": "java_pkg.core.Validator.java",
+              "path": "java_pkg/core/Validator.java",
+              "symbol": "Validator.java"
+            }
+          ]
+        },
+        {
+          "query": "area",
+          "language": "java",
+          "ambiguous": false,
+          "gold": [
+            "java_pkg.shapes.Circle.java.Circle.area"
+          ],
+          "hit_at_1": true,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "java_pkg.shapes.Circle.java.Circle.area",
+              "path": "java_pkg/shapes/Circle.java",
+              "symbol": "Circle.area"
+            },
+            {
+              "fqn": "java_pkg.shapes.Shape.java.Shape.area",
+              "path": "java_pkg/shapes/Shape.java",
+              "symbol": "Shape.area"
+            },
+            {
+              "fqn": "go_pkg.shapes.shapes.go.Circle.Area",
+              "path": "go_pkg/shapes/shapes.go",
+              "symbol": "Circle.Area"
+            }
+          ]
+        },
+        {
+          "query": "process",
+          "language": "java",
+          "ambiguous": true,
+          "gold": [
+            "java_pkg.scopes.Scopes.java.Scopes.process"
+          ],
+          "hit_at_1": false,
+          "hit_at_5": true,
+          "hit_at_10": true,
+          "top3": [
+            {
+              "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+              "path": "py_pkg/scopes/scopes.py",
+              "symbol": "Pipeline.process"
+            },
+            {
+              "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+              "path": "java_pkg/scopes/Scopes.java",
+              "symbol": "Scopes.process"
+            },
+            {
+              "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+              "path": "go_pkg/scopes/scopes.go",
+              "symbol": "Stage.Process"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "repo_doctor": {
+    "ok": true,
+    "is_healthy": true,
+    "quick_check": "ok",
+    "schema_version": 8,
+    "expected_schema_version": 8,
+    "journal_mode": "WAL",
+    "page_size": 4096,
+    "page_count": 11811,
+    "db_size_bytes": 48377856,
+    "stats": {
+      "paths": 608,
+      "nodes": 7216,
+      "edges": 18789,
+      "pending": 15682,
+      "pending_ambiguous": 889,
+      "pending_unresolved": 14793,
+      "orphaned_nodes": 0,
+      "fts_count": 7216
+    },
+    "pending_breakdown": {
+      "by_state": {
+        "AMBIGUOUS": 889,
+        "UNRESOLVED": 14793
+      },
+      "by_relation": {
+        "calls": 10803,
+        "references": 4675,
+        "extends": 203,
+        "imports": 1
+      }
+    },
+    "warnings": [],
+    "errors": [],
+    "engine_readthrough": {
+      "store": "/Users/giapminh79/code/GitHub/sotgraph/.sot/cbm/published.db",
+      "nodes": 36330,
+      "edges": 197369
+    }
+  },
+  "scope_notes": [
+    "No production source edits",
+    "Native submodule build not run",
+    "Real CBM 0.10.8 exercised",
+    "SCIP generated fixture, not fresh compiler invocation",
+    "Only this macOS host executed",
+    "Catalog rows are not 180 individually passing tests",
+    "Coverage does not include every external subprocess"
+  ]
+}

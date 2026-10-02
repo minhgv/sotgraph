@@ -10,7 +10,7 @@ import os
 import signal
 import sys
 import time
-from typing import Any, Dict, List, Optional, Sequence, Tuple, cast
+from typing import Any, Dict, List, NoReturn, Optional, Sequence, Tuple, cast
 
 import sqlite3
 
@@ -25,6 +25,7 @@ from sot_graph.locking import LockBusy
 from sot_graph.reconciler import Reconciler
 from sot_graph.envelope import wrap_envelope
 from sot_graph.verifier import TrustVerifier, tokenize
+from sot_graph.numeric import finite_number, integer
 from sot_graph.assurance import (
     assured_query_context,
     envelope_fed_kwargs,
@@ -37,10 +38,54 @@ def _maintenance_json(payload: dict) -> None:
     """Emit machine-readable maintenance output without terminal decoration."""
     print(json.dumps(payload, sort_keys=True))
 def _positive_int(value: str) -> int:
-    parsed = int(value)
-    if parsed < 1:
-        raise argparse.ArgumentTypeError("must be >= 1")
-    return parsed
+    try:
+        return integer(int(value), "value")
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
+def _nonnegative_int(value: str) -> int:
+    try:
+        return integer(int(value), "value", minimum=0)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
+def _threshold(value: str) -> float:
+    try:
+        return finite_number(float(value), "threshold", maximum=1)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
+def _nonnegative_float(value: str) -> float:
+    try:
+        return finite_number(float(value), "value")
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
+def _cli_error(args: argparse.Namespace, code: str, message: str,
+               exit_code: int = 1, **details: Any) -> int:
+    print(f"❌ {message}", file=sys.stderr)
+    if (getattr(args, "json", False) or getattr(args, "receipt", False) is True
+            or getattr(args, "format", None) == "json"):
+        print(json.dumps({"ok": False, "status": "error", "code": code,
+                          "error": message, **details}, ensure_ascii=True))
+    return exit_code
+
+
+class _CliUsageError(ValueError):
+    pass
+
+
+class _ArgumentParser(argparse.ArgumentParser):
+    json_errors = False
+
+    def error(self, message: str) -> NoReturn:
+        if self.json_errors:
+            raise _CliUsageError(message)
+        super().error(message)
 
 
 
@@ -554,8 +599,7 @@ def cmd_explore(args: argparse.Namespace, db: Database, root: str = ".") -> int:
     query = args.target.strip()
     row = resolve_symbol(db, query)
     if not row:
-        print(f"❌ No symbol or node matching '{query}' found in graph.")
-        return 1
+        return _cli_error(args, "target_not_found", f"No symbol or node matching '{query}' found in graph.")
 
     node_id, label, kind, path, line, _symbol = row
     fed = federated_extras(
@@ -564,8 +608,7 @@ def cmd_explore(args: argparse.Namespace, db: Database, root: str = ".") -> int:
         db=db,
     )
     if fed is not None and fed["fail_message"]:
-        print(f"❌ {fed['fail_message']}", file=sys.stderr)
-        return 2
+        return _cli_error(args, "provider_unavailable", fed["fail_message"], 2)
     relations = db.explore_node(node_id, depth=args.depth)
     snapshot_dict, stale = assured_query_context(
         db, root, [path] + [r.get("path") for r in relations]
@@ -667,8 +710,7 @@ def cmd_usages(args: argparse.Namespace, db: Database, root: str = ".") -> int:
                                   "managed": managed}, indent=2))
                 return 1
             _print_managed_read(managed)
-        print(f"❌ No symbol or node matching '{query}' found in graph.")
-        return 1
+        return _cli_error(args, "target_not_found", f"No symbol or node matching '{query}' found in graph.")
     node_id, label, kind, path, line, symbol = row
     fed = federated_extras(
         resolve_federated_spec(getattr(args, "provider", None), root),
@@ -676,8 +718,7 @@ def cmd_usages(args: argparse.Namespace, db: Database, root: str = ".") -> int:
         db=db,
     ) if (managed is None and not getattr(args, "_provider_policy_explicit", False)) else None
     if fed is not None and fed["fail_message"]:
-        print(f"❌ {fed['fail_message']}", file=sys.stderr)
-        return 2
+        return _cli_error(args, "provider_unavailable", fed["fail_message"], 2)
 
     data = db.usages(node_id, symbol)
     snapshot_dict, stale = assured_query_context(
@@ -1120,8 +1161,8 @@ def cmd_pack(args: argparse.Namespace, db: Database, root: str) -> int:
             "\n  (get names from `sotgraph search` / `sotgraph map`)"
             if exc.code == "TARGET_NOT_FOUND" else ""
         )
-        print(f"❌ pack failed [{exc.code}]: {exc}{detail}{hint}")
-        return 2
+        return _cli_error(args, exc.code, f"pack failed [{exc.code}]: {exc}{detail}{hint}",
+                          2, candidates=exc.candidates)
     if getattr(args, "json", False):
         # One interpretation shared with MCP: honesty fields come straight
         # from the bundle, never re-derived per surface.
@@ -1358,13 +1399,11 @@ def cmd_providers(args: argparse.Namespace, root: str,
         from sot_graph.providers.cross_check import cross_check
 
         if not db_path:
-            print("❌ No --db target resolved for cross-check.", file=sys.stderr)
-            return 1
+            return _cli_error(args, "database_error", "No --db target resolved for cross-check.")
         try:
             xc_db = Database(db_path, read_only=True)
         except FileNotFoundError:
-            print(f"❌ No index database at {db_path}; run `sotgraph reconcile` first.", file=sys.stderr)
-            return 1
+            return _cli_error(args, "database_error", f"No index database at {db_path}; run `sotgraph reconcile` first.")
         try:
             if getattr(args, "receipt", False):
                 from sot_graph.assurance.impact_pipeline import ReceiptStore
@@ -1818,8 +1857,7 @@ def cmd_receipt(args: argparse.Namespace, root: str) -> int:
         return 0
     except (FileNotFoundError, json.JSONDecodeError,
             UnsupportedReceiptVersion, ValueError) as exc:
-        print(f"❌ receipt: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "invalid_receipt", f"receipt: {exc}")
 
 
 def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
@@ -1857,8 +1895,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             if not isinstance(test_results, dict):
                 raise ValueError("test report must be a JSON object")
         except (OSError, json.JSONDecodeError, ValueError) as exc:
-            print(f"❌ --test-report: {exc}", file=sys.stderr)
-            return 1
+            return _cli_error(args, "invalid_test_report", f"--test-report: {exc}")
 
     # W8.3: in-process gate timeout (pre-commit hooks cannot rely on GNU
     # `timeout` — absent on macOS/Windows). SIGALRM-based; POSIX only,
@@ -1942,6 +1979,8 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     # status. --gate fails closed (exit 1) unless the receipt status is in
     # the ASSURED set, without suppressing the rendered report.
     assurance_status = str((receipt.get("assurance") or {}).get("status") or "")
+    collection_failed = any(str(w).startswith("collection_error:git_diff:")
+                            for w in receipt.get("warnings") or [])
     # W2: --gate-strict reads the safe_commit composite verdict — block
     # exits 2 with the reasons on stderr; warn still exits 0 (advisory
     # conditions are printed, not blocking).
@@ -1996,8 +2035,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
         db=db,
     )
     if fed is not None and fed["fail_message"]:
-        print(f"❌ {fed['fail_message']}", file=sys.stderr)
-        return 2
+        return _cli_error(args, "provider_unavailable", fed["fail_message"], 2)
 
     payload = dict(receipt)
     payload["stale_files"] = stale
@@ -2020,12 +2058,12 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
             os.makedirs(os.path.dirname(out_path), exist_ok=True)
             with open(out_path, "w", encoding="utf-8") as fp:
                 fp.write(payload_str)
-            print(f"📊 Diff impact JSON written to: {out_path}")
+            print(f"📊 Diff impact JSON written to: {out_path}", file=sys.stderr)
         else:
             print(payload_str)
         if fed is not None:
             _print_federation_notes(fed)
-        return 2 if strict_blocked else (1 if gate_failed else 0)
+        return 2 if strict_blocked else (1 if gate_failed or collection_failed else 0)
 
     if fmt == "text":
         pre_snap = receipt.get("pre_change_snapshot") or {}
@@ -2088,7 +2126,7 @@ def cmd_diff_impact(args: argparse.Namespace, db: Database, root: str) -> int:
     # stay redirect-safe for CI piping (warnings already go to stderr).
     if fmt == "text":
         _print_federation_notes(fed)
-    return 2 if strict_blocked else (1 if gate_failed else 0)
+    return 2 if strict_blocked else (1 if gate_failed or collection_failed else 0)
 
 
 def cmd_log(args: argparse.Namespace, db: Database, root: str) -> int:
@@ -2329,8 +2367,7 @@ def cmd_report(args: argparse.Namespace, db: Database, root: str) -> int:
             with db.write_lock():
                 db.save_communities(comm_list)
     except (LockBusy, RuntimeError) as exc:
-        print(f"❌ report failed: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "command_failed", f"report failed: {exc}")
 
     if args.json:
         payload = {
@@ -2422,8 +2459,7 @@ def cmd_cluster(args: argparse.Namespace, db: Database) -> int:
             with db.write_lock():
                 db.save_communities(comm_list)
     except (LockBusy, RuntimeError) as exc:
-        print(f"❌ cluster failed: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "command_failed", f"cluster failed: {exc}")
 
     if args.json:
         print(json.dumps({
@@ -2616,8 +2652,7 @@ def cmd_import_scip(args: argparse.Namespace, db: Database, root: str) -> int:
     if not os.path.isabs(index_path):
         index_path = os.path.join(root, index_path)
     if not os.path.isfile(index_path):
-        print(f"❌ SCIP index file not found: {index_path}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "io_error", f"SCIP index file not found: {index_path}")
     # Under a bound codebase-memory store, imported rows land in sot.db but
     # are shadowed by engine coverage in the union views — they become
     # visible only with `--extractor builtin`. Disclose rather than pretend.
@@ -2640,8 +2675,7 @@ def cmd_import_scip(args: argparse.Namespace, db: Database, root: str) -> int:
             provider_version=p_ver,
         )
     except Exception as exc:
-        print(f"❌ Failed to import SCIP index: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "invalid_scip", f"Failed to import SCIP index: {exc}")
     if getattr(args, "json", False):
         envelope = wrap_envelope(summary, db=db, project_root=root)
         print(json.dumps(envelope, indent=2))
@@ -2733,7 +2767,7 @@ def cmd_setup(args: argparse.Namespace, root: str) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = _ArgumentParser(
         prog="sotgraph",
         description="sotgraph: Verified, self-healing knowledge graph for AI coding agents."
     )
@@ -2770,21 +2804,21 @@ def build_parser() -> argparse.ArgumentParser:
     # search
     p_search = subparsers.add_parser("search", help="Ranked search with Trust Verdicts", allow_abbrev=False)
     p_search.add_argument("query", help="Query string")
-    p_search.add_argument("-n", "--limit", type=int, default=6, help="Maximum results (default: 6)")
+    p_search.add_argument("-n", "--limit", type=_positive_int, default=6, help="Maximum results (default: 6)")
     p_search.add_argument("--scope", default=None, help="Filter by path or keyword substring")
-    p_search.add_argument("--threshold", type=float, default=0.5, help="Coverage threshold for STRONG verdict")
+    p_search.add_argument("--threshold", type=_threshold, default=0.5, help="Coverage threshold for STRONG verdict")
     p_search.add_argument("--hybrid", action="store_true", help="Fuse BM25 with vector similarity (needs [vector] extra + `sotgraph embed`)")
     p_search.add_argument("--jit", dest="jit", action="store_true", default=True, help="Enable JIT Micro-Reconciliation for modified files (default: True)")
     p_search.add_argument("--no-jit", dest="jit", action="store_false", help="Disable JIT Micro-Reconciliation")
     p_search.add_argument("--json", action="store_true", help="Output JSON format")
     # embed
     p_emb = subparsers.add_parser("embed", help="Build/refresh the optional vector index ([vector] extra)")
-    p_emb.add_argument("--limit", type=int, default=5000, help="Maximum nodes to embed (default: 5000)")
+    p_emb.add_argument("--limit", type=_positive_int, default=5000, help="Maximum nodes to embed (default: 5000)")
 
     # explore
     p_exp = subparsers.add_parser("explore", help="Explore AST relations and cross-file edges")
     p_exp.add_argument("target", help="Symbol, function name, or class to explore")
-    p_exp.add_argument("--depth", type=int, default=2, help="Graph walk depth (default: 2)")
+    p_exp.add_argument("--depth", type=_positive_int, default=2, help="Graph walk depth (default: 2)")
     p_exp.add_argument("--all", dest="show_all", action="store_true", help="Show all references without collapsing large hubs (default: collapse if > 15 items)")
     p_exp.add_argument("--json", action="store_true", help="Output explore graph in JSON format")
     p_exp.add_argument("--provider", default="builtin",
@@ -2813,7 +2847,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # map
     p_map = subparsers.add_parser("map", help="Token-budgeted repo map ranked by personalized PageRank")
-    p_map.add_argument("--tokens", type=int, default=1024, help="Approximate token budget (default: 1024)")
+    p_map.add_argument("--tokens", type=_positive_int, default=1024, help="Approximate token budget (default: 1024)")
     p_map.add_argument("--focus", default=None, help="Comma-separated symbols to personalize the ranking")
     p_map.add_argument("--include", default=None, help="Comma-separated path categories to include "
                         "beyond production source (default: production only). Categories: "
@@ -2827,7 +2861,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_ins.add_argument("--keywords", default="", help="Comma-separated keywords")
 
     # reconcile
-    rec_base = argparse.ArgumentParser(add_help=False)
+    rec_base = _ArgumentParser(add_help=False)
     rec_base.add_argument("paths", nargs="*", help="Files or directories relative to --root")
     rec_base.add_argument(
         "--workers",
@@ -2920,15 +2954,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep = subparsers.add_parser("report", help="Generate comprehensive architectural markdown report")
     p_rep.add_argument("-o", "--output", default="GRAPH_REPORT.md", help="Output file path (default: GRAPH_REPORT.md)")
     p_rep.add_argument("--scope", default=None, help="Scope analysis to path or subdirectory")
-    p_rep.add_argument("--min-size", type=int, default=1, help="Minimum community size (default: 1)")
-    p_rep.add_argument("--sigma", type=float, default=1.5, help="Standard deviation threshold for God nodes (default: 1.5)")
+    p_rep.add_argument("--min-size", type=_positive_int, default=1, help="Minimum community size (default: 1)")
+    p_rep.add_argument("--sigma", type=_nonnegative_float, default=1.5, help="Standard deviation threshold for God nodes (default: 1.5)")
     p_rep.add_argument("--no-save-communities", dest="save_communities", action="store_false", default=True, help="Do not persist communities to SQLite")
     p_rep.add_argument("--json", action="store_true", help="Output structured analysis JSON")
 
     # cluster
     p_clu = subparsers.add_parser("cluster", help="Detect and inspect architectural communities/clusters")
     p_clu.add_argument("--scope", default=None, help="Scope clustering to path or subdirectory")
-    p_clu.add_argument("--min-size", type=int, default=1, help="Minimum community size (default: 1)")
+    p_clu.add_argument("--min-size", type=_positive_int, default=1, help="Minimum community size (default: 1)")
     p_clu.add_argument("--no-save", action="store_true", help="Do not persist communities to SQLite")
     p_clu.add_argument("--json", action="store_true", help="Output communities JSON")
 
@@ -2943,8 +2977,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_arch.add_argument("-o", "--output", default="architecture.html", help="HTML output path (default: architecture.html; flow.html with --flow)")
     p_arch.add_argument("--scope", default=None, help="Scope architecture view to path or subdirectory")
     p_arch.add_argument("--flow", default=None, metavar="TARGET", help="Render the operating flow of a module/symbol/feature instead of the tiered view")
-    p_arch.add_argument("--depth", type=int, default=3, help="Flow walk depth in hops (default: 3)")
-    p_arch.add_argument("--max-nodes", dest="max_nodes", type=int, default=60, help="Flow node budget before truncation (default: 60)")
+    p_arch.add_argument("--depth", type=_positive_int, default=3, help="Flow walk depth in hops (default: 3)")
+    p_arch.add_argument("--max-nodes", dest="max_nodes", type=_positive_int, default=60, help="Flow node budget before truncation (default: 60)")
     p_arch.add_argument("--lanes", choices=("module", "none"), default="none", help="Group flow nodes into module swimlanes")
     p_arch.add_argument("--open", action="store_true", help="Automatically open the view in default web browser")
     p_arch.add_argument("--level", choices=("symbol", "module"), default="symbol", help="Granularity: every symbol (default) or one card per module/package — layered system view")
@@ -2974,18 +3008,18 @@ def build_parser() -> argparse.ArgumentParser:
     p_pack.add_argument("target", help="Target symbol, FQN, or 'path:line' locator (e.g. src/pkg/mod.go:28)")
     p_pack.add_argument("-o", "--output", default=None,
                         help="Write YAML to file (default: print to stdout)")
-    p_pack.add_argument("--max-hops", type=int, default=2, help="Hop depth (default: 2)")
-    p_pack.add_argument("--max-nodes", type=int, default=50, help="Node cap (default: 50)")
-    p_pack.add_argument("--max-bytes", type=int, default=65536, help="Byte cap (default: 64KB)")
-    p_pack.add_argument("--tokens", "--max-tokens", dest="max_tokens", type=int, default=None, help="Hard token budget cap (default: None)")
+    p_pack.add_argument("--max-hops", type=_positive_int, default=2, help="Hop depth (default: 2)")
+    p_pack.add_argument("--max-nodes", type=_positive_int, default=50, help="Node cap (default: 50)")
+    p_pack.add_argument("--max-bytes", type=_positive_int, default=65536, help="Byte cap (default: 64KB)")
+    p_pack.add_argument("--tokens", "--max-tokens", dest="max_tokens", type=_positive_int, default=None, help="Hard token budget cap (default: None)")
     p_pack.add_argument("--json", action="store_true", help="Output result as JSON envelope")
     p_watch = subparsers.add_parser(
         "watch", help="Watch filesystem and reconcile in real time (daemon & multi-project support)")
-    p_watch.add_argument("--debounce-ms", type=int, default=200,
+    p_watch.add_argument("--debounce-ms", type=_nonnegative_int, default=200,
                          help="Event folding window (default: 200ms)")
     p_watch.add_argument("--backend", choices=("auto", "watchfiles", "poll"), default="auto",
                          help="Watcher backend (default: auto = watchfiles if installed)")
-    p_watch.add_argument("--interval-ms", type=int, default=500,
+    p_watch.add_argument("--interval-ms", type=_positive_int, default=500,
                          help="Polling interval for the poll backend (default: 500ms)")
     p_watch.add_argument("-d", "--daemon", action="store_true",
                          help="Run watcher as a detached background daemon process")
@@ -3008,7 +3042,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_scip.add_argument("--provider", default=None, help="Provider name override (e.g. scip-typescript, scip-python)")
     p_scip.add_argument("--provider-version", default=None, help="Provider version override")
     p_scip.add_argument("--json", action="store_true", help="Output result as JSON envelope")
-    p_trace.add_argument("--depth", type=int, default=2, help="Trace exploration depth (default: 2)")
+    p_trace.add_argument("--depth", type=_positive_int, default=2, help="Trace exploration depth (default: 2)")
     p_trace.add_argument("-o", "--output", default=None, help="Write markdown output to file")
     p_trace.add_argument("--json", action="store_true", help="Output raw structured JSON")
 
@@ -3045,7 +3079,7 @@ def build_parser() -> argparse.ArgumentParser:
     # scope-receipt (P7)
     p_sr = subparsers.add_parser("scope-receipt", help="PRE-change bounded evidence receipt for one or more edit targets")
     p_sr.add_argument("target", nargs="+", help="Symbol(s) to scope — multiple targets union into one task-level receipt (e.g. 'Pipeline.process' 'Pipeline.run')")
-    p_sr.add_argument("--depth", type=int, default=2, help="Transitive impact walk depth (default: 2)")
+    p_sr.add_argument("--depth", type=_positive_int, default=2, help="Transitive impact walk depth (default: 2)")
     p_sr.add_argument("--change-kind", default="local-body",
                       choices=["local-body", "public-api", "rename", "delete"],
                       help="Kind of change (default: local-body)")
@@ -3070,7 +3104,7 @@ def build_parser() -> argparse.ArgumentParser:
         "ref",
         help="Anchor: receipt digest (full/prefix), receipt file path, or commit ref")
     p_receipt_chain.add_argument(
-        "--limit", type=int, default=400,
+        "--limit", type=_positive_int, default=400,
         help="Commit window scanned for matching/verdict (default: 400)")
     p_receipt_chain.add_argument("--json", action="store_true", help="Print the chain as JSON")
     p_prov = subparsers.add_parser("providers", help="Detect, list, and diagnose evidence providers (read-only)")
@@ -3106,12 +3140,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_prov_sync.add_argument("provider_name", help="Provider name (see `sotgraph providers list`)")
     p_prov_sync.add_argument("--json", action="store_true", help="Emit the run receipt as JSON")
     p_prov_sync.add_argument("--progress", action="store_true", help="Forward the provider's progress stream")
-    p_prov_sync.add_argument("--timeout", type=float, default=0, help="Index budget in seconds (0 = adapter default)")
+    p_prov_sync.add_argument("--timeout", type=_nonnegative_float, default=0, help="Index budget in seconds (0 = adapter default)")
 
     # diff-impact
     p_diff = subparsers.add_parser("diff-impact", help="Git diff blast radius, upstream caller traversal, and API impact analysis")
     p_diff.add_argument("target", nargs="?", default="HEAD", help="Git revision target (e.g. 'HEAD', 'main...HEAD', commit hash; default: HEAD — a single revision diffs <rev>~1..<rev>, so the default analyzes the LATEST commit)")
-    p_diff.add_argument("--depth", type=int, default=2, help="Reverse call graph walk depth (default: 2)")
+    p_diff.add_argument("--depth", type=_positive_int, default=2, help="Reverse call graph walk depth (default: 2)")
     p_diff.add_argument("--staged", action="store_true", help="Analyze staged changes (--cached)")
     p_diff.add_argument("--working-tree", action="store_true", help="Analyze unstaged working tree changes")
     p_diff.add_argument("--auto-reconcile", action=argparse.BooleanOptionalAction, default=True,
@@ -3137,12 +3171,12 @@ def build_parser() -> argparse.ArgumentParser:
                         help="JSON file {'ran': int, 'failed': int, 'failures': [str]} — failed tests feed the safe_commit verdict (W2)")
     p_diff.add_argument("--gate-strict", dest="gate_strict", action="store_true",
                         help="W2 safe-to-commit gate: exit 2 when the receipt's safe_commit verdict is 'block' (dangling references, unverifiable/stale/conflicted evidence, or failed provided tests). warn/pass still exit 0")
-    p_diff.add_argument("--gate-timeout", dest="gate_timeout", type=int, default=0,
+    p_diff.add_argument("--gate-timeout", dest="gate_timeout", type=_nonnegative_int, default=0,
                         help="W8: abort the gate after N seconds (POSIX SIGALRM; no-op elsewhere). Timeout is advisory (exit 0) unless SOTGRAPH_GATE_STRICT_TIMEOUT=1")
 
     # log / commits
     p_log = subparsers.add_parser("log", aliases=["commits"], help="Inspect git commit history with automated risk scoring and impacted symbols")
-    p_log.add_argument("-n", "--limit", type=int, default=10, help="Maximum commits to analyze (default: 10)")
+    p_log.add_argument("-n", "--limit", type=_positive_int, default=10, help="Maximum commits to analyze (default: 10)")
     p_log.add_argument("--author", default=None, help="Filter commits by author")
     p_log.add_argument("--since", default=None, help="Filter commits since date/time (e.g. '2026-01-01' or '2.weeks')")
     p_log.add_argument("--impact", dest="impact", action="store_true", default=True, help="Enable knowledge graph symbol impact analysis (default: True)")
@@ -3156,16 +3190,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_cv = subparsers.add_parser("commit-verdict",
                                help="Verdict for one commit: did it leave residual defects? (clear-fault | still-hot | unknown)")
     p_cv.add_argument("sha", help="Commit sha or prefix")
-    p_cv.add_argument("-n", "--limit", type=int, default=400,
+    p_cv.add_argument("-n", "--limit", type=_positive_int, default=400,
                       help="History depth to collect for outcome linkage (default: 400)")
     p_cv.add_argument("--json", action="store_true", help="Output raw JSON verdict")
     p_cal = subparsers.add_parser("calibrate",
                                 help="Fit the learned risk model from labeled commit outcomes (writes .sot/risk_model.json when the honesty gate passes)")
-    p_cal.add_argument("-n", "--limit", type=int, default=400,
+    p_cal.add_argument("-n", "--limit", type=_positive_int, default=400,
                        help="History depth to label (default: 400)")
     p_cal.add_argument("--since", default=None,
                        help="Label commits since date (e.g. '2.weeks')")
-    p_cal.add_argument("--window-days", type=int, default=14,
+    p_cal.add_argument("--window-days", type=_positive_int, default=14,
                        help="Outcome observation window (default: 14)")
     p_cal.add_argument("--json", action="store_true", help="Output raw JSON report")
     # JIT freshness gate for query commands: reconcile only when the
@@ -3177,7 +3211,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def _run_cli(argv: Sequence[str], *, json_errors: bool = False) -> int:
     # CLI output contains emoji; on Windows the console default (cp1252)
     # cannot encode them, so normalize the streams to UTF-8 before any
     # print() can raise UnicodeEncodeError mid-command.
@@ -3190,6 +3224,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         except (AttributeError, OSError, ValueError):
             pass  # non-tty or exotic stream: keep the interpreter default
     parser = build_parser()
+    parsers = [parser]
+    while parsers:
+        current = parsers.pop()
+        if isinstance(current, _ArgumentParser):
+            current.json_errors = json_errors
+        for action in current._actions:
+            if isinstance(action, argparse._SubParsersAction):
+                parsers.extend(action.choices.values())
     args = parser.parse_args(argv)
 
     root = os.path.abspath(args.root)
@@ -3206,8 +3248,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     try:
         db_path = args.db or default_db_path(root)
     except ValueError as exc:
-        print(f"❌ Unsafe default database path: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "invalid_path", f"Unsafe default database path: {exc}")
     if args.command == "setup":
         return cmd_setup(args, root)
 
@@ -3279,21 +3320,21 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     store = None
     try:
         db = Database(db_path)
-    except (LockBusy, RuntimeError) as exc:
-        print(f"❌ Database initialization failed: {exc}", file=sys.stderr)
-        return 1
+    except (LockBusy, RuntimeError, OSError, sqlite3.Error) as exc:
+        return _cli_error(args, "database_error", f"Database initialization failed: {exc}")
 
     try:
         reconciler = Reconciler(db, root)
         if db.schema_was_reset:
+            diagnostic_stream = sys.stderr if json_errors else sys.stdout
             print("⚠️  LEGACY SCHEMA RESET: this project's index used an outdated schema "
-                  "and was rebuilt empty.")
+                  "and was rebuilt empty.", file=diagnostic_stream)
             if args.command in ("reconcile", "reconcile-fast", "reconcile-full", "clean"):
                 # `reconcile` is about to refill the graph itself, and `clean` was
                 # explicitly asked to prune/reset — auto-refilling would undo it.
-                print("   Run `sotgraph reconcile` to repopulate the graph.")
+                print("   Run `sotgraph reconcile` to repopulate the graph.", file=diagnostic_stream)
             else:
-                print("   Rebuilding the index automatically (one-time)…")
+                print("   Rebuilding the index automatically (one-time)…", file=diagnostic_stream)
                 try:
                     from sot_graph.cbm import reconcile_dispatch
                     from sot_graph.config import load_config
@@ -3302,9 +3343,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                         db, reconciler, root,
                         extractor=_cfg.extractor, cbm_mode=_cfg.cbm_mode)
                     print(f"   ✅ Auto-reconciled: {summary.get('updated', 0)} indexed/updated, "
-                          f"{summary.get('failed', 0)} failed.")
+                          f"{summary.get('failed', 0)} failed.", file=diagnostic_stream)
                 except (OSError, sqlite3.Error) as exc:
-                    print(f"   ⚠ Auto-reconcile failed: {exc}; run `sotgraph reconcile` manually.")
+                    print(f"   ⚠ Auto-reconcile failed: {exc}; run `sotgraph reconcile` manually.", file=diagnostic_stream)
 
         if args.command in ("search", "explore", "usages", "implementations",
                             "map", "pack", "trace"):
@@ -3436,12 +3477,29 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return cmd_calibrate(args, qdb, root)
         return 0
     except (LockBusy, RuntimeError) as exc:
-        print(f"❌ {args.command} failed: {exc}", file=sys.stderr)
-        return 1
+        return _cli_error(args, "command_failed", f"{args.command} failed: {exc}")
     finally:
         if store is not None:
             store.close()
         db.close()
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    json_output = ("--json" in arguments or "--receipt" in arguments or "--format=json" in arguments
+                   or any(a == "--format" and b == "json"
+                          for a, b in zip(arguments, arguments[1:])))
+    error_args = argparse.Namespace(json=json_output)
+    try:
+        return _run_cli(arguments, json_errors=json_output)
+    except _CliUsageError as exc:
+        return _cli_error(error_args, "invalid_argument", str(exc), 2)
+    except (OSError, sqlite3.Error, ValueError, OverflowError, RuntimeError) as exc:
+        code = ("database_error" if isinstance(exc, sqlite3.Error) else
+                "io_error" if isinstance(exc, OSError) else
+                "invalid_config" if "config.toml" in str(exc) else
+                "invalid_argument" if isinstance(exc, (ValueError, OverflowError)) else "command_failed")
+        return _cli_error(error_args, code, str(exc))
 
 
 if __name__ == "__main__":

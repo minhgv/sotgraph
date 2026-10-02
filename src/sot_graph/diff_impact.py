@@ -143,6 +143,7 @@ class DiffImpactResult:
     api_impacts: List[ApiImpact] = field(default_factory=list)
     test_impacts: List[TestImpact] = field(default_factory=list)
     summary: Dict[str, Any] = field(default_factory=dict)
+    collection_errors: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -155,6 +156,7 @@ class DiffImpactResult:
             "api_impacts": [a.to_dict() for a in self.api_impacts],
             "test_impacts": [t.to_dict() for t in self.test_impacts],
             "summary": self.summary,
+            "collection_errors": self.collection_errors,
         }
 
 
@@ -214,6 +216,7 @@ class GitDeltaExtractor:
         #: need the diff TEXT (P7.3 debt markers) without re-running git
         #: or duplicating the target-argument ladder above.
         self.last_diff_text: str = ""
+        self.collection_errors: List[str] = []
 
     def run_git(self, args: List[str], timeout_sec: int = 30) -> Tuple[int, str, str]:
         """Run a git subcommand safely in repo_path."""
@@ -251,7 +254,10 @@ class GitDeltaExtractor:
         """
         # Git treats option-like positional arguments as options, even after
         # diff-specific flags. Reject them before any primary or fallback invocation.
+        self.last_diff_text = ""
+        self.collection_errors = []
         if target and target.startswith("-"):
+            self.collection_errors.append("collection_error:git_diff:option-like target rejected")
             return {}, []
 
         diff_args = ["diff", "--no-ext-diff", "--no-textconv", "-U0"]
@@ -285,6 +291,9 @@ class GitDeltaExtractor:
             )
 
         self.last_diff_text = stdout if code == 0 else ""
+        if code != 0:
+            self.collection_errors.append(
+                f"collection_error:git_diff:exit={code}: {stderr.strip()[:1024]}")
         if code == 0 and stdout.strip():
             file_intervals, hunks = self.parse_unified_diff(stdout)
         else:
@@ -292,10 +301,13 @@ class GitDeltaExtractor:
 
         # Include untracked files when inspecting working tree / unstaged changes
         if working_tree or (not staged and not target):
-            untracked_code, untracked_out, _ = self.run_git(
+            untracked_code, untracked_out, untracked_error = self.run_git(
                 ["ls-files", "-z", "--others", "--exclude-standard"]
             )
             canonical_root = os.path.realpath(self.repo_path)
+            if untracked_code != 0:
+                self.collection_errors.append(
+                    f"collection_error:git_diff:untracked exit={untracked_code}: {untracked_error.strip()[:1024]}")
             if untracked_code == 0 and untracked_out:
                 for raw_p in untracked_out.split("\0"):
                     if not raw_p:
@@ -902,6 +914,9 @@ class DiffImpactEngine:
         # concrete base/head revisions the diff actually measured) so CI
         # comments and JSON envelopes are auditable.
         summary.update(self._resolve_diff_identity(target, staged=staged, working_tree=working_tree))
+        if self.extractor.collection_errors:
+            summary["risk_level"] = "UNKNOWN"
+            summary["collection_errors"] = list(self.extractor.collection_errors)
 
         effective_target = (
             "--staged" if staged
@@ -919,6 +934,7 @@ class DiffImpactEngine:
             api_impacts=api_impacts,
             test_impacts=test_impacts,
             summary=summary,
+            collection_errors=list(self.extractor.collection_errors),
         )
 
     def _traverse_reverse_call_graph(

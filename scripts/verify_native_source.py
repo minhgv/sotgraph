@@ -10,8 +10,8 @@ import stat
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "engines/codebase-memory-mcp"
-MANIFEST = ROOT / "plan/python-c-monorepo/evidence/source-import-manifest.json"
-EXPECTED_PIN = "46ae198fc11cda80e817acbc5f5908d7c2de7032"
+MANIFEST = ROOT / "plan/python-c-monorepo/evidence/source-import-manifest-e477a32d.json"
+EXPECTED_PIN = "e477a32d060bef57e58773ffc63ac970229665d9"
 
 
 def _object(pairs: list) -> dict:

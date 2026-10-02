@@ -6,6 +6,7 @@ on:
       - 'engines/codebase-memory-mcp/**'
       - 'scripts/verify_native_source.py'
       - 'plan/python-c-monorepo/evidence/source-import-manifest.json'
+      - 'plan/python-c-monorepo/evidence/source-import-manifest-e477a32d.json'
       - '.github/workflows/native-experimental.yml'
 permissions:
   contents: read

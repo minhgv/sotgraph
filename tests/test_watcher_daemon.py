@@ -5,9 +5,13 @@ Tests for sot_graph.watcher daemon, multi-project discovery, and lifecycle manag
 import os
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 from sot_graph.db import Database
 from sot_graph.locking import LockBusy
@@ -21,7 +25,103 @@ from sot_graph.watcher import (
     start_daemon,
     status_daemon,
     stop_daemon,
+    run_watch,
 )
+
+
+@pytest.mark.parametrize("backend", ["poll", "watchfiles"])
+def test_real_watcher_handles_create_modify_rename_delete_and_idle_stop(tmp_path, backend):
+    if backend == "watchfiles":
+        pytest.importorskip("watchfiles")
+    root = tmp_path.resolve()
+    db_path = str(root / ".sot/sot.db")
+    db = Database(db_path)
+    Reconciler(db, str(root)).reconcile(workers=1)
+    stopped = threading.Event()
+    errors = []
+
+    def watch():
+        writer = Database(db_path)
+        try:
+            run_watch(Reconciler(writer, str(root)), str(root), debounce_ms=20,
+                      interval_ms=20, backend=backend, stop_event=stopped, log=lambda _: None)
+        except BaseException as exc:
+            errors.append(exc)
+        finally:
+            writer.close()
+
+    thread = threading.Thread(target=watch, daemon=True)
+    thread.start()
+
+    def until(condition, nudge=None):
+        deadline = time.monotonic() + 8
+        while not condition():
+            assert not errors
+            assert time.monotonic() < deadline, "watcher failed to publish disk state"
+            # Also avoids a race with backend startup taking its initial
+            # snapshot after creation: eventual modification is observable.
+            if nudge is not None:
+                nudge()
+            time.sleep(0.05)
+
+    source = root / "new.py"
+    renamed = root / "renamed.py"
+    try:
+        source.write_text("def old_name():\n    return 1\n")
+        until(lambda: db.get_file_journal(str(source)) is not None,
+              lambda: source.touch())
+        source.write_text("def new_name():\n    return 22\n")
+        until(lambda: db.conn.execute("SELECT 1 FROM graph_nodes WHERE symbol='new_name'").fetchone())
+        assert not db.conn.execute("SELECT 1 FROM graph_nodes WHERE symbol='old_name'").fetchone()
+        source.rename(renamed)
+        until(lambda: db.get_file_journal(str(source)) is None
+              and db.get_file_journal(str(renamed)) is not None)
+        ignored = root / "node_modules/ignored.py"
+        ignored.parent.mkdir()
+        ignored.write_text("def ignored(): pass\n")
+        renamed.unlink()
+        until(lambda: db.get_file_journal(str(renamed)) is None)
+        assert not db.conn.execute("SELECT 1 FROM graph_nodes WHERE symbol='new_name'").fetchone()
+        assert db.get_file_journal(str(ignored)) is None
+        stopped.set()
+        thread.join(timeout=3)
+        assert not thread.is_alive(), "idle backend ignored stop_event"
+        assert not errors
+    finally:
+        stopped.set()
+        # Wake a regressed event backend before failing the test, so its
+        # SQLite handle never leaks into later tests or temp-dir cleanup.
+        (root / "cleanup.py").write_text("# wake\n")
+        thread.join(timeout=3)
+        db.close()
+
+
+def test_watchfiles_retries_a_busy_path_without_another_file_edit(tmp_path, monkeypatch):
+    import sot_graph.watcher as watcher
+    path = str(tmp_path / "busy.py")
+    calls = []
+
+    class Ignore:
+        def is_ignored(self, path):
+            return False
+
+    class ReconcilerFake:
+        ignore_matcher = Ignore()
+
+        def reconcile_paths(self, paths):
+            calls.append(paths)
+            return (0, set(paths)) if len(calls) == 1 else (1, set())
+
+    class Backend:
+        @staticmethod
+        def watch(*args, **kwargs):
+            yield {(2, path)}
+            if kwargs.get("yield_on_timeout"):
+                yield set()
+
+    monkeypatch.setattr(watcher, "_WATCHFILES", Backend)
+    watcher._run_watchfiles(ReconcilerFake(), str(tmp_path), 20, lambda _: None)
+    assert calls == [{path}, {path}]
 
 class TestWatcherDaemon(unittest.TestCase):
     def setUp(self):

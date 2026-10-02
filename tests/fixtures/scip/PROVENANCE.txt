@@ -1,0 +1,11 @@
+standard_fields.scip is a synthetic wire-compatibility fixture, generated
+with scip.Index.fromObject(...).serialize() from the independent protobuf
+SDK in @sourcegraph/scip-typescript 0.4.0 on 2026-10-01. It exercises
+SymbolInformation documentation (3), relationships (4), kind (5),
+display_name (6), and signature_documentation (7).
+
+compiler_typescript/index.scip is separately produced by the actual
+TypeScript indexer; see compiler_typescript/PROVENANCE.txt.
+
+Schema: https://raw.githubusercontent.com/sourcegraph/scip/main/scip.proto
+Regeneration and export interoperability: scripts/e2e_real_scip.py

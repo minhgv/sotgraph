@@ -266,7 +266,7 @@ class BuildBundleScopedTests(unittest.TestCase):
     """End-to-end: scoped class-qualified method packs with disclosure."""
 
     def setUp(self):
-        self.repo = tempfile.mkdtemp(prefix="sot-scoped-e2e-", dir=".sot/tmp")
+        self.repo = tempfile.mkdtemp(prefix="sot-scoped-e2e-")
         self.addCleanup(shutil.rmtree, self.repo, ignore_errors=True)
         os.makedirs(os.path.join(self.repo, "src", "sot_graph"))
         with open(os.path.join(self.repo, "src", "sot_graph", "mcp_service.py"), "w") as fh:

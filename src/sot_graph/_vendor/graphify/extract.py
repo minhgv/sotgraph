@@ -498,6 +498,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
 
             # Collect local parameter and variable type annotations within this scope
             local_types: Dict[str, str] = {}
+            declared_receivers: set = set()
             # Context-manager protocol sites in this scope: (class_name,
             # with_lineno, is_async). Filled from statically known shapes
             # only — a direct class-name call ('Session()') or a variable
@@ -509,6 +510,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                     t_name = _extract_type_name(arg.annotation)
                     if t_name:
                         local_types[arg.arg] = t_name
+                        declared_receivers.add(arg.arg)
 
             for child in _iter_scope_nodes(node):
                 if isinstance(child, ast.AnnAssign):
@@ -529,6 +531,7 @@ def extract_python(path: Path) -> Dict[str, Any]:
                         for tgt in child.targets:
                             if isinstance(tgt, ast.Name):
                                 local_types[tgt.id] = val_type
+                                declared_receivers.discard(tgt.id)
                             elif isinstance(tgt, ast.Attribute) and isinstance(tgt.value, ast.Name) and tgt.value.id in ("self", "cls"):
                                 local_types[f"self.{tgt.attr}"] = val_type
                                 local_types[tgt.attr] = val_type
@@ -617,6 +620,13 @@ def extract_python(path: Path) -> Dict[str, Any]:
                     context = _classify_call(
                         child, call_bound, local_import_map, local_alias_map, local_types, enclosing_class
                     ) or {}
+                    if isinstance(child.func, ast.Attribute):
+                        original_receiver = _dotted_expr(child.func.value)
+                        if original_receiver and original_receiver.split(".")[0] in declared_receivers:
+                            # A parameter annotation names a contract, not
+                            # the runtime subtype. Let the project resolver
+                            # check known overrides before claiming a call.
+                            context["call_kind"] = "DECLARED_RECEIVER"
                     edges.append({
                         "source": func_id,
                         "target": callee,

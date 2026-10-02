@@ -895,7 +895,12 @@ export function runStage(input: string): string {
     edges.append(b.edge(f, "process", "calls", "normalize", f, b.line_of(f, "return normalize(input);"), lang))
     edges.append(b.edge(f, "Stage.process", "calls", "Stage.normalizeStage", f,
                         b.line_of(f, "return this.normalizeStage(input);"), lang))
-    edges.append(b.edge(f, "Stage.normalizeStage", "calls", "normalize", f,
+    # This oracle measures direct call sites. The closure owns the
+    # normalize(value) call; its enclosing method calls the closure.
+    edges.append(b.edge(f, "Stage.normalizeStage.inner", "calls", "normalize", f,
+                        b.line_of(f, "const inner = (value: string) => normalize(value);"),
+                        lang, "static_positive", "nested_scope"))
+    edges.append(b.edge(f, "Stage.normalizeStage", "calls", "Stage.normalizeStage.inner", f,
                         b.line_of(f, "return inner(input);"), lang, "static_positive", "nested_scope"))
     edges.append(b.edge(f, "runStage", "calls", "Stage", f,
                         b.line_of(f, "const s = new Stage();"), lang, "static_positive", "constructor_call"))
@@ -2216,6 +2221,16 @@ def evaluate_gate(
     # --- (a) overall precision/recall floors ---
     base_counts = base_builtin.get("counts", {})  # type: ignore[union-attr]
     fresh_counts = fresh_builtin.get("counts", {})  # type: ignore[union-attr]
+    # Identity errors are categorical failures, even if a large corpus
+    # hides them below the aggregate precision tolerance. Dynamic
+    # abstention is allowed; a fabricated target is not.
+    wrong_static = int(fresh_counts.get("false_positives", 0))
+    wrong_dynamic = int(fresh_builtin.get("dynamic", {}).get("claimed_same_bare_other", 0))
+    lines.append(f"wrong-target gates   static {wrong_static}  dynamic {wrong_dynamic}")
+    if wrong_static:
+        failures.append(f"static wrong-target gate: {wrong_static} false positives (budget 0)")
+    if wrong_dynamic:
+        failures.append(f"dynamic misresolution gate: {wrong_dynamic} wrong targets (budget 0)")
     overall_p_floor = (min_precision if min_precision is not None
                        else float(base_counts.get("precision", 0.0)) - tolerance)
     overall_r_floor = (min_recall if min_recall is not None

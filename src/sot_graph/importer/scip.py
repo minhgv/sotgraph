@@ -257,26 +257,24 @@ def _parse_scip_symbol_info(payload: bytes) -> Dict[str, Any]:
     for field_num, wire_type, val in _decode_raw_message(payload):
         if field_num == 1 and wire_type == 2:
             sym_info["symbol"] = val.decode("utf-8", errors="replace")
-        elif field_num == 2 and wire_type == 2:
+        elif field_num in (2, 3) and wire_type == 2:
+            # Standard SCIP uses field 3. Retain field 2 for indexes
+            # exported by older sotgraph versions, without guessing that
+            # a documentation string is a Relationship message.
             sym_info["documentation"].append(val.decode("utf-8", errors="replace"))
-        elif field_num == 3 and wire_type == 2:
-            # SCIP proto: field 3 of SymbolInformation is ALWAYS
-            # repeated Relationship (a Relationship payload is usually also
-            # valid UTF-8, so decode-sniffing laundered relationships into
-            # documentation junk and dropped every implements/is_definition
-            # edge on binary indexes).
-            sym_info["relationships"].append(_parse_scip_relationship(val))
         elif field_num == 4:
             if wire_type == 2:
                 sym_info["relationships"].append(_parse_scip_relationship(val))
             elif wire_type == 0:
                 sym_info["kind"] = val
-        elif field_num == 17 and wire_type == 0:
-            # Modern SCIP: oneof kind { SymbolKind symbol_kind = 4 (legacy);
-            # Kind kind = 17 } — prefer the current enum when present.
+        elif field_num == 5 and wire_type == 0:
             sym_info["kind"] = val
-        elif field_num == 5 and wire_type == 2:
+        elif field_num in (5, 6) and wire_type == 2:
             sym_info["display_name"] = val.decode("utf-8", errors="replace")
+        elif field_num == 7 and wire_type == 2:
+            sym_info["signature_documentation"] = _parse_scip_document(val)
+        elif field_num == 8 and wire_type == 2:
+            sym_info["enclosing_symbol"] = val.decode("utf-8", errors="replace")
     return sym_info
 
 
@@ -462,7 +460,7 @@ def translate_scip_range(
 
 
 def _split_scip_spaces(s: str) -> List[str]:
-    """Split SCIP symbol by spaces while respecting backtick escapes."""
+    """Split package fields, accepting doubled spaces and legacy backticks."""
     parts: List[str] = []
     current: List[str] = []
     in_backtick = False
@@ -479,6 +477,10 @@ def _split_scip_spaces(s: str) -> List[str]:
             current.append(c)
             i += 1
         elif c == ' ' and not in_backtick:
+            if i + 1 < n and s[i + 1] == ' ':
+                current.append(' ')
+                i += 2
+                continue
             if current:
                 parts.append("".join(current))
                 current = []

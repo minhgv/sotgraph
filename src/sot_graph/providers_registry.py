@@ -106,17 +106,15 @@ def discover_plugin_providers() -> list[ProviderStatus]:
     return statuses
 
 #: sot-builtin measured per language x relation F1 (oracle P0 baseline,
-#: benchmarks/oracle/builtin-baseline.json — regenerated after the P3.3b
-#: recall work: Go 100, TS 99.5, Rust 98.5 overall). The builtin does NOT
-#: advertise a blanket callgraph capability: it declares where it is
-#: strong and names the weak cells (rust/java implements extraction) so
-#: routing and reports stay honest.
+#: benchmarks/oracle/builtin-baseline.json, regenerated after the October
+#: functional fixes). These are bounded synthetic static-relation scores;
+#: they do not establish compiler resolution or runtime completeness.
 BUILTIN_LANGUAGE_SCORECARD: dict[str, dict[str, float]] = {
-    "python": {"calls": 0.997, "extends": 1.0},
-    "java": {"calls": 0.996, "implements": 1.0},
-    "typescript": {"calls": 0.995, "implements": 1.0},
+    "python": {"calls": 1.0, "extends": 1.0},
+    "java": {"calls": 1.0, "implements": 1.0},
+    "typescript": {"calls": 1.0, "implements": 1.0},
     "go": {"calls": 1.0},
-    "rust": {"calls": 0.992, "implements": 1.0},
+    "rust": {"calls": 1.0, "implements": 1.0},
 }
 
 

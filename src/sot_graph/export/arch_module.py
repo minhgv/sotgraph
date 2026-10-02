@@ -9,7 +9,7 @@ wall-clock, identical inputs produce identical output.
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from sot_graph.analytics.graph import AnalyticsGraph
 from sot_graph.export.arch_html import build_arch_view, render_html, validate

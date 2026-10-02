@@ -4,7 +4,7 @@
     "repo": "oracle-corpus-v1",
     "digest": "23c0e29c2ace0b5ac2bca9dcb3073802d4be714e07dc40c37427fda71cfaed5b",
     "files": 236,
-    "edges": 1162,
+    "edges": 1163,
     "languages": [
       "go",
       "java",
@@ -13,7 +13,7 @@
       "typescript"
     ],
     "counts": {
-      "static_positive": 1012,
+      "static_positive": 1013,
       "static_negative": 124,
       "dynamic_positive": 26
     },
@@ -25,29 +25,29 @@
   },
   "builtin": {
     "counts": {
-      "static_positive": 1012,
+      "static_positive": 1013,
       "static_negative": 124,
       "dynamic_positive": 26,
-      "true_positives": 1007,
-      "false_negatives": 5,
-      "false_positives": 2,
-      "false_positive_negative_matches": 1,
-      "false_positive_unexpected_edges": 1,
-      "true_negatives": 123,
-      "precision": 0.998,
-      "recall": 0.9951,
-      "f1": 0.9965
+      "true_positives": 1013,
+      "false_negatives": 0,
+      "false_positives": 0,
+      "false_positive_negative_matches": 0,
+      "false_positive_unexpected_edges": 0,
+      "true_negatives": 124,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
     },
     "per_language": {
       "python": {
         "calls": {
-          "tp": 376,
-          "fp": 1,
-          "fn": 1,
-          "tn": 44,
-          "precision": 0.9973,
-          "recall": 0.9973,
-          "f1": 0.9973
+          "tp": 377,
+          "fp": 0,
+          "fn": 0,
+          "tn": 45,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
         },
         "extends": {
           "tp": 1,
@@ -59,24 +59,24 @@
           "f1": 1.0
         },
         "overall": {
-          "tp": 377,
-          "fp": 1,
-          "fn": 1,
-          "tn": 44,
-          "precision": 0.9974,
-          "recall": 0.9974,
-          "f1": 0.9974
+          "tp": 378,
+          "fp": 0,
+          "fn": 0,
+          "tn": 45,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
         }
       },
       "typescript": {
         "calls": {
-          "tp": 210,
-          "fp": 1,
-          "fn": 1,
+          "tp": 212,
+          "fp": 0,
+          "fn": 0,
           "tn": 33,
-          "precision": 0.9953,
-          "recall": 0.9953,
-          "f1": 0.9953
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
         },
         "implements": {
           "tp": 1,
@@ -88,13 +88,13 @@
           "f1": 1.0
         },
         "overall": {
-          "tp": 211,
-          "fp": 1,
-          "fn": 1,
+          "tp": 213,
+          "fp": 0,
+          "fn": 0,
           "tn": 33,
-          "precision": 0.9953,
-          "recall": 0.9953,
-          "f1": 0.9953
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
         }
       },
       "go": {
@@ -119,13 +119,13 @@
       },
       "rust": {
         "calls": {
-          "tp": 129,
+          "tp": 131,
           "fp": 0,
-          "fn": 2,
+          "fn": 0,
           "tn": 11,
           "precision": 1.0,
-          "recall": 0.9847,
-          "f1": 0.9923
+          "recall": 1.0,
+          "f1": 1.0
         },
         "extends": {
           "tp": 0,
@@ -146,24 +146,24 @@
           "f1": 1.0
         },
         "overall": {
-          "tp": 130,
+          "tp": 132,
           "fp": 0,
-          "fn": 2,
+          "fn": 0,
           "tn": 17,
           "precision": 1.0,
-          "recall": 0.9848,
-          "f1": 0.9924
+          "recall": 1.0,
+          "f1": 1.0
         }
       },
       "java": {
         "calls": {
-          "tp": 129,
+          "tp": 130,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "tn": 10,
           "precision": 1.0,
-          "recall": 0.9923,
-          "f1": 0.9961
+          "recall": 1.0,
+          "f1": 1.0
         },
         "extends": {
           "tp": 0,
@@ -184,63 +184,41 @@
           "f1": 1.0
         },
         "overall": {
-          "tp": 130,
+          "tp": 131,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "tn": 18,
           "precision": 1.0,
-          "recall": 0.9924,
-          "f1": 0.9962
+          "recall": 1.0,
+          "f1": 1.0
         }
       }
     },
-    "confusion": [
-      "py_pkg/scopes/scopes.py:19 run_pipeline -> Pipeline.process (calls) [identity_unqualified] same_name_two_scopes: Must resolve to Pipeline.process, never module-level process",
-      "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> normalize (calls) [edge_absent] nested_scope:",
-      "rust_pkg/src/alias.rs:5 digest -> hash_data (calls) [edge_absent] alias_import:",
-      "rust_pkg/src/shape.rs:13 Circle.describe -> Circle.area (calls) [edge_absent] call:",
-      "java_pkg/alias/UseStatic.java:8 UseStatic.check -> Validator.isValid (calls) [pending_unresolved] alias_import: pending dst_symbol='isValid'",
-      "py_pkg/scopes/scopes.py:19 run_pipeline -> process (calls) [false_positive] same_name_two_scopes: Module-level process must not be the target of p.process()",
-      "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> Stage.inner (calls) [unexpected_edge]",
-      "py_pkg/dyn/dispatch.py:11 notify_dynamic -> LoudNotifier.send (calls) [dynamic_misresolution] virtual_dispatch: claimed Notifier.send @ py_pkg/dyn/inheritance.py instead of LoudNotifier.send @ py_pkg/dyn/dispatch.py"
-    ],
-    "false_positive_details": [
-      {
-        "anchor": "py_pkg/scopes/scopes.py:19 run_pipeline -> process (calls)",
-        "category": "same_name_two_scopes",
-        "db_line": 19,
-        "description": "Module-level process must not be the target of p.process()"
-      },
-      {
-        "anchor": "ts_pkg/scopes/scopes.ts:17 Stage.normalizeStage -> Stage.inner (calls)",
-        "category": "unexpected_edge",
-        "db_line": 17,
-        "description": "resolved calls edge from a GT-covered source, absent from ground truth"
-      }
-    ],
+    "confusion": [],
+    "false_positive_details": [],
     "dynamic": {
       "total": 26,
-      "claimed_exact": 4,
-      "claimed_same_bare_other": 1,
+      "claimed_exact": 5,
+      "claimed_same_bare_other": 0,
       "unclaimed": 21
     },
     "diagnostics": {
-      "identity_only_recall": 0.995,
-      "legacy_loose_recall_diagnostic": 0.996
+      "identity_only_recall": 1.0,
+      "legacy_loose_recall_diagnostic": 1.0
     }
   },
   "search_topk": {
     "queries": 20,
     "unique_queries": 11,
     "ambiguous_queries": 9,
-    "hit_at_1": 0.6,
-    "hit_at_5": 0.75,
+    "hit_at_1": 0.65,
+    "hit_at_5": 1.0,
     "hit_at_10": 1.0,
     "unique_hit_at_1": 0.9091,
     "unique_hit_at_5": 1.0,
     "unique_hit_at_10": 1.0,
-    "ambiguous_hit_at_1": 0.2222,
-    "ambiguous_hit_at_5": 0.4444,
+    "ambiguous_hit_at_1": 0.3333,
+    "ambiguous_hit_at_5": 1.0,
     "ambiguous_hit_at_10": 1.0,
     "details": [
       {
@@ -260,14 +238,14 @@
             "symbol": "compute_tax"
           },
           {
-            "fqn": "py_pkg.core.math_ops",
-            "path": "py_pkg/core/math_ops.py",
-            "symbol": "math_ops.py"
-          },
-          {
             "fqn": "py_pkg.generated.gen_models",
             "path": "py_pkg/generated/gen_models.py",
             "symbol": "gen_models.py"
+          },
+          {
+            "fqn": "scripts.run_all",
+            "path": "scripts/run_all.py",
+            "symbol": "run_all.py"
           }
         ]
       },
@@ -307,24 +285,24 @@
           "py_pkg.scopes.scopes.Pipeline.process",
           "py_pkg.scopes.scopes.process"
         ],
-        "hit_at_1": false,
+        "hit_at_1": true,
         "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_param_shadow",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_param_shadow"
+            "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+            "path": "py_pkg/scopes/scopes.py",
+            "symbol": "Pipeline.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_local_assign",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_local_assign"
+            "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+            "path": "java_pkg/scopes/Scopes.java",
+            "symbol": "Scopes.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_for_target",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_for_target"
+            "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+            "path": "go_pkg/scopes/scopes.go",
+            "symbol": "Stage.Process"
           }
         ]
       },
@@ -336,15 +314,10 @@
           "py_pkg.scopes.scopes.Pipeline.normalize_stage",
           "py_pkg.scopes.scopes.normalize"
         ],
-        "hit_at_1": true,
+        "hit_at_1": false,
         "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
-          {
-            "fqn": "py_pkg.scopes.scopes.Pipeline.normalize_stage",
-            "path": "py_pkg/scopes/scopes.py",
-            "symbol": "Pipeline.normalize_stage"
-          },
           {
             "fqn": "go_pkg.scopes.scopes.go.normalize",
             "path": "go_pkg/scopes/scopes.go",
@@ -353,6 +326,11 @@
           {
             "fqn": "py_pkg.scopes.scopes.normalize",
             "path": "py_pkg/scopes/scopes.py",
+            "symbol": "normalize"
+          },
+          {
+            "fqn": "rust_pkg.src.scopes.rs.normalize",
+            "path": "rust_pkg/src/scopes.rs",
             "symbol": "normalize"
           }
         ]
@@ -402,14 +380,14 @@
             "symbol": "validateOrder"
           },
           {
-            "fqn": "ts_pkg.generated.gen_api.generated.ts",
-            "path": "ts_pkg/generated/gen_api.generated.ts",
-            "symbol": "gen_api.generated.ts"
-          },
-          {
             "fqn": "ts_pkg.models.order.ts",
             "path": "ts_pkg/models/order.ts",
             "symbol": "order.ts"
+          },
+          {
+            "fqn": "ts_pkg.services.order_svc_1.ts",
+            "path": "ts_pkg/services/order_svc_1.ts",
+            "symbol": "order_svc_1.ts"
           }
         ]
       },
@@ -422,23 +400,23 @@
           "ts_pkg.scopes.scopes.ts.process"
         ],
         "hit_at_1": false,
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_param_shadow",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_param_shadow"
+            "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+            "path": "py_pkg/scopes/scopes.py",
+            "symbol": "Pipeline.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_local_assign",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_local_assign"
+            "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+            "path": "java_pkg/scopes/Scopes.java",
+            "symbol": "Scopes.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_for_target",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_for_target"
+            "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+            "path": "go_pkg/scopes/scopes.go",
+            "symbol": "Stage.Process"
           }
         ]
       },
@@ -464,9 +442,9 @@
             "symbol": "Stage.normalizeStage"
           },
           {
-            "fqn": "go_pkg.scopes.scopes.go",
-            "path": "go_pkg/scopes/scopes.go",
-            "symbol": "scopes.go"
+            "fqn": "ts_pkg.scopes.scopes.ts.Stage.normalizeStage.inner",
+            "path": "ts_pkg/scopes/scopes.ts",
+            "symbol": "Stage.normalizeStage.inner"
           }
         ]
       },
@@ -490,6 +468,11 @@
             "fqn": "go_pkg.storage.db.go",
             "path": "go_pkg/storage/db.go",
             "symbol": "db.go"
+          },
+          {
+            "fqn": "go_pkg.workers.worker_1.go",
+            "path": "go_pkg/workers/worker_1.go",
+            "symbol": "worker_1.go"
           }
         ]
       },
@@ -513,6 +496,11 @@
             "fqn": "go_pkg.storage.db.go",
             "path": "go_pkg/storage/db.go",
             "symbol": "db.go"
+          },
+          {
+            "fqn": "go_pkg.workers.worker_1.go",
+            "path": "go_pkg/workers/worker_1.go",
+            "symbol": "worker_1.go"
           }
         ]
       },
@@ -524,23 +512,23 @@
           "go_pkg.scopes.scopes.go.Stage.Process"
         ],
         "hit_at_1": false,
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_param_shadow",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_param_shadow"
+            "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+            "path": "py_pkg/scopes/scopes.py",
+            "symbol": "Pipeline.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_local_assign",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_local_assign"
+            "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+            "path": "java_pkg/scopes/Scopes.java",
+            "symbol": "Scopes.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_for_target",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_for_target"
+            "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+            "path": "go_pkg/scopes/scopes.go",
+            "symbol": "Stage.Process"
           }
         ]
       },
@@ -552,24 +540,24 @@
           "go_pkg.samename.samename.go.Blob.Save",
           "go_pkg.samename.samename.go.Doc.Save"
         ],
-        "hit_at_1": false,
+        "hit_at_1": true,
         "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "go_pkg.samename.samename.go.SaveAll",
+            "fqn": "go_pkg.samename.samename.go.Doc.Save",
             "path": "go_pkg/samename/samename.go",
-            "symbol": "SaveAll"
+            "symbol": "Doc.Save"
           },
           {
-            "fqn": "rust_pkg.src.samename.rs.save_all",
+            "fqn": "go_pkg.samename.samename.go.Blob.Save",
+            "path": "go_pkg/samename/samename.go",
+            "symbol": "Blob.Save"
+          },
+          {
+            "fqn": "rust_pkg.src.samename.rs.Doc.save",
             "path": "rust_pkg/src/samename.rs",
-            "symbol": "save_all"
-          },
-          {
-            "fqn": "go_pkg.dyn.dispatch.go.Saver",
-            "path": "go_pkg/dyn/dispatch.go",
-            "symbol": "Saver"
+            "symbol": "Doc.save"
           }
         ]
       },
@@ -590,14 +578,14 @@
             "symbol": "hash_data"
           },
           {
-            "fqn": "rust_pkg.src.mod_1.rs",
-            "path": "rust_pkg/src/mod_1.rs",
-            "symbol": "mod_1.rs"
+            "fqn": "rust_pkg.src.crypto.rs",
+            "path": "rust_pkg/src/crypto.rs",
+            "symbol": "crypto.rs"
           },
           {
-            "fqn": "rust_pkg.src.mod_2.rs",
-            "path": "rust_pkg/src/mod_2.rs",
-            "symbol": "mod_2.rs"
+            "fqn": "rust_pkg.src.generated.rs",
+            "path": "rust_pkg/src/generated.rs",
+            "symbol": "generated.rs"
           }
         ]
       },
@@ -638,23 +626,23 @@
           "rust_pkg.src.scopes.rs.process"
         ],
         "hit_at_1": false,
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_param_shadow",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_param_shadow"
+            "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+            "path": "py_pkg/scopes/scopes.py",
+            "symbol": "Pipeline.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_local_assign",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_local_assign"
+            "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+            "path": "java_pkg/scopes/Scopes.java",
+            "symbol": "Scopes.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_for_target",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_for_target"
+            "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+            "path": "go_pkg/scopes/scopes.go",
+            "symbol": "Stage.Process"
           }
         ]
       },
@@ -667,23 +655,23 @@
           "rust_pkg.src.samename.rs.Doc.save"
         ],
         "hit_at_1": false,
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "go_pkg.samename.samename.go.SaveAll",
+            "fqn": "go_pkg.samename.samename.go.Doc.Save",
             "path": "go_pkg/samename/samename.go",
-            "symbol": "SaveAll"
+            "symbol": "Doc.Save"
           },
           {
-            "fqn": "rust_pkg.src.samename.rs.save_all",
+            "fqn": "go_pkg.samename.samename.go.Blob.Save",
+            "path": "go_pkg/samename/samename.go",
+            "symbol": "Blob.Save"
+          },
+          {
+            "fqn": "rust_pkg.src.samename.rs.Doc.save",
             "path": "rust_pkg/src/samename.rs",
-            "symbol": "save_all"
-          },
-          {
-            "fqn": "go_pkg.dyn.dispatch.go.Saver",
-            "path": "go_pkg/dyn/dispatch.go",
-            "symbol": "Saver"
+            "symbol": "Doc.save"
           }
         ]
       },
@@ -702,6 +690,11 @@
             "fqn": "java_pkg.core.Validator.java.Validator.sanitize",
             "path": "java_pkg/core/Validator.java",
             "symbol": "Validator.sanitize"
+          },
+          {
+            "fqn": "java_pkg.Main.java",
+            "path": "java_pkg/Main.java",
+            "symbol": "Main.java"
           },
           {
             "fqn": "java_pkg.core.Validator.java",
@@ -732,9 +725,9 @@
             "symbol": "Overload.isValid"
           },
           {
-            "fqn": "java_pkg.overload.Overload.java",
-            "path": "java_pkg/overload/Overload.java",
-            "symbol": "Overload.java"
+            "fqn": "java_pkg.core.Validator.java",
+            "path": "java_pkg/core/Validator.java",
+            "symbol": "Validator.java"
           }
         ]
       },
@@ -774,23 +767,23 @@
           "java_pkg.scopes.Scopes.java.Scopes.process"
         ],
         "hit_at_1": false,
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
         "top3": [
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_param_shadow",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_param_shadow"
+            "fqn": "py_pkg.scopes.scopes.Pipeline.process",
+            "path": "py_pkg/scopes/scopes.py",
+            "symbol": "Pipeline.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_local_assign",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_local_assign"
+            "fqn": "java_pkg.scopes.Scopes.java.Scopes.process",
+            "path": "java_pkg/scopes/Scopes.java",
+            "symbol": "Scopes.process"
           },
           {
-            "fqn": "py_pkg.shadowed.shadowing.process_with_for_target",
-            "path": "py_pkg/shadowed/shadowing.py",
-            "symbol": "process_with_for_target"
+            "fqn": "go_pkg.scopes.scopes.go.Stage.Process",
+            "path": "go_pkg/scopes/scopes.go",
+            "symbol": "Stage.Process"
           }
         ]
       }

@@ -2,7 +2,8 @@
 
 ## Repository boundary
 
-Development now lives in private `minhgv/sotgraph`. Native source lives in
+Development lives in `minhgv/sotgraph` (public, verified through the repository
+API on 2026-10-02). Native source lives in
 private `minhgv/sotgraph-cbm`, mounted at `engines/codebase-memory-mcp`.
 The prior checkout is not a dependency and must not be modified by migration work.
 The executable is now **`sotgraph`**, with no legacy alias installed. This is an
@@ -58,7 +59,11 @@ git submodule update --init --recursive
 .venv/bin/python scripts/verify_native_source.py
 ```
 
-Current authentic pin: `46ae198fc11cda80e817acbc5f5908d7c2de7032`.
+Current source pin: `e477a32d060bef57e58773ffc63ac970229665d9`, matching
+the parent gitlink and release-pin registry. The current source inventory is
+`source-import-manifest-e477a32d.json`; the original `source-import-manifest.json`
+is preserved as historical evidence for `46ae198f`. The native-source change
+between these commits adds two release documentation/workflow files only.
 Native upstream attribution and licenses remain intact. The independent mirror
 retains native history; it is not a Python package payload. See the native README
 for compiler requirements. Build in scratch, without installer/UI hooks, as the
@@ -69,14 +74,25 @@ that exact commit in the submodule, and stage the gitlink in the parent on a
 feature branch. Add a newly reviewed source manifest/evidence and update the
 verifier binding as needed; never silently rewrite an old signed/hash-bound
 receipt to make a new pin appear historically verified. Run source verification
-and native acceptance before review. No native pin changed in this audit.
+and native acceptance before review. The functional remediation aligns the
+verifier with the already committed gitlink; it does not change that gitlink.
 
 ## Operator prerequisites, not configured by this change
 
-GitHub Actions remain disabled. No workflow was dispatched, no remote settings
-or secrets changed, and no changes pushed. Before enabling native CI, configure
+GitHub Actions were observed enabled through the repository API on 2026-10-02.
+The functional remediation branch was pushed with approval and draft
+[PR #24](https://github.com/minhgv/sotgraph/pull/24) opened on 2026-10-02.
+PR CI runs automatically; no remote settings or secrets were changed.
+The Python remediation was accepted at source commit `c3c2252`: all 24
+non-release jobs in [CI run 36953994774](https://github.com/minhgv/sotgraph/actions/runs/36953994774)
+passed, including Ubuntu/macOS/Windows × Python 3.10–3.14. Claims lint and
+diff-impact also passed. The subsequent evidence/report update changes only
+documentation and archives; it does not change the tested product or fixtures.
+Native CI stopped at its credential preflight because its token is absent;
+the user chose local native source/build evidence for this remediation.
+Before running native CI, configure
 `NATIVE_SOURCE_READ_TOKEN` as a short-lived/fine-grained credential with only
-Contents: read for these two private repositories (or use a GitHub App
+Contents: read for both repositories (or use a GitHub App
 installation token with equivalent repository-limited permissions). The native
 workflow fails with an explicit message when this secret is absent, including
 fork PRs that cannot receive secrets. Checkout does not persist credentials.
@@ -87,7 +103,7 @@ on the former repository or certification of the controlled native mirror.
 
 Publishing/package ownership, release environments, branch protections and
 external service credentials must be reviewed by the operator before release.
-Private repository source installs are the onboarding default; a public PyPI
+Repository source installs are the onboarding default; a public PyPI
 package with the same compatibility name need not contain this branch's changes.
 Static workflow validation does not certify remote execution or release readiness.
 

@@ -31,6 +31,8 @@ def module_form_of_import(raw: str, language: str, dir_module: str) -> Optional[
         return None
     if language == "go":
         return raw.replace("/", ".")
+    if language == "rust":
+        return raw.removeprefix("crate::").removeprefix("self::").replace("::", ".")
     if language in ("typescript", "tsx", "javascript") and raw.startswith("."):
         stripped = raw.lstrip("./")
         if not stripped:
@@ -453,12 +455,11 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
     # P3.3b: AST-anchored receiver typing. Maps a simple variable name to
     # the type it was constructed as (TS `const v = new C()`, Go receiver
     # params `func (r *T)`, Go value params `func f(r *T)`, Go
-    # `r := &T{}`). File-scoped and last-declaration-wins: deliberately
-    # conservative — it only ever QUALIFIES an existing receiver call
-    # target, never invents a callee.
-    var_types: Dict[str, str] = {}
+    # `r := &T{}`). Each function/block owns a copy of its enclosing
+    # environment so same-name locals never leak into sibling scopes.
+    # None records an untyped shadow of a previously typed variable.
 
-    def _bind_typed_params(node: Any) -> None:
+    def _bind_typed_params(node: Any, var_types: Dict[str, Optional[str]]) -> None:
         """Bind Go/Rust parameter variables to their declared types.
 
         Go: `d *Doc` / receiver `(w *Worker1)`. Rust: `d: &Doc`,
@@ -470,17 +471,31 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
             else r"([A-Za-z_]\w*)\s*:\s*&?(?:mut\s+)?(?:crate::)?([A-Z]\w*)"  # Rust form
         )
         for child in node.children:
+            if language in ("typescript", "tsx", "javascript") and child.type == "formal_parameters":
+                for param in child.named_children:
+                    name = param.child_by_field_name("pattern") or param.child_by_field_name("name")
+                    if name is None and param.type == "identifier":
+                        name = param
+                    if name is not None and name.type == "identifier":
+                        var_types[text(name)] = None
+                continue
             if child.type in ("parameter_list", "parameter_declaration", "parameters"):
                 for m in re.finditer(patterns, text(child)):
                     var, type_name = m.group(1), m.group(2)
-                    if var != type_name and type_name[0].isupper():
-                        var_types[var] = type_name
+                    if var != type_name:
+                        var_types[var] = type_name if type_name[0].isupper() else None
 
-    def _bind_ts_declarator(node: Any) -> None:
+    def _bind_ts_declarator(node: Any, var_types: Dict[str, Optional[str]]) -> None:
         """Bind TS `const v = new C()` variable names to class C."""
         name_node = node.child_by_field_name("name")
         value_node = node.child_by_field_name("value")
-        if name_node is None or value_node is None or value_node.type != "new_expression":
+        if name_node is None:
+            return
+        var_name = text(name_node).strip()
+        if not re.fullmatch(r"[A-Za-z_$][\w$]*", var_name):
+            return
+        var_types[var_name] = None
+        if value_node is None or value_node.type != "new_expression":
             return
         ctor = value_node.child_by_field_name("constructor")
         if ctor is not None and ctor.type in _NAME_CHILD_TYPES + ("identifier",):
@@ -598,10 +613,13 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                         })
 
     def visit(
-        node: Any, containers: Tuple[str, ...], current_def: Optional[str]
-    ) -> List[Tuple[Any, Tuple[str, ...], Optional[str]]]:
-        out: List[Tuple[Any, Tuple[str, ...], Optional[str]]] = []
+        node: Any, containers: Tuple[str, ...], current_def: Optional[str],
+        var_types: Dict[str, Optional[str]],
+    ) -> List[Tuple[Any, Tuple[str, ...], Optional[str], Dict[str, Optional[str]]]]:
+        out: List[Tuple[Any, Tuple[str, ...], Optional[str], Dict[str, Optional[str]]]] = []
         node_type = node.type
+        if node_type in defs_cfg or node_type in ("statement_block", "block", "compound_statement"):
+            var_types = dict(var_types)
 
         # P3.3b receiver typing + constructor edges (AST-anchored).
         if node_type in ("variable_declarator", "lexical_declaration", "variable_declaration"):
@@ -609,7 +627,7 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                 [c for c in node.children if c.type == "variable_declarator"]
                 if node_type != "variable_declarator" else [node]
             ):
-                _bind_ts_declarator(_d)
+                _bind_ts_declarator(_d, var_types)
         elif language == "go" and node_type == "short_var_declaration":
             for _m in re.finditer(
                 r"([A-Za-z_]\w*)\s*:=\s*&?\s*([A-Z]\w*)\s*\{", text(node)
@@ -645,7 +663,8 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                 var_name = name_of(child, "name")
                 val_node = child.child_by_field_name("value")
                 if var_name and val_node and val_node.type in ("arrow_function", "function_expression", "function"):
-                    raw_id = f"{containers[-1]}.{var_name}" if containers else var_name
+                    scope = current_def or (containers[-1] if containers else None)
+                    raw_id = f"{scope}.{var_name}" if scope else var_name
                     if raw_id not in seen_ids:
                         seen_ids.add(raw_id)
                         snippet = text(node).split("\n", 1)[0][:120]
@@ -666,10 +685,12 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                             "relation": "defines",
                             "source_location": f"L{line(child)}",
                         })
+                    arrow_types = dict(var_types)
+                    _bind_typed_params(val_node, arrow_types)
                     for sub in val_node.children:
-                        out.append((sub, containers, raw_id))
+                        out.append((sub, containers, raw_id, arrow_types))
                 elif val_node:
-                    out.append((val_node, containers, current_def))
+                    out.append((val_node, containers, current_def, var_types))
             return out
         if language == "elixir" and node_type == "call":
             # In Elixir, defmodule, def, defp, defmacro, defprotocol are call nodes
@@ -699,7 +720,7 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                             "source_location": f"L{line(node)}",
                         })
                     for child in node.children:
-                        out.append((child, containers + (mod_name,), current_def))
+                        out.append((child, containers + (mod_name,), current_def, var_types))
                     return out
             elif f_text in ("def", "defp", "defmacro", "defprotocol", "defimpl"):
                 args_node = node.child_by_field_name("arguments") or (node.children[1] if len(node.children) > 1 else None)
@@ -733,13 +754,18 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                     # Walk only inside do_block body to avoid caller matching its own signature
                     do_block = node.child_by_field_name("do_block") or next((c for c in node.children if c.type == "do_block"), None)
                     if do_block:
-                        out.append((do_block, containers, raw_id))
+                        out.append((do_block, containers, raw_id, var_types))
                     return out
         if node_type in defs_cfg:
             field, kind = defs_cfg[node_type]
             name = name_of(node, field)
             if name:
                 container = containers[-1] if containers else None
+                if language == "rust" and node_type == "function_item" and container:
+                    kind = "method"
+                if (language in ("typescript", "tsx", "javascript")
+                        and kind == "function" and current_def):
+                    container = current_def
                 if node_type == "method_declaration" and cfg.get("method_receiver"):
                     recv = node.child_by_field_name(cfg["method_receiver"])
                     if recv is not None:
@@ -750,9 +776,11 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                             container = identifiers[-1]
                 raw_id = f"{container}.{name}" if container else name
                 if language == "go" and node_type in ("function_declaration", "method_declaration"):
-                    _bind_typed_params(node)
+                    _bind_typed_params(node, var_types)
                 elif language == "rust" and node_type == "function_item":
-                    _bind_typed_params(node)
+                    _bind_typed_params(node, var_types)
+                elif language in ("typescript", "tsx", "javascript"):
+                    _bind_typed_params(node, var_types)
                 if raw_id not in seen_ids:
                     seen_ids.add(raw_id)
                     snippet = text(node).split("\n", 1)[0][:120]
@@ -818,15 +846,41 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                                     m_name = name_of(member, "name")
                                     if m_name:
                                         active_method = f"{name}.{m_name}"
-                                    out.append((member, next_containers, current_def))
+                                    out.append((member, next_containers, current_def, var_types))
                                 elif member.type == "function_body":
-                                    out.append((member, next_containers, active_method))
+                                    out.append((member, next_containers, active_method, var_types))
                                 else:
-                                    out.append((member, next_containers, current_def))
+                                    out.append((member, next_containers, current_def, var_types))
                             return out
                 for child in node.children:
-                    out.append((child, next_containers, raw_id if kind != "class" else current_def))
+                    out.append((child, next_containers, raw_id if kind != "class" else current_def, var_types))
                 return out
+        # Rust macros expose arguments as token trees, not call_expression
+        # nodes. Only known argument-evaluating macros justify call edges;
+        # stringify!/quote! and arbitrary user macros must stay unclaimed.
+        if language == "rust" and node_type == "token_tree":
+            ancestor = node.parent
+            while ancestor is not None and ancestor.type == "token_tree":
+                ancestor = ancestor.parent
+            if ancestor is not None and ancestor.type == "macro_invocation":
+                macro = text(ancestor.child_by_field_name("macro")).rsplit("::", 1)[-1]
+                if macro in {"format", "format_args", "println", "print", "eprintln", "eprint",
+                             "write", "writeln", "dbg", "assert", "assert_eq", "assert_ne", "vec"}:
+                    children = node.children
+                    for i, child in enumerate(children[:-1]):
+                        if (child.type != "identifier" or children[i + 1].type != "token_tree"
+                                or not text(children[i + 1]).startswith("(")):
+                            continue
+                        receiver = (text(children[i - 2]) if i >= 2
+                                    and text(children[i - 1]) in (".", "::") else None)
+                        edges.append({
+                            "source": current_def or path.name, "target": text(child),
+                            "relation": "calls", "source_location": f"L{line(child)}",
+                            "receiver": receiver,
+                            "receiver_type": var_types.get(receiver) if receiver else None,
+                            "call_kind": "QUALIFIED" if receiver else "BARE",
+                        })
+
         # Check calls against configured call patterns
         for call_spec in calls_cfg_list:
             if node_type == call_spec["type"]:
@@ -857,23 +911,42 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
                 break
 
         for child in node.children:
-            out.append((child, containers, current_def))
+            out.append((child, containers, current_def, var_types))
         return out
 
     # Iterative pre-order traversal: minified bundles nest far beyond the
     # interpreter recursion limit, and one RecursionError used to cost the
     # whole file its symbols. Reversed pushes on a LIFO stack preserve the
     # original visit order.
-    stack: List[Tuple[Any, Tuple[str, ...], Optional[str]]] = [(tree.root_node, (), None)]
+    stack: List[Tuple[Any, Tuple[str, ...], Optional[str], Dict[str, Optional[str]]]] = [(tree.root_node, (), None, {})]
     while stack:
-        _node, _containers, _current_def = stack.pop()
-        _pending = visit(_node, _containers, _current_def)
+        _node, _containers, _current_def, _types = stack.pop()
+        _pending = visit(_node, _containers, _current_def, _types)
         stack.extend(reversed(_pending))
 
     decoded = source.decode("utf-8", "replace")
+    import_map: Dict[str, str] = {}
+    alias_map: Dict[str, str] = {}
 
-    def _import_edge(raw_target: str, lineno: int) -> None:
+    def _import_edge(raw_target: str, lineno: int, *, static: bool = False) -> None:
+        if language == "rust":
+            binding = re.fullmatch(r"([\w:]+)(?:\s+as\s+(\w+))?", raw_target)
+            if binding:
+                imported = binding.group(1)
+                name = imported.rsplit("::", 1)[-1]
+                module = imported.rsplit("::", 1)[0] if "::" in imported else imported
+                alias = binding.group(2) or name
+                import_map[alias] = module
+                alias_map[alias] = name
+                raw_target = module
+        elif language == "java" and static and not raw_target.endswith(".*"):
+            owner, member = raw_target.rsplit(".", 1)
+            import_map[member] = owner
+            alias_map[member] = f"{owner.rsplit('.', 1)[-1]}.{member}"
+            raw_target = owner
         target_clean = raw_target.split("/")[-1].split(".")[0] if ("/" in raw_target or "." in raw_target) else raw_target
+        if language == "java":
+            target_clean = raw_target.rsplit(".", 1)[-1]
         edges.append({
             "source": path.name,
             "target": target_clean or raw_target,
@@ -908,13 +981,12 @@ def extract_ts(path: Path, language: str) -> Dict[str, Any]:
             for pattern in cfg.get("imports", []):
                 match = re.search(pattern, source_line)
                 if match:
-                    _import_edge(match.group(1).strip(), i)
+                    _import_edge(match.group(1).strip(), i,
+                                 static=bool(re.search(r"\bimport\s+static\b", source_line)))
                     break
     # Attach import provenance to call edges so the DB-side resolver can
     # disambiguate same-named symbols by the calling file's imports
     # (mirrors the Python extractor's ``import_source`` behavior).
-    import_map: Dict[str, str] = {}
-    alias_map: Dict[str, str] = {}
     for edge_item in edges:
         if edge_item.get("relation") == "imports" and edge_item.get("import_source"):
             raw_import = edge_item["import_source"]

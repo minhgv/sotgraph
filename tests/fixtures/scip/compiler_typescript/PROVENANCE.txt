@@ -1,0 +1,5 @@
+Produced by @sourcegraph/scip-typescript 0.4.0 on 2026-10-01.
+Command: scip-typescript index --cwd <fixture-root> --no-progress-bar
+SCIP was copied byte-for-byte; original temporary project_root URI is retained.
+SHA256: 5a204134163d0d3f667dda3ee2114d1e19a17e600adfd2ba46b875d3634a8736
+Schema: https://github.com/sourcegraph/scip/blob/main/scip.proto

@@ -153,6 +153,21 @@ class TestGateVerdicts:
         passed, failures, _ = evaluator.evaluate_gate(baseline, fresh)
         assert passed, failures
 
+    def test_identity_error_cannot_hide_inside_metric_tolerance(self, evaluator):
+        baseline = _payload(precision=0.998, recall=1.0)
+        fresh = copy.deepcopy(baseline)
+        fresh["builtin"]["counts"]["false_positives"] = 1
+        passed, failures, _ = evaluator.evaluate_gate(baseline, fresh)
+        assert not passed
+        assert any("static wrong-target gate" in f for f in failures)
+
+    def test_dynamic_wrong_target_fails_even_when_baseline_had_it(self, evaluator):
+        baseline = _payload()
+        baseline["builtin"]["dynamic"] = {"claimed_same_bare_other": 1}
+        passed, failures, _ = evaluator.evaluate_gate(baseline, copy.deepcopy(baseline))
+        assert not passed
+        assert any("dynamic misresolution gate" in f for f in failures)
+
     def test_gate_fails_when_clean_bucket_gains_errors(self, evaluator):
         baseline = _payload(per_language={
             "go": {"calls": _slot(tp=30, fp=0, fn=0),
