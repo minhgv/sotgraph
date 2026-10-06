@@ -878,10 +878,10 @@ DELETE FROM pending_edges WHERE dst_symbol IN (SELECT symbol FROM graph_nodes);<
             <span class="qa-toggle-btn">▼</span>
           </div>
           <div class="qa-body">
-            <p><code>sot-graph</code> provides native adapters for all major agent harnesses:</p>
+            <p><code>sot-graph</code> ships an MCP server + CLI only; native harness plugins/extensions are retired:</p>
             <ol>
               <li>
-                <strong>Oh My Pi / OMP Extension:</strong> Register <code>src/sot_graph/adapters/omp_extension.ts</code> in <code>omp.json</code> for pre-hook filesystem dirty checks and tool registrations.
+                <strong>Oh My Pi / OMP:</strong> <code>sotgraph setup --harness omp</code> provisions SSOT rules and the knowledge-reuse skill; all capabilities run over MCP + CLI.
               </li>
               <li>
                 <strong>Claude Code &amp; Cursor (AGENTS.md):</strong> Inject <code>src/sot_graph/adapters/AGENTS.md</code> into system prompts to mandate verified search before editing.

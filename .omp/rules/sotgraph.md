@@ -28,12 +28,12 @@ Before modifying, refactoring, or renaming core functions/classes:
 1. Run `sotgraph explore "<symbol>"` or `sotgraph usages "<symbol>"` to inspect both Outward Calls and Incoming References.
 2. When working with interfaces or abstract classes, run `sotgraph implementations "<interface>"` to identify all concrete implementations.
 3. Ensure you understand all upstream callers before changing signatures.
-4. Before finalizing changes or submitting PRs, run `sotgraph diff-impact` (or `xd://sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
-5. Inspect commit risk history via `sotgraph log` (or `xd://sot_git_history`).
+4. Before finalizing changes or submitting PRs, run `sotgraph diff-impact` (or `sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
+5. Inspect commit risk history via `sotgraph log` (or `sot_git_history`).
 
 ## 5. Context Isolation & Hard-Budget Subgraph Packaging Protocol
 - When modifying multi-module features, avoid reading dozens of raw source files sequentially.
-- Run `sotgraph pack "<symbol>" --tokens 1500 --json` (or `xd://sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
+- Run `sotgraph pack "<symbol>" --tokens 1500 --json` (or `sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
 
 ## 6. Self-Healing & Drift Reconciliation
 - If you create, move, or delete files, run:

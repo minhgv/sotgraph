@@ -211,20 +211,18 @@ It then inserts the newly extracted classes, functions, and call edges from the 
 <details>
 <summary><h3>Q8: How do I integrate sotgraph into Oh My Pi (OMP), Claude Code, Cursor, and OpenCode?</h3></summary>
 
-`sotgraph` provides 3 official adapters in `src/sot_graph/adapters/`:
+`sotgraph` ships an MCP server + CLI only; there are no native harness
+plugins/extensions anymore. Integrate via `sotgraph setup --harness <name>`:
 
-1. **Oh My Pi / OMP Integration (`~/.omp`):**  
-   Copy the TypeScript extension to the OMP extensions directory:
-   ```bash
-   cp src/sot_graph/adapters/omp_extension.ts ~/.omp/agent/extensions/sot_graph.ts
-   ```
-   Exposes 4 native agent tools: `sot_search`, `sot_explore`, `sot_reconcile`, `sot_insert`.
+1. **Oh My Pi / OMP (`~/.omp`):** `sotgraph setup --harness omp` writes the
+   SSOT rules (`RULES.md`, `rules/sotgraph.md`) and the knowledge-reuse skill.
 
-2. **Claude Code / Cursor / Codex Integration:**  
-   Add the contents of `src/sot_graph/adapters/AGENTS.md` to `AGENTS.md` or `.cursorrules` in your repository root to guide agents toward pre-code knowledge retrieval.
+2. **Claude Code / Cursor / Codex:** add the contents of
+   `src/sot_graph/adapters/AGENTS.md` to `AGENTS.md` or `.cursorrules` in your
+   repository root to guide agents toward pre-code knowledge retrieval.
 
-3. **OpenCode Integration:**  
-   Configure tools in `.opencode.json` pointing to `src/sot_graph/adapters/opencode_tools.json`.
+3. **OpenCode:** `sotgraph setup --harness opencode` merges the MCP server
+   entry and skill permissions into `opencode.json` and writes the skill.
 
 </details>
 

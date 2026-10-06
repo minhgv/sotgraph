@@ -23,8 +23,8 @@
 ```mermaid
 graph TD
     subgraph Client_Harness_Layer [AI Coding Agents & CLI Clients]
-        OMP[Oh My Pi - OMP Native Extension]
-        OPENCODE[OpenCode Plugin]
+        OMP["Oh My Pi - OMP (MCP + Skill/Rules)"]
+        OPENCODE["OpenCode (MCP + Skill)"]
         CLAUDE[Claude Code / Cursor / Windsurf MCP]
         CLI_USER[Terminal Developer CLI /bin/sotgraphgraph]
     end
@@ -60,8 +60,8 @@ graph TD
 
     %% Client Layer to Interface
     CLI_USER --> CLI_DISPATCHER
-    OMP --> CLI_DISPATCHER
-    OPENCODE --> CLI_DISPATCHER
+    OMP --> MCP_SERVER
+    OPENCODE --> MCP_SERVER
     CLAUDE --> MCP_SERVER
 
     %% Interface to Core Services
@@ -139,14 +139,14 @@ Theo báo cáo Fact Bundle `01_module_inventory.md` và đồ thị `sotgraph`, 
   2. **Bounded Output & Timeout Defense:** Tự động cắt ngắn (truncate) dữ liệu khi vượt quá `max_response_bytes` (256KB) và giới hạn thời gian chạy (`timeout_ms`).
   3. **Async / Sync Dual API:** Cung cấp cả sync call và `asyncio.to_thread` facade cho non-blocking stdio loop.
 
-#### Module 1.3: `Multi-Harness Adapters & Native Extensions`
-* **Thư mục mã nguồn:** `src/sot_graph/adapters/`, `.omp/extensions/sotgraph.ts`
+#### Module 1.3: `Multi-Harness Adapters (MCP + Skill/Rules Provisioning)`
+* **Thư mục mã nguồn:** `src/sot_graph/adapters/`
 * **User Roles:** AI Harnesses (OMP, OpenCode, Claude Code, Cursor, Windsurf, Google Gemini / Antigravity)
 * **Entities / Models chính:** `HarnessInstaller`, `OmpAdapter`, `OpencodeAdapter`, `ClaudeAdapter`, `AntigravityAdapter`
 * **Chức năng chi tiết:**
-  1. **OMP Native Extension (`sotgraph.ts`):** Khởi tạo background async tool wrapper không chặn event-loop của harness.
-  2. **OpenCode Plugin (`opencode_plugin.ts`):** Tự động phát hiện thay đổi file (`file.edited`) để kích hoạt background incremental reconcile.
-  3. **Auto-Discovery & Rules Injection:** Tự động hợp nhất cấu hình JSON (`.mcp.json`, `settings.json`) và chèn quy tắc `RULES.md` vào bộ nhớ AI.
+  1. **MCP-Only Surface:** sotgraph không còn sinh native extension/plugin (đã retire `omp_extension.ts` và `opencode_plugin.ts`); mọi capability đi qua MCP server + CLI.
+  2. **Auto-Discovery & Rules Injection:** Tự động hợp nhất cấu hình JSON (`.mcp.json`, `settings.json`, `opencode.json`) và chèn quy tắc `RULES.md`/skill vào bộ nhớ AI.
+  3. **Retired-Artifact Cleanup:** `setup` xóa extension/plugin đã cài trước đó khi file còn mang marker gốc; file do người dùng viết được giữ nguyên.
 
 ---
 

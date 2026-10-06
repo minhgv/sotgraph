@@ -152,7 +152,6 @@ where = ["src"]
 sot_graph = [
     "templates/*",
     "adapters/*.md",
-    "adapters/*.ts",
     "export/*.js",
     "providers/engine_pins.json",
 ]

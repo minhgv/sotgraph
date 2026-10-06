@@ -108,6 +108,22 @@ def remove_legacy_dir(path: Path, expected: dict[str, bytes]) -> bool:
     return True
 
 
+def remove_generated_file(path: Path, marker: str) -> bool:
+    """Delete a file only when it provably is one we generated (marker match).
+
+    Used to retire artifacts this package no longer ships (native harness
+    extensions/plugins). A user-written file at the same path survives
+    unless it carries our marker, matching the SUR-08 ownership posture.
+    """
+    try:
+        if marker not in path.read_text(encoding="utf-8", errors="replace"):
+            return False
+        path.unlink()
+    except OSError:
+        return False
+    return True
+
+
 __all__ = [
     "SERVER_KEY",
     "LEGACY_SERVER_KEY",
@@ -118,4 +134,5 @@ __all__ = [
     "write_skill_dir",
     "remove_legacy_file",
     "remove_legacy_dir",
+    "remove_generated_file",
 ]

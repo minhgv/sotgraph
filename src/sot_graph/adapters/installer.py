@@ -18,8 +18,8 @@ HARNESS_ALIASES: Dict[str, str] = {
 }
 
 SUPPORTED_HARNESSES = {
-    "omp": ("Oh My Pi (OMP) / Pi Native Extension, Skill & Rules", setup_omp),
-    "opencode": ("OpenCode Skill, Plugin & MCP Server", setup_opencode),
+    "omp": ("Oh My Pi (OMP) / Pi Skill & Rules", setup_omp),
+    "opencode": ("OpenCode Skill & MCP Server", setup_opencode),
     "antigravity": ("Google Antigravity / Gemini CLI MCP & Skill", setup_antigravity),
     "claude": ("Claude Code & Cursor Universal MCP", setup_claude),
     "zcode": ("ZCode Workspace MCP, Skill & Slash Commands", setup_zcode),

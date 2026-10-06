@@ -230,41 +230,24 @@ sotgraph setup --harness all --workspace-only
 
 | Harness | Configuration Files & Artifacts | Integration Highlights |
 | :--- | :--- | :--- |
-| **Pi Harness / Oh My Pi (OMP)** | `~/.omp/agent/extensions/sotgraph.ts`<br>`.omp/extensions/sotgraph.ts`<br>`.omp/skills/sotgraph/SKILL.md`<br>`.omp/RULES.md`<br>`.omp/rules/sotgraph.md` | Full `xd://sot_*` tool devices, SSOT system prompt rules, and background subagent knowledge reuse |
+| **Pi Harness / Oh My Pi (OMP)** | `.omp/skills/sotgraph/SKILL.md`<br>`.omp/RULES.md`<br>`.omp/rules/sotgraph.md`<br>`~/.omp/skills/sotgraph/SKILL.md`<br>`~/.omp/rules/sotgraph.md` | SSOT system prompt rules and knowledge-reuse skill; all `sot_*` capabilities are served over MCP + CLI |
 | **Claude Code & Cursor** | `~/.claude/CLAUDE.md`<br>`.claude/CLAUDE.md` | SSOT Knowledge Reuse Protocol, Blast Radius Pre-Check, and Token-Bounded Context packaging |
 | **Google Antigravity** | `~/.gemini/GEMINI.md`<br>`.gemini/GEMINI.md`<br>`.gemini/skills/sotgraph/SKILL.md` | Single-Source-of-Truth directives, pure-read search, and architectural fact bundles |
-| **OpenCode** | `~/.config/opencode/opencode.json`<br>`~/.config/opencode/skill/sotgraph/SKILL.md`<br>`~/.config/opencode/plugins/sotgraph/index.ts`<br>`.opencode/opencode.json`<br>`.opencode/skills/sotgraph/SKILL.md` | OpenCode skill integration, local MCP server configuration, and file permissions |
+| **OpenCode** | `~/.config/opencode/opencode.json`<br>`~/.config/opencode/skill/sotgraph/SKILL.md`<br>`.opencode/opencode.json`<br>`.opencode/skills/sotgraph/SKILL.md` | OpenCode skill integration, local MCP server configuration, and file permissions |
 | **ZCode IDE** | `~/.zcode/config.json`<br>`~/.zcode/skills/sotgraph/SKILL.md`<br>`~/.zcode/commands/sot-*.md`<br>`.zcode/config.json`<br>`.zcode/skills/sotgraph/SKILL.md`<br>`.zcode/commands/sot-*.md` | MCP server registration, slash command suite (`/sot-search`, `/sot-map`, `/sot-explore`, `/sot-usages`, `/sot-rename`), and IDE skill |
 
-Legacy artifacts from pre-rename setups (`sot-graph.ts` extensions,
-`skills/sot-graph/`, `rules/sot-graph.md`, MCP server keys named `sot-graph`)
-are migrated or removed automatically by `sotgraph setup` — foreign files with
-the same names are never touched.
+Legacy artifacts from pre-rename setups (`skills/sot-graph/`,
+`rules/sot-graph.md`, MCP server keys named `sot-graph`) are migrated or
+removed automatically by `sotgraph setup` — foreign files with the same names
+are never touched.
 
-### Native OMP/OpenCode Adapter Safety
+Retired artifacts: the native OMP extension (`.omp/extensions/sotgraph.ts`,
+`~/.omp/agent/extensions/sotgraph.ts`) and the OpenCode plugin
+(`~/.config/opencode/plugins/sotgraph/`) are no longer installed — every
+capability is reachable over the MCP server. `sotgraph setup` deletes
+previously-installed copies when they still carry the shipped marker;
+user-authored files are left untouched.
 
-The native TypeScript adapters resolve the installed `sotgraph` command to an
-absolute canonical executable from the trusted process `PATH` before invoking
-it. They treat environment-variable names case-insensitively (including
-Windows-shaped `Path` and `PythonPath` keys), remove every `PATH`/`PythonPath`
-variant, filter both the original and canonical forms of each `PATH` entry and
-its `sotgraph` target whenever either form is under the canonical workspace root,
-and publish only canonical representations of retained external entries. On
-Windows, executable candidates follow the configured `PATHEXT` suffix order.
-They never inject the workspace `src` directory through `PYTHONPATH`.
-Session-start reconciliation remains best-effort when `sotgraph` is unavailable, and
-OMP schedules a debounced reconcile after successful `write`, `edit`, `ast_edit`,
-or `patch` tool results.
-
-The OMP `sot_diff_impact` adapter rejects revision targets beginning with `-`
-before invoking the CLI, preventing option-like targets from being
-reinterpreted as command flags.
-
-For the OMP `sot_pack` tool, `depth` is translated to the CLI's `--max-hops`
-option and `tokens` is forwarded as `--max-tokens`. The destructive OMP
-`sot_clean` reset requires an explicit `confirm: true` argument when `all: true`
-(unless `dry_run: true`); only an explicit confirmation adds the CLI `--yes`
-flag.
 ---
 
 ## CLI & Agent Tool Usage Reference

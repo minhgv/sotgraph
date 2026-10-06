@@ -43,18 +43,12 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 ADAPTER_MODULES = ["zcode", "claude", "omp", "opencode", "antigravity"]
 ADAPTERS_DIR = REPO_ROOT / "src" / "sot_graph" / "adapters"
 
-# Adapters that register NATIVE harness tools of their own (OMP extension,
-# OpenCode plugin). Docs from these adapters may reference their native
-# registries in addition to the shared MCP server; the other surfaces
-# (zcode/claude/antigravity markdown, AGENTS.md, README) may only
-# reference the MCP registry.
-NATIVE_TOOL_SOURCES = {
-    "omp": ["omp_extension.ts"],
-    "opencode": ["opencode_tools.json", "opencode_plugin.ts"],
-}
+# No adapter ships a native harness tool registry anymore (the OMP extension
+# and OpenCode plugin were retired — every capability is MCP-only). The map
+# stays so whole-product doc surfaces still resolve to the MCP registry.
+NATIVE_TOOL_SOURCES: Dict[str, List[str]] = {}
 # Doc surfaces outside the adapter modules, validated against MCP only.
-# README documents the whole product (incl. the OMP/OpenCode native tool
-# surfaces), so it is held to the union of every registry.
+# README documents the whole product, so it is held to the full registry.
 STANDALONE_DOC_FILES = {"AGENTS.md": "mcp", "README.md": "all"}
 
 # Words that match the sot_* shape but are not MCP tool claims.

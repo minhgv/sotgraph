@@ -26,36 +26,44 @@ When to use:
 - `[REMOVED]`: Node deleted on disk; do NOT reference or hallucinate.
 - `[NOPATH]`: Virtual/inline node without a direct physical file backing.
 
-## Quick CLI & Native Tool Device Reference
-| Category | CLI Command | Native Tool Device |
+## Quick CLI & MCP Tool Reference
+| Category | CLI Command | MCP Tool |
 | :--- | :--- | :--- |
-| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
-| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
-| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
-| **Inspect Usages** | `sotgraph usages "<symbol>"` | `xd://sot_usages` |
-| **Implementations** | `sotgraph implementations "<interface>"` | `xd://sot_implementations` |
-| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
-| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `xd://sot_pack` |
-| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `xd://sot_reconcile` |
-| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
-| **Audit Drift** | `sotgraph verify [--deep]` | `xd://sot_verify` |
-| **Database Doctor** | `sotgraph doctor` | `xd://sot_doctor` |
-| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `xd://sot_clean` |
-| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `xd://sot_vacuum` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `xd://sot_insert` |
-| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `xd://sot_cluster` |
-| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
-| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `xd://sot_viz` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/scip>` | `xd://sot_export` |
-| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
-| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
-| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `xd://sot_ui_tree` |
-| **Backend Flow** | `sotgraph be-flow "<service>"` | `xd://sot_backend_flow` |
-| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
-| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
-| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
-| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
-| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
-| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
-| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
-| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |
+| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `sot_search` |
+| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `sot_map` |
+| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `sot_explore` |
+| **Inspect Usages** | `sotgraph usages "<symbol>"` | `sot_usages` |
+| **Implementations** | `sotgraph implementations "<interface>"` | `sot_implementations` |
+| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | CLI only |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `sot_pack` |
+| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `sot_reconcile` |
+| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI only |
+| **Audit Drift** | `sotgraph verify [--deep]` | `sot_verify_drift` |
+| **Database Doctor** | `sotgraph doctor` | `sot_doctor` |
+| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | CLI only |
+| **Vacuum Database** | `sotgraph vacuum [--analyze]` | CLI only |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_notes` |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `sot_communities` |
+| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `sot_architecture_report` |
+| **Interactive Viz** | `sotgraph viz [-o graph.html]` | CLI only |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | CLI only |
+| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `sot_bundle` |
+| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
+| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
+| **Backend Flow** | `sotgraph be-flow "<service>"` | `sot_backend_flow` |
+| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `sot_solution_inventory` |
+| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `sot_solution_steps` |
+| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `sot_solution_bundle` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `sot_diff_impact` |
+| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | CLI only |
+| **MCP Server** | `sotgraph mcp --profile core|full|ops` (default `core`: the 7 query/receipt/audit tools; `full` = every non-operational tool; `ops` = full + explicit sot_reconcile / sot_providers_sync writes) | CLI only |
+| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `sot_providers_sync` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
+| **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |
+| **Receipt Explorer** | `sotgraph receipt <show/diff>` | CLI only |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | CLI only |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | CLI only |
+| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI only |
+| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI only |
+| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI only |

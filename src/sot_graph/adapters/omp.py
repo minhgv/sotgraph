@@ -3,9 +3,16 @@ sot_graph.adapters.omp - OMP (Oh My Pi) Harness Adapter.
 """
 
 from pathlib import Path
-import shutil
 
-from sot_graph.adapters.migration import remove_legacy_file, write_skill_dir
+from sot_graph.adapters.migration import (
+    remove_generated_file,
+    remove_legacy_file,
+    write_skill_dir,
+)
+
+#: Marker inside the retired native OMP extension template (and its
+#: pre-rename twin); setup cleans it instead of re-installing it.
+_OMP_EXTENSION_MARKER = "Native Extension for SOT-Graph"
 
 SKILL_MARKDOWN = """---
 name: sotgraph
@@ -35,47 +42,47 @@ When to use:
 - `[REMOVED]`: Node deleted on disk; do NOT reference or hallucinate.
 - `[NOPATH]`: Virtual/inline node without a direct physical file backing.
 
-## Quick CLI & Native Tool Device Reference
-| Category | CLI Command | Native Tool Device |
+## Quick CLI & MCP Tool Reference
+| Category | CLI Command | MCP Tool |
 | :--- | :--- | :--- |
-| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `xd://sot_search` |
-| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `xd://sot_map` |
-| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `xd://sot_explore` |
-| **Inspect Usages** | `sotgraph usages "<symbol>"` | `xd://sot_usages` |
-| **Implementations** | `sotgraph implementations "<interface>"` | `xd://sot_implementations` |
-| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | `xd://sot_rename` |
-| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `xd://sot_pack` |
-| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `xd://sot_reconcile` |
-| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI |
-| **Audit Drift** | `sotgraph verify [--deep]` | `xd://sot_verify` |
-| **Database Doctor** | `sotgraph doctor` | `xd://sot_doctor` |
-| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | `xd://sot_clean` |
-| **Vacuum Database** | `sotgraph vacuum [--analyze]` | `xd://sot_vacuum` |
-| **Store Note** | `sotgraph insert --title "..." --body "..."` | `xd://sot_insert` |
-| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `xd://sot_cluster` |
-| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `xd://sot_report` |
-| **Interactive Viz** | `sotgraph viz [-o graph.html]` | `xd://sot_viz` |
-| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | `xd://sot_export` |
-| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `xd://sot_bundle` |
-| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `xd://sot_trace` |
-| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `xd://sot_ui_tree` |
-| **Backend Flow** | `sotgraph be-flow "<service>"` | `xd://sot_backend_flow` |
-| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `xd://sot_solution_inventory` |
-| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `xd://sot_solution_steps` |
-| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `xd://sot_solution_bundle` |
-| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `xd://sot_diff_impact` |
-| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `xd://sot_git_history` |
-| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | `CLI only` |
-| **MCP Server** | `sotgraph mcp --profile core|full|ops` (default `core`: the 7 query/receipt/audit tools; `full` = every non-operational tool; `ops` = full + explicit sot_reconcile / sot_providers_sync writes) | `CLI only` |
-| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `CLI only` |
-| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `CLI only` |
-| **Diff Receipt (P7.2)** | — | `CLI only` |
-| **Receipt Explorer** | `sotgraph receipt <show/diff>` | `CLI only` |
-| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | `CLI only` |
-| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | `CLI only` |
-| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI |
-| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI (Daemon) |
-| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI |
+| **Search Codebase** | `sotgraph search "<query>" [-n 5] [--hybrid]` | `sot_search` |
+| **Repository Map** | `sotgraph map [--focus <areas>] [--tokens 1024]` | `sot_map` |
+| **Trace Call Graph** | `sotgraph explore "<symbol>" [--depth 2]` | `sot_explore` |
+| **Inspect Usages** | `sotgraph usages "<symbol>"` | `sot_usages` |
+| **Implementations** | `sotgraph implementations "<interface>"` | `sot_implementations` |
+| **Rename Impact** | `sotgraph rename "<symbol>" [--to <new_name>]` | CLI only |
+| **Pack Subgraph** | `sotgraph pack "<symbol>" [--max-hops 2] [-o <file>]`| `sot_pack` |
+| **Synchronize DB** | `sotgraph reconcile [--workers 4]` | `sot_reconcile` |
+| **Batch Reconcile** | `sotgraph batch-reconcile <dir> [--workers 4]` | CLI only |
+| **Audit Drift** | `sotgraph verify [--deep]` | `sot_verify_drift` |
+| **Database Doctor** | `sotgraph doctor` | `sot_doctor` |
+| **Clean Stale Data**| `sotgraph clean [--all] [--include-notes]` | CLI only |
+| **Vacuum Database** | `sotgraph vacuum [--analyze]` | CLI only |
+| **Store Note** | `sotgraph insert --title "..." --body "..."` | `sot_notes` |
+| **Cluster Graph** | `sotgraph cluster [--scope <path>]` | `sot_communities` |
+| **Architecture Report** | `sotgraph report [-o GRAPH_REPORT.md]` | `sot_architecture_report` |
+| **Interactive Viz** | `sotgraph viz [-o graph.html]` | CLI only |
+| **Export Graph** | `sotgraph export -f <graphrag/obsidian/json/graphml/scip>` | CLI only |
+| **Fact Bundler** | `sotgraph bundle [-o .sot/bundle/] [--include-tests]` | `sot_bundle` |
+| **Full-Stack Trace** | `sotgraph trace "<target>" [--depth 2] [-o <file>]` | `sot_trace` |
+| **UI Decision Tree** | `sotgraph ui-tree "<component>"` | `sot_ui_tree` |
+| **Backend Flow** | `sotgraph be-flow "<service>"` | `sot_backend_flow` |
+| **Feature Inventory** | `sotgraph solution inventory [module] [-o <file>]` | `sot_solution_inventory` |
+| **Micro-steps Decompose** | `sotgraph solution steps "<method>" [--format table/json]` | `sot_solution_steps` |
+| **Solution Bundle** | `sotgraph solution bundle [module] [-o <file>]` | `sot_solution_bundle` |
+| **Diff Impact** | `sotgraph diff-impact [target] [--staged] [--depth 2]` | `sot_diff_impact` |
+| **Commit History** | `sotgraph log [-n 10] [--author <name>] [--since <date>]` | `sot_git_history` |
+| **Architecture & Flow Views** | `sotgraph arch [--flow "<target>"] [--level module]` | CLI only |
+| **MCP Server** | `sotgraph mcp --profile core|full|ops` (default `core`: the 7 query/receipt/audit tools; `full` = every non-operational tool; `ops` = full + explicit sot_reconcile / sot_providers_sync writes) | CLI only |
+| **Providers Admin** | `sotgraph providers <detect/list/doctor/resolve/lifecycle/cross-check/sync>` | `sot_providers_sync` |
+| **Scope Receipt (P7.1)** | `sotgraph scope-receipt "<symbol>" [--depth 2]` | `sot_scope_receipt` |
+| **Diff Receipt (P7.2)** | — | `sot_diff_impact_receipt` |
+| **Receipt Explorer** | `sotgraph receipt <show/diff>` | CLI only |
+| **Claims Lint** | `sotgraph claims lint [--registry <path>]` | CLI only |
+| **Engine Admin** | `sotgraph engine --store <dir> <bootstrap/status/doctor/...>` | CLI only |
+| **Embed Index** | `sotgraph embed [--limit 5000]` | CLI only |
+| **File Watcher** | `sotgraph watch [--debounce-ms 200]` | CLI only |
+| **Harness Setup** | `sotgraph setup [--harness <name>]` | CLI only |
 """
 
 RULES_MARKDOWN = """# SOT-Graph Project Rules for OMP (Oh My Pi)
@@ -108,12 +115,12 @@ Before modifying, refactoring, or renaming core functions/classes:
 1. Run `sotgraph explore "<symbol>"` or `sotgraph usages "<symbol>"` to inspect both Outward Calls and Incoming References.
 2. When working with interfaces or abstract classes, run `sotgraph implementations "<interface>"` to identify all concrete implementations.
 3. Ensure you understand all upstream callers before changing signatures.
-4. Before finalizing changes or submitting PRs, run `sotgraph diff-impact` (or `xd://sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
-5. Inspect commit risk history via `sotgraph log` (or `xd://sot_git_history`).
+4. Before finalizing changes or submitting PRs, run `sotgraph diff-impact` (or `sot_diff_impact`) to analyze blast radius, upstream inward callers, API contract impacts, and affected tests.
+5. Inspect commit risk history via `sotgraph log` (or `sot_git_history`).
 
 ## 5. Context Isolation & Hard-Budget Subgraph Packaging Protocol
 - When modifying multi-module features, avoid reading dozens of raw source files sequentially.
-- Run `sotgraph pack "<symbol>" --tokens 1500 --json` (or `xd://sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
+- Run `sotgraph pack "<symbol>" --tokens 1500 --json` (or `sot_pack`) to generate a token-efficient YAML ContextBundle for subagents.
 
 ## 6. Self-Healing & Drift Reconciliation
 - If you create, move, or delete files, run:
@@ -189,22 +196,18 @@ def _update_omp_rules(path: Path) -> None:
 def setup_omp(root: Path, global_install: bool = True, workspace_install: bool = True) -> list[str]:
     """Configure OMP harness at workspace and/or global levels."""
     installed = []
-    adapter_src = Path(__file__).resolve().parent / "omp_extension.ts"
 
     # Workspace level (.omp/)
     if workspace_install:
         omp_dir = root / ".omp"
-        ext_dir = omp_dir / "extensions"
         rules_dir = omp_dir / "rules"
-        ext_dir.mkdir(parents=True, exist_ok=True)
         rules_dir.mkdir(parents=True, exist_ok=True)
 
-        # Write extension
-        if adapter_src.exists():
-            shutil.copy2(adapter_src, ext_dir / "sotgraph.ts")
-            installed.append(str(ext_dir / "sotgraph.ts"))
-            # Migrate a template-identical legacy extension; user edits survive.
-            remove_legacy_file(ext_dir / "sot-graph.ts", adapter_src.read_bytes())
+        # Retire the native extension sotgraph used to install: the harness
+        # reaches every capability over MCP, so nothing is re-installed.
+        ext_dir = omp_dir / "extensions"
+        for name in ("sotgraph.ts", "sot-graph.ts"):
+            remove_generated_file(ext_dir / name, _OMP_EXTENSION_MARKER)
 
         # Write skill
         installed.append(str(write_skill_dir(omp_dir / "skills", SKILL_MARKDOWN)))
@@ -221,18 +224,14 @@ def setup_omp(root: Path, global_install: bool = True, workspace_install: bool =
     if global_install:
         home = Path.home()
         global_omp = home / ".omp"
-        global_ext_dir = global_omp / "agent" / "extensions"
         global_rules_dir = global_omp / "rules"
-        global_ext_dir.mkdir(parents=True, exist_ok=True)
         global_rules_dir.mkdir(parents=True, exist_ok=True)
 
-        if adapter_src.exists():
-            shutil.copy2(adapter_src, global_ext_dir / "sotgraph.ts")
-            installed.append(str(global_ext_dir / "sotgraph.ts"))
-            remove_legacy_file(global_ext_dir / "sot-graph.ts", adapter_src.read_bytes())
+        global_ext_dir = global_omp / "agent" / "extensions"
+        for name in ("sotgraph.ts", "sot-graph.ts"):
+            remove_generated_file(global_ext_dir / name, _OMP_EXTENSION_MARKER)
 
         installed.append(str(write_skill_dir(global_omp / "skills", SKILL_MARKDOWN)))
-
         _update_omp_rules(global_omp / "RULES.md")
         installed.append(str(global_omp / "RULES.md"))
         global_rules_file = global_rules_dir / "sotgraph.md"

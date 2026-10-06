@@ -51,11 +51,11 @@ class TestHarnessAdapters(unittest.TestCase):
             installed = setup_omp(self.root, global_install=True, workspace_install=True)
             self.assertTrue(len(installed) >= 4)
 
-            # Workspace assertions
+            # Workspace assertions — skills/rules only; no native extension.
             ws_ext = self.root / ".omp" / "extensions" / "sotgraph.ts"
             ws_skill = self.root / ".omp" / "skills" / "sotgraph" / "SKILL.md"
             ws_rules = self.root / ".omp" / "RULES.md"
-            self.assertTrue(ws_ext.exists())
+            self.assertFalse(ws_ext.exists())
             self.assertTrue(ws_skill.exists())
             self.assertTrue(ws_rules.exists())
             self.assertTrue((self.root / ".omp" / "rules" / "sotgraph.md").exists())
@@ -63,7 +63,29 @@ class TestHarnessAdapters(unittest.TestCase):
 
             # Global assertions
             global_ext = self.mock_home / ".omp" / "agent" / "extensions" / "sotgraph.ts"
-            self.assertTrue(global_ext.exists())
+            self.assertFalse(global_ext.exists())
+
+    def test_omp_retired_extension_removed_user_file_kept(self):
+        with patch.object(Path, "home", return_value=self.mock_home):
+            ext_dir = self.root / ".omp" / "extensions"
+            ext_dir.mkdir(parents=True)
+            (ext_dir / "sotgraph.ts").write_text(
+                "// OMP (Oh My Pi) Native Extension for SOT-Graph\nexport default 1\n")
+            (ext_dir / "sot-graph.ts").write_text(
+                "// OMP (Oh My Pi) Native Extension for SOT-Graph\nexport default 1\n")
+            (ext_dir / "mine.ts").write_text("// my own extension\nexport default 1\n")
+            plugin_dir = self.mock_home / ".config" / "opencode" / "plugins" / "sotgraph"
+            plugin_dir.mkdir(parents=True)
+            (plugin_dir / "index.ts").write_text(
+                "// Native OpenCode Plugin for SOT-Graph\nexport {}\n")
+
+            setup_omp(self.root, global_install=True, workspace_install=True)
+            setup_opencode(self.root, global_install=True, workspace_install=False)
+
+            self.assertFalse((ext_dir / "sotgraph.ts").exists())
+            self.assertFalse((ext_dir / "sot-graph.ts").exists())
+            self.assertTrue((ext_dir / "mine.ts").exists())
+            self.assertFalse(plugin_dir.exists())
 
     def test_opencode_adapter_json_merge_and_skills(self):
         with patch.object(Path, "home", return_value=self.mock_home):
@@ -254,20 +276,20 @@ class TestHarnessAdapters(unittest.TestCase):
             self.assertTrue((self.root / ".zcode" / "skills" / "sotgraph" / "SKILL.md").exists())
             self.assertTrue((legacy_dir / "USER_NOTES.md").exists())
 
-    def test_omp_legacy_extension_and_rules_migrated(self):
+    def test_omp_legacy_extension_removed_and_rules_migrated(self):
         with patch.object(Path, "home", return_value=self.mock_home):
             ext_dir = self.root / ".omp" / "extensions"
             ext_dir.mkdir(parents=True)
-            from sot_graph.adapters import omp as omp_module
-            shipped = Path(omp_module.__file__).parent
-            (ext_dir / "sot-graph.ts").write_bytes((shipped / "omp_extension.ts").read_bytes())
+            # A legacy (pre-rename) extension carrying our marker is retired.
+            (ext_dir / "sot-graph.ts").write_text(
+                "// OMP (Oh My Pi) Native Extension for SOT-Graph\nexport default 1\n")
             rules_dir = self.root / ".omp" / "rules"
             rules_dir.mkdir(parents=True)
             (rules_dir / "sot-graph.md").write_text("user-customized rules\n")
 
             setup_omp(self.root, global_install=False, workspace_install=True)
 
-            self.assertTrue((ext_dir / "sotgraph.ts").exists())
+            self.assertFalse((ext_dir / "sotgraph.ts").exists())
             self.assertFalse((ext_dir / "sot-graph.ts").exists())
             self.assertTrue((rules_dir / "sotgraph.md").exists())
             self.assertTrue((rules_dir / "sot-graph.md").exists())
@@ -286,8 +308,8 @@ class TestHarnessAdapters(unittest.TestCase):
         with patch.object(Path, "home", return_value=self.mock_home):
             results = install_harnesses(["pi"], root=self.root, global_install=True, workspace_install=True)
             self.assertIn("omp", results)
-            ws_ext = self.root / ".omp" / "extensions" / "sotgraph.ts"
-            self.assertTrue(ws_ext.exists())
+            ws_skill = self.root / ".omp" / "skills" / "sotgraph" / "SKILL.md"
+            self.assertTrue(ws_skill.exists())
 
     def test_cli_setup_pi_alias(self):
         with patch.object(Path, "home", return_value=self.mock_home):
@@ -295,7 +317,7 @@ class TestHarnessAdapters(unittest.TestCase):
             args = parser.parse_args(["setup", "--harness", "pi", "--workspace-only"])
             ret = cmd_setup(args, root=str(self.root))
             self.assertEqual(ret, 0)
-            self.assertTrue((self.root / ".omp" / "extensions" / "sotgraph.ts").exists())
+            self.assertFalse((self.root / ".omp" / "extensions" / "sotgraph.ts").exists())
             self.assertTrue((self.root / ".omp" / "RULES.md").exists())
 
     def test_cli_setup_command(self):

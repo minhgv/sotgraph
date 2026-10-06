@@ -4,14 +4,17 @@ sot_graph.adapters.opencode - OpenCode Harness Adapter.
 
 from pathlib import Path
 import json
-import shutil
 import sys
 
 from sot_graph.adapters.migration import (
     assign_server_entry,
-    remove_legacy_dir,
+    remove_generated_file,
     write_skill_dir,
 )
+
+#: Marker inside the retired native OpenCode plugin template; setup cleans
+#: previously-installed copies instead of re-installing them.
+_OPENCODE_PLUGIN_MARKER = "OpenCode Plugin for SOT-Graph"
 
 OPENCODE_SKILL_MARKDOWN = """---
 name: sotgraph
@@ -183,7 +186,6 @@ def setup_opencode(root: Path, global_install: bool = True, workspace_install: b
     """Configure OpenCode harness at workspace and/or global levels."""
     installed = []
     python_bin = sys.executable or "python3"
-    plugin_src = Path(__file__).resolve().parent / "opencode_plugin.ts"
 
     # Workspace level (.opencode/)
     if workspace_install:
@@ -201,24 +203,22 @@ def setup_opencode(root: Path, global_install: bool = True, workspace_install: b
         home = Path.home()
         global_cfg_dir = home / ".config" / "opencode"
         global_skill_dir = global_cfg_dir / "skill" / "sotgraph"
-        global_plugin_dir = global_cfg_dir / "plugins" / "sotgraph"
 
         global_skill_dir.mkdir(parents=True, exist_ok=True)
-        global_plugin_dir.mkdir(parents=True, exist_ok=True)
 
         # Write global skill
         (global_skill_dir / "SKILL.md").write_text(OPENCODE_SKILL_MARKDOWN, encoding="utf-8")
         installed.append(str(global_skill_dir / "SKILL.md"))
 
-        # Write global plugin
-        if plugin_src.exists():
-            shutil.copy2(plugin_src, global_plugin_dir / "index.ts")
-            installed.append(str(global_plugin_dir / "index.ts"))
-            # Migrate a template-only legacy plugin dir; never touch user edits.
-            remove_legacy_dir(
-                global_cfg_dir / "plugins" / "sot-graph",
-                {"index.ts": plugin_src.read_bytes()},
-            )
+        # Retire the native plugin sotgraph used to install: every capability
+        # is already reachable over the MCP server configured above.
+        for dir_name in ("sotgraph", "sot-graph"):
+            plugin_dir = global_cfg_dir / "plugins" / dir_name
+            if remove_generated_file(plugin_dir / "index.ts", _OPENCODE_PLUGIN_MARKER):
+                try:
+                    plugin_dir.rmdir()  # only succeeds when it was plugin-only
+                except OSError:
+                    pass
 
         # Update global opencode.json
         global_config = global_cfg_dir / "opencode.json"
